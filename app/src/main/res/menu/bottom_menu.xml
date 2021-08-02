@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cnb_unselectedColor="#666666">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_baseline_headphones_24"
+        android:title="홈"
+        app:cnb_iconColor="@color/light_purple"/>
+
+    <item
+        android:id="@+id/sing"
+        android:icon="@drawable/ic_baseline_mic_24"
+        android:title="부르기"
+        app:cnb_iconColor="@color/light_purple"/>
+
+    <item
+        android:id="@+id/live"
+        android:icon="@drawable/ic_baseline_live_tv_24"
+        android:title="방송"
+        app:cnb_iconColor="@color/light_purple"/>
+
+    <item
+        android:id="@+id/setting"
+        android:icon="@drawable/ic_baseline_face_24"
+        android:title="마이"
+        app:cnb_iconColor="@color/light_purple"/>
+
+
+
+</menu>
