@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileActivity">
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:text="프로필 설정"
+        android:layout_marginTop="10dp"
+        android:textSize="20dp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/activity_profile_iv"
+        android:layout_below="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginBottom="80dp"
+        app:srcCompat="@drawable/ic_baseline_account_circle_24" />
+
+
+    <EditText
+        android:id="@+id/activity_profile_et"
+        android:layout_below="@+id/activity_profile_iv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="닉네임을 설정해주세요" />
+
+
+
+    <Button
+        android:id="@+id/activity_profile_btn"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:backgroundTint="@color/purple"
+        android:text="완료" />
+</RelativeLayout>
