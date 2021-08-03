@@ -2,4 +2,6 @@
     <string name="app_name">SingTogether</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="kakao_app_key">8dea534e8ce2ecf01d213633642d513a</string>
+
 </resources>
