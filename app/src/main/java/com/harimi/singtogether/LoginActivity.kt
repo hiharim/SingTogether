@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -30,13 +31,16 @@ class LoginActivity : AppCompatActivity() {
     val GOOGLE_REQUEST_CODE = 99
     val TAG = "googleLogin"
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    private lateinit var activity_login_btn_login_google: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val context :Context=this;
+
+
+        activity_login_btn_login_google =findViewById(R.id.activity_login_btn_login_google)
 
         //todo :  jang 키해쉬값도 카카오에 등록하기
 //        val keyHash= Utility.getKeyHash(this)
@@ -53,9 +57,9 @@ class LoginActivity : AppCompatActivity() {
 
 
         //버튼 클릭시
-//        googleSignInBtn.setOnClickListener {
-//            signIn()
-//        }
+        activity_login_btn_login_google.setOnClickListener {
+            signIn()
+        }
 
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
@@ -152,6 +156,7 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.id)
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.displayName)
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.email)
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.idToken)
 
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
@@ -171,6 +176,8 @@ class LoginActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "로그인 성공")
                     val user = auth!!.currentUser
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + user)
+
                     loginSuccess()
                 } else {
                     // If sign in fails, display a message to the user.
