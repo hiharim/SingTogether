@@ -1,16 +1,17 @@
 package com.harimi.singtogether
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.harimi.singtogether.databinding.ActivityMainBinding
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
-import kotlinx.android.synthetic.main.activity_main.*
+
 
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private val fragmentHome : HomeFragment = HomeFragment() // 홈
     private val fragmentSing : SingFragment = SingFragment() // 부르기
     private val fragmentBroadcast : BraodcastFragment=BraodcastFragment() // 방송
@@ -18,13 +19,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        if(savedInstanceState == null){
-            chipNavigationBar.setItemSelected(R.id.home,true)
+        if(savedInstanceState == null) {
+            binding.chipNavigationBar.setItemSelected(R.id.home,true)
 
         }
-        chipNavigationBar.setOnItemSelectedListener { id ->
+        binding.chipNavigationBar.setOnItemSelectedListener{ id->
             when(id) {
                 R.id.home -> changeFragment(fragmentHome)
                 R.id.sing-> changeFragment(fragmentSing)
@@ -32,6 +34,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.setting -> changeFragment(fragmentMyPage)
             }
         }
+
+//        chipNavigationBar.setOnItemSelectedListener { id ->
+//            when(id) {
+//                R.id.home -> changeFragment(fragmentHome)
+//                R.id.sing-> changeFragment(fragmentSing)
+//                R.id.live -> changeFragment(fragmentBroadcast)
+//                R.id.setting -> changeFragment(fragmentMyPage)
+//            }
+//        }
 
     }
 

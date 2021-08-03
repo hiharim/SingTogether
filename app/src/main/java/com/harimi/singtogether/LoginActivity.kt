@@ -1,74 +1,106 @@
 package com.harimi.singtogether
 
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
-import com.kakao.sdk.auth.LoginClient
+import androidx.appcompat.app.AppCompatActivity
+import com.harimi.singtogether.databinding.ActivityLoginBinding
+import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.model.ApiErrorCause
-import com.kakao.sdk.common.model.AuthErrorCause
-import com.kakao.sdk.common.model.AuthErrorCause.*
+import com.kakao.sdk.common.KakaoSdk
+import com.kakao.sdk.common.model.KakaoSdkError
 import com.kakao.sdk.common.util.Utility
-import kotlinx.android.synthetic.main.activity_login.*
+import com.kakao.sdk.user.UserApiClient
+
 
 class LoginActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityLoginBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val context :Context=this;
 
+        //todo :  jang 키해쉬값도 카카오에 등록하기
 //        val keyHash= Utility.getKeyHash(this)
 //        Log.d("키해쉬값",keyHash)
 
 
-        val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if (error != null) {
-                when {
-                    error.toString() == AccessDenied.toString() -> {
-                        Toast.makeText(this, "접근이 거부 됨(동의 취소)", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == InvalidClient.toString() -> {
-                        Toast.makeText(this, "유효하지 않은 앱", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == InvalidGrant.toString() -> {
-                        Toast.makeText(this, "인증 수단이 유효하지 않아 인증할 수 없는 상태", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == InvalidRequest.toString() -> {
-                        Toast.makeText(this, "요청 파라미터 오류", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == InvalidScope.toString() -> {
-                        Toast.makeText(this, "유효하지 않은 scope ID", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == Misconfigured.toString() -> {
-                        Toast.makeText(this, "설정이 올바르지 않음(android key hash)", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == ServerError.toString() -> {
-                        Toast.makeText(this, "서버 내부 에러", Toast.LENGTH_SHORT).show()
-                    }
-                    error.toString() == Unauthorized.toString() -> {
-                        Toast.makeText(this, "앱이 요청 권한이 없음", Toast.LENGTH_SHORT).show()
-                    }
-                    else -> { // Unknown
-                        Toast.makeText(this, "기타 에러", Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
-            else if (token != null) {
-                Toast.makeText(this, "로그인에 성공하였습니다.", Toast.LENGTH_SHORT).show()
-                val intent = Intent(this, ProfileActivity::class.java)
-                startActivity(intent)
-
+        // 카카오 로그인 버튼 클릭
+        binding.activityLoginBtnLoginKakao.setOnClickListener {
+            // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
+            if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
+            } else {
+                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
             }
         }
 
-        activity_login_btn_login_kakao.setOnClickListener {
-            if(LoginClient.instance.isKakaoTalkLoginAvailable(this)){
-                LoginClient.instance.loginWithKakaoTalk(this, callback = callback)
-            }else{
-                LoginClient.instance.loginWithKakaoAccount(this, callback = callback)
+
+
+//        if (AuthApiClient.instance.hasToken()) {
+//            UserApiClient.instance.accessTokenInfo { _, error ->
+//                if (error != null) {
+//                    if (error is KakaoSdkError && error.isInvalidTokenError() == true) {
+//                        //로그인 필요
+//                    }
+//                    else {
+//                        //기타 에러
+//                    }
+//                }
+//                else {
+//                    //토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
+//                }
+//            }
+//        }
+//        else {
+//            //로그인 필요
+//        }
+
+
+        // 사용자 정보 요청 (기본)
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e(TAG, "사용자 정보 요청 실패", error)
+            } else if (user != null) {
+                Log.i(
+                    TAG, "사용자 정보 요청 성공" +
+                            "\n회원번호: ${user.id}" +
+                            "\n이메일: ${user.kakaoAccount?.email}" +
+                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                )
             }
+        }
+
+    }
+    // 로그인 공통 callback 구성
+    val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+        if (error != null) {
+            Log.e(TAG, "로그인 실패", error)
+        }
+        else if (token != null) {
+            Log.i(TAG, "로그인 성공 ${token.accessToken}")
+            // 토큰 정보 보기
+            UserApiClient.instance.accessTokenInfo { tokenInfo, error ->
+                if (error != null) {
+                    Log.e(TAG, "토큰 정보 보기 실패", error)
+                }
+                else if (tokenInfo != null) {
+                    Log.i(TAG, "토큰 정보 보기 성공" +
+                            "\n회원번호: ${tokenInfo.id}" +
+                            "\n만료시간: ${tokenInfo.expiresIn} 초")
+
+                }
+            }
+            // 프로필액티비티로 이동
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
         }
     }
 }
