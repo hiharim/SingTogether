@@ -43,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
 //        Log.d("키해쉬값",keyHash)
 
 
+        //구글 빌드
         auth = FirebaseAuth.getInstance()
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.firebase_client))
@@ -180,8 +181,8 @@ class LoginActivity : AppCompatActivity() {
 
     ///구글 로그인이 성공할 시
     private fun loginSuccess(){
-//        val intent = Intent(this,LoginActivity::class.java)
-//        startActivity(intent)
+        val intent = Intent(this, ProfileActivity::class.java)
+        startActivity(intent)
 //        finish()
     }
 }
