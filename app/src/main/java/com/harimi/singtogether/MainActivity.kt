@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             binding.chipNavigationBar.setItemSelected(R.id.home,true)
 
         }
+
         binding.chipNavigationBar.setOnItemSelectedListener{ id->
             when(id) {
                 R.id.home -> changeFragment(fragmentHome)
@@ -34,15 +35,6 @@ class MainActivity : AppCompatActivity() {
                 R.id.setting -> changeFragment(fragmentMyPage)
             }
         }
-
-//        chipNavigationBar.setOnItemSelectedListener { id ->
-//            when(id) {
-//                R.id.home -> changeFragment(fragmentHome)
-//                R.id.sing-> changeFragment(fragmentSing)
-//                R.id.live -> changeFragment(fragmentBroadcast)
-//                R.id.setting -> changeFragment(fragmentMyPage)
-//            }
-//        }
 
     }
 
