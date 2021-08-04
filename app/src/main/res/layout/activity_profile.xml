@@ -19,16 +19,26 @@
     <ImageView
         android:id="@+id/activity_profile_iv"
         android:layout_below="@+id/textView3"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="60dp"
-        android:layout_marginBottom="80dp"
+        android:layout_centerHorizontal="true"
         app:srcCompat="@drawable/ic_baseline_account_circle_24" />
 
 
+    <Button
+        android:id="@+id/activity_profile_btn_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="40dp"
+        android:layout_below="@+id/activity_profile_iv"
+        android:backgroundTint="@color/purple"
+        android:text="이미지 변경" />
+
     <EditText
         android:id="@+id/activity_profile_et"
-        android:layout_below="@+id/activity_profile_iv"
+        android:layout_below="@+id/activity_profile_btn_photo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"

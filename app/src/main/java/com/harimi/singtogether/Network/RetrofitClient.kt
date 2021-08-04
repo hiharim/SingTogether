@@ -23,5 +23,6 @@ object RetrofitClient {
         }
 
         return instance!!
+        // !! 의미 : Null이 값으로 들어오면 exception을 발생
     }
 }

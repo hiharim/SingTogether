@@ -29,21 +29,20 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private var user_email: String? = null // 이메일
     private var user_nickname: String? = null // 닉네임
+    private var user_profile: String? = null // 프로필
+    private var user_social: String? = null // 소셜 구분
+    private var user_token: String? = null // 토큰
 
     var auth: FirebaseAuth? = null
     val GOOGLE_REQUEST_CODE = 99
     val TAG = "googleLogin"
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var activity_login_btn_login_google: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val context :Context=this;
-
-        activity_login_btn_login_google =findViewById(R.id.activity_login_btn_login_google)
-
 
         //구글 빌드
         auth = FirebaseAuth.getInstance()
@@ -53,11 +52,11 @@ class LoginActivity : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this,gso)
 
-
-        //버튼 클릭시
-        activity_login_btn_login_google.setOnClickListener {
+        // 구글 버튼 클릭시
+        binding.activityLoginBtnLoginGoogle.setOnClickListener {
             signIn()
         }
+
 
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
@@ -82,6 +81,7 @@ class LoginActivity : AppCompatActivity() {
 //                }
 //                else {
 //                    //토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
+//                    Log.e(TAG, "카카오 사용자 토큰", )
 //                }
 //            }
 //        }
@@ -104,6 +104,8 @@ class LoginActivity : AppCompatActivity() {
                 )
                 user_email= user.kakaoAccount?.email
                 user_nickname=user.kakaoAccount?.profile?.nickname
+                user_profile=user.kakaoAccount?.profile?.thumbnailImageUrl
+                user_social="kakao"
             }
         }
 
@@ -123,19 +125,22 @@ class LoginActivity : AppCompatActivity() {
                 else if (tokenInfo != null) {
                     Log.i(TAG, "토큰 정보 보기 성공" +
                             "\n회원번호: ${tokenInfo.id}" +
-                            "\n만료시간: ${tokenInfo.expiresIn} 초")
+                            "\n만료시간: ${tokenInfo.expiresIn} 초"+
+                            "\n카카오토큰: ${tokenInfo.appId}")
 
                 }
             }
             // 프로필액티비티로 이동
             val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra("이메일",user_email)
-            intent.putExtra("닉네임",user_nickname)
+            intent.putExtra("EMAIL",user_email)
+            intent.putExtra("NICKNAME",user_nickname)
+            intent.putExtra("PROFILE",user_profile)
+            intent.putExtra("SOCIAL",user_social)
             startActivity(intent)
         }
     }
 
-///구글 로그인 클릭했을 때
+    //구글 로그인 클릭했을 때
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
