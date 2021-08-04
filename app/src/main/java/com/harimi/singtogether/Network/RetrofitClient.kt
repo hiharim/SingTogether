@@ -17,8 +17,8 @@ object RetrofitClient {
         if (instance == null) {
             instance = Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                //.addConverterFactory(GsonConverterFactory.create(gson))
-                    .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         }
 
