@@ -39,12 +39,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         val context :Context=this;
 
-
         activity_login_btn_login_google =findViewById(R.id.activity_login_btn_login_google)
-
-        //todo :  jang 키해쉬값도 카카오에 등록하기
-//        val keyHash= Utility.getKeyHash(this)
-//        Log.d("키해쉬값",keyHash)
 
 
         //구글 빌드
@@ -71,12 +66,7 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-
-
-
-
-
-
+        // 카카오 토큰존재여부 확인하기
 //        if (AuthApiClient.instance.hasToken()) {
 //            UserApiClient.instance.accessTokenInfo { _, error ->
 //                if (error != null) {
@@ -134,6 +124,7 @@ class LoginActivity : AppCompatActivity() {
             }
             // 프로필액티비티로 이동
             val intent = Intent(this, ProfileActivity::class.java)
+
             startActivity(intent)
         }
     }
