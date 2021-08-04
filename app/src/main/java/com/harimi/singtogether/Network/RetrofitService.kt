@@ -11,15 +11,25 @@ import retrofit2.http.POST
 // POST 방식으로 데이터를 주고 받을 때 넘기는 변수는 Field라고 해야한다.
 interface RetrofitService {
 
+//    @FormUrlEncoded
+//    @Headers(
+//            "accept: application/json",
+//            "content-type: application/x-www-form-urlencoded; charset=utf-8")
+//    @POST("/sign_in.js")
+//    fun requestSignIn (
+//        @Field("email") email :String,
+//        @Field("nickname") nickname :String,
+////        @Field("profile") profile :String,
+//        @Field("social") social :String,
+//        @Field("token") token :String,
+//    ) : Call<String>
+
+    @Headers("accept: application/json", "content-type: application/x-www-form-urlencoded; charset=utf-8")
     @FormUrlEncoded
-    @Headers(
-            "accept: application/json",
-            "content-type: application/x-www-form-urlencoded; charset=utf-8")
-    @POST("/sign_in.js")
+    @POST("join.php")
     fun requestSignIn (
         @Field("email") email :String,
         @Field("nickname") nickname :String,
-//        @Field("profile") profile :String,
         @Field("social") social :String,
         @Field("token") token :String,
     ) : Call<String>

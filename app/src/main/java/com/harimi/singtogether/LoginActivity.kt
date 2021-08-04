@@ -25,7 +25,10 @@ import com.kakao.sdk.user.UserApiClient
 
 class LoginActivity : AppCompatActivity() {
 
+
     private lateinit var binding: ActivityLoginBinding
+    private var user_email: String? = null // 이메일
+    private var user_nickname: String? = null // 닉네임
 
     var auth: FirebaseAuth? = null
     val GOOGLE_REQUEST_CODE = 99
@@ -99,6 +102,8 @@ class LoginActivity : AppCompatActivity() {
                             "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
                             "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
                 )
+                user_email= user.kakaoAccount?.email
+                user_nickname=user.kakaoAccount?.profile?.nickname
             }
         }
 
@@ -124,7 +129,8 @@ class LoginActivity : AppCompatActivity() {
             }
             // 프로필액티비티로 이동
             val intent = Intent(this, ProfileActivity::class.java)
-
+            intent.putExtra("이메일",user_email)
+            intent.putExtra("닉네임",user_nickname)
             startActivity(intent)
         }
     }
