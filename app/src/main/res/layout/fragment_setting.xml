@@ -6,16 +6,24 @@
     android:orientation="vertical"
     tools:context=".SettingFragment">
 
+
+
     <TextView
         android:id="@+id/fragment_setting_tv_logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="7dp"
+        android:textStyle="bold"
         android:text="로그아웃" />
 
     <TextView
         android:id="@+id/fragment_setting_tv_out"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:padding="7dp"
+        android:textStyle="bold"
         android:text="회원탈퇴" />
 
 </LinearLayout>

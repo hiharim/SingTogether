@@ -90,27 +90,8 @@ class LoginActivity : AppCompatActivity() {
 //        }
 
 
-        // 사용자 정보 요청 (기본)
-        UserApiClient.instance.me { user, error ->
-            if (error != null) {
-                Log.e(TAG, "사용자 정보 요청 실패", error)
-            } else if (user != null) {
-                Log.i(
-                    TAG, "사용자 정보 요청 성공" +
-                            "\n회원번호: ${user.id}" +
-                            "\n이메일: ${user.kakaoAccount?.email}" +
-                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
-                )
-                user_email= user.kakaoAccount?.email
-                user_nickname=user.kakaoAccount?.profile?.nickname
-                user_profile=user.kakaoAccount?.profile?.thumbnailImageUrl
-                user_social="kakao"
-            }
-        }
-
     }
-    // 로그인 공통 callback 구성
+    // 카카오 로그인 공통 callback 구성
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
             Log.e(TAG, "로그인 실패", error)
@@ -131,12 +112,34 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             // 프로필액티비티로 이동
+            kakaoUserInfo()
             val intent = Intent(this, ProfileActivity::class.java)
             intent.putExtra("EMAIL",user_email)
             intent.putExtra("NICKNAME",user_nickname)
             intent.putExtra("PROFILE",user_profile)
             intent.putExtra("SOCIAL",user_social)
             startActivity(intent)
+        }
+    }
+
+    private fun kakaoUserInfo(){
+        // 카카오 사용자 정보 요청 (기본)
+        UserApiClient.instance.me { user, error ->
+            if (error != null) {
+                Log.e(TAG, "사용자 정보 요청 실패", error)
+            } else if (user != null) {
+                Log.i(
+                        TAG, "사용자 정보 요청 성공" +
+                        "\n회원번호: ${user.id}" +
+                        "\n이메일: ${user.kakaoAccount?.email}" +
+                        "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                )
+                user_email= user.kakaoAccount?.email
+                user_nickname=user.kakaoAccount?.profile?.nickname
+                user_profile=user.kakaoAccount?.profile?.thumbnailImageUrl
+                user_social="kakao"
+            }
         }
     }
 

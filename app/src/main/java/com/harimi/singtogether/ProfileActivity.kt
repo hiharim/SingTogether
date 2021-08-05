@@ -9,6 +9,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -17,6 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toFile
 import com.bumptech.glide.Glide
+import com.google.android.material.textfield.TextInputEditText
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.harimi.singtogether.Network.RetrofitClient
@@ -54,7 +57,7 @@ class ProfileActivity : AppCompatActivity() {
         val context : Context =this
         // 서버 연결
         initRetrofit()
-
+        textWatcher()
         // 인텐트 값 받기
         val email=intent.getStringExtra("EMAIL")
         nickname= intent.getStringExtra("NICKNAME").toString()
@@ -140,6 +143,24 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun textWatcher(){
+        binding.activityProfileEt.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                if(binding.activityProfileEt.text!!.isEmpty()){
+                    binding.TextInputLayout.error="닉네임을 입력해주세요"
+                }else{
+                    binding.TextInputLayout.error=null
+                }
+            }
+
+        })
+    }
 
     // 테드퍼미션
     fun settingPermission() {
@@ -208,6 +229,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     //갤러리에서 사진 선택하기
+    // todo : 갤러리에서 선택한 사진을 file 형태로 만들어야함..
     private fun openGalleryForImage() {
 //        Intent(Intent.ACTION_PICK).also { intent ->
 //            intent.type=MediaStore.Images.Media.CONTENT_TYPE
