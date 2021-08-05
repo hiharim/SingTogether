@@ -163,6 +163,12 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.displayName)
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.email)
                 Log.d(TAG, "firebaseAuthWithGoogle:" + account.idToken)
+                Log.d(TAG, "firebaseAuthWithGoogle:" + account.photoUrl)
+
+                user_email= account.email
+                user_nickname= account.displayName
+                user_profile= account.photoUrl.toString()
+                user_social="google"
 
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
@@ -195,7 +201,11 @@ class LoginActivity : AppCompatActivity() {
     ///구글 로그인이 성공할 시
     private fun loginSuccess(){
         val intent = Intent(this, ProfileActivity::class.java)
+        intent.putExtra("EMAIL",user_email)
+        intent.putExtra("NICKNAME",user_nickname)
+        intent.putExtra("PROFILE",user_profile)
+        intent.putExtra("SOCIAL",user_social)
         startActivity(intent)
-//        finish()
+        finish()
     }
 }

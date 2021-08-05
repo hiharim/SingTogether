@@ -22,10 +22,12 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //첫 프래그먼트 화면을 무엇으로 지정해줄것인지 선택
+
+
+
         if(savedInstanceState == null) {
             binding.chipNavigationBar.setItemSelected(R.id.home,true)
-            changeFragment(fragmentHome)
+
         }
 
         binding.chipNavigationBar.setOnItemSelectedListener{ id->
