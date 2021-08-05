@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".broadcast.LiveStartActivity">
+
+    <EditText
+        android:id="@+id/activity_live_start_et"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:paddingLeft="10dp"
+        android:layout_above="@+id/activity_live_start_btn"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="250dp"
+        android:background="@drawable/edittext_round"
+        android:hint="제목을 입력해주세요" />
+
+    <Button
+        android:id="@+id/activity_live_start_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="139dp"
+        android:backgroundTint="@color/blue"
+        android:text="실시간 스트리밍 시작"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteY="541dp" />
+
+    <ImageView
+        android:id="@+id/activity_live_start_iv_close"
+        android:layout_width="36dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentLeft="true"
+        app:srcCompat="@drawable/ic_baseline_close_24" />
+
+    <ImageView
+        android:id="@+id/activity_live_start_iv_switch"
+        android:layout_width="43dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_alignParentRight="true"
+        app:srcCompat="@drawable/ic_baseline_switch_camera_24" />
+
+</RelativeLayout>

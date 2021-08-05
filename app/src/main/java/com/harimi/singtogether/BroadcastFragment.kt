@@ -1,58 +1,84 @@
 package com.harimi.singtogether
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.tabs.TabLayoutMediator
+import com.harimi.singtogether.broadcast.BroadcastPagerAdapter
+import com.harimi.singtogether.broadcast.LiveFragment
+import com.harimi.singtogether.broadcast.LiveStartActivity
+import com.harimi.singtogether.broadcast.ReplayFragment
+import com.harimi.singtogether.databinding.FragmentBroadcastBinding
 
 /**
- * A simple [Fragment] subclass.
- * Use the [BraodcastFragment.newInstance] factory method to
- * create an instance of this fragment.
+ 방송 프래그먼트
  */
 class BraodcastFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
+    // 초기화 리소스들이 들어가는곳
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
-    override fun onCreateView(
+    // Layout 을 inflate 하는곳, view 객체를 얻어서 초기화
+   override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_broadcast, container, false)
+
+        val binding=FragmentBroadcastBinding.inflate(inflater,container,false)
+        val pagerAdapter =BroadcastPagerAdapter(requireActivity())
+        // 2개의 Fragment Add
+        pagerAdapter.addFragment(LiveFragment())
+        pagerAdapter.addFragment(ReplayFragment())
+        // viewPager 와 pagerAdapter 연결
+        binding.fragmentBroadcastViewPager.adapter=pagerAdapter
+        binding.fragmentBroadcastViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.e("ViewPagerFragment", "Page ${position+1}")
+            }
+        })
+
+        // TabLayout 과 viewPager 연결
+        TabLayoutMediator(binding.fragmentBroadcastTabLayout,binding.fragmentBroadcastViewPager){
+            tab,position->
+            when(position){
+                0 ->{
+                    tab.text="실시간"
+                }
+                1 ->{
+                    tab.text="다시보기"
+                }
+            }
+        }.attach()
+
+        // 비디오버튼 클릭
+        binding.fragmentMyPageIvLive.setOnClickListener{
+            val intent= Intent(context,LiveStartActivity::class.java)
+            startActivity(intent)
+        }
+
+        return binding.root
     }
 
+
+
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment BraodcastFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             BraodcastFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
                 }
             }
     }

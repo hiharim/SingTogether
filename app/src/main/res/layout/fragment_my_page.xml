@@ -72,6 +72,21 @@
         android:textSize="20dp"
         android:textStyle="bold" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/fragment_my_page_tabLayout"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/fragment_my_page_tv_nickname"
+        app:tabIndicatorColor="@color/purple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/fragment_my_page_viewPager"
+        android:layout_margin="10dp"
+        android:layout_below="@+id/fragment_my_page_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 
 
 

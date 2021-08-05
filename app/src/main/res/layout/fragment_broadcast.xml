@@ -22,7 +22,7 @@
             <TextView
                 android:layout_width="0px"
                 android:layout_height="match_parent"
-                android:layout_weight="24"
+                android:layout_weight="25"
                 android:gravity="center"
                 android:text="방송"
                 android:textAlignment="center"
@@ -50,5 +50,18 @@
 
         </LinearLayout>
     </Toolbar>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/fragment_broadcast_tabLayout"
+        android:layout_below="@+id/toolbar_broadcast"
+        app:tabIndicatorColor="@color/purple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/fragment_broadcast_viewPager"
+        android:layout_below="@+id/fragment_broadcast_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>
