@@ -22,12 +22,9 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-
-
         if(savedInstanceState == null) {
             binding.chipNavigationBar.setItemSelected(R.id.home,true)
-
+            changeFragment(fragmentHome)
         }
 
         binding.chipNavigationBar.setOnItemSelectedListener{ id->
