@@ -206,6 +206,6 @@ class LoginActivity : AppCompatActivity() {
         intent.putExtra("PROFILE",user_profile)
         intent.putExtra("SOCIAL",user_social)
         startActivity(intent)
-//        finish()
+        finish()
     }
 }
