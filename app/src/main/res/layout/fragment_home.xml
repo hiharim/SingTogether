@@ -10,7 +10,7 @@
     <Toolbar
         android:id="@+id/toolbar_home"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?attr/actionBarSize"
         app:contentInsetStart="0dp"
         app:showAsAction="always">
 
