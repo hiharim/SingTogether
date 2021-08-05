@@ -22,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".broadcast.LiveStartActivity"></activity>
+        <activity android:name=".sing.BeforeSingActivity"></activity>
+        <activity android:name=".broadcast.LiveStartActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

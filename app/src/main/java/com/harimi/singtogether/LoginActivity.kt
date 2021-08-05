@@ -120,6 +120,7 @@ class LoginActivity : AppCompatActivity() {
             intent.putExtra("SOCIAL",user_social)
             intent.putExtra("TOKEN",user_token)
             startActivity(intent)
+            finish()
         }
     }
 

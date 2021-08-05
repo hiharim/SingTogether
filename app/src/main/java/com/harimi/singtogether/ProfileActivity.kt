@@ -254,7 +254,6 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     //갤러리에서 사진 선택하기
-    // todo : 갤러리에서 선택한 사진을 file 형태로 만들어야함..
     private fun openGalleryForImage() {
 
         val intent=Intent(Intent.ACTION_PICK)
@@ -296,26 +295,18 @@ class ProfileActivity : AppCompatActivity() {
                 val columnIndex = cursor.getColumnIndex(filePathColumn[0])
                 mediaPath = cursor.getString(columnIndex)
                 binding.activityProfileIv.setImageURI(uri)
-
                 cursor.close()
 
                 val file = File(mediaPath)
                 imageFile = file
                 fileName = "JPEG_$timeStamp.jpg"
                 Log.e("갤러리 imageFile: ", imageFile.toString())
-//                val file = File(currentPhotoPath)
-//                imageFile=file
-////                imageFile = File(uri.toString())
-////                //imageFile = File(uri.getPath())
-//                fileName = "JPEG_$timeStamp.jpg"
-//                Log.e("갤러리 imageFile: ", imageFile.toString())
+
                 binding.activityProfileIv.setImageURI(uri)
             }
-            //binding.activityProfileIv.setImageURI(data?.data)
+
         }
     }
-
-
 
 
     private fun initRetrofit(){
@@ -329,7 +320,6 @@ class ProfileActivity : AppCompatActivity() {
         companion object {
             var user_email = ""
             var user_profile = ""
-
 
         }
     }
