@@ -57,7 +57,7 @@ class LoginActivity : AppCompatActivity() {
             signIn()
         }
 
-
+        kakaoUserInfo()
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
@@ -112,7 +112,6 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             // 프로필액티비티로 이동
-            kakaoUserInfo()
             val intent = Intent(this, ProfileActivity::class.java)
             intent.putExtra("EMAIL",user_email)
             intent.putExtra("NICKNAME",user_nickname)

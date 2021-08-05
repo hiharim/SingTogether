@@ -58,6 +58,7 @@ class ProfileActivity : AppCompatActivity() {
         // 서버 연결
         initRetrofit()
         textWatcher()
+
         // 인텐트 값 받기
         val email=intent.getStringExtra("EMAIL")
         nickname= intent.getStringExtra("NICKNAME").toString()
@@ -95,6 +96,10 @@ class ProfileActivity : AppCompatActivity() {
                                 ) {
                                     if (response.isSuccessful) {
                                         Log.d("onResponse: 성공: ", response.body() + response.message())
+
+                                        val intent = Intent(context, MainActivity::class.java)
+                                        startActivity(intent)
+
                                     } else {
                                         Log.e("onResponse", "실패 : " + response.errorBody())
                                     }
@@ -231,30 +236,30 @@ class ProfileActivity : AppCompatActivity() {
     //갤러리에서 사진 선택하기
     // todo : 갤러리에서 선택한 사진을 file 형태로 만들어야함..
     private fun openGalleryForImage() {
-//        Intent(Intent.ACTION_PICK).also { intent ->
-//            intent.type=MediaStore.Images.Media.CONTENT_TYPE
-//            intent.resolveActivity(packageManager)?.also {
-//                val photoFile: File? = try {
-//                    createImageFile()
-//                } catch (ex: IOException) {
-//                    null
-//                }
-//                photoFile?.also {
-//                    val photoURI: Uri = FileProvider.getUriForFile(
-//                            this,
-//                            "com.harimi.singtogether.fileprovider",
-//                            it
-//                    )
-//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-//                    startActivityForResult(intent, REQUEST_GALLERY_TAKE)
-//                }
-//            }
-//        }
+        Intent(Intent.ACTION_PICK).also { intent ->
+            intent.type=MediaStore.Images.Media.CONTENT_TYPE
+            intent.resolveActivity(packageManager)?.also {
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    null
+                }
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                            this,
+                            "com.harimi.singtogether.fileprovider",
+                            it
+                    )
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    startActivityForResult(intent, REQUEST_GALLERY_TAKE)
+                }
+            }
+        }
 
-        val intent=Intent(Intent.ACTION_PICK)
-        intent.type=MediaStore.Images.Media.CONTENT_TYPE
-        //createImageFile()
-        startActivityForResult(intent, REQUEST_GALLERY_TAKE)
+//        val intent=Intent(Intent.ACTION_PICK)
+//        intent.type=MediaStore.Images.Media.CONTENT_TYPE
+//        //createImageFile()
+//        startActivityForResult(intent, REQUEST_GALLERY_TAKE)
     }
 
     //
@@ -280,10 +285,10 @@ class ProfileActivity : AppCompatActivity() {
             }
         }else if(requestCode == REQUEST_GALLERY_TAKE && resultCode == Activity.RESULT_OK){
             data?.data?.let{ uri ->
-//                val file = File(currentPhotoPath)
-//                imageFile=file
-                imageFile = File(uri.toString())
-                //imageFile = File(uri.getPath())
+                val file = File(currentPhotoPath)
+                imageFile=file
+//                imageFile = File(uri.toString())
+//                //imageFile = File(uri.getPath())
                 fileName = "JPEG_$timeStamp.jpg"
                 Log.e("갤러리 imageFile: ", imageFile.toString())
                 binding.activityProfileIv.setImageURI(uri)
