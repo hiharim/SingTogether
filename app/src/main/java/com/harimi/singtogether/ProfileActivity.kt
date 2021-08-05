@@ -2,7 +2,9 @@ package com.harimi.singtogether
 
 import android.app.Activity
 import android.content.Context
+import android.content.CursorLoader
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -17,9 +19,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toFile
 import com.bumptech.glide.Glide
-import com.google.android.material.textfield.TextInputEditText
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.harimi.singtogether.Network.RetrofitClient
@@ -28,6 +28,7 @@ import com.harimi.singtogether.databinding.ActivityProfileBinding
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,13 +44,19 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
+
     private lateinit var nickname : String
+    private lateinit var email : String
+    private lateinit var profile : String
+    private lateinit var social : String
+    private lateinit var token : String
+
     private var imageFile : File?=null
     val REQUEST_IMAGE_CAPTURE = 1 // 카메라로 사진 찍기 상수
     val REQUEST_GALLERY_TAKE = 2 // 갤러리에서 사진 선택 상수
     lateinit var currentPhotoPath : String
     lateinit var fileName : String
-
+    private var mediaPath: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityProfileBinding.inflate(layoutInflater)
@@ -60,11 +67,15 @@ class ProfileActivity : AppCompatActivity() {
         textWatcher()
 
         // 인텐트 값 받기
-        val email=intent.getStringExtra("EMAIL")
+        email= intent.getStringExtra("EMAIL").toString()
         nickname= intent.getStringExtra("NICKNAME").toString()
-        var profile=intent.getStringExtra("PROFILE")
-        val social=intent.getStringExtra("SOCIAL")
-        val token="a"
+        profile=intent.getStringExtra("PROFILE").toString()
+        social=intent.getStringExtra("SOCIAL").toString()
+        token="a"
+
+
+
+
         Log.e("값: ", email + " " + nickname + " " + social + " " + token + " " + profile)
         Log.e("imageFile값: ", imageFile.toString())
         // 닉네임받아와서 set해줌
@@ -95,8 +106,10 @@ class ProfileActivity : AppCompatActivity() {
                                         response: Response<String>
                                 ) {
                                     if (response.isSuccessful) {
-                                        Log.d("onResponse: 성공: ", response.body() + response.message())
+                                        Log.d("onResponse: 성공: ", response.body().toString())
 
+                                        user_info.user_email =email
+                                        user_info.user_profile =profile
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
 
@@ -129,6 +142,16 @@ class ProfileActivity : AppCompatActivity() {
                                 ) {
                                     if (response.isSuccessful) {
                                         Log.d("onResponse: 성공: ", response.body() + response.message())
+                                        val jsonObject = JSONObject(response.body().toString())
+                                        val profile_image = jsonObject.getString("profile")
+                                        Log.d("get_profile_image: ", profile_image)
+
+                                        user_info.user_email =email
+                                        user_info.user_profile =profile_image
+                                        val intent = Intent(context, MainActivity::class.java)
+                                        startActivity(intent)
+
+
                                     } else {
                                         Log.e("onResponse", "실패 : " + response.errorBody())
                                     }
@@ -157,10 +180,10 @@ class ProfileActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                if(binding.activityProfileEt.text!!.isEmpty()){
-                    binding.TextInputLayout.error="닉네임을 입력해주세요"
-                }else{
-                    binding.TextInputLayout.error=null
+                if (binding.activityProfileEt.text!!.isEmpty()) {
+                    binding.TextInputLayout.error = "닉네임을 입력해주세요"
+                } else {
+                    binding.TextInputLayout.error = null
                 }
             }
 
@@ -236,30 +259,11 @@ class ProfileActivity : AppCompatActivity() {
     //갤러리에서 사진 선택하기
     // todo : 갤러리에서 선택한 사진을 file 형태로 만들어야함..
     private fun openGalleryForImage() {
-        Intent(Intent.ACTION_PICK).also { intent ->
-            intent.type=MediaStore.Images.Media.CONTENT_TYPE
-            intent.resolveActivity(packageManager)?.also {
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    null
-                }
-                photoFile?.also {
-                    val photoURI: Uri = FileProvider.getUriForFile(
-                            this,
-                            "com.harimi.singtogether.fileprovider",
-                            it
-                    )
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    startActivityForResult(intent, REQUEST_GALLERY_TAKE)
-                }
-            }
-        }
 
-//        val intent=Intent(Intent.ACTION_PICK)
-//        intent.type=MediaStore.Images.Media.CONTENT_TYPE
-//        //createImageFile()
-//        startActivityForResult(intent, REQUEST_GALLERY_TAKE)
+        val intent=Intent(Intent.ACTION_PICK)
+        intent.type=MediaStore.Images.Media.CONTENT_TYPE
+
+        startActivityForResult(intent, REQUEST_GALLERY_TAKE)
     }
 
     //
@@ -285,12 +289,30 @@ class ProfileActivity : AppCompatActivity() {
             }
         }else if(requestCode == REQUEST_GALLERY_TAKE && resultCode == Activity.RESULT_OK){
             data?.data?.let{ uri ->
-                val file = File(currentPhotoPath)
-                imageFile=file
-//                imageFile = File(uri.toString())
-//                //imageFile = File(uri.getPath())
+
+                val selectedImage = uri
+                val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
+
+                val cursor = contentResolver.query(selectedImage!!, filePathColumn, null, null, null)
+                assert(cursor != null)
+                cursor!!.moveToFirst()
+
+                val columnIndex = cursor.getColumnIndex(filePathColumn[0])
+                mediaPath = cursor.getString(columnIndex)
+                binding.activityProfileIv.setImageURI(uri)
+
+                cursor.close()
+
+                val file = File(mediaPath)
+                imageFile = file
                 fileName = "JPEG_$timeStamp.jpg"
                 Log.e("갤러리 imageFile: ", imageFile.toString())
+//                val file = File(currentPhotoPath)
+//                imageFile=file
+////                imageFile = File(uri.toString())
+////                //imageFile = File(uri.getPath())
+//                fileName = "JPEG_$timeStamp.jpg"
+//                Log.e("갤러리 imageFile: ", imageFile.toString())
                 binding.activityProfileIv.setImageURI(uri)
             }
             //binding.activityProfileIv.setImageURI(data?.data)
@@ -299,10 +321,17 @@ class ProfileActivity : AppCompatActivity() {
 
 
 
-
     private fun initRetrofit(){
         retrofit=RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
     }
 
+    class user_info{
+        companion object {
+            var user_email = ""
+            var user_profile = ""
+
+
+        }
+    }
 }

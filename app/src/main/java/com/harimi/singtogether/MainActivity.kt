@@ -23,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
+
+
         if(savedInstanceState == null) {
             binding.chipNavigationBar.setItemSelected(R.id.home,true)
 
