@@ -42,6 +42,17 @@
 
         </LinearLayout>
     </Toolbar>
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/fragment_sing_tabLayout"
+        android:layout_below="@+id/toolbar_sing"
+        app:tabIndicatorColor="@color/purple"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/fragment_sing_viewPager"
+        android:layout_below="@+id/fragment_sing_tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </RelativeLayout>

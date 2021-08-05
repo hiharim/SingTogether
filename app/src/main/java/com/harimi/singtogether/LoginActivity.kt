@@ -108,6 +108,7 @@ class LoginActivity : AppCompatActivity() {
                             "\n회원번호: ${tokenInfo.id}" +
                             "\n만료시간: ${tokenInfo.expiresIn} 초"+
                             "\n카카오토큰: ${tokenInfo.appId}")
+                    user_token=tokenInfo.appId.toString()
 
                 }
             }
@@ -117,6 +118,7 @@ class LoginActivity : AppCompatActivity() {
             intent.putExtra("NICKNAME",user_nickname)
             intent.putExtra("PROFILE",user_profile)
             intent.putExtra("SOCIAL",user_social)
+            intent.putExtra("TOKEN",user_token)
             startActivity(intent)
         }
     }

@@ -148,6 +148,7 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    // edittext 힌트 밑에 보여주는 함수
     private fun textWatcher(){
         binding.activityProfileEt.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -289,6 +290,7 @@ class ProfileActivity : AppCompatActivity() {
                 imageFile=file
 //                imageFile = File(uri.toString())
 //                //imageFile = File(uri.getPath())
+
                 fileName = "JPEG_$timeStamp.jpg"
                 Log.e("갤러리 imageFile: ", imageFile.toString())
                 binding.activityProfileIv.setImageURI(uri)
