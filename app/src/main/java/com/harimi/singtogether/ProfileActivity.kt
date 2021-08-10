@@ -44,8 +44,6 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var binding: ActivityProfileBinding
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
-
-
     private lateinit var nickname : String
     private lateinit var email : String
     private lateinit var profile : String

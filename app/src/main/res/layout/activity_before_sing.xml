@@ -1,9 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".sing.BeforeSingActivity">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:background="#566270"
+        android:id="@+id/linear"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+
+        <ImageButton
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_baseline_close_24_white"
+            android:scaleType="fitXY"
+            android:layout_margin="10dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+
+        <TextView
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:text="그대라는 사치"
+            android:textStyle="bold"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:textColor="@color/white"
+            android:layout_gravity="center_horizontal"
+            android:text="한동근"
+            android:textSize="18sp"
+            android:layout_marginTop="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/activity_before_sing_btn_solo"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/linear"
+        android:layout_marginLeft="130dp"
+        android:background="@drawable/button_shape"
+        android:text="솔로" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/activity_before_sing_btn_duet"
+        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/activity_before_sing_btn_solo"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_below="@+id/linear"
+        android:background="@drawable/button_shape"
+        android:text="듀엣" />
+
+    <ImageButton
+        android:background="@android:color/transparent"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/activity_before_sing_btn_duet"
+        android:src="@drawable/ic_baseline_keyboard_arrow_down_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+</RelativeLayout>

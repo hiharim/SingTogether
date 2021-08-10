@@ -42,7 +42,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val context :Context=this;
+        val context :Context=this
 
         //구글 빌드
         auth = FirebaseAuth.getInstance()
