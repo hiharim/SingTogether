@@ -14,7 +14,11 @@ class HomeAdapter(val homePostList: ArrayList<HomeData>) : RecyclerView.Adapter<
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.HomeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_fragment_home, parent, false)
-        return  HomeViewHolder(view)
+        return  HomeViewHolder(view).apply {
+            itemView.setOnClickListener {
+                //todo onclick
+            }
+        }
     }
 
     override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {

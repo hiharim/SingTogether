@@ -33,6 +33,12 @@ interface RetrofitService {
         @Field("profile") profile :String,
     ) : Call<String>
 
+
+    @POST("loadHomePost.php")
+    fun requestGetHomePost (
+
+    ) : Call<String>
+
     @Multipart
     @POST("join.php")
     fun requestJoin (
