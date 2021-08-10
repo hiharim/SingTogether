@@ -1,5 +1,6 @@
 package com.harimi.singtogether
 
+import android.graphics.Region
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,19 +27,18 @@ private const val ARG_PARAM2 = "param2"
 
 class HomeFragment : Fragment() {
     private var TAG :String = "HOME ACTIVITY"
-    private var param1: String? = null
-    private var param2: String? = null
+
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
+    val homePostList: ArrayList<HomeData> = ArrayList()
 
-    val homePostList : ArrayList<HomeData> = ArrayList()
     lateinit var fragment_home_recyclerView : RecyclerView
+    lateinit var homeAdapter: HomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
     }
 
@@ -47,10 +47,11 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         var homeView = inflater.inflate(R.layout.fragment_home, container, false)
 
-//        homePostList.add(HomeData("null","사랑","박효신","3","5","null","닉네임"))
-        fragment_home_recyclerView = homeView.findViewById(R.id.fragment_home_recyclerView)as RecyclerView
-        fragment_home_recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        fragment_home_recyclerView.adapter = HomeAdapter(homePostList)
+
+        fragment_home_recyclerView = homeView.findViewById(R.id.fragment_home_recyclerView)
+        fragment_home_recyclerView.layoutManager = LinearLayoutManager(activity)
+        homeAdapter = HomeAdapter(homePostList)
+        fragment_home_recyclerView.adapter = homeAdapter
 
         homePostLoad ()
 
@@ -69,56 +70,48 @@ fun homePostLoad (){
                             call: Call<String>,
                             response: Response<String>
                     ) {
-                    if (response.isSuccessful) {
-                        val body = response.body().toString()
-                        Log.d("getHomePost: ", body)
-//                        val jsonObject = JSONObject(body)
-//                        val profile_image = jsonObject.getString("profile")
-//                        Log.d("get_profile_image: ", profile_image)
-                        val jsonArray = JSONArray(body)
+                        if (response.isSuccessful) {
+                            val body = response.body().toString()
+                            Log.d("getHomePost: ", body)
+                            homePostList.clear()
 
-                        for (i in 0 until jsonArray.length()) {
+                            val jsonArray = JSONArray(body)
+                            for (i in 0 until jsonArray.length()) {
+                                val jsonObject = jsonArray.getJSONObject(i)
+                                val idx = jsonObject.getString("idx")
+                                val thumbnail = jsonObject.getString("thumbnail")
+                                val songTitle = jsonObject.getString("songTitle")
+                                val singer = jsonObject.getString("singer")
+                                val hit = jsonObject.getString("hit")
+                                val like = jsonObject.getString("like")
+                                val proflie = jsonObject.getString("proflie")
+                                val nickName = jsonObject.getString("nickName")
 
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            val idx = jsonObject.getString("idx")
-                            val thumbnail = jsonObject.getString("thumbnail")
-                            val songTitle = jsonObject.getString("songTitle")
-                            val singer = jsonObject.getBoolean("singer")
-                            val hit = jsonObject.getBoolean("hit")
-                            val like = jsonObject.getBoolean("like")
-                            val proflie = jsonObject.getBoolean("proflie")
-                            val nickName = jsonObject.getBoolean("nickName")
+                                Log.d(TAG, "idx($i): $idx")
+                                Log.d(TAG, "songTitle($i): $songTitle")
+                                Log.d(TAG, "singer($i): $singer")
 
-                            Log.d(TAG, "idx($i): $idx")
-                            Log.d(TAG, "songTitle($i): $songTitle")
-                            Log.d(TAG, "singer($i): $singer")
+                                val homeData = HomeData(thumbnail, songTitle, singer, hit, like, proflie, nickName)
+                                homePostList.add(0, homeData)
+                                homeAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
-            }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+                    override fun onFailure(call: Call<String>, t: Throwable) {
 
-            }
-        })
+                    }
+                })
 }
 
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment HomeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
                 HomeFragment().apply {
                     arguments = Bundle().apply {
-                        putString(ARG_PARAM1, param1)
-                        putString(ARG_PARAM2, param2)
+
                     }
                 }
     }
