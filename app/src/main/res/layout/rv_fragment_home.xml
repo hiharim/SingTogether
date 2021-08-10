@@ -1,6 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:orientation="vertical">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/iv_thumbnail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="22dp"
+                android:layout_marginBottom="22dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@mipmap/ic_launcher" />
+
+            <TextView
+                android:id="@+id/tv_songTitle"
+                android:layout_width="202dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="12dp"
+                android:text="사랑 ...그 흔한 말 "
+                android:textColor="#000000"
+                android:textSize="18dp"
+                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_singer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="8dp"
+                android:text="박효신"
+                android:textColor="#000000"
+                android:textSize="15dp"
+                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+                app:layout_constraintTop_toBottomOf="@+id/tv_songTitle" />
+
+            <ImageView
+                android:id="@+id/iv_profile"
+                android:layout_width="41dp"
+                android:layout_height="29dp"
+                android:layout_marginStart="50dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+                app:srcCompat="@mipmap/ic_launcher_round" />
+
+            <TextView
+                android:id="@+id/tv_nickName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="12dp"
+                android:text="닉네임"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/iv_profile" />
+
+            <ImageView
+                android:id="@+id/iv_hits"
+                android:layout_width="20dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="56dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/iv_profile"
+                app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
+                app:layout_constraintTop_toBottomOf="@+id/tv_singer"
+                app:layout_constraintVertical_bias="0.142"
+                app:srcCompat="@drawable/ic_baseline_headphones_24" />
+
+            <TextView
+                android:id="@+id/tv_hits"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="15dp"
+                android:text="15"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toTopOf="@+id/iv_profile"
+                app:layout_constraintStart_toEndOf="@+id/iv_hits"
+                app:layout_constraintTop_toBottomOf="@+id/tv_singer"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/iv_nonLike"
+                android:layout_width="15dp"
+                android:layout_height="29dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_nickName"
+                app:layout_constraintStart_toEndOf="@+id/tv_hits"
+                app:layout_constraintTop_toBottomOf="@+id/tv_singer"
+                app:layout_constraintVertical_bias="0.125"
+                app:srcCompat="@drawable/non_like" />
+
+            <ImageView
+                android:id="@+id/iv_like"
+                android:layout_width="15dp"
+                android:layout_height="29dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/tv_nickName"
+                app:layout_constraintStart_toEndOf="@+id/tv_hits"
+                app:layout_constraintTop_toBottomOf="@+id/tv_singer"
+                app:layout_constraintVertical_bias="0.125"
+                app:srcCompat="@drawable/like" />
+
+            <TextView
+                android:id="@+id/tv_likeNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="52dp"
+                android:layout_marginTop="16dp"
+                android:text="15"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toTopOf="@+id/tv_nickName"
+                app:layout_constraintStart_toEndOf="@+id/tv_hits"
+                app:layout_constraintTop_toBottomOf="@+id/tv_singer"
+                app:layout_constraintVertical_bias="0.0" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
