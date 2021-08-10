@@ -5,21 +5,24 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.harimi.singtogether.Data.HomeData
+import com.harimi.singtogether.adapter.HomeAdapter
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [HomeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+
 class HomeFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    val homePostList : ArrayList<HomeData> = ArrayList()
+    lateinit var fragment_home_recyclerView : RecyclerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +35,16 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        var homeView = inflater.inflate(R.layout.fragment_home, container, false)
+
+        fragment_home_recyclerView = homeView.findViewById(R.id.fragment_home_recyclerView)as RecyclerView
+        fragment_home_recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        fragment_home_recyclerView.adapter = HomeAdapter(homePostList)
+
+
+        homePostList.add(HomeData("null","사랑","박효신","3","5","null","닉네임"))
+        return  homeView
+
     }
 
     companion object {
