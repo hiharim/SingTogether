@@ -1,24 +1,34 @@
 package com.harimi.singtogether.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 
-class HomeAdapter(val homePostList: ArrayList<HomeData>) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
+class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.HomeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_fragment_home, parent, false)
-        return  HomeViewHolder(view).apply {
-            itemView.setOnClickListener {
-                //todo onclick
-            }
-        }
+        return  HomeViewHolder(view)
+//                .apply {
+//                    itemView.setOnClickListener {
+////                        val getPosition : Int = adapterPosition
+////                        val homeData :HomeData = homePostList.get(getPosition)
+//
+//                        val activity =view!!.context as AppCompatActivity
+//                        val postFragment = PostFragment()
+//                        activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_home_recyclerView,postFragment).addToBackStack(null).commit()
+//
+//                    }
+//                }
     }
 
     override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {
@@ -49,6 +59,20 @@ class HomeAdapter(val homePostList: ArrayList<HomeData>) : RecyclerView.Adapter<
         holder.tv_singer.setText(homePostList.get(position).singer)
         holder.tv_likeNumber.setText(homePostList.get(position).likeNumber)
         holder.tv_nickName.setText(homePostList.get(position).nickName)
+
+//        holder.itemView.tag = position
+
+        holder.itemView.setOnClickListener(object :View.OnClickListener{
+            override fun onClick(v: View?) {
+                val activity =v!!.context as AppCompatActivity
+                val postFragment = PostFragment()
+                activity.supportFragmentManager.beginTransaction().replace(R.id.home_layout,postFragment).addToBackStack(null).commit()
+
+            }
+
+
+        })
+
     }
 
     override fun getItemCount(): Int {
@@ -56,7 +80,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData>) : RecyclerView.Adapter<
     }
 
 
-    class HomeViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView) {
+    class HomeViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
         val iv_thumbnail = itemView.findViewById<ImageView>(R.id.iv_thumbnail) //썸네일
         val iv_profile = itemView.findViewById<ImageView>(R.id.iv_profile) // 프로필 사진
         val iv_like = itemView.findViewById<ImageView>(R.id.iv_like) // 좋아요

@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         fragment_home_recyclerView = homeView.findViewById(R.id.fragment_home_recyclerView)
         fragment_home_recyclerView.layoutManager = LinearLayoutManager(activity)
         fragment_home_recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        homeAdapter = HomeAdapter(homePostList)
+        homeAdapter = HomeAdapter(homePostList,requireContext())
         fragment_home_recyclerView.adapter = homeAdapter
 
         homePostLoad ()
