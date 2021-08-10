@@ -13,7 +13,12 @@
         app:layout_constraintBottom_toTopOf="@+id/chipNavigationBar"
         app:layout_constraintStart_toStartOf="parent">
 
+
+
+
     </FrameLayout>
+
+
 
     <com.ismaeldivita.chipnavigation.ChipNavigationBar
         android:id="@+id/chipNavigationBar"
