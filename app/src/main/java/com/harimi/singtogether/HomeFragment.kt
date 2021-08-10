@@ -1,12 +1,12 @@
 package com.harimi.singtogether
 
-import android.graphics.Region
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.harimi.singtogether.Data.HomeData
@@ -50,6 +50,7 @@ class HomeFragment : Fragment() {
 
         fragment_home_recyclerView = homeView.findViewById(R.id.fragment_home_recyclerView)
         fragment_home_recyclerView.layoutManager = LinearLayoutManager(activity)
+        fragment_home_recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         homeAdapter = HomeAdapter(homePostList)
         fragment_home_recyclerView.adapter = homeAdapter
 
