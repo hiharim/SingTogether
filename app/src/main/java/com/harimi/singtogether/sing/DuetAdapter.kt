@@ -8,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.R
 
@@ -43,7 +44,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         holder.nickname.text=curData.nickname
         holder.duet_path.text=curData.duet_path
         // todo : 썸네일, 프로필은 Glide 로
-            
+        Glide.with(holder.itemView).load(curData.profile).into(holder.profile)
 
         holder.itemView.setOnClickListener { v->
             // BeforeSingActivity 로 이동
