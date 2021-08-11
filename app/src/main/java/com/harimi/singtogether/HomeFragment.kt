@@ -51,7 +51,7 @@ class HomeFragment : Fragment() {
         fragment_home_recyclerView = homeView.findViewById(R.id.fragment_home_recyclerView)
         fragment_home_recyclerView.layoutManager = LinearLayoutManager(activity)
         fragment_home_recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        homeAdapter = HomeAdapter(homePostList)
+        homeAdapter = HomeAdapter(homePostList,requireContext())
         fragment_home_recyclerView.adapter = homeAdapter
 
         homePostLoad ()
@@ -85,14 +85,14 @@ fun homePostLoad (){
                                 val singer = jsonObject.getString("singer")
                                 val hit = jsonObject.getString("hit")
                                 val like = jsonObject.getString("like")
-                                val proflie = jsonObject.getString("proflie")
-                                val nickName = jsonObject.getString("nickName")
-
+                                val uploadUserProfile = jsonObject.getString("uploadUserProfile")
+                                val uploadUserNickName = jsonObject.getString("uploadUserNickName")
+                                val uploadDate = jsonObject.getString("uploadDate")
                                 Log.d(TAG, "idx($i): $idx")
                                 Log.d(TAG, "songTitle($i): $songTitle")
                                 Log.d(TAG, "singer($i): $singer")
 
-                                val homeData = HomeData(thumbnail, songTitle, singer, hit, like, proflie, nickName)
+                                val homeData = HomeData(idx,thumbnail, songTitle, singer, hit, like, uploadUserProfile, uploadUserNickName,uploadDate)
                                 homePostList.add(0, homeData)
                                 homeAdapter.notifyDataSetChanged()
                             }

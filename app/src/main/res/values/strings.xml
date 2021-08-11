@@ -7,4 +7,9 @@
 
     <string name="firebase_client">342353886959-gqoap6tqliap67f89puv87rr4ufheorp.apps.googleusercontent.com</string>
 
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
+    </style>
 </resources>

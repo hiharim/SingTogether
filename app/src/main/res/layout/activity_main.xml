@@ -25,12 +25,15 @@
         android:id="@+id/chipNavigationBar"
         android:layout_width="match_parent"
         android:layout_height="70dp"
+        android:layout_marginTop="2dp"
         android:background="#fff"
         android:elevation="16dp"
-        android:padding="5dp"
         android:gravity="center"
+        android:padding="5dp"
         app:cnb_menuResource="@menu/bottom_menu"
         app:layout_constraintBottom_toBottomOf="parent"
-         />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_main_frame" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
