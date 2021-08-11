@@ -1,6 +1,7 @@
 package com.harimi.singtogether.adapter
 
 import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
+import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 
@@ -33,6 +35,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
 
     override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {
 
+        /// 프로필 사진
         if (homePostList.get(position).profile.equals("null") || homePostList.get(position).profile.equals("")) {
             holder.iv_profile.setImageResource(R.mipmap.ic_launcher_round)
         } else {
@@ -43,7 +46,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
                     .into(holder.iv_profile)
         }
 
-
+        ///썸네일
         if (homePostList.get(position).thumbnail.equals("null") || homePostList.get(position).thumbnail.equals("")) {
             holder.iv_profile.setImageResource(R.mipmap.ic_launcher_round)
         } else {
@@ -60,13 +63,24 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
         holder.tv_likeNumber.setText(homePostList.get(position).likeNumber)
         holder.tv_nickName.setText(homePostList.get(position).nickName)
 
-//        holder.itemView.tag = position
 
+        ///아이템 온 클릭 리스너
         holder.itemView.setOnClickListener(object :View.OnClickListener{
             override fun onClick(v: View?) {
+
+                var bundle: Bundle = Bundle()
+                bundle.putString("hits",homePostList.get(position).hits)
+                bundle.putString("songTitle",homePostList.get(position).songTitle)
+                bundle.putString("singer",homePostList.get(position).singer)
+                bundle.putString("likeNumber",homePostList.get(position).likeNumber)
+                bundle.putString("thumbnail",homePostList.get(position).thumbnail)
+                bundle.putString("profile",homePostList.get(position).profile)
+
                 val activity =v!!.context as AppCompatActivity
                 val postFragment = PostFragment()
-                activity.supportFragmentManager.beginTransaction().replace(R.id.home_layout,postFragment).addToBackStack(null).commit()
+                postFragment.arguments=bundle
+                activity.supportFragmentManager.beginTransaction().replace(R.id.activity_main_frame,postFragment).addToBackStack(null).commit()
+
 
             }
 

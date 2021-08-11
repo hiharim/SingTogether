@@ -97,71 +97,71 @@ class ProfileActivity : AppCompatActivity() {
             Log.e("서버에 보내는값: ", email + " " + nickname + " " + social + " " + token)
             if(imageFile == null) {
                 // imageFile 이 null 이면 join_none.php - 프로필사진 변경X 기존 소셜 프로필 사용 O
-                if (email != null && nickname !=null && social !=null && token != null && profile !=null) {
-                    retrofitService.requestJoinNone(email, nickname, social, token, profile)
-                            .enqueue(object : Callback<String> {
-                                override fun onResponse(
-                                        call: Call<String>,
-                                        response: Response<String>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        Log.d("onResponse: 성공: ", response.body() + response.message())
-                                        user_info.user_email =email
-                                        user_info.user_profile =profile
+//                if (email != null && nickname !=null && social !=null && token != null && profile !=null) {
+//                    retrofitService.requestJoinNone(email, nickname, social, token, profile)
+//                            .enqueue(object : Callback<String> {
+//                                override fun onResponse(
+//                                        call: Call<String>,
+//                                        response: Response<String>
+//                                ) {
+//                                    if (response.isSuccessful) {
+//                                        Log.d("onResponse: 성공: ", response.body() + response.message())
+//                                        user_info.user_email =email
+//                                        user_info.user_profile =profile
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
-                                    } else {
-                                        Log.e("onResponse", "실패 : " + response.errorBody())
-                                    }
-                                }
-
-                                override fun onFailure(call: Call<String>, t: Throwable) {
-                                    Log.d(
-                                            "실패:", "Failed API call with call: " + call +
-                                            " + exception: " + t
-                                    )
-                                }
-
-                            })
-                }
+//                                    } else {
+//                                        Log.e("onResponse", "실패 : " + response.errorBody())
+//                                    }
+//                                }
+//
+//                                override fun onFailure(call: Call<String>, t: Throwable) {
+//                                    Log.d(
+//                                            "실패:", "Failed API call with call: " + call +
+//                                            " + exception: " + t
+//                                    )
+//                                }
+//
+//                            })
+//                }
             }else{
-                // 프로필 사진 변경했을때
-                Log.e("imageFile 값: ", imageFile.toString())
-                Log.e("fileName 값: ", fileName)
-                var requestBody : RequestBody= RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
-                var body : MultipartBody.Part=MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
-                if (email != null && nickname !=null && social !=null && token !=null) {
-                    retrofitService.requestJoin(email, nickname, social, token, body)
-                            .enqueue(object : Callback<String> {
-                                override fun onResponse(
-                                        call: Call<String>,
-                                        response: Response<String>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        Log.d("onResponse: 성공: ", response.body() + response.message())
-
-                                        val jsonObject = JSONObject(response.body().toString())
-                                        val profile_image = jsonObject.getString("profile")
-                                        Log.d("get_profile_image: ", profile_image)
-
-                                        user_info.user_email =email
-                                        user_info.user_profile =profile_image
+//                // 프로필 사진 변경했을때
+//                Log.e("imageFile 값: ", imageFile.toString())
+//                Log.e("fileName 값: ", fileName)
+//                var requestBody : RequestBody= RequestBody.create(MediaType.parse("multipart/form-data"), imageFile)
+//                var body : MultipartBody.Part=MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
+//                if (email != null && nickname !=null && social !=null && token !=null) {
+//                    retrofitService.requestJoin(email, nickname, social, token, body)
+//                            .enqueue(object : Callback<String> {
+//                                override fun onResponse(
+//                                        call: Call<String>,
+//                                        response: Response<String>
+//                                ) {
+//                                    if (response.isSuccessful) {
+//                                        Log.d("onResponse: 성공: ", response.body() + response.message())
+//
+//                                        val jsonObject = JSONObject(response.body().toString())
+//                                        val profile_image = jsonObject.getString("profile")
+//                                        Log.d("get_profile_image: ", profile_image)
+//
+//                                        user_info.user_email =email
+//                                        user_info.user_profile =profile_image
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
-                                    } else {
-                                        Log.e("onResponse", "실패 : " + response.errorBody())
-                                    }
-                                }
-
-                                override fun onFailure(call: Call<String>, t: Throwable) {
-                                    Log.d(
-                                            "실패:", "Failed API call with call: " + call +
-                                            " + exception: " + t
-                                    )
-                                }
-
-                            })
-                }
+//                                    } else {
+//                                        Log.e("onResponse", "실패 : " + response.errorBody())
+//                                    }
+//                                }
+//
+//                                override fun onFailure(call: Call<String>, t: Throwable) {
+//                                    Log.d(
+//                                            "실패:", "Failed API call with call: " + call +
+//                                            " + exception: " + t
+//                                    )
+//                                }
+//
+//                            })
+//                }
             }
 
         }
