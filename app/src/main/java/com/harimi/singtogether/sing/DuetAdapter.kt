@@ -43,7 +43,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         holder.cnt_duet.text=curData.cnt_duet
         holder.nickname.text=curData.nickname
         holder.duet_path.text=curData.duet_path
-        // todo : 썸네일, 프로필은 Glide 로
+        // todo : 썸네일 Glide 로
         Glide.with(holder.itemView).load(curData.profile).into(holder.profile)
 
         holder.itemView.setOnClickListener { v->
