@@ -34,6 +34,12 @@ interface RetrofitService {
         @Field("profile") profile :String,
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("autoLoginCheck.php")
+    fun requestAutoLogin (
+        @Field("email") email :String
+
+    ) : Call<String>
 
     @POST("loadHomePost.php")
     fun requestGetHomePost (

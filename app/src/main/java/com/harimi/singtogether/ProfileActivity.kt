@@ -3,6 +3,7 @@ package com.harimi.singtogether
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
@@ -57,6 +58,8 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var currentPhotoPath : String
     lateinit var fileName : String
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityProfileBinding.inflate(layoutInflater)
@@ -95,33 +98,34 @@ class ProfileActivity : AppCompatActivity() {
             Log.e("서버에 보내는값: ", email + " " + nickname + " " + social + " " + token)
             if(imageFile == null) {
                 // imageFile 이 null 이면 join_none.php - 프로필사진 변경X 기존 소셜 프로필 사용 O
-//                if (email != null && nickname !=null && social !=null && token != null && profile !=null) {
-//                    retrofitService.requestJoinNone(email, nickname, social, token, profile)
-//                            .enqueue(object : Callback<String> {
-//                                override fun onResponse(
-//                                        call: Call<String>,
-//                                        response: Response<String>
-//                                ) {
-//                                    if (response.isSuccessful) {
-//                                        Log.d("onResponse: 성공: ", response.body() + response.message())
-//                                        user_info.user_email =email
-//                                        user_info.user_profile =profile
+                if (email != null && nickname !=null && social !=null && token != null && profile !=null) {
+                    retrofitService.requestJoinNone(email, nickname, social, token, profile)
+                            .enqueue(object : Callback<String> {
+                                override fun onResponse(
+                                        call: Call<String>,
+                                        response: Response<String>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        Log.d("onResponse: 성공: ", response.body() + response.message())
+                                        user_info.user_email =email
+                                        user_info.user_profile =profile
+                                        saveDate()
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
-//                                    } else {
-//                                        Log.e("onResponse", "실패 : " + response.errorBody())
-//                                    }
-//                                }
-//
-//                                override fun onFailure(call: Call<String>, t: Throwable) {
-//                                    Log.d(
-//                                            "실패:", "Failed API call with call: " + call +
-//                                            " + exception: " + t
-//                                    )
-//                                }
-//
-//                            })
-//                }
+                                    } else {
+                                        Log.e("onResponse", "실패 : " + response.errorBody())
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<String>, t: Throwable) {
+                                    Log.d(
+                                            "실패:", "Failed API call with call: " + call +
+                                            " + exception: " + t
+                                    )
+                                }
+
+                            })
+                }
             }else{
 //                // 프로필 사진 변경했을때
 //                Log.e("imageFile 값: ", imageFile.toString())
@@ -144,6 +148,7 @@ class ProfileActivity : AppCompatActivity() {
 //
 //                                        user_info.user_email =email
 //                                        user_info.user_profile =profile_image
+                                        saveDate()
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
 //                                    } else {
@@ -320,5 +325,13 @@ class ProfileActivity : AppCompatActivity() {
             var user_profile = ""
 
         }
+    }
+
+    fun saveDate(){
+        val pref =getSharedPreferences("userEmail", MODE_PRIVATE)
+        val edit = pref.edit() // 수정모드
+        edit.putString("email", email) // 값 넣기
+        edit.apply() // 적용하기
+
     }
 }
