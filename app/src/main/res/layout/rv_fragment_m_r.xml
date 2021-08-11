@@ -17,24 +17,50 @@
             android:id="@+id/rv_fragment_m_r_tv_title"
             android:text="그대라는 사치"
             android:textStyle="bold"
-            android:textSize="20sp"
+            android:textColor="@color/black"
+            android:textSize="17sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/rv_fragment_m_r_tv_signer"
             android:text="한동근"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+        <TextView
+            android:id="@+id/rv_fragment_m_r_tv_idx"
+            android:textSize="16sp"
+            android:text="1"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/rv_fragment_m_r_tv_song_path"
+            android:textSize="16sp"
+            android:text="1"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/rv_fragment_m_r_tv_genre"
+            android:textSize="16sp"
+            android:text="댄스"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <ImageButton
-        android:id="@+id/rv_fragment_m_r_btn"
-        android:background="@drawable/button_sing"
-        android:src="@drawable/ic_baseline_mic_24"
-        android:layout_width="0dp"
-        android:layout_weight="0.3"
-        android:layout_height="wrap_content"/>
+        <ImageButton
+            android:id="@+id/rv_fragment_m_r_btn"
+            android:background="@drawable/button_sing"
+            android:src="@drawable/ic_baseline_mic_24"
+            android:layout_width="0dp"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"/>
+
 </LinearLayout>
