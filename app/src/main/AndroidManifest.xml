@@ -20,13 +20,8 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.SingTogether"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".sing.RecordActivity"></activity>
-        <activity android:name=".sing.BeforeSingActivity" />
-        <activity android:name=".broadcast.LiveStartActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".LoginActivity">
+        android:theme="@style/Theme.SingTogether">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
