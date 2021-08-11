@@ -1,60 +1,114 @@
 package com.harimi.singtogether.sing
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.harimi.singtogether.R
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.harimi.singtogether.Data.MRData
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.databinding.FragmentMRBinding
+import org.json.JSONArray
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import kotlin.math.sin
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [MRFragment.newInstance] factory method to
- * create an instance of this fragment.
+ * 노래부르기화면 에서 mr 프래그먼트 화면
  */
 class MRFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var retrofit : Retrofit
+    private lateinit var retrofitService: RetrofitService
+    private val mrList : ArrayList<MRData> = ArrayList()
+    private lateinit var mrAdapter: MRAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+
         }
+        // 서버 연결
+        initRetrofit()
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_m_r, container, false)
+        val binding= FragmentMRBinding.inflate(inflater, container, false)
+
+        //리사이클러뷰 설정
+        binding.fragmentMRRecyclerView.layoutManager=LinearLayoutManager(context)
+        binding.fragmentMRRecyclerView.setHasFixedSize(true)
+        mrAdapter= MRAdapter(mrList)
+        binding.fragmentMRRecyclerView.adapter=mrAdapter
+
+
+        loadMR()
+
+        return binding.root
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MRFragment.
-         */
-        // TODO: Rename and change types and number of parameters
+
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
             MRFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+
                 }
             }
     }
+
+    // 레트로핏으로 MR 데이터 받아오기
+    private fun loadMR() {
+        retrofitService.requestMR().enqueue(object : Callback<String> {
+            // 통신에 성공한 경우
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
+                    // 응답을 잘 받은 경우
+                    Log.e("MRFragment", "getMR 통신 성공: ${response.body().toString()}")
+
+                    val jsonArray=JSONArray(response.body().toString())
+                    for(i in 0..jsonArray.length() -1){
+                        val iObject=jsonArray.getJSONObject(i)
+                        val idx=iObject.getInt("idx")
+                        val title=iObject.getString("title")
+                        val singer=iObject.getString("singer")
+                        val song_path=iObject.getString("song_path")
+                        val genre=iObject.getString("genre")
+
+                        val mrData=MRData(idx,title, singer,song_path,genre)
+                        mrList.add(0,mrData)
+                        mrAdapter.notifyDataSetChanged()
+                    }
+
+                } else {
+                    // 통신은 성공했지만 응답에 문제가 있는 경우
+                    Log.e("MRFragment", "getMR 응답 문제" + response.code())
+                }
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e("MRFragment", "getMR 통신 실패" + t.message)
+            }
+
+
+        })
+    }
+
+    private fun initRetrofit(){
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+    }
+
 }

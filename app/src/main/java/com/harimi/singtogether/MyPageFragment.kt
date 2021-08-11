@@ -15,7 +15,9 @@ import com.harimi.singtogether.sing.DuetFragment
 import com.harimi.singtogether.sing.MRFragment
 import com.harimi.singtogether.sing.SingPagerAdapter
 
-
+/**
+ * 마이페이지 화면
+ * */
 class MyPageFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

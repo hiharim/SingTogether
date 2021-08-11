@@ -1,5 +1,6 @@
 package com.harimi.singtogether.Network
 
+import com.harimi.singtogether.Data.MRData
 import com.harimi.singtogether.Data.UserData
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -36,8 +37,17 @@ interface RetrofitService {
 
     @POST("loadHomePost.php")
     fun requestGetHomePost (
-
     ) : Call<String>
+
+
+    @POST("loadMR.php")
+    fun requestMR(
+    ):Call<String>
+    //):Call<ArrayList<MRData>>
+
+    @POST("loadDuet.php")
+    fun requestDuet(
+    ):Call<String>
 
     @Multipart
     @POST("join.php")

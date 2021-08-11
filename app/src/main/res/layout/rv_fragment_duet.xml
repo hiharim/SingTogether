@@ -1,10 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="10dp"
+    android:background="@drawable/duet_item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/rv_fragment_duet_iv_thumbnail"
+        android:layout_width="87dp"
+        android:layout_height="94dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_title"
+        android:text="노래제목"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/rv_fragment_duet_iv_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_singer"
+        android:text="가수"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/rv_fragment_duet_tv_title"
+        android:layout_toRightOf="@+id/rv_fragment_duet_iv_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/rv_fragment_duet_tv_singer"
+        android:src="@drawable/ic_baseline_play_arrow_24"
+        android:layout_toRightOf="@+id/rv_fragment_duet_iv_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_count_play"
+        android:layout_below="@+id/rv_fragment_duet_tv_singer"
+        android:layout_toRightOf="@+id/iv_play"
+        android:text="5"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_idx"
+        android:layout_below="@+id/rv_fragment_duet_tv_singer"
+        android:layout_toRightOf="@+id/iv_play"
+        android:text="5"
+        android:visibility="gone"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_duet_path"
+        android:layout_below="@+id/rv_fragment_duet_tv_singer"
+        android:layout_toRightOf="@+id/iv_play"
+        android:text="5"
+        android:visibility="gone"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_comment"
+        android:layout_toRightOf="@+id/rv_fragment_duet_tv_count_play"
+        android:layout_below="@+id/rv_fragment_duet_tv_singer"
+        android:src="@drawable/ic_baseline_sms_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_count_reply"
+        android:layout_below="@+id/rv_fragment_duet_tv_singer"
+        android:layout_toRightOf="@+id/iv_comment"
+        android:text="5"
+        android:layout_marginLeft="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_marginLeft="20dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/rv_fragment_duet_iv_thumbnail"
+        android:layout_below="@+id/iv_play"
+        app:cardCornerRadius="45dp">
+
+        <ImageView
+            android:id="@+id/rv_fragment_duet_iv_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/rv_fragment_duet_tv_nickname"
+        android:layout_toRightOf="@+id/cardView"
+        android:layout_below="@+id/iv_comment"
+        android:text="닉네임"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="2dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:background="@drawable/duet_shape"
+        android:padding="10dp"
+        android:gravity="center_horizontal"
+        android:layout_below="@+id/cardView"
+        android:orientation="horizontal"
+        android:layout_marginTop="7dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="이 듀엣에 "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/rv_fragment_duet_tv_count_duet"
+            android:text="0"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="명이 참여하였습니다."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
 
+    </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
