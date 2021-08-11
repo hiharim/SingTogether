@@ -85,14 +85,14 @@ fun homePostLoad (){
                                 val singer = jsonObject.getString("singer")
                                 val hit = jsonObject.getString("hit")
                                 val like = jsonObject.getString("like")
-                                val proflie = jsonObject.getString("proflie")
+                                val profile = jsonObject.getString("profile")
                                 val nickName = jsonObject.getString("nickName")
-
+                                val uploadDate = jsonObject.getString("uploadDate")
                                 Log.d(TAG, "idx($i): $idx")
                                 Log.d(TAG, "songTitle($i): $songTitle")
                                 Log.d(TAG, "singer($i): $singer")
 
-                                val homeData = HomeData(thumbnail, songTitle, singer, hit, like, proflie, nickName)
+                                val homeData = HomeData(thumbnail, songTitle, singer, hit, like, profile, nickName,uploadDate)
                                 homePostList.add(0, homeData)
                                 homeAdapter.notifyDataSetChanged()
                             }

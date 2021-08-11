@@ -70,6 +70,11 @@ dependencies {
 
     //리사이클러뷰
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+    //
+    implementation "com.google.android.exoplayer:exoplayer-core:2.14.2"
+    implementation "com.google.android.exoplayer:exoplayer-ui:2.14.2"
+    implementation "com.google.android.exoplayer:exoplayer-hls:2.14.2"
 }
 
 apply plugin: 'com.google.gms.google-services'

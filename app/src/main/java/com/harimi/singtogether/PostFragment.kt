@@ -20,6 +20,8 @@ class PostFragment : Fragment() {
     private var likeNumber : String? = null
     private var thumbnail : String? = null
     private var profile : String? = null
+    private var uploadDate : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -29,6 +31,8 @@ class PostFragment : Fragment() {
             likeNumber = it.getString("likeNumber")
             thumbnail = it.getString("thumbnail")
             profile = it.getString("profile")
+            uploadDate = it.getString("uploadDate")
+
         }
     }
 
@@ -36,8 +40,7 @@ class PostFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val postView = inflater.inflate(R.layout.fragment_post, container, false)
-        val tv : TextView = postView.findViewById(R.id.tv)
-        tv.text = songTitle.toString()
+
 
         return postView
     }

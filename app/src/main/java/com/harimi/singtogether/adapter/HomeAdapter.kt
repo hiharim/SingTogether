@@ -75,7 +75,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
                 bundle.putString("likeNumber",homePostList.get(position).likeNumber)
                 bundle.putString("thumbnail",homePostList.get(position).thumbnail)
                 bundle.putString("profile",homePostList.get(position).profile)
-
+                bundle.putString("uploadDate",homePostList.get(position).uploadDate)
                 val activity =v!!.context as AppCompatActivity
                 val postFragment = PostFragment()
                 postFragment.arguments=bundle
