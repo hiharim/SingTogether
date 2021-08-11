@@ -53,13 +53,7 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         val context: Context = this;
 
-        //구글 빌드
-        auth = FirebaseAuth.getInstance()
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.firebase_client))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
 
         // 구글 버튼 클릭시
         binding.activityLoginBtnLoginGoogle.setOnClickListener {
@@ -160,6 +154,14 @@ class LoginActivity : AppCompatActivity() {
 
     //구글 로그인 클릭했을 때
     private fun signIn() {
+        //구글 빌드
+        auth = FirebaseAuth.getInstance()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.firebase_client))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
+
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
     }

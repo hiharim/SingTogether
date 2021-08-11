@@ -265,7 +265,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_height="250dp">
+        android:layout_height="200dp">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/fragment_post_recyclerView"
@@ -289,7 +289,6 @@
 
             <ImageView
                 android:id="@+id/iv_uploadReview"
-
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:src="@drawable/write_review" />
