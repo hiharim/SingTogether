@@ -7,7 +7,7 @@
     tools:context=".sing.RecordActivity">
 
     <Toolbar
-        android:id="@+id/toolbar_profile"
+        android:id="@+id/toolbar_record"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:fitsSystemWindows="true"

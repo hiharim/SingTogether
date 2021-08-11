@@ -1,5 +1,6 @@
 package com.harimi.singtogether.sing
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.harimi.singtogether.R
@@ -39,7 +40,12 @@ class BeforeSingActivity : AppCompatActivity() {
 
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {
-
+            val intent= Intent(this,RecordActivity::class.java)
+            intent.putExtra("RECORD_IDX",idx)
+            intent.putExtra("RECORD_TITLE",title)
+            intent.putExtra("RECORD_SINGER",singer)
+            intent.putExtra("RECORD_SONG_PATH",song_path)
+            startActivity(intent)
         }
 
 
