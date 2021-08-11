@@ -48,10 +48,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
         holder.itemView.setOnClickListener { v->
-            // BeforeSingActivity 로 이동
-//            val intent= Intent(v.context,BeforeSingActivity::class.java)
-//
-//            ContextCompat.startActivity(v.context,intent,null)
+            //
         }
     }
 
