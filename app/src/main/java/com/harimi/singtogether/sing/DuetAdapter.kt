@@ -48,7 +48,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
         holder.itemView.setOnClickListener { v->
-            //
+            // 싱포스트액티비티로이동
         }
     }
 
