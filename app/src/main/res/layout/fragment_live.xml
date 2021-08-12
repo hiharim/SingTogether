@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     tools:context=".broadcast.LiveFragment">
 
+    <TextView
+        android:id="@+id/tv_noLive"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="현재 실시간 방송이 없습니다"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        android:gravity="center"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_fragmentLivePost"

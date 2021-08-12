@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +18,7 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.HomeAdapter
 import com.harimi.singtogether.adapter.ReplayFragmentAdapter
-import com.harimi.singtogether.databinding.FragmentReplayBinding
+
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,11 +33,14 @@ class ReplayFragment : Fragment() {
     private lateinit var retrofit : Retrofit
     val replayDataList: ArrayList<ReplayData> = ArrayList()
     lateinit var  rv_fragmentReplayPost: RecyclerView
+    lateinit var  tv_noReplay: TextView
     lateinit var replayAdapter: ReplayFragmentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
+
+
 
         }
     }
@@ -47,6 +52,8 @@ class ReplayFragment : Fragment() {
 
         var replayView = inflater.inflate(R.layout.fragment_replay, container, false)
         rv_fragmentReplayPost = replayView.findViewById(R.id.rv_fragmentReplayPost)
+        tv_noReplay = replayView.findViewById(R.id.tv_noReplay)
+
         rv_fragmentReplayPost.layoutManager = LinearLayoutManager(activity)
         rv_fragmentReplayPost.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         replayAdapter = ReplayFragmentAdapter(replayDataList,requireContext())
@@ -70,28 +77,49 @@ class ReplayFragment : Fragment() {
                 ) {
                     if (response.isSuccessful) {
                         val body = response.body().toString()
-                        Log.d("getHomePost: ", body)
+                        Log.d("getReplayPost: ", body)
                         replayDataList.clear()
 
                         val jsonArray = JSONArray(body)
                         for (i in 0 until jsonArray.length()) {
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            val idx = jsonObject.getString("idx")
-                            val thumbnail = jsonObject.getString("thumbnail")
-                            val replayTitle = jsonObject.getString("replayTitle")
-                            val uploadUserEmail = jsonObject.getString("uploadUserEmail")
-                            val uploadUserProfile = jsonObject.getString("uploadUserProfile")
-                            val uploadUserNickName = jsonObject.getString("uploadUserNickName")
-                            val replayLikeNumber = jsonObject.getString("replayLikeNumber")
-                            val replayHits = jsonObject.getString("replayHits")
-                            val replayReviewNumber = jsonObject.getString("replayReviewNumber")
-                            val uploadDate = jsonObject.getString("uploadDate")
-                            Log.d(TAG, "idx($i): $idx")
+
+                            if (jsonArray.length() ==0){
+                                tv_noReplay.visibility =View.VISIBLE
+                                rv_fragmentReplayPost.visibility =View.INVISIBLE
+
+                            }else {
+                                rv_fragmentReplayPost.visibility =View.VISIBLE
+                                tv_noReplay.visibility =View.INVISIBLE
+
+                                val jsonObject = jsonArray.getJSONObject(i)
+                                val idx = jsonObject.getString("idx")
+                                val thumbnail = jsonObject.getString("thumbnail")
+                                val replayTitle = jsonObject.getString("replayTitle")
+                                val uploadUserEmail = jsonObject.getString("uploadUserEmail")
+                                val uploadUserProfile = jsonObject.getString("uploadUserProfile")
+                                val uploadUserNickName = jsonObject.getString("uploadUserNickName")
+                                val replayLikeNumber = jsonObject.getString("replayLikeNumber")
+                                val replayHits = jsonObject.getString("replayHits")
+                                val replayReviewNumber = jsonObject.getString("replayReviewNumber")
+                                val uploadDate = jsonObject.getString("uploadDate")
+                                Log.d(TAG, "idx($i): $idx")
 
 
-                            val replayData = ReplayData(idx,uploadUserProfile, uploadUserNickName, thumbnail, replayTitle, replayReviewNumber, replayHits, replayLikeNumber,uploadDate,uploadUserEmail)
-                            replayDataList.add(0, replayData)
-                            replayAdapter.notifyDataSetChanged()
+                                val replayData = ReplayData(
+                                    idx,
+                                    uploadUserProfile,
+                                    uploadUserNickName,
+                                    thumbnail,
+                                    replayTitle,
+                                    replayReviewNumber,
+                                    replayHits,
+                                    replayLikeNumber,
+                                    uploadDate,
+                                    uploadUserEmail
+                                )
+                                replayDataList.add(0, replayData)
+                                replayAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
                 }
@@ -111,5 +139,10 @@ class ReplayFragment : Fragment() {
 
                 }
             }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("getReplayPost: ", "onStop")
     }
 }

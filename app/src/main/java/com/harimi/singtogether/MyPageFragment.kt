@@ -35,6 +35,8 @@ class MyPageFragment : Fragment() {
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
 
+
+
         // 2. 바인딩으로 TextView 등에 접근
         // 사용자 닉네임
         binding.fragmentMyPageTvNickname.text="닉네임"
@@ -69,7 +71,8 @@ class MyPageFragment : Fragment() {
 
         // 설정 버튼 클릭 -> SettingFragment 로 이동
         binding.fragmentMyPageIvSetting.setOnClickListener{
-
+            val settingFragment = SettingFragment()
+            requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_main_frame,settingFragment).addToBackStack(null).commit()
         }
 
         // 3. 프래그먼트 레이아웃 뷰 반환

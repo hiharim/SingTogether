@@ -65,11 +65,56 @@ class LoginActivity : AppCompatActivity() {
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-            kakaoUserInfo()
-            if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
-            } else {
-                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+            val pref = getSharedPreferences("userEmail", MODE_PRIVATE)
+            val savedEmail =
+                pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
+
+            if (!savedEmail.equals("")) { /// null 값이 없을때
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                Log.e(TAG, "shared " + savedEmail.toString())
+
+                retrofitService.requestAutoLogin(savedEmail)
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(
+                            call: Call<String>,
+                            response: Response<String>
+                        ) {
+                            if (response.isSuccessful) {
+                                Log.d(TAG, "shared " + response.body() + response.message())
+                                val jsonObject = JSONObject(response.body().toString())
+                                val result = jsonObject.getBoolean("result")
+                                Log.d(TAG, "shared " + result.toString())
+
+
+                                if (result) {
+                                    val intent = Intent(applicationContext, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                    return
+                                } else {
+
+                                    kakaoUserInfo()
+                                    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                                        UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
+                                    } else {
+                                        UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+                                    }
+                                }
+
+                            } else {
+                                Log.e("onResponse", "실패 : " + response.errorBody())
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.d(
+                                "실패:", "Failed API call with call: " + call +
+                                        " + exception: " + t
+                            )
+                        }
+
+                    })
             }
         }
 
@@ -152,15 +197,59 @@ class LoginActivity : AppCompatActivity() {
 
     //구글 로그인 클릭했을 때
     private fun signIn() {
-        //구글 빌드
-        auth = FirebaseAuth.getInstance()
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.firebase_client))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this,gso)
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
+        val pref = getSharedPreferences("userEmail", 0)
+        val savedEmail =
+            pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
+
+//        if (!savedEmail.equals("")) { /// null 값이 없을때
+            retrofit = RetrofitClient.getInstance()
+            retrofitService = retrofit.create(RetrofitService::class.java)
+            Log.e(TAG, "shared " + savedEmail.toString())
+
+            retrofitService.requestAutoLogin(savedEmail)
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(
+                        call: Call<String>,
+                        response: Response<String>
+                    ) {
+                        if (response.isSuccessful) {
+                            Log.d(TAG, "shared " + response.body() + response.message())
+                            val jsonObject = JSONObject(response.body().toString())
+                            val result = jsonObject.getBoolean("result")
+                            Log.d(TAG, "shared " + result.toString())
+
+
+                            if (result) {
+                                val intent = Intent(applicationContext, MainActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                                return
+                            } else {
+                                //구글 빌드
+                                auth = FirebaseAuth.getInstance()
+                                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                    .requestIdToken(getString(R.string.firebase_client))
+                                    .requestEmail()
+                                    .build()
+                                googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
+                                val signInIntent = googleSignInClient.signInIntent
+                                startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
+                            }
+
+                        } else {
+                            Log.e("onResponse", "실패 : " + response.errorBody())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d(
+                            "실패:", "Failed API call with call: " + call +
+                                    " + exception: " + t
+                        )
+                    }
+
+                })
+//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -226,49 +315,13 @@ class LoginActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         val pref = getSharedPreferences("userEmail", 0)
-        val savedEmail =
-            pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
-
-        if (!savedEmail.equals("")) { /// null 값이 없을때 
-            retrofit = RetrofitClient.getInstance()
-            retrofitService = retrofit.create(RetrofitService::class.java)
-            Log.e(TAG, "shared " + savedEmail.toString())
-
-            retrofitService.requestAutoLogin(savedEmail)
-                .enqueue(object : Callback<String> {
-                    override fun onResponse(
-                        call: Call<String>,
-                        response: Response<String>
-                    ) {
-                        if (response.isSuccessful) {
-                            Log.d(TAG, "shared " + response.body() + response.message())
-                            val jsonObject = JSONObject(response.body().toString())
-                            val result = jsonObject.getBoolean("result")
-                            Log.d(TAG, "shared " + result.toString())
-
-
-                            if (result) {
-                                val intent = Intent(applicationContext, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-
-                            } else {
-
-                            }
-
-                        } else {
-                            Log.e("onResponse", "실패 : " + response.errorBody())
-                        }
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.d(
-                            "실패:", "Failed API call with call: " + call +
-                                    " + exception: " + t
-                        )
-                    }
-
-                })
-        }
+        val autoLogin =
+            pref.getString("autoLogin", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
+        Log.e(TAG, "shared " + autoLogin.toString())
+            if (autoLogin.equals("1")){
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
     }
 }
