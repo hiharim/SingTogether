@@ -20,24 +20,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <ImageView
-                    android:id="@+id/imageView7"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/menu"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--                <ImageView-->
+<!--                    android:id="@+id/imageView7"-->
+<!--                    android:layout_width="30dp"-->
+<!--                    android:layout_height="30dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:src="@drawable/menu"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toStartOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
                 <ImageView
-                    android:id="@+id/imageView9"
+                    android:id="@+id/fragment_detail_replay_iv_back"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginStart="9dp"
                     android:src="@drawable/back"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -78,7 +78,7 @@
                 android:layout_height="85dp">
 
                 <TextView
-                    android:id="@+id/tv_songTitle"
+                    android:id="@+id/fragment_detail_replay_tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
@@ -99,7 +99,7 @@
                     android:src="@drawable/ic_baseline_play_arrow_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tv_hits"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_songTitle"
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title"
                     app:layout_constraintVertical_bias="0.518" />
 
                 <TextView
@@ -112,10 +112,10 @@
                     android:textColor="#000000"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/textView5"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_songTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
 
                 <ImageView
-                    android:id="@+id/tv_uploadDate"
+                    android:id="@+id/iv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -123,7 +123,7 @@
                     android:src="@drawable/ic_baseline_favorite_border_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/tv_hits"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_songTitle" />
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
 
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_like"
@@ -134,7 +134,7 @@
                     android:text="5"
                     android:textColor="#000000"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tv_uploadDate" />
+                    app:layout_constraintStart_toEndOf="@+id/iv_like" />
 
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_date"
@@ -250,7 +250,7 @@
                 android:id="@+id/fragment_post_recyclerView"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="wrap_content"/>
         </LinearLayout>
         <View style="@style/Divider"/>
         <LinearLayout

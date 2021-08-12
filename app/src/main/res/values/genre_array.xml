@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="genre">
+        <item>전체 장르</item>
+        <item>발라드</item>
+        <item>댄스</item>
+        <item>알앤비</item>
+        <item>랩/힙합</item>
+        <item>락/메탈</item>
+        <item>인디</item>
+        <item>트로트</item>
+        <item>동요/만화</item>
+    </string-array>
+</resources>

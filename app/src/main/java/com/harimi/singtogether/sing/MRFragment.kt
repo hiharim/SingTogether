@@ -7,12 +7,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.MRData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.FragmentMRBinding
 import org.json.JSONArray
 import org.json.JSONObject
@@ -54,9 +57,28 @@ class MRFragment : Fragment() {
         binding.fragmentMRRecyclerView.layoutManager=LinearLayoutManager(context)
         binding.fragmentMRRecyclerView.setHasFixedSize(true)
         binding.fragmentMRRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-
         mrAdapter= MRAdapter(mrList)
         binding.fragmentMRRecyclerView.adapter=mrAdapter
+
+        // 스피너 설정
+        var sData=resources.getStringArray(R.array.genre)
+        var sAdapter=ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1,sData)
+        binding.spinner.adapter=sAdapter
+        binding.spinner.onItemSelectedListener=object : AdapterView.OnItemSelectedListener{
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+        }
 
 
         loadMR()

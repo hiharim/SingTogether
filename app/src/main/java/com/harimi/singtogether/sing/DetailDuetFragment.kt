@@ -1,11 +1,13 @@
 package com.harimi.singtogether.sing
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.harimi.singtogether.R
+import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
 
 
 /**
@@ -25,8 +27,16 @@ class DetailDuetFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        val binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
 
-        return inflater.inflate(R.layout.fragment_detail_duet, container, false)
+        //듀엣참여 버튼 클릭
+        binding.fragmentDetailDuetBtnJoin.setOnClickListener {
+            // RecordActivity 로 이동
+            val intent= Intent(context,RecordActivity::class.java)
+            startActivity(intent)
+        }
+
+        return binding.root
     }
 
     companion object {
