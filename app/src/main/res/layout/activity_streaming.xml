@@ -66,8 +66,15 @@
 
         </LinearLayout>
     </Toolbar>
+    <VideoView
+        android:id="@+id/videoView"
+        android:layout_below="@+id/toolbar_streaming"
+        android:layout_above="@+id/linear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
+        android:id="@+id/linear"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
         android:padding="10dp"
@@ -107,5 +114,7 @@
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
+
+
 
 </RelativeLayout>

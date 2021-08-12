@@ -7,7 +7,6 @@
     tools:context=".SettingFragment">
 
 
-
     <TextView
         android:id="@+id/fragment_setting_tv_logout"
         android:layout_width="match_parent"
