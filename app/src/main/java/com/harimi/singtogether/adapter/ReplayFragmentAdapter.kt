@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
 
 import com.harimi.singtogether.Data.ReplayData
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.DetailReplayFragment
+import com.harimi.singtogether.sing.DetailDuetFragment
 import de.hdodenhof.circleimageview.CircleImageView
 
 class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val context: Context) : RecyclerView.Adapter<ReplayFragmentAdapter.ReplayFragmentViewHolder>() {
@@ -52,6 +55,15 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
         holder.tv_replayReviewNumber.setText(ReplayPostList.get(position).replayReviewNumber)
         holder.tv_replayLikeNumber.setText(ReplayPostList.get(position).replayLikeNumber)
 
+        holder.itemView.setOnClickListener {
+            // DetailReplayFragment 로 이동
+            val activity =it!!.context as AppCompatActivity
+            val detailReplayFragment = DetailReplayFragment()
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.activity_main_frame,detailReplayFragment)
+                .addToBackStack(null)
+                .commit()
+        }
 
 
     }

@@ -30,7 +30,7 @@
             android:layout_height="wrap_content" />
 
     </RelativeLayout>
-
+    <View style="@style/Divider"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_m_r_recyclerView"
         android:layout_margin="10dp"

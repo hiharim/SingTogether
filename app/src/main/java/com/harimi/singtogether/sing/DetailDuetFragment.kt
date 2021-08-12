@@ -1,4 +1,4 @@
-package com.harimi.singtogether.broadcast
+package com.harimi.singtogether.sing
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,9 +9,9 @@ import com.harimi.singtogether.R
 
 
 /**
- * 다시보기 방송 아이템 상세화면
+ * 듀엣 아이템 상세화면 프래그먼트
  */
-class DetailReplayFragment : Fragment() {
+class DetailDuetFragment : Fragment() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,15 +25,15 @@ class DetailReplayFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_detail_replay, container, false)
+
+        return inflater.inflate(R.layout.fragment_detail_duet, container, false)
     }
 
     companion object {
 
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            DetailReplayFragment().apply {
+            DetailDuetFragment().apply {
                 arguments = Bundle().apply {
 
                 }

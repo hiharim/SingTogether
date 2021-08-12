@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.DuetData
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 
 class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<DuetAdapter.DuetViewHolder>() {
@@ -48,7 +50,14 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
         holder.itemView.setOnClickListener { v->
-            // 싱포스트액티비티로이동
+            // DetailDuetFragment 로 이동
+            val activity =v!!.context as AppCompatActivity
+            val detailDuetFragment = DetailDuetFragment()
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.activity_main_frame,detailDuetFragment)
+                .addToBackStack(null)
+                .commit()
+
         }
     }
 

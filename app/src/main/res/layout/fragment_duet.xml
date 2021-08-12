@@ -6,7 +6,7 @@
     android:id="@+id/duet_back"
     android:layout_height="match_parent"
     tools:context=".sing.DuetFragment">
-
+    <View style="@style/Divider"/>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_duet_recyclerView"
         android:layout_margin="10dp"
