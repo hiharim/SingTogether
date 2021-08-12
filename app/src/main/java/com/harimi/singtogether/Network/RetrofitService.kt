@@ -65,8 +65,10 @@ interface RetrofitService {
         @Field("nickname") token :String,
     ):Call<String>
 
+   // @FormUrlEncoded
     @POST("loadMyBroadcast.php")
     fun requestMyBroadcast(
+        //@Field("nickname") token :String,
     ):Call<String>
 
     @Multipart

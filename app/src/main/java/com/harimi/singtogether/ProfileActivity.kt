@@ -155,6 +155,7 @@ class ProfileActivity : AppCompatActivity() {
                                         saveDate()
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
+                                        finish()
                                     } else {
                                         Log.e("onResponse", "실패 : " + response.errorBody())
                                     }
