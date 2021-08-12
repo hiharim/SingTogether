@@ -49,7 +49,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
 
         ///썸네일
         if (homePostList.get(position).thumbnail.equals("null") || homePostList.get(position).thumbnail.equals("")) {
-            holder.iv_profile.setImageResource(R.mipmap.ic_launcher_round)
+            holder.iv_thumbnail.setImageResource(R.mipmap.ic_launcher_round)
         } else {
             val Image: HomeData = homePostList.get(position)
             Glide.with(holder.itemView.context)

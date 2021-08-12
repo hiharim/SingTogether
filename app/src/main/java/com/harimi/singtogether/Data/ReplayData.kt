@@ -1,4 +1,15 @@
 package com.harimi.singtogether.Data
 
-class ReplayData(val idx:String , val thumbnail :String ,val songTitle: String ,val singer:String, val hits:String , val likeNumber: String , val uploadUserProfile : String ,val uploadUserNickName:String,val uploadDate:String) {
+import android.widget.ImageView
+import android.widget.TextView
+import com.harimi.singtogether.R
+import de.hdodenhof.circleimageview.CircleImageView
+
+class ReplayData(val idx:String , val uploadUserProfile : String ,val uploadUserNickName:String, val thumbnail :String ,val replayTitle: String ,
+                 val replayReviewNumber:String, val replayHits:String , val replayLikeNumber: String ,val uploadDate:String) {
+
+
+
+
+
 }

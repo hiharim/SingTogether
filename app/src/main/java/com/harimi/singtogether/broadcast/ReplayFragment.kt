@@ -8,10 +8,6 @@ import android.view.ViewGroup
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.FragmentReplayBinding
 
-
-/**
- 다시보기 프래그먼트
- */
 class ReplayFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +22,11 @@ class ReplayFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding=FragmentReplayBinding.inflate(inflater,container,false)
-        return binding.root
+        var replayView = inflater.inflate(R.layout.fragment_replay, container, false)
+
+
+
+        return replayView
     }
 
     companion object {
