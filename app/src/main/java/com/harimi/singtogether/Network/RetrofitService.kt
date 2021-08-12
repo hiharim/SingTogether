@@ -45,6 +45,10 @@ interface RetrofitService {
     fun requestGetHomePost (
     ) : Call<String>
 
+    @POST("loadReplayPost.php")
+    fun requestGetReplayPost (
+
+    ) : Call<String>
 
     @POST("loadMR.php")
     fun requestMR(
