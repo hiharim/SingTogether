@@ -52,6 +52,8 @@ class MyPageFragment : Fragment() {
             }
         })
 
+
+
         // TabLayout 과 viewPager 연결
         TabLayoutMediator(binding.fragmentMyPageTabLayout,binding.fragmentMyPageViewPager){
                 tab,position->

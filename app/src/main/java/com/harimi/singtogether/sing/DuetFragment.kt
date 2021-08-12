@@ -1,11 +1,13 @@
 package com.harimi.singtogether.sing
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.Data.MRData
@@ -44,6 +46,7 @@ class DuetFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding=FragmentDuetBinding.inflate(inflater,container,false)
+        binding.duetBack.setBackgroundColor(Color.parseColor("#f4f5f9"))
 
         binding.fragmentDuetRecyclerView.layoutManager=LinearLayoutManager(context)
         binding.fragmentDuetRecyclerView.setHasFixedSize(true)
@@ -85,8 +88,9 @@ class DuetFragment : Fragment() {
                         val profile=iObject.getString("profile")
                         val cnt_duet=iObject.getString("cnt_duet")
                         val song_path=iObject.getString("song_path")
+                        val duet_date=iObject.getString("date")
 
-                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile, song_path)
+                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile, song_path,duet_date)
                         duetList.add(0,duetData)
                         duetAdapter.notifyDataSetChanged()
                     }

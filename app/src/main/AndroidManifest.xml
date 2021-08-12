@@ -22,8 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".sing.BeforeSingActivity"/>
-        <activity android:name=".sing.RecordActivity"/>
+        <activity android:name=".broadcast.StreamingActivity"></activity>
+        <activity android:name=".sing.BeforeSingActivity" />
+        <activity android:name=".sing.RecordActivity" />
         <activity android:name=".broadcast.LiveStartActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity">
@@ -46,11 +47,13 @@
                     android:scheme="kakao8dea534e8ce2ecf01d213633642d513a" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:windowSoftInputMode="adjustUnspecified|adjustPan">
 
             <!-- <intent-filter> -->
             <!-- <action android:name="android.intent.action.MAIN" /> -->
+
 
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->

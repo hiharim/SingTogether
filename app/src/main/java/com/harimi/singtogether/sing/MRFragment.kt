@@ -1,11 +1,14 @@
 package com.harimi.singtogether.sing
 
+import android.graphics.Color
+import android.graphics.drawable.ClipDrawable.VERTICAL
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.MRData
 import com.harimi.singtogether.Network.RetrofitClient
@@ -45,10 +48,13 @@ class MRFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding= FragmentMRBinding.inflate(inflater, container, false)
-
+        binding.mrBack.setBackgroundColor(Color.parseColor("#f4f5f9"))
+        binding.genreBack.setBackgroundColor(Color.parseColor("#ffffff"))
         //리사이클러뷰 설정
         binding.fragmentMRRecyclerView.layoutManager=LinearLayoutManager(context)
         binding.fragmentMRRecyclerView.setHasFixedSize(true)
+        binding.fragmentMRRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+
         mrAdapter= MRAdapter(mrList)
         binding.fragmentMRRecyclerView.adapter=mrAdapter
 

@@ -25,4 +25,6 @@ data class DuetData(
     val profile : String,
     @SerializedName("duet_path")
     val duet_path : String,
+    @SerializedName("date")
+    val date : String,
 )
