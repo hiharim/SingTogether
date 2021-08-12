@@ -229,7 +229,7 @@ class LoginActivity : AppCompatActivity() {
         val savedEmail =
             pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
 
-        if (!savedEmail.equals("")) {
+        if (!savedEmail.equals("")) { /// null 값이 없을때 
             retrofit = RetrofitClient.getInstance()
             retrofitService = retrofit.create(RetrofitService::class.java)
             Log.e(TAG, "shared " + savedEmail.toString())
