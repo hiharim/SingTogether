@@ -59,6 +59,16 @@ interface RetrofitService {
     fun requestDuet(
     ):Call<String>
 
+    @FormUrlEncoded
+    @POST("loadMySong.php")
+    fun requestMySong(
+        @Field("nickname") token :String,
+    ):Call<String>
+
+    @POST("loadMyBroadcast.php")
+    fun requestMyBroadcast(
+    ):Call<String>
+
     @Multipart
     @POST("join.php")
     fun requestJoin (

@@ -67,7 +67,7 @@ class ProfileActivity : AppCompatActivity() {
         val context : Context =this
         // 서버 연결
         initRetrofit()
-        textWatcher()
+        //textWatcher()
 
         // 인텐트 값 받기
         email= intent.getStringExtra("EMAIL").toString()
@@ -95,6 +95,8 @@ class ProfileActivity : AppCompatActivity() {
 
         // 완료 버튼 클릭 - 회원가입완료
         binding.activityProfileBtn.setOnClickListener {
+            // edittext있는 값 가져오기
+            nickname=binding.activityProfileEt.text.toString()
             Log.e("서버에 보내는값: ", email + " " + nickname + " " + social + " " + token)
             if(imageFile == null) {
                 // imageFile 이 null 이면 join_none.php - 프로필사진 변경X 기존 소셜 프로필 사용 O
@@ -109,6 +111,7 @@ class ProfileActivity : AppCompatActivity() {
                                         Log.d("onResponse: 성공: ", response.body() + response.message())
                                         user_info.user_email =email
                                         user_info.user_profile =profile
+                                        user_info.user_nickname=nickname
                                         saveDate()
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
@@ -148,6 +151,7 @@ class ProfileActivity : AppCompatActivity() {
 
                                         user_info.user_email =email
                                         user_info.user_profile =profile_image
+                                        user_info.user_nickname=nickname
                                         saveDate()
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
@@ -171,24 +175,24 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     // edittext 힌트 밑에 보여주는 함수
-    private fun textWatcher(){
-        binding.activityProfileEt.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if(binding.activityProfileEt.text!!.isEmpty()){
-                    binding.TextInputLayout.error="닉네임을 입력해주세요"
-                }else{
-                    binding.TextInputLayout.error=null
-                }
-            }
-
-        })
-    }
+//    private fun textWatcher(){
+//        binding.activityProfileEt.addTextChangedListener(object : TextWatcher {
+//            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+//            }
+//
+//            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+//            }
+//
+//            override fun afterTextChanged(s: Editable?) {
+//                if(binding.activityProfileEt.text!!.isEmpty()){
+//                    binding.TextInputLayout.error="닉네임을 입력해주세요"
+//                }else{
+//                    binding.TextInputLayout.error=null
+//                }
+//            }
+//
+//        })
+//    }
 
     // 테드퍼미션
     fun settingPermission() {
@@ -323,6 +327,7 @@ class ProfileActivity : AppCompatActivity() {
         companion object {
             var user_email = ""
             var user_profile = ""
+            var user_nickname= ""
 
         }
     }

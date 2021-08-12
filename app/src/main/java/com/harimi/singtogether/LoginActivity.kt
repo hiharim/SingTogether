@@ -54,22 +54,20 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         val context :Context=this;
 
-
-
         // 구글 버튼 클릭시
         binding.activityLoginBtnLoginGoogle.setOnClickListener {
             signIn()
         }
 
-
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
+            kakaoUserInfo()
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
             val pref = getSharedPreferences("userEmail", MODE_PRIVATE)
             val savedEmail =
                 pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
 
-            if (!savedEmail.equals("")) { /// null 값이 없을때
+            //if (!savedEmail.equals("")) { /// null 값이 없을때
                 retrofit = RetrofitClient.getInstance()
                 retrofitService = retrofit.create(RetrofitService::class.java)
                 Log.e(TAG, "shared " + savedEmail.toString())
@@ -94,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
                                     return
                                 } else {
 
-                                    kakaoUserInfo()
+                                    //kakaoUserInfo()
                                     if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
                                         UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
                                     } else {
@@ -115,7 +113,7 @@ class LoginActivity : AppCompatActivity() {
                         }
 
                     })
-            }
+           // }
         }
 
         // 카카오 토큰존재여부 확인하기

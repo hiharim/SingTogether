@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.harimi.singtogether.adapter.MyPagePagerAdapter
 import com.harimi.singtogether.databinding.FragmentMyPageBinding
@@ -35,11 +36,12 @@ class MyPageFragment : Fragment() {
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
 
-
-
+        val nickname=ProfileActivity.user_info.user_nickname
+        val profile =ProfileActivity.user_info.user_profile
         // 2. 바인딩으로 TextView 등에 접근
         // 사용자 닉네임
-        binding.fragmentMyPageTvNickname.text="닉네임"
+        binding.fragmentMyPageTvNickname.text=nickname
+        Glide.with(this).load(profile).into(binding.fragmentMyPageIvProfile)
 
         val pagerAdapter = MyPagePagerAdapter(requireActivity())
         // 2개의 Fragment Add
