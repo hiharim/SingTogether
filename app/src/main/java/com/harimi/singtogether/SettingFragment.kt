@@ -39,7 +39,7 @@ class SettingFragment : Fragment() {
 
                 val pref = requireActivity().getSharedPreferences("userEmail", MODE_PRIVATE)
                 val edit = pref.edit() // 수정모드
-                edit.putString("email", "") // 값 넣기
+                edit.putString("autoLogin", "0") // 값 넣기
                 edit.apply() // 적용하기
 
                 val intent = Intent(context, LoginActivity::class.java)

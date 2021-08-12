@@ -331,6 +331,7 @@ class ProfileActivity : AppCompatActivity() {
         val pref =getSharedPreferences("userEmail", MODE_PRIVATE)
         val edit = pref.edit() // 수정모드
         edit.putString("email", email) // 값 넣기
+        edit.putString("autoLogin", "1") // 값 넣기
         edit.apply() // 적용하기
 
     }
