@@ -5,10 +5,12 @@
     android:layout_height="match_parent"
     tools:context=".broadcast.ReplayFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_fragmentReplayPost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="다시보기화면" />
+        android:layout_margin="10dp"
+        />
+
 
 </FrameLayout>

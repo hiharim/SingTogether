@@ -1,0 +1,4 @@
+package com.harimi.singtogether.Data
+
+class ReplayData(val idx:String , val thumbnail :String ,val songTitle: String ,val singer:String, val hits:String , val likeNumber: String , val uploadUserProfile : String ,val uploadUserNickName:String,val uploadDate:String) {
+}
