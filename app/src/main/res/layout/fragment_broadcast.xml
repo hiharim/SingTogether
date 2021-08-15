@@ -11,44 +11,57 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:fitsSystemWindows="true"
+        android:contentInsetLeft="0dp"
+        android:contentInsetStart="0dp"
+        app:contentInsetLeft="0dp"
         app:contentInsetStart="0dp"
+        android:contentInsetRight="0dp"
+        android:contentInsetEnd="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
         app:showAsAction="always">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
             <TextView
+                android:id="@+id/singing_text"
                 android:layout_width="0px"
                 android:layout_height="match_parent"
-                android:layout_weight="25"
                 android:gravity="center"
                 android:text="방송"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="20dp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
 
             <ImageButton
-                android:id="@+id/fragment_my_page_iv_live"
+                android:id="@+id/fragment_broadcast_iv_live"
                 android:layout_width="0px"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="3"
                 android:layout_marginRight="12dp"
+                android:padding="15dp"
+                app:layout_constraintRight_toLeftOf="@+id/fragment_broadcast_iv_search"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
                 android:background="@drawable/ic_baseline_videocam_24" />
 
             <ImageButton
-                android:id="@+id/fragment_my_page_iv_search"
+                android:id="@+id/fragment_broadcast_iv_search"
                 android:layout_width="0px"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_weight="3"
-                android:layout_marginRight="12dp"
-                android:background="@drawable/ic_baseline_search_24" />
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:padding="15dp"
+                android:background="@drawable/ic_baseline_search_24"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </Toolbar>
 
     <com.google.android.material.tabs.TabLayout
@@ -57,6 +70,10 @@
         app:tabIndicatorColor="@color/purple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
+
+    <View
+        android:layout_below="@+id/fragment_broadcast_tabLayout"
+        style="@style/Divider"/>
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/fragment_broadcast_viewPager"

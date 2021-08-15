@@ -48,7 +48,6 @@ class SettingFragment : Fragment() {
             builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
 
             }
-
             builder.show()
 
         }

@@ -273,16 +273,18 @@
                 android:layout_width="335dp"
                 android:layout_marginRight="10dp"
                 android:background="@null"
-
+                android:textSize="15sp"
                 android:layout_height="match_parent"
                 android:hint="댓글을 입력해주세요" />
 
             <ImageView
                 android:id="@+id/iv_uploadReview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/write_review" />
+                android:background="@drawable/button_send_purple"
+                android:padding="7dp"
+                android:src="@drawable/ic_baseline_send_24_white" />
 
         </LinearLayout>
 

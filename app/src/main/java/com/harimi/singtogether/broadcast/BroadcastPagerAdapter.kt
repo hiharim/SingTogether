@@ -3,7 +3,7 @@ package com.harimi.singtogether.broadcast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.harimi.singtogether.BraodcastFragment
+import com.harimi.singtogether.HomeFragment
 
 /***
  * 방송 프래그먼트 PagerStateAdapter
@@ -24,8 +24,16 @@ class BroadcastPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAda
         return when(position){
             0 -> LiveFragment()
             1 -> ReplayFragment()
-            else -> BraodcastFragment()
+            else -> HomeFragment()
         }
+
+//        val liveFragment = LiveFragment.newInstance()
+//        val replayFragment = ReplayFragment.newInstance()
+//        return when(position){
+//            0 -> liveFragment
+//            1 -> replayFragment
+//            else -> HomeFragment()
+//        }
 
     }
 

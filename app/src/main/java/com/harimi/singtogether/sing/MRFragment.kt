@@ -80,7 +80,6 @@ class MRFragment : Fragment() {
 
         }
 
-
         loadMR()
 
         return binding.root

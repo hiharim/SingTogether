@@ -64,9 +64,9 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
                 .addToBackStack(null)
                 .commit()
         }
-
-
     }
+
+
 
     override fun getItemCount(): Int {
         return ReplayPostList.size

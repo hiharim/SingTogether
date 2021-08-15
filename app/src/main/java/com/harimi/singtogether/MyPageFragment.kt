@@ -41,6 +41,7 @@ class MyPageFragment : Fragment() {
         // 2. 바인딩으로 TextView 등에 접근
         // 사용자 닉네임
         binding.fragmentMyPageTvNickname.text=nickname
+        // 사용자 프로필
         Glide.with(this).load(profile).into(binding.fragmentMyPageIvProfile)
 
         val pagerAdapter = MyPagePagerAdapter(requireActivity())
@@ -55,8 +56,6 @@ class MyPageFragment : Fragment() {
                 Log.e("ViewPagerFragment", "Page ${position+1}")
             }
         })
-
-
 
         // TabLayout 과 viewPager 연결
         TabLayoutMediator(binding.fragmentMyPageTabLayout,binding.fragmentMyPageViewPager){

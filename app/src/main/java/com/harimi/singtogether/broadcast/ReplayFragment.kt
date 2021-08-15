@@ -1,5 +1,6 @@
 package com.harimi.singtogether.broadcast
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -40,16 +41,32 @@ class ReplayFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
 
-
-
         }
+        Log.d("리플레이: ", "onCreate")
     }
+
+
+    override fun onPause() {
+        super.onPause()
+        Log.d("리플레이: ", "onPause")
+
+    }
+
+    // 재개상태로 전환될때마다 필요한 초기화 작업 수행
+    override fun onResume() {
+        super.onResume()
+        Log.d("리플레이: ", "onResume")
+
+        replayDataList.clear()
+        replayPostLoad()
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
+        Log.d("리플레이: ", "onCreateView")
         var replayView = inflater.inflate(R.layout.fragment_replay, container, false)
         rv_fragmentReplayPost = replayView.findViewById(R.id.rv_fragmentReplayPost)
         tv_noReplay = replayView.findViewById(R.id.tv_noReplay)
@@ -60,6 +77,7 @@ class ReplayFragment : Fragment() {
         rv_fragmentReplayPost.adapter = replayAdapter
 
         replayPostLoad()
+        replayAdapter.notifyDataSetChanged()
 
         return replayView
     }
@@ -133,7 +151,7 @@ class ReplayFragment : Fragment() {
     companion object {
 
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance() =
             ReplayFragment().apply {
                 arguments = Bundle().apply {
 
@@ -143,6 +161,6 @@ class ReplayFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        Log.d("getReplayPost: ", "onStop")
+        Log.d("리플레이: ", "onStop")
     }
 }

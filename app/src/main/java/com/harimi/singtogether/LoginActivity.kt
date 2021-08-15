@@ -80,12 +80,12 @@ class LoginActivity : AppCompatActivity() {
                             call: Call<String>,
                             response: Response<String>
                         ) {
+
                             if (response.isSuccessful) {
                                 Log.d(TAG, "shared " + response.body() + response.message())
                                 val jsonObject = JSONObject(response.body().toString())
                                 val result = jsonObject.getBoolean("result")
                                 Log.d(TAG, "shared " + result.toString())
-
 
                                 if (result) {
                                     val intent = Intent(applicationContext, MainActivity::class.java)
