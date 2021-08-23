@@ -53,6 +53,7 @@ class DuetFragment : Fragment() {
         duetAdapter= DuetAdapter(duetList)
         binding.fragmentDuetRecyclerView.adapter=duetAdapter
         loadDuet()
+        duetAdapter.notifyDataSetChanged()
         return binding.root
     }
 
@@ -65,6 +66,15 @@ class DuetFragment : Fragment() {
 
                 }
             }
+    }
+
+    // 재개상태로 전환될때마다 필요한 초기화 작업 수행
+    override fun onResume() {
+        super.onResume()
+        Log.d("리플레이: ", "onResume")
+        // todo : 처음데이터 불러왔을때 2번불리는 문제점 해결하기
+        duetList.clear()
+        loadDuet()
     }
 
     private fun loadDuet(){
@@ -87,10 +97,12 @@ class DuetFragment : Fragment() {
                         val nickname=iObject.getString("nickname")
                         val profile=iObject.getString("profile")
                         val cnt_duet=iObject.getString("cnt_duet")
-                        val song_path=iObject.getString("song_path")
+                        //val song_path=iObject.getString("song_path")
+                        //todo : song_path,duet_path 둘다되게 고치기
+                        val song_path=iObject.getString("duet_path")
                         val duet_date=iObject.getString("date")
-
-                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile, song_path,duet_date)
+                        var path="http://3.35.236.251/"+song_path
+                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile,path,duet_date)
                         duetList.add(0,duetData)
                         duetAdapter.notifyDataSetChanged()
                     }

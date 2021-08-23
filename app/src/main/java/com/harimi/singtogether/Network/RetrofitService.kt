@@ -23,6 +23,13 @@ interface RetrofitService {
 //        @Field("token") token :String,
 //    ) : Call<String>
 
+    @Multipart
+    @POST("testUpload.php")
+    fun requestUpload (
+        @Part("mr_idx") mr_idx :Int,
+        @Part("nickname") nickname :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
 
     @FormUrlEncoded
     @POST("join_none.php")

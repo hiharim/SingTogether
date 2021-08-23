@@ -22,6 +22,7 @@ class MRAdapter(val mrList:ArrayList<MRData>) : RecyclerView.Adapter<MRAdapter.M
         val singer=v.findViewById<TextView>(R.id.rv_fragment_m_r_tv_signer)
         val song_path=v.findViewById<TextView>(R.id.rv_fragment_m_r_tv_song_path)
         val genre=v.findViewById<TextView>(R.id.rv_fragment_m_r_tv_genre)
+        val lyrics=v.findViewById<TextView>(R.id.rv_fragment_m_r_tv_lyrics)
     }
 
     //뷰홀더가 처음 생성될때
@@ -53,6 +54,7 @@ class MRAdapter(val mrList:ArrayList<MRData>) : RecyclerView.Adapter<MRAdapter.M
         holder.singer.text=curData.singer
         holder.song_path.text=curData.song_path
         holder.genre.text=curData.genre
+        holder.lyrics.text=curData.lyrics
 
         holder.itemView.setOnClickListener { v->
             // BeforeSingActivity 로 이동
@@ -62,6 +64,7 @@ class MRAdapter(val mrList:ArrayList<MRData>) : RecyclerView.Adapter<MRAdapter.M
             intent.putExtra("SINGER",curData.singer)
             intent.putExtra("SONG_PATH",curData.song_path)
             intent.putExtra("GENRE",curData.genre)
+            intent.putExtra("LYRICS",curData.lyrics)
             ContextCompat.startActivity(v.context,intent,null)
         }
 

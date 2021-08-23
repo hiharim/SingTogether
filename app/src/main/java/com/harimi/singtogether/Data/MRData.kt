@@ -15,4 +15,6 @@ data class MRData(
         val song_path : String,
         @SerializedName("genre")
         val genre : String,
+        @SerializedName("lyrics")
+        val lyrics : String
 )

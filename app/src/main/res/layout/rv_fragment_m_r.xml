@@ -53,6 +53,13 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+        <TextView
+            android:id="@+id/rv_fragment_m_r_tv_lyrics"
+            android:textSize="16sp"
+            android:text="댄스"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
         <ImageButton

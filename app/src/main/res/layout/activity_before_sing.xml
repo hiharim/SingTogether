@@ -51,7 +51,7 @@
         android:layout_height="70dp"
         android:layout_below="@+id/linear"
         android:layout_marginLeft="125dp"
-        android:background="@drawable/button_shape"
+        android:background="@drawable/button_shape_select"
         android:text="솔로" />
 
 
@@ -81,7 +81,7 @@
         android:layout_width="95dp"
         android:layout_height="80dp"
         android:layout_below="@+id/arrow"
-        android:background="@drawable/button_record"
+        android:background="@drawable/button_record_select"
         android:drawableTint="@color/black"
         android:paddingTop="12dp"
         android:layout_marginLeft="40dp"

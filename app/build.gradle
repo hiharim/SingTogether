@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.harimi.singtogether"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -75,8 +75,12 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-ui:2.14.2"
     implementation "com.google.android.exoplayer:exoplayer-hls:2.14.2"
 
+    implementation 'com.google.android.exoplayer:exoplayer:2.15.0'
+
     //라운드 이미지
     implementation 'de.hdodenhof:circleimageview:3.1.0'
+    // ffmpeg
+    implementation  'com.arthenica:mobile-ffmpeg-min-gpl:4.4'
 }
 
 apply plugin: 'com.google.gms.google-services'

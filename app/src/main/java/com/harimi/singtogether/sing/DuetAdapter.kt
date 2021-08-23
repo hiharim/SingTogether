@@ -1,6 +1,7 @@
 package com.harimi.singtogether.sing
 
 import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,6 +54,19 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             // DetailDuetFragment 로 이동
             val activity =v!!.context as AppCompatActivity
             val detailDuetFragment = DetailDuetFragment()
+            var bundle =Bundle()
+            bundle.putInt("idx",curData.idx)
+            bundle.putString("title",curData.title)
+            bundle.putString("singer",curData.singer)
+            bundle.putString("cnt_play",curData.cnt_play)
+            bundle.putString("cnt_reply",curData.cnt_reply)
+            bundle.putString("cnt_duet",curData.cnt_duet)
+            bundle.putString("nickname",curData.nickname)
+            bundle.putString("duet_path",curData.duet_path)
+            bundle.putString("profile",curData.profile)
+            detailDuetFragment.arguments=bundle
+
+
             activity.supportFragmentManager.beginTransaction()
                 .replace(R.id.activity_main_frame,detailDuetFragment)
                 .addToBackStack(null)

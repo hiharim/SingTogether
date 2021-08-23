@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -22,7 +24,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".broadcast.StreamingActivity"></activity>
+        <activity android:name=".sing.AfterSingActivity"></activity>
+        <activity android:name=".broadcast.StreamingActivity" />
         <activity android:name=".sing.BeforeSingActivity" />
         <activity android:name=".sing.RecordActivity" />
         <activity android:name=".broadcast.LiveStartActivity" />

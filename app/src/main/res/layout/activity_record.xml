@@ -25,20 +25,22 @@
              android:layout_weight="25"
              android:layout_height="match_parent">
 
-
             <TextView
+                android:id="@+id/activity_record_tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
                 android:paddingLeft="20dp"
                 android:text="노래제목"
                 android:layout_gravity="center_horizontal"
-                android:textColor="@color/black"
-                android:textSize="20dp"
+                android:textColor="@color/white"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
              <TextView
+                 android:id="@+id/activity_record_tv_singer"
                  android:text="가수"
+                 android:textColor="@color/white"
                  android:layout_gravity="center_horizontal"
                  android:layout_width="wrap_content"
                  android:layout_height="wrap_content"/>
@@ -46,13 +48,13 @@
 
 
             <ImageButton
-                android:id="@+id/fragment_my_page_iv_setting"
+                android:id="@+id/fragment_my_page_i_btn_close"
                 android:layout_width="0px"
                 android:layout_height="30dp"
                 android:layout_marginRight="12dp"
                 android:layout_marginTop="12dp"
                 android:layout_weight="2.5"
-                android:background="@drawable/ic_baseline_close_24" />
+                android:background="@drawable/ic_baseline_close_24_white" />
 
 
         </LinearLayout>
@@ -60,19 +62,45 @@
 
     <FrameLayout
         android:id="@+id/activity_record_frame"
-        android:layout_below="@+id/toolbar_record"
         android:layout_width="match_parent"
-        android:layout_height="400dp">
+        android:layout_height="400dp"
+        android:layout_below="@+id/toolbar_record"
+        android:layout_marginTop="0dp">
+
+        <TextView
+            android:id="@+id/activity_record_tv_lyrics"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:text="가사" />
 
     </FrameLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
+    <SeekBar
+        android:id="@+id/seekBar"
         android:layout_below="@+id/activity_record_frame"
-        android:progressDrawable="@drawable/progress_bar"
+        android:progressDrawable="@drawable/seekbar_seekbar1"
+        android:thumb="@drawable/seekbar_seekbar1_thumb"
         android:layout_width="match_parent"
         android:layout_height="30dp" />
+
+    <TextView
+        android:id="@+id/activity_record_tv_ing_time"
+        android:layout_below="@+id/seekBar"
+        android:layout_alignParentStart="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text="00:00" />
+
+    <TextView
+        android:id="@+id/activity_record_tv_total_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/seekBar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="19dp"
+        android:text="03:00" />
 
     <ImageButton
         android:id="@+id/activity_record_btn_start"
@@ -80,7 +108,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:background="@drawable/button_sing"
-        android:layout_below="@id/progressBar"
+        android:layout_below="@id/seekBar"
         android:layout_width="70dp"
         android:layout_height="70dp"/>
 
@@ -91,7 +119,7 @@
         android:layout_marginTop="50dp"
         android:visibility="gone"
         android:background="@drawable/button_sing"
-        android:layout_below="@id/progressBar"
+        android:layout_below="@id/seekBar"
         android:layout_width="70dp"
         android:layout_height="70dp"/>
 

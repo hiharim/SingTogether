@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".sing.AfterSingActivity">
+
+    <com.google.android.exoplayer2.ui.PlayerView
+        android:id="@+id/exoPlayerView"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_marginTop="52dp"
+        app:resize_mode="fill" >
+
+
+    </com.google.android.exoplayer2.ui.PlayerView>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/activity_after_sing_btn_upload"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/purple"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:text="업로드" />
+
+</RelativeLayout>

@@ -113,8 +113,9 @@ class MRFragment : Fragment() {
                         val singer=iObject.getString("singer")
                         val song_path=iObject.getString("song_path")
                         val genre=iObject.getString("genre")
+                        val lyrics=iObject.getString("lyrics")
 
-                        val mrData=MRData(idx,title, singer,song_path,genre)
+                        val mrData=MRData(idx,title, singer,song_path,genre,lyrics)
                         mrList.add(0,mrData)
                         mrAdapter.notifyDataSetChanged()
                     }
