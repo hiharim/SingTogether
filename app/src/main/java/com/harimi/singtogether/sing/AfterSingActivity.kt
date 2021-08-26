@@ -39,27 +39,30 @@ class AfterSingActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
     private lateinit var file_path : String
-    private lateinit var user_path : String
+    private lateinit var user_path : String // 사용자 목소리 녹음한 파일 경로
     private var nickname : String? = null
-    private var with : String? = null
-    private var way : String? = null
-    private var idx : Int? = null
+    private var with : String? = null // 솔로,듀엣 구분
+    private var way : String? = null // 녹화,녹음,연습 구분
+    private var idx : Int? = null // mr 인덱스 값
     private var simpleExoPlayer: ExoPlayer?=null
     lateinit var mediaPlayer: MediaPlayer
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
     lateinit var fileName : String // 서버로 보낼 사용자 목소리 + MR 파일 이름
-
+    private var videoUri : Uri? = null // video 저장될 Uri
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityAfterSingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initRetrofit()
+
         file_path=intent.getStringExtra("FILE_PATH").toString()
         user_path=intent.getStringExtra("USER_PATH").toString()
         with=intent.getStringExtra("WITH")
         way=intent.getStringExtra("WAY")
         idx=intent.getIntExtra("MR_IDX",0)
-
+        videoUri=intent.getParcelableExtra("URI")
+        Log.e("애프터싱액티비티","idx,file_path,user_path,with,way,videoUri"+
+                idx+" "+file_path+" "+user_path+" "+with+" "+way+""+videoUri)
         nickname="조하림22"
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
@@ -73,11 +76,10 @@ class AfterSingActivity : AppCompatActivity() {
         )
         val mediaSource: ProgressiveMediaSource =
             ProgressiveMediaSource.Factory(factory)
-                //.createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
-                .createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
+                .createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
+                //.createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
         simpleExoPlayer?.prepare(mediaSource)
         simpleExoPlayer!!.playWhenReady = true
-
 
         // 업로드 버튼 클릭
         binding.activityAfterSingBtnUpload.setOnClickListener {
@@ -89,10 +91,11 @@ class AfterSingActivity : AppCompatActivity() {
 
     private fun upload() {
         //audioFile=File("${externalCacheDir?.absolutePath}/newUserMrAudio.m4a")
-        audioFile=File(user_path)
+        audioFile=File(file_path)
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         // Create an image file name
-        fileName = "$timeStamp.m4a"
+        //fileName = "$timeStamp.m4a"
+        fileName = "$timeStamp.mp4"
         var requestBody : RequestBody = RequestBody.create(
             MediaType.parse("multipart/form-data"), audioFile)
         var body : MultipartBody.Part=
@@ -126,6 +129,10 @@ class AfterSingActivity : AppCompatActivity() {
                 })
             }
         }
+    }
+
+    private fun videoUpload(){
+
     }
 
 

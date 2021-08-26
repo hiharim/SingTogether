@@ -4,18 +4,19 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.drm.DrmStore.Playback.STOP
 import android.graphics.ImageFormat
+import android.graphics.SurfaceTexture
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.hardware.camera2.*
-import android.media.ExifInterface
-import android.media.ImageReader
-import android.media.MediaPlayer
-import android.media.MediaRecorder
+import android.media.*
+import android.net.Uri
 import android.os.*
 import androidx.appcompat.app.AppCompatActivity
 import android.util.DisplayMetrics
 import android.util.Log
+import android.util.Size
 import android.util.SparseIntArray
 import android.view.SurfaceHolder
 import android.view.View
@@ -24,9 +25,12 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.ActivityRecordBinding
 import com.harimi.singtogether.databinding.ActivityVideoBinding
+import java.io.File
+import java.lang.Exception
 import java.text.SimpleDateFormat
 
 class VideoActivity : AppCompatActivity() {
@@ -41,8 +45,11 @@ class VideoActivity : AppCompatActivity() {
     private lateinit var song_path : String
     lateinit var mediaPlayer: MediaPlayer
     private var recorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
-    private val recordingFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/recording.m4a"
+    private val recordingVideoFilePath :String by lazy {
+        "${externalCacheDir?.absolutePath}/recordingVideo.mp4"
+    } // 동영상 녹화한거 파일 경로
+    private val videoPath :String by lazy {
+        "${externalCacheDir?.absolutePath}/videoRecord.m4a"
     }
     private var file_path:String?=null
 
@@ -77,6 +84,9 @@ class VideoActivity : AppCompatActivity() {
             ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_270, 270)
         }
     }
+    private var videoUri : Uri? = null // video 저장될 Uri
+    private var mImageDimension: Size? = null
+    private var mVideoDimension: Size? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,14 +144,17 @@ class VideoActivity : AppCompatActivity() {
                     if(!mediaPlayer.isPlaying) {
                         mediaPlayer.stop() // 음악 정지
                         mediaPlayer.release()
-                        //recordStop() // 녹음 중지
+                        recordStop() // 녹음 중지
 
                         val intent= Intent(applicationContext,AfterSingActivity::class.java)
                         intent.putExtra("MR_IDX",idx)
                         intent.putExtra("FILE_PATH",file_path)
-                        intent.putExtra("USER_PATH",recordingFilePath)
+                        intent.putExtra("USER_PATH",videoPath)
                         intent.putExtra("WITH",with)
                         intent.putExtra("WAY",way)
+                        intent.putExtra("URI",videoUri)
+                        Log.e("비디오액티비티","idx,file_path,recordingVideoFilePath,with,way"+
+                        idx+" "+file_path+" "+recordingVideoFilePath+" "+with+" "+way)
                         startActivity(intent)
                         finish()
                     }
@@ -166,8 +179,8 @@ class VideoActivity : AppCompatActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 }
             })
-            // 녹음 시작
-            //Record()
+            // 녹화 시작
+            Record()
 
             binding.activityRecordBtnStart.visibility= View.GONE
             binding.activityRecordBtnPause.visibility=View.VISIBLE
@@ -180,10 +193,106 @@ class VideoActivity : AppCompatActivity() {
         }
 
     }
+    // 사용자 비디오 녹화
+    fun Record() {
+        // 동영상 촬영을 위해 MediaRecorder 객체를 생성해준다
+        recorder = MediaRecorder().apply {
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
+            setVideoEncodingBitRate(10000000)
+            setVideoFrameRate(30)
+            setOrientationHint(90)
+            setOutputFile(recordingVideoFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
+            setVideoSize(mVideoDimension!!.width,mVideoDimension!!.height)
+            prepare()
+        }
+        recorder!!.start()
+
+        Toast.makeText(applicationContext, "녹화시작", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun newVideoFileName() : String {
+        val sdf = SimpleDateFormat("yyyyMMdd_HHmmss")
+        val filename = sdf.format(System.currentTimeMillis())
+        return "${filename}.mp4"
+    }
+
+    // mediaRecorder 객체의 값을 설정해주는 메서드
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    private fun setUpMediaRecorder() {
+//        recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+//        recorder!!.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+//        recorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+//
+//        var file = File(Environment.getExternalStorageDirectory().toString() + "/video${fileCount}.mp4")
+//        this.file = file
+//        recorder!!.setOutputFile(file)
+//        recorder!!.setVideoEncodingBitRate(10000000)
+//        recorder!!.setVideoFrameRate(30)
+//        recorder!!.setVideoSize(videoDimension!!.width, videoDimension!!.height)
+//        recorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
+//        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+//
+//        val rotation = windowManager.defaultDisplay.rotation
+//        recorder!!.setOrientationHint(ORIENTATIONS.get(rotation))
+//
+//        recorder!!.prepare()
+//    }
+
+
+    fun recordStop() {
+        recorder?.run {
+            stop()
+            reset()
+            release()
+
+        }
+        recorder=null
+        mSession.close()
+
+//        val videoFile = File (
+//            File("${filesDir}/video").apply {
+//                if(!this.exists()){
+//                    this.mkdirs()
+//                }
+//            },
+//            newVideoFileName()
+//        )
+//        videoUri = FileProvider.getUriForFile(
+//            this,
+//            "com.harimi.singtogether.fileprovider",
+//            videoFile
+//        )
+//        video_path=videoFile.absolutePath
+
+//        try {
+//            recorder!!.stop()
+//            recorder!!.reset()
+//            recorder!!.release()
+//
+//
+//            recorder=null
+//
+//            //mSession.close()
+//
+//        } catch (e : Exception) {
+//            //exception 처리
+//            e.printStackTrace()
+//        }finally {
+//            // 정상적이든 오류든 무조건 실행
+//            file_path="${externalCacheDir?.absolutePath}/userVideo.mp4"
+//        }
+
+        //Toast.makeText(applicationContext, "녹음중지", Toast.LENGTH_SHORT).show()
+        //Merge()
+    }
 
     override fun onDestroy(){
         super.onDestroy()
-        mediaPlayer?.release()
+        mediaPlayer.release()
     }
 
 
@@ -254,6 +363,9 @@ class VideoActivity : AppCompatActivity() {
 
             val largestPreviewSize = map!!.getOutputSizes(ImageFormat.JPEG)[0]
             setAspectRatioTextureView(largestPreviewSize.height, largestPreviewSize.width)
+
+            mImageDimension = map.getOutputSizes(SurfaceTexture::class.java)[0]
+            mVideoDimension = map.getOutputSizes(MediaRecorder::class.java)[0]
 
             mImageReader = ImageReader.newInstance(
                 largestPreviewSize.width,
@@ -360,5 +472,6 @@ class VideoActivity : AppCompatActivity() {
     private fun updateTextureViewSize(viewWidth: Int, viewHeight: Int) {
         Log.d("ViewSize", "TextureView Width : $viewWidth TextureView Height : $viewHeight")
         binding.surfaceView.layoutParams = FrameLayout.LayoutParams(viewWidth, viewHeight)
+
     }
 }

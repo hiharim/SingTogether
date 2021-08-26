@@ -33,10 +33,8 @@ class RecordActivity: AppCompatActivity()  {
     private val recordingFilePath :String by lazy {
         "${externalCacheDir?.absolutePath}/recording.m4a"
     }
-    private var file_path:String?=null
 
-    private var mCamera : Camera?= null
-    private var echoCanceler : AcousticEchoCanceler?=null
+    private var file_path:String?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -150,7 +148,6 @@ class RecordActivity: AppCompatActivity()  {
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile(recordingFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
             prepare()
-
         }
         recorder?.start()
         Toast.makeText(applicationContext, "녹음시작", Toast.LENGTH_SHORT).show()
@@ -204,7 +201,7 @@ class RecordActivity: AppCompatActivity()  {
             Log.d("hello", "executionID  $executionId")
             Log.d("hello", "FFMPEG  " + FFmpegExecution(executionId, co))
         }
-        file_path= "${externalCacheDir?.absolutePath}/UserMrAudio.m4a";
+        file_path= "${externalCacheDir?.absolutePath}/UserMrAudio.m4a"
     }
 
     override fun onDestroy(){
@@ -212,9 +209,5 @@ class RecordActivity: AppCompatActivity()  {
         mediaPlayer?.release()
     }
 
-    fun initVideoRecorder(){
-        mCamera=Camera()
-
-    }
 
 }

@@ -77,6 +77,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
+            android:textSize="18sp"
             android:text="가사" />
 
     </FrameLayout>
@@ -134,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/seekBar"
         android:layout_marginTop="62dp"
-        android:layout_marginRight="-218dp"
+        android:layout_marginRight="76dp"
         android:layout_toLeftOf="@+id/activity_record_btn_start"
         app:srcCompat="@drawable/ic_baseline_flip_camera_ios_24_black" />
 
