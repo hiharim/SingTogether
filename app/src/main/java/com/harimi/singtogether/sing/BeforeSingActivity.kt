@@ -76,16 +76,32 @@ class BeforeSingActivity : AppCompatActivity() {
 
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {
-            val intent= Intent(this,RecordActivity::class.java)
-            intent.putExtra("RECORD_IDX",idx)
-            intent.putExtra("RECORD_TITLE",title)
-            intent.putExtra("RECORD_SINGER",singer)
-            intent.putExtra("RECORD_SONG_PATH",song_path)
-            intent.putExtra("RECORD_LYRICS",lyrics)
-            intent.putExtra("WITH",with)
-            intent.putExtra("WAY",way)
-            startActivity(intent)
-            finish()
+            if(way=="녹음"){
+                val intent= Intent(this,RecordActivity::class.java)
+                intent.putExtra("RECORD_IDX",idx)
+                intent.putExtra("RECORD_TITLE",title)
+                intent.putExtra("RECORD_SINGER",singer)
+                intent.putExtra("RECORD_SONG_PATH",song_path)
+                intent.putExtra("RECORD_LYRICS",lyrics)
+                intent.putExtra("WITH",with)
+                intent.putExtra("WAY",way)
+                startActivity(intent)
+                finish()
+            }else if (way=="녹화"){
+                val intent= Intent(this,VideoActivity::class.java)
+                intent.putExtra("RECORD_IDX",idx)
+                intent.putExtra("RECORD_TITLE",title)
+                intent.putExtra("RECORD_SINGER",singer)
+                intent.putExtra("RECORD_SONG_PATH",song_path)
+                intent.putExtra("RECORD_LYRICS",lyrics)
+                intent.putExtra("WITH",with)
+                intent.putExtra("WAY",way)
+                startActivity(intent)
+                finish()
+            }// 연습
+
+
+
         }
 
 

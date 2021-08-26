@@ -1,9 +1,11 @@
 package com.harimi.singtogether.sing
 
 import android.content.Intent
+import android.graphics.Camera
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.media.audiofx.AcousticEchoCanceler
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
@@ -32,6 +34,10 @@ class RecordActivity: AppCompatActivity()  {
         "${externalCacheDir?.absolutePath}/recording.m4a"
     }
     private var file_path:String?=null
+
+    private var mCamera : Camera?= null
+    private var echoCanceler : AcousticEchoCanceler?=null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,6 +72,7 @@ class RecordActivity: AppCompatActivity()  {
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
             mediaPlayer.start()
+
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
                 var timeFormat = SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
@@ -143,6 +150,7 @@ class RecordActivity: AppCompatActivity()  {
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile(recordingFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
             prepare()
+
         }
         recorder?.start()
         Toast.makeText(applicationContext, "녹음시작", Toast.LENGTH_SHORT).show()
@@ -160,9 +168,10 @@ class RecordActivity: AppCompatActivity()  {
 
     // 오디오.m4a + 오디오.m4a = output.m4a 오디오
     fun Merge() {
+        getInfo()
         val c = arrayOf (
-            "-i",song_path,
             "-i", recordingFilePath,
+            "-i", song_path,
             "-filter_complex",
             "[0][1]amix=inputs=2,pan=stereo|FL<c0+c1|FR<c2+c3[a]",
             "-map",
@@ -171,6 +180,22 @@ class RecordActivity: AppCompatActivity()  {
         )
         Log.e("새로운오디오", "return" + "${externalCacheDir?.absolutePath}/newUserMrAudio.m4a")
         MergeAudio(c)
+    }
+
+    fun getInfo(){
+        val c = arrayOf (
+            "-i", recordingFilePath,
+            "-filter",
+            "volumedetect",
+            "-f",
+            "null"
+        )
+        Log.e("getInfo", "recordingFilePath" )
+        FFmpeg.executeAsync(c) { executionId, returnCode ->
+            Log.d("getInfo", "return  $returnCode")
+            Log.d("getInfo", "executionID  $executionId")
+            Log.d("getInfo", "FFMPEG  " + FFmpegExecution(executionId, c))
+        }
     }
 
     private fun MergeAudio(co: Array<String>) {
@@ -185,6 +210,11 @@ class RecordActivity: AppCompatActivity()  {
     override fun onDestroy(){
         super.onDestroy()
         mediaPlayer?.release()
+    }
+
+    fun initVideoRecorder(){
+        mCamera=Camera()
+
     }
 
 }

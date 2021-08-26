@@ -9,10 +9,13 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
+    <uses-feature android:name="android.hardware.camera2.full" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
         android:name=".GlobalApplication"
@@ -24,7 +27,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".sing.AfterSingActivity"></activity>
+        <activity android:name=".sing.VideoActivity"></activity>
+        <activity android:name=".sing.AfterSingActivity" />
         <activity android:name=".broadcast.StreamingActivity" />
         <activity android:name=".sing.BeforeSingActivity" />
         <activity android:name=".sing.RecordActivity" />

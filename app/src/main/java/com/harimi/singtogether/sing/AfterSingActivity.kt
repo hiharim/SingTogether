@@ -73,7 +73,8 @@ class AfterSingActivity : AppCompatActivity() {
         )
         val mediaSource: ProgressiveMediaSource =
             ProgressiveMediaSource.Factory(factory)
-                .createMediaSource(Uri.parse(user_path))
+                //.createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
+                .createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
         simpleExoPlayer?.prepare(mediaSource)
         simpleExoPlayer!!.playWhenReady = true
 
