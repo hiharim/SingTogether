@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.drm.DrmStore.Playback.STOP
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.Sensor
@@ -13,7 +12,7 @@ import android.hardware.camera2.*
 import android.media.*
 import android.net.Uri
 import android.os.*
-import androidx.appcompat.app.AppCompatActivity
+import android.provider.MediaStore
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.Size
@@ -24,14 +23,14 @@ import android.widget.FrameLayout
 import android.widget.SeekBar
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.FileProvider
 import com.harimi.singtogether.R
-import com.harimi.singtogether.databinding.ActivityRecordBinding
 import com.harimi.singtogether.databinding.ActivityVideoBinding
 import java.io.File
-import java.lang.Exception
 import java.text.SimpleDateFormat
+
 
 class VideoActivity : AppCompatActivity() {
 
@@ -46,18 +45,17 @@ class VideoActivity : AppCompatActivity() {
     lateinit var mediaPlayer: MediaPlayer
     private var recorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
     private val recordingVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/recordingVideo.mp4"
+        "${externalCacheDir?.absolutePath}/recordVideo.mp4"
     } // 동영상 녹화한거 파일 경로
-    private val videoPath :String by lazy {
-        "${externalCacheDir?.absolutePath}/videoRecord.m4a"
-    }
+
     private var file_path:String?=null
+    private var videoFile: File?=null
 
     private lateinit var mSurfaceViewHolder: SurfaceHolder
     private lateinit var mImageReader: ImageReader
     private lateinit var mCameraDevice: CameraDevice
     private lateinit var mPreviewBuilder: CaptureRequest.Builder
-    private lateinit var mSession: CameraCaptureSession
+    private var mSession: CameraCaptureSession ?=null
     private var mHandler: Handler? = null
 
     private lateinit var mAccelerometer: Sensor
@@ -84,16 +82,19 @@ class VideoActivity : AppCompatActivity() {
             ORIENTATIONS.append(ExifInterface.ORIENTATION_ROTATE_270, 270)
         }
     }
-    private var videoUri : Uri? = null // video 저장될 Uri
+
     private var mImageDimension: Size? = null
     private var mVideoDimension: Size? = null
+    private var recording = false
+    private var videoUri : Uri? = null // video 저장될 Uri
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityVideoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        idx=intent.getIntExtra("RECORD_IDX",0)
+        idx=intent.getIntExtra("RECORD_IDX", 0)
         title=intent.getStringExtra("RECORD_TITLE")
         singer=intent.getStringExtra("RECORD_SINGER")
         lyrics=intent.getStringExtra("RECORD_LYRICS")
@@ -111,7 +112,7 @@ class VideoActivity : AppCompatActivity() {
         // 가수
         binding.activityRecordTvSinger.text=singer
         // 가사
-        var result=lyrics?.replace(" ★","\n")
+        var result=lyrics?.replace(" ★", "\n")
         binding.activityRecordTvLyrics.text= result.toString()
 
         mediaPlayer = MediaPlayer()
@@ -144,17 +145,18 @@ class VideoActivity : AppCompatActivity() {
                     if(!mediaPlayer.isPlaying) {
                         mediaPlayer.stop() // 음악 정지
                         mediaPlayer.release()
-                        recordStop() // 녹음 중지
+                        recording=false
 
-                        val intent= Intent(applicationContext,AfterSingActivity::class.java)
-                        intent.putExtra("MR_IDX",idx)
-                        intent.putExtra("FILE_PATH",file_path)
-                        intent.putExtra("USER_PATH",videoPath)
-                        intent.putExtra("WITH",with)
-                        intent.putExtra("WAY",way)
-                        intent.putExtra("URI",videoUri)
-                        Log.e("비디오액티비티","idx,file_path,recordingVideoFilePath,with,way"+
-                        idx+" "+file_path+" "+recordingVideoFilePath+" "+with+" "+way)
+                        val intent= Intent(applicationContext, AfterRecordActivity::class.java)
+                        intent.putExtra("MR_IDX", idx)
+                        intent.putExtra("FILE_PATH", file_path)
+                        intent.putExtra("USER_PATH", recordingVideoFilePath)
+                        intent.putExtra("WITH", with)
+                        intent.putExtra("WAY", way)
+                        Log.e(
+                            "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
+                                    idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
+                        )
                         startActivity(intent)
                         finish()
                     }
@@ -179,8 +181,23 @@ class VideoActivity : AppCompatActivity() {
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 }
             })
-            // 녹화 시작
-            Record()
+
+            if(recording){
+                stopRecordingVideo()
+                recording=false
+            }else{//녹화를 하는 것은 백그라운드로 하는 것이 좋다.
+                runOnUiThread {
+                    try {
+                        // 녹화 시작
+                        Record()
+                        recording=true
+                    }catch (e: Exception){
+                        e.printStackTrace()
+
+                    }
+                }
+            }
+
 
             binding.activityRecordBtnStart.visibility= View.GONE
             binding.activityRecordBtnPause.visibility=View.VISIBLE
@@ -189,29 +206,56 @@ class VideoActivity : AppCompatActivity() {
         // 중지버튼
         binding.activityRecordBtnPause.setOnClickListener {
             mediaPlayer.pause()
-
         }
 
     }
     // 사용자 비디오 녹화
-    fun Record() {
-        // 동영상 촬영을 위해 MediaRecorder 객체를 생성해준다
-        recorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setVideoSource(MediaRecorder.VideoSource.SURFACE)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
-            setVideoEncodingBitRate(10000000)
-            setVideoFrameRate(30)
-            setOrientationHint(90)
-            setOutputFile(recordingVideoFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
-            setVideoSize(mVideoDimension!!.width,mVideoDimension!!.height)
-            prepare()
-        }
-        recorder!!.start()
+//    fun Record() {
+//        // 동영상 촬영을 위해 MediaRecorder 객체를 생성해준다
+//        recorder = MediaRecorder().apply {
+//            setAudioSource(MediaRecorder.AudioSource.MIC)
+//            setVideoSource(MediaRecorder.VideoSource.SURFACE)
+//            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+//            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+//            setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP)
+//            setVideoEncodingBitRate(10000000)
+//            setVideoFrameRate(30)
+//            setOrientationHint(90)
+//            setOutputFile(recordingVideoFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
+//            setVideoSize(mVideoDimension!!.width,mVideoDimension!!.height)
+//            prepare()
+//        }
+//        recorder!!.start()
+//
+//        Toast.makeText(applicationContext, "녹화시작", Toast.LENGTH_SHORT).show()
+//    }
 
-        Toast.makeText(applicationContext, "녹화시작", Toast.LENGTH_SHORT).show()
+      @RequiresApi(Build.VERSION_CODES.O)
+      fun Record() {
+          setUpMediaRecorder()
+          // 동영상 촬영을 위해 MediaRecorder 객체를 생성해준다
+//          recorder = MediaRecorder().apply {
+//              setAudioSource(MediaRecorder.AudioSource.MIC)
+//              setVideoSource(MediaRecorder.VideoSource.SURFACE)
+//              setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+//              file_path = Environment.getExternalStorageDirectory().toString() + "/video.mp4"
+//              setOutputFile(file_path) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
+//              setPreviewDisplay(mSurfaceViewHolder.surface)
+//
+////            val profile = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P)
+////            setVideoFrameRate(profile.videoFrameRate)
+////            setVideoSize(profile.videoFrameWidth,profile.videoFrameHeight)
+//              setVideoSize(mVideoDimension!!.width, mVideoDimension!!.height)
+//              setVideoEncoder(MediaRecorder.VideoEncoder.H264)
+//              setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+////            setAudioEncodingBitRate(profile.audioBitRate)
+////            setAudioSamplingRate(profile.audioSampleRate)
+//              setOrientationHint(90)
+//              prepare()
+//          }
+
+          recorder!!.start()
+          Toast.makeText(applicationContext, "녹화시작", Toast.LENGTH_SHORT).show()
     }
 
     private fun newVideoFileName() : String {
@@ -221,59 +265,66 @@ class VideoActivity : AppCompatActivity() {
     }
 
     // mediaRecorder 객체의 값을 설정해주는 메서드
-//    @RequiresApi(Build.VERSION_CODES.O)
-//    private fun setUpMediaRecorder() {
-//        recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-//        recorder!!.setVideoSource(MediaRecorder.VideoSource.SURFACE)
-//        recorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-//
-//        var file = File(Environment.getExternalStorageDirectory().toString() + "/video${fileCount}.mp4")
-//        this.file = file
-//        recorder!!.setOutputFile(file)
-//        recorder!!.setVideoEncodingBitRate(10000000)
-//        recorder!!.setVideoFrameRate(30)
-//        recorder!!.setVideoSize(videoDimension!!.width, videoDimension!!.height)
-//        recorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
-//        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-//
-//        val rotation = windowManager.defaultDisplay.rotation
-//        recorder!!.setOrientationHint(ORIENTATIONS.get(rotation))
-//
-//        recorder!!.prepare()
-//    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setUpMediaRecorder() {
+        recorder= MediaRecorder()
+        recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+        recorder!!.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+        recorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+//        recorder!!.setAudioSamplingRate(44100)
+//        recorder!!.setAudioEncodingBitRate(96000)
 
-
-    fun recordStop() {
-        recorder?.run {
-            stop()
-            reset()
-            release()
-
-        }
-        recorder=null
-        mSession.close()
-
-//        val videoFile = File (
-//            File("${filesDir}/video").apply {
-//                if(!this.exists()){
-//                    this.mkdirs()
-//                }
-//            },
-//            newVideoFileName()
-//        )
+        //file_path="${filesDir}/testVideo.mp4"
+        //file_path = Environment.getExternalStorageDirectory().toString() + "/video.mp4"
+        videoFile = File(
+            File("${filesDir}/video").apply {
+                if(!this.exists()){
+                    this.mkdirs()
+                }
+            },
+            newVideoFileName()
+        )
 //        videoUri = FileProvider.getUriForFile(
 //            this,
 //            "com.harimi.singtogether.fileprovider",
 //            videoFile
 //        )
-//        video_path=videoFile.absolutePath
+        file_path= videoFile!!.absolutePath
+        recorder!!.setOutputFile(file_path)
+        recorder!!.setVideoSize(mVideoDimension!!.width, mVideoDimension!!.height)
+        recorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT)
+        recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+        recorder!!.setOrientationHint(90)
+        recorder!!.prepare()
+
+    }
+
+
+    //동영상 촬영을 중지할 때 호출하는 메서드
+    private fun stopRecordingVideo() {
+        recorder!!.stop()
+        recorder!!.release()
+        recorder=null
+        closeCameraPreviewSession()
+
+    }
+
+    fun recordStop() {
+        recorder?.run {
+            stop()
+            release()
+        }
+        recorder=null
 
 //        try {
+//            recorder?.setOnErrorListener(null)
+//            recorder?.setOnInfoListener(null)
+//            recorder?.setPreviewDisplay(null)
 //            recorder!!.stop()
+//            mSurfaceViewHolder.surface.release()
+//            mHandler!!.removeCallbacksAndMessages(null)
 //            recorder!!.reset()
 //            recorder!!.release()
-//
-//
 //            recorder=null
 //
 //            //mSession.close()
@@ -281,20 +332,21 @@ class VideoActivity : AppCompatActivity() {
 //        } catch (e : Exception) {
 //            //exception 처리
 //            e.printStackTrace()
+//            Log.e("recordStop","에러"+ e.message)
 //        }finally {
 //            // 정상적이든 오류든 무조건 실행
 //            file_path="${externalCacheDir?.absolutePath}/userVideo.mp4"
 //        }
 
-        //Toast.makeText(applicationContext, "녹음중지", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "녹음중지", Toast.LENGTH_SHORT).show()
         //Merge()
     }
 
     override fun onDestroy(){
         super.onDestroy()
         mediaPlayer.release()
-    }
 
+    }
 
     private fun initSensor() {
         mSensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -312,13 +364,19 @@ class VideoActivity : AppCompatActivity() {
         mSurfaceViewHolder = binding.surfaceView.holder
         mSurfaceViewHolder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder) {
+                // surfaceView 처음 생성 될 때 발생하는 함수
+                // 카메라와 SurfaceHolder 를 연결하고 카메라 preview 를 시작한다
                 initCameraAndPreview()
             }
 
+            // surfaceView 객체가 사라지게 되면 발생하는 함수
+            // 카메라 리소스 반환
             override fun surfaceDestroyed(holder: SurfaceHolder) {
                 mCameraDevice.close()
             }
 
+            // 상태가 변경될때마다 발생하는 함수
+            // surfaceView 에 맞게 카메라 preview 도 재설정한 후 다시 시작한다
             override fun surfaceChanged(
                 holder: SurfaceHolder, format: Int,
                 width: Int, height: Int
@@ -356,7 +414,10 @@ class VideoActivity : AppCompatActivity() {
     }
 
     private fun openCamera() {
+        Log.e("비디오액티비티", "openCamera() : openCamera()메서드가 호출되었음")
         try {
+            // 카메라의 정보를 가져와서 cameraId 와 imageDimension 에 값을 할당하고, 카메라를 열어야 하기 때문에
+            // CameraManager 객체를 가져온다
             val mCameraManager = this.getSystemService(Context.CAMERA_SERVICE) as CameraManager
             val characteristics = mCameraManager.getCameraCharacteristics(mCameraId)
             val map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)
@@ -364,30 +425,46 @@ class VideoActivity : AppCompatActivity() {
             val largestPreviewSize = map!!.getOutputSizes(ImageFormat.JPEG)[0]
             setAspectRatioTextureView(largestPreviewSize.height, largestPreviewSize.width)
 
-            mImageDimension = map.getOutputSizes(SurfaceTexture::class.java)[0]
-            mVideoDimension = map.getOutputSizes(MediaRecorder::class.java)[0]
+            Log.e(" openCamera() ", " largestPreviewSize.width:"+ largestPreviewSize.width +" largestPreviewSize.height :"+largestPreviewSize.height)
+            // SurfaceTexture 에 사용할 Size 값을 map 에서 가져와 imageDimension 에 할당해준다
+            mImageDimension = map.getOutputSizes<SurfaceTexture>(SurfaceTexture::class.java)[0]
+            mVideoDimension = map.getOutputSizes<MediaRecorder>(MediaRecorder::class.java)[0]
 
+            Log.e(" mVideoDimension", " width:"+ mVideoDimension?.width+" height:"+ mVideoDimension?.height)
+            // 원하는 크기와 형식의 이미지를 받아올 수 있는 ImageReader 객체를 생성
             mImageReader = ImageReader.newInstance(
                 largestPreviewSize.width,
                 largestPreviewSize.height,
                 ImageFormat.JPEG,
                 7
             )
+            Log.e("  mImageReader", " width:"+ largestPreviewSize.width+" height:"+ largestPreviewSize.height,)
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED
             ) return
 
+            // CameraManager.openCamera() 메서드를 이용해 인자로 넘겨준 cameraId 의 카메라를 실행한다
+            // 이때, deviceStateCallback 은 카메라를 실행할때 호출되는 콜백메서드이며, cameraDevice 에 값을 할달해주고,
+            // 카메라 미리보기를 생성한다
             mCameraManager.openCamera(mCameraId, deviceStateCallback, mHandler)
+
         } catch (e: CameraAccessException) {
-           Toast.makeText(this,"카메라를 열지 못했습니다.",Toast.LENGTH_SHORT).show()
+           Toast.makeText(this, "카메라를 열지 못했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
+    // openCamera() 메서드에서 CameraManager.openCamera() 를 실행할때 인자로 넘겨주어야하는 콜백메서드
+    // 카메라가 제대로 열렸으면, cameraDevice 에 값을 할당해주고, 카메라 미리보기를 생성한다
     private val deviceStateCallback = object : CameraDevice.StateCallback() {
         @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         override fun onOpened(camera: CameraDevice) {
+            Log.e("비디오액티비티", "stateCallback : onOpened")
+            // VideoActivity 의 cameraDevice 에 값을 할당해주고, 카메라 미리보기를 시작한다
+            // 나중에 cameraDevice 리소스를 해지할때 해당 cameraDevice 객체의 참조가 필요하므로,
+            // 인자로 들어온 camera 값을 전역변수 cameraDevice 에 넣어 준다
             mCameraDevice = camera
             try {
+                // takePreview() 메서드로 카메라 미리보기를 생성해준다
                 takePreview()
             } catch (e: CameraAccessException) {
                 e.printStackTrace()
@@ -395,21 +472,31 @@ class VideoActivity : AppCompatActivity() {
         }
 
         override fun onDisconnected(camera: CameraDevice) {
+            Log.d("메인액티비티", "stateCallback : onDisconnected")
+            // 연결이 해제되면 cameraDevice 를 닫아준다
             mCameraDevice.close()
+            Log.e("  onDisconnected mVideoDimension", " width:"+ mVideoDimension?.width+" height:"+ mVideoDimension?.height)
         }
 
         override fun onError(camera: CameraDevice, error: Int) {
-            Toast.makeText(this@VideoActivity,"카메라를 열지 못했습니다.",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@VideoActivity, "카메라를 열지 못했습니다.", Toast.LENGTH_SHORT).show()
         }
     }
 
     @Throws(CameraAccessException::class)
     fun takePreview() {
+        //카메라 장치에서 미리보기를 가져올 때, 어떤식으로 보여달라고 할 지 request 를 보내게 되는데,
+        // 이 request 를 만들어주는 것이 바로 captureRequestBuilder 이다.
+        // 여기서는 미리보기 화면을 요청할 것이므로, 파라미터에 CameraDevice.TEMPLATE_PREVIEW 를 넣어준다.
         mPreviewBuilder = mCameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
         mPreviewBuilder.addTarget(mSurfaceViewHolder.surface)
         mCameraDevice.createCaptureSession(
-            listOf(mSurfaceViewHolder.surface, mImageReader.surface), mSessionPreviewStateCallback, mHandler
+            listOf(mSurfaceViewHolder.surface, mImageReader.surface),
+            mSessionPreviewStateCallback,
+            mHandler
         )
+
+
     }
 
     private val mSessionPreviewStateCallback = object : CameraCaptureSession.StateCallback() {
@@ -427,7 +514,8 @@ class VideoActivity : AppCompatActivity() {
                     CaptureRequest.CONTROL_AE_MODE,
                     CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH
                 )
-                mSession.setRepeatingRequest(mPreviewBuilder.build(), null, mHandler)
+                mSession!!.setRepeatingRequest(mPreviewBuilder.build(), null, mHandler)
+
             } catch (e: CameraAccessException) {
                 e.printStackTrace()
             }
@@ -438,6 +526,15 @@ class VideoActivity : AppCompatActivity() {
             Toast.makeText(this@VideoActivity, "카메라 구성 실패", Toast.LENGTH_SHORT).show()
         }
     }
+
+    //기존의 카메라 미리보기 세션을 닫아주는 메서드
+    private fun closeCameraPreviewSession() {
+        if (mSession != null) {
+            mSession !!.close()
+            mSession  = null
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
@@ -470,7 +567,7 @@ class VideoActivity : AppCompatActivity() {
     }
 
     private fun updateTextureViewSize(viewWidth: Int, viewHeight: Int) {
-        Log.d("ViewSize", "TextureView Width : $viewWidth TextureView Height : $viewHeight")
+        Log.e("ViewSize", "TextureView Width : $viewWidth TextureView Height : $viewHeight")
         binding.surfaceView.layoutParams = FrameLayout.LayoutParams(viewWidth, viewHeight)
 
     }

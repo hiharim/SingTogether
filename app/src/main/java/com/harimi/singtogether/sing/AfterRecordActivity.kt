@@ -1,11 +1,8 @@
 package com.harimi.singtogether.sing
 
-import android.content.DialogInterface
-import android.content.Intent
 import android.media.MediaPlayer
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
-import com.harimi.singtogether.R
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AlertDialog
@@ -17,7 +14,7 @@ import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.ProfileActivity
+import com.harimi.singtogether.databinding.ActivityAfterRecordBinding
 import com.harimi.singtogether.databinding.ActivityAfterSingBinding
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -30,14 +27,13 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 /**
- * 노래 녹음 다 하고 확인하고 서버에 업로드 하는 화면
- * 오디오만
+ * 노래 녹화 다 하고 확인하고 서버에 업로드 하는 화면
+ * 비디오+오디오 둘다 업로드
  * */
-class AfterSingActivity : AppCompatActivity() {
+class AfterRecordActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAfterSingBinding
+    private lateinit var binding: ActivityAfterRecordBinding
     private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
     private lateinit var file_path : String
@@ -50,12 +46,10 @@ class AfterSingActivity : AppCompatActivity() {
     lateinit var mediaPlayer: MediaPlayer
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
     lateinit var fileName : String // 서버로 보낼 사용자 목소리 + MR 파일 이름
-    private var videoUri : Uri? = null // video 저장될 Uri
-    private var uri : Uri?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityAfterSingBinding.inflate(layoutInflater)
+        binding= ActivityAfterRecordBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initRetrofit()
 
@@ -64,15 +58,14 @@ class AfterSingActivity : AppCompatActivity() {
         with=intent.getStringExtra("WITH")
         way=intent.getStringExtra("WAY")
         idx=intent.getIntExtra("MR_IDX",0)
-        videoUri=intent.getParcelableExtra("URI")
 
-        Log.e("애프터싱액티비티","idx,file_path,user_path,with,way,uri"+
-                idx+" "+file_path+" "+user_path+" "+with+" "+way+""+videoUri)
+        Log.e("애프터싱액티비티","idx,file_path,user_path,with,way"+
+                idx+" "+file_path+" "+user_path+" "+with+" "+way)
         nickname="조하림22"
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
         applicationContext?.let{
-            simpleExoPlayer=SimpleExoPlayer.Builder(it).build()
+            simpleExoPlayer= SimpleExoPlayer.Builder(it).build()
         }
         binding.exoPlayerView.player = simpleExoPlayer
         val factory: DataSource.Factory = DefaultDataSourceFactory(
@@ -84,7 +77,7 @@ class AfterSingActivity : AppCompatActivity() {
 //                .createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
 //                //.createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
 
-        val mediaItem = MediaItem.fromUri(Uri.parse(user_path))
+        val mediaItem = MediaItem.fromUri(Uri.parse(file_path))
         //val mediaItem = MediaItem.fromUri(Uri.parse(videoUri.toString()))
         val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
             .createMediaSource(mediaItem)
@@ -96,7 +89,7 @@ class AfterSingActivity : AppCompatActivity() {
         simpleExoPlayer!!.prepare()
         simpleExoPlayer!!.play()
         // 업로드 버튼 클릭
-        binding.activityAfterSingBtnUpload.setOnClickListener {
+        binding.activityAfterRecordBtnUpload.setOnClickListener {
             upload()
 
         }
@@ -105,7 +98,7 @@ class AfterSingActivity : AppCompatActivity() {
 
     private fun upload() {
         //audioFile=File("${externalCacheDir?.absolutePath}/newUserMrAudio.m4a")
-        audioFile=File(user_path)
+        audioFile=File(file_path)
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         // Create an image file name
         //fileName = "$timeStamp.m4a"
@@ -123,7 +116,7 @@ class AfterSingActivity : AppCompatActivity() {
                             // 응답을 잘 받은 경우
                             Log.e("비디오", " 통신 성공: ${response.body().toString()}")
                             // 업로드 성공 다이얼로그
-                            val builder = AlertDialog.Builder(this@AfterSingActivity)
+                            val builder = AlertDialog.Builder(this@AfterRecordActivity)
                             builder.setTitle("SingTogether")
                             builder.setMessage("업로드를 성공했습니다!")
                             builder.setPositiveButton("확인") { dialogInterface, i ->
@@ -145,8 +138,7 @@ class AfterSingActivity : AppCompatActivity() {
         }
     }
 
-
-
+    // 레트로핏 초기화
     private fun initRetrofit(){
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)

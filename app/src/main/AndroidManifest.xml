@@ -20,6 +20,7 @@
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
@@ -27,7 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".sing.VideoActivity"></activity>
+        <activity android:name=".sing.AfterRecordActivity"></activity>
+        <activity android:name=".sing.VideoActivity" />
         <activity android:name=".sing.AfterSingActivity" />
         <activity android:name=".broadcast.StreamingActivity" />
         <activity android:name=".sing.BeforeSingActivity" />
@@ -75,7 +77,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>
