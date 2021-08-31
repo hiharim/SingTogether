@@ -43,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
 
+    private lateinit var gso: GoogleSignInOptions.Builder
+
     var auth: FirebaseAuth? = null
     val GOOGLE_REQUEST_CODE = 99
     val TAG = "googleLogin"
@@ -54,6 +56,8 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         val context: Context = this;
 
+
+
         // 구글 버튼 클릭시
         binding.activityLoginBtnLoginGoogle.setOnClickListener {
             signIn()
@@ -63,41 +67,43 @@ class LoginActivity : AppCompatActivity() {
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-            val pref = getSharedPreferences("userEmail", MODE_PRIVATE)
-            val savedEmail =
-                pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
-
+//            val pref = getSharedPreferences("userEmail", MODE_PRIVATE)
+//            val savedEmail =
+//                pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
+//            Log.e(TAG, "shared " + savedEmail.toString())
 //            if (!savedEmail.equals("")) { /// null 값이 없을때
-                retrofit = RetrofitClient.getInstance()
-                retrofitService = retrofit.create(RetrofitService::class.java)
-                Log.e(TAG, "shared " + savedEmail.toString())
 
-                retrofitService.requestAutoLogin(savedEmail)
-                    .enqueue(object : Callback<String> {
-                        override fun onResponse(
-                            call: Call<String>,
-                            response: Response<String>
-                        ) {
 
-                            if (response.isSuccessful) {
-                                Log.d(TAG, "shared " + response.body() + response.message())
-                                val jsonObject = JSONObject(response.body().toString())
-                                val result = jsonObject.getBoolean("result")
-                                Log.d(TAG, "shared " + result.toString())
+//                retrofit = RetrofitClient.getInstance()
+//                retrofitService = retrofit.create(RetrofitService::class.java)
 
-                                if (result) {
-                                    val email = jsonObject.getString("email")
-                                    val nickname = jsonObject.getString("nickname")
-                                    val profile = jsonObject.getString("profile")
-                                    user_info.loginUserEmail = email.toString()
-                                    user_info.loginUserNickname = nickname.toString()
-                                    user_info.loginUserProfile =profile.toString()
-
-                                    val intent = Intent(applicationContext, MainActivity::class.java)
-                                    startActivity(intent)
-                                    finish()
-                                    return
-                                } else {
+//
+//                retrofitService.requestAutoLogin(savedEmail)
+//                    .enqueue(object : Callback<String> {
+//                        override fun onResponse(
+//                            call: Call<String>,
+//                            response: Response<String>
+//                        ) {
+//
+//                            if (response.isSuccessful) {
+//                                Log.d(TAG, "shared " + response.body() + response.message())
+//                                val jsonObject = JSONObject(response.body().toString())
+//                                val result = jsonObject.getBoolean("result")
+//                                Log.d(TAG, "shared " + result.toString())
+//
+//                                if (result) {
+//                                    val email = jsonObject.getString("email")
+//                                    val nickname = jsonObject.getString("nickname")
+//                                    val profile = jsonObject.getString("profile")
+//                                    user_info.loginUserEmail = email.toString()
+//                                    user_info.loginUserNickname = nickname.toString()
+//                                    user_info.loginUserProfile =profile.toString()
+//
+//                                    val intent = Intent(applicationContext, MainActivity::class.java)
+//                                    startActivity(intent)
+//                                    finish()
+//                                    return
+//                                } else {
 
                             kakaoUserInfo()
                             if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
@@ -105,21 +111,21 @@ class LoginActivity : AppCompatActivity() {
                             } else {
                                 UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
                             }
-                        }
-
-                            } else {
-                                Log.e("onResponse", "실패 : " + response.errorBody())
-                            }
-                        }
-
-                        override fun onFailure(call: Call<String>, t: Throwable) {
-                            Log.d(
-                                "실패:", "Failed API call with call: " + call +
-                                        " + exception: " + t
-                            )
-                        }
-
-                    })
+//                        }
+//
+//                            } else {
+//                                Log.e("onResponse", "실패 : " + response.errorBody())
+//                            }
+//                        }
+//
+//                        override fun onFailure(call: Call<String>, t: Throwable) {
+//                            Log.d(
+//                                "실패:", "Failed API call with call: " + call +
+//                                        " + exception: " + t
+//                            )
+//                        }
+//
+//                    })
             }
         }
 
@@ -166,6 +172,8 @@ class LoginActivity : AppCompatActivity() {
                             "\n카카오토큰: ${tokenInfo.appId}")
                     user_token=tokenInfo.appId.toString()
 
+
+
                 }
             }
             // 프로필액티비티로 이동
@@ -174,6 +182,7 @@ class LoginActivity : AppCompatActivity() {
             user_info.loginUserEmail = user_email.toString()
             user_info.loginUserNickname = user_nickname.toString()
             user_info.loginUserProfile =user_profile.toString()
+            user_info.loginUserSocial =user_social.toString()
 
             intent.putExtra("EMAIL",user_email)
             intent.putExtra("NICKNAME",user_nickname)
@@ -208,41 +217,42 @@ class LoginActivity : AppCompatActivity() {
 
     //구글 로그인 클릭했을 때
     private fun signIn() {
-        val pref = getSharedPreferences("userEmail", 0)
-        val savedEmail =
-            pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
-
+//        val pref = getSharedPreferences("userEmail", 0)
+//        val savedEmail =
+//            pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
 //        if (!savedEmail.equals("")) { /// null 값이 없을때
-            retrofit = RetrofitClient.getInstance()
-            retrofitService = retrofit.create(RetrofitService::class.java)
-            Log.e(TAG, "shared " + savedEmail.toString())
-
-            retrofitService.requestAutoLogin(savedEmail)
-                .enqueue(object : Callback<String> {
-                    override fun onResponse(
-                        call: Call<String>,
-                        response: Response<String>
-                    ) {
-                        if (response.isSuccessful) {
-                            Log.d(TAG, "shared " + response.body() + response.message())
-                            val jsonObject = JSONObject(response.body().toString())
-                            val result = jsonObject.getBoolean("result")
-                            Log.d(TAG, "shared " + result.toString())
 
 
-                            if (result) {
-                                val email = jsonObject.getString("email")
-                                val nickname = jsonObject.getString("nickname")
-                                val profile = jsonObject.getString("profile")
-                                user_info.loginUserEmail = email.toString()
-                                user_info.loginUserNickname = nickname.toString()
-                                user_info.loginUserProfile =profile.toString()
-                                val intent = Intent(applicationContext, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                                return
-
-                            } else {
+//            retrofit = RetrofitClient.getInstance()
+//            retrofitService = retrofit.create(RetrofitService::class.java)
+//            Log.e(TAG, "shared " + savedEmail.toString())
+//
+//            retrofitService.requestAutoLogin(savedEmail)
+//                .enqueue(object : Callback<String> {
+//                    override fun onResponse(
+//                        call: Call<String>,
+//                        response: Response<String>
+//                    ) {
+//                        if (response.isSuccessful) {
+//                            Log.d(TAG, "shared " + response.body() + response.message())
+//                            val jsonObject = JSONObject(response.body().toString())
+//                            val result = jsonObject.getBoolean("result")
+//                            Log.d(TAG, "shared " + result.toString())
+//
+//
+//                            if (result) {
+//                                val email = jsonObject.getString("email")
+//                                val nickname = jsonObject.getString("nickname")
+//                                val profile = jsonObject.getString("profile")
+//                                user_info.loginUserEmail = email.toString()
+//                                user_info.loginUserNickname = nickname.toString()
+//                                user_info.loginUserProfile =profile.toString()
+//                                val intent = Intent(applicationContext, MainActivity::class.java)
+//                                startActivity(intent)
+//                                finish()
+//                                return
+//
+//                            } else {
 //                                구글 빌드
                                 auth = FirebaseAuth.getInstance()
                                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -252,21 +262,21 @@ class LoginActivity : AppCompatActivity() {
                                 googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
                                 val signInIntent = googleSignInClient.signInIntent
                                 startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
-                            }
+//                            }
 
-                        } else {
-                            Log.e("onResponse", "실패 : " + response.errorBody())
-                        }
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.d(
-                            "실패:", "Failed API call with call: " + call +
-                                    " + exception: " + t
-                        )
-                    }
-
-                })
+//                        } else {
+//                            Log.e("onResponse", "실패 : " + response.errorBody())
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<String>, t: Throwable) {
+//                        Log.d(
+//                            "실패:", "Failed API call with call: " + call +
+//                                    " + exception: " + t
+//                        )
+//                    }
+//
+//                })
 //        }
     }
 
@@ -293,6 +303,7 @@ class LoginActivity : AppCompatActivity() {
                 user_info.loginUserEmail = user_email.toString()
                 user_info.loginUserNickname = user_nickname.toString()
                 user_info.loginUserProfile =user_profile.toString()
+                user_info.loginUserSocial =user_social.toString()
 
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
@@ -315,6 +326,7 @@ class LoginActivity : AppCompatActivity() {
                     Log.d(TAG, "firebaseAuthWithGoogle:" + user)
 
                     loginSuccess()
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -324,13 +336,63 @@ class LoginActivity : AppCompatActivity() {
 
     ///구글 로그인이 성공할 시
     private fun loginSuccess(){
-        val intent = Intent(this, ProfileActivity::class.java)
-        intent.putExtra("EMAIL",user_email)
-        intent.putExtra("NICKNAME",user_nickname)
-        intent.putExtra("PROFILE",user_profile)
-        intent.putExtra("SOCIAL",user_social)
-        startActivity(intent)
-        finish()
+
+        retrofit = RetrofitClient.getInstance()
+        retrofitService = retrofit.create(RetrofitService::class.java)
+
+        retrofitService.requestAutoLogin(user_email.toString())
+            .enqueue(object : Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "shared " + response.body() + response.message())
+                        val jsonObject = JSONObject(response.body().toString())
+                        val result = jsonObject.getBoolean("result")
+                        Log.d(TAG, "shared " + result.toString())
+
+
+                        if (result) {
+                            val email = jsonObject.getString("email")
+                            val nickname = jsonObject.getString("nickname")
+                            val profile = jsonObject.getString("profile")
+                            val social = jsonObject.getString("social")
+
+                            user_info.loginUserEmail = email.toString()
+                            user_info.loginUserNickname = nickname.toString()
+                            user_info.loginUserProfile =profile.toString()
+                            user_info.loginUserSocial =social.toString()
+
+                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                            return
+                        } else {
+                            val intent = Intent(applicationContext, ProfileActivity::class.java)
+                            intent.putExtra("EMAIL",user_email)
+                            intent.putExtra("NICKNAME",user_nickname)
+                            intent.putExtra("PROFILE",user_profile)
+                            intent.putExtra("SOCIAL",user_social)
+                            intent.putExtra("TOKEN",user_token)
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    } else {
+                        Log.e("onResponse", "실패 : " + response.errorBody())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(
+                        "실패:", "Failed API call with call: " + call +
+                                " + exception: " + t
+                    )
+                }
+
+            })
+
     }
 
 
@@ -351,45 +413,42 @@ class LoginActivity : AppCompatActivity() {
             pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
 
 //        if (!savedEmail.equals("")) { /// null 값이 없을때
-        retrofit = RetrofitClient.getInstance()
-        retrofitService = retrofit.create(RetrofitService::class.java)
-        Log.e(TAG, "shared " + savedEmail.toString())
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                Log.e(TAG, "shared " + savedEmail.toString())
 
-        retrofitService.requestAutoLogin(savedEmail)
-            .enqueue(object : Callback<String> {
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
-                    if (response.isSuccessful) {
-                        Log.d(TAG, "shared " + response.body() + response.message())
-                        val jsonObject = JSONObject(response.body().toString())
-                        val result = jsonObject.getBoolean("result")
-                        Log.d(TAG, "shared " + result.toString())
+                retrofitService.requestAutoLogin(savedEmail)
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(
+                            call: Call<String>,
+                            response: Response<String>
+                        ) {
+                            if (response.isSuccessful) {
+                                Log.d(TAG, "shared " + response.body() + response.message())
+                                val jsonObject = JSONObject(response.body().toString())
+                                val result = jsonObject.getBoolean("result")
+                                Log.d(TAG, "shared " + result.toString())
 
 
                         if (result) {
                             val email = jsonObject.getString("email")
                             val nickname = jsonObject.getString("nickname")
                             val profile = jsonObject.getString("profile")
+                            val social = jsonObject.getString("social")
+
                             user_info.loginUserEmail = email.toString()
                             user_info.loginUserNickname = nickname.toString()
                             user_info.loginUserProfile =profile.toString()
+                            user_info.loginUserSocial =social.toString()
+
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             startActivity(intent)
                             finish()
                             return
 
                         } else {
-////                                구글 빌드
-//                            auth = FirebaseAuth.getInstance()
-//                            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                                .requestIdToken(getString(R.string.firebase_client))
-//                                .requestEmail()
-//                                .build()
-//                            googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
-//                            val signInIntent = googleSignInClient.signInIntent
-//                            startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
+                            auth = FirebaseAuth.getInstance()
+                            gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         }
 
                     } else {
@@ -413,6 +472,7 @@ class LoginActivity : AppCompatActivity() {
             var loginUserEmail = ""
             var loginUserProfile = ""
             var loginUserNickname= ""
+            var loginUserSocial= ""
 
         }
     }

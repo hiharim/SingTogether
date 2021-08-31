@@ -10,6 +10,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
 
 
 /**
@@ -17,6 +22,7 @@ import androidx.fragment.app.Fragment
  */
 class SettingFragment : Fragment() {
 
+    private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -31,6 +37,13 @@ class SettingFragment : Fragment() {
         val fragment_setting_tv_logout =settingFragment.findViewById<TextView>(R.id.fragment_setting_tv_logout)
         val fragment_setting_tv_out =settingFragment.findViewById<TextView>(R.id.fragment_setting_tv_out)
 
+
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.firebase_client))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this.requireActivity(),gso)
+
         fragment_setting_tv_logout.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("로그아웃")
@@ -39,8 +52,13 @@ class SettingFragment : Fragment() {
 
                 val pref = requireActivity().getSharedPreferences("userEmail", MODE_PRIVATE)
                 val edit = pref.edit() // 수정모드
-                edit.putString("autoLogin", "0") // 값 넣기
+                edit.putString("email", "") // 값 넣기
                 edit.apply() // 적용하기
+
+                if (LoginActivity.user_info.loginUserSocial.equals("google")){
+                    FirebaseAuth.getInstance().signOut(); //로그아웃
+                    googleSignInClient.signOut()
+                }
 
                 val intent = Intent(context, LoginActivity::class.java)
                 startActivity(intent)
@@ -54,6 +72,8 @@ class SettingFragment : Fragment() {
         return  settingFragment
     }
 
+
+
     companion object {
 
         fun newInstance(param1: String, param2: String) =
@@ -62,4 +82,6 @@ class SettingFragment : Fragment() {
                     }
                 }
     }
+
+
 }
