@@ -176,9 +176,12 @@ class LoginActivity : AppCompatActivity() {
 
                 }
             }
+
+
+            saveDate(user_email.toString())
+
             // 프로필액티비티로 이동
             val intent = Intent(this, ProfileActivity::class.java)
-
             user_info.loginUserEmail = user_email.toString()
             user_info.loginUserNickname = user_nickname.toString()
             user_info.loginUserProfile =user_profile.toString()
@@ -217,67 +220,17 @@ class LoginActivity : AppCompatActivity() {
 
     //구글 로그인 클릭했을 때
     private fun signIn() {
-//        val pref = getSharedPreferences("userEmail", 0)
-//        val savedEmail =
-//            pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
-//        if (!savedEmail.equals("")) { /// null 값이 없을때
 
+//        구글 빌드
+            auth = FirebaseAuth.getInstance()
+            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.firebase_client))
+                .requestEmail()
+                .build()
+            googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
+            val signInIntent = googleSignInClient.signInIntent
+            startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
 
-//            retrofit = RetrofitClient.getInstance()
-//            retrofitService = retrofit.create(RetrofitService::class.java)
-//            Log.e(TAG, "shared " + savedEmail.toString())
-//
-//            retrofitService.requestAutoLogin(savedEmail)
-//                .enqueue(object : Callback<String> {
-//                    override fun onResponse(
-//                        call: Call<String>,
-//                        response: Response<String>
-//                    ) {
-//                        if (response.isSuccessful) {
-//                            Log.d(TAG, "shared " + response.body() + response.message())
-//                            val jsonObject = JSONObject(response.body().toString())
-//                            val result = jsonObject.getBoolean("result")
-//                            Log.d(TAG, "shared " + result.toString())
-//
-//
-//                            if (result) {
-//                                val email = jsonObject.getString("email")
-//                                val nickname = jsonObject.getString("nickname")
-//                                val profile = jsonObject.getString("profile")
-//                                user_info.loginUserEmail = email.toString()
-//                                user_info.loginUserNickname = nickname.toString()
-//                                user_info.loginUserProfile =profile.toString()
-//                                val intent = Intent(applicationContext, MainActivity::class.java)
-//                                startActivity(intent)
-//                                finish()
-//                                return
-//
-//                            } else {
-//                                구글 빌드
-                                auth = FirebaseAuth.getInstance()
-                                val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                    .requestIdToken(getString(R.string.firebase_client))
-                                    .requestEmail()
-                                    .build()
-                                googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
-                                val signInIntent = googleSignInClient.signInIntent
-                                startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
-//                            }
-
-//                        } else {
-//                            Log.e("onResponse", "실패 : " + response.errorBody())
-//                        }
-//                    }
-//
-//                    override fun onFailure(call: Call<String>, t: Throwable) {
-//                        Log.d(
-//                            "실패:", "Failed API call with call: " + call +
-//                                    " + exception: " + t
-//                        )
-//                    }
-//
-//                })
-//        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -363,10 +316,12 @@ class LoginActivity : AppCompatActivity() {
                             user_info.loginUserNickname = nickname.toString()
                             user_info.loginUserProfile =profile.toString()
                             user_info.loginUserSocial =social.toString()
-
+                            saveDate(email)
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             startActivity(intent)
                             finish()
+
+
                             return
                         } else {
                             val intent = Intent(applicationContext, ProfileActivity::class.java)
@@ -464,7 +419,7 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             })
-//        }
+
     }
 
     class user_info{
@@ -475,5 +430,14 @@ class LoginActivity : AppCompatActivity() {
             var loginUserSocial= ""
 
         }
+    }
+
+    fun saveDate( loginEmail :String ){
+        val pref =getSharedPreferences("userEmail", MODE_PRIVATE)
+        val edit = pref.edit() // 수정모드
+        edit.putString("email", loginEmail) // 값 넣기
+        edit.putString("autoLogin", "1") // 값 넣기
+        edit.apply() // 적용하기
+
     }
 }

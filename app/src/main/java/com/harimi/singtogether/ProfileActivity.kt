@@ -112,7 +112,7 @@ class ProfileActivity : AppCompatActivity() {
                                         LoginActivity.user_info.loginUserEmail =email
                                         LoginActivity.user_info.loginUserProfile =profile
                                         LoginActivity.user_info.loginUserNickname=nickname
-                                        saveDate()
+                                        saveDate(email)
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
                                     } else {
@@ -152,7 +152,7 @@ class ProfileActivity : AppCompatActivity() {
                                         LoginActivity.user_info.loginUserEmail =email
                                         LoginActivity.user_info.loginUserProfile =profile_image
                                         LoginActivity.user_info.loginUserNickname=nickname
-                                        saveDate()
+                                        saveDate(email)
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
                                         finish()
@@ -333,10 +333,10 @@ class ProfileActivity : AppCompatActivity() {
 //        }
 //    }
 
-    fun saveDate(){
+    fun saveDate( loginEmail :String ){
         val pref =getSharedPreferences("userEmail", MODE_PRIVATE)
         val edit = pref.edit() // 수정모드
-        edit.putString("email", email) // 값 넣기
+        edit.putString("email", loginEmail) // 값 넣기
         edit.putString("autoLogin", "1") // 값 넣기
         edit.apply() // 적용하기
 
