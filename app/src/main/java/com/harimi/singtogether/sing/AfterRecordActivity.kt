@@ -77,7 +77,7 @@ class AfterRecordActivity : AppCompatActivity() {
 //                .createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
 //                //.createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
 
-        val mediaItem = MediaItem.fromUri(Uri.parse(file_path))
+        val mediaItem = MediaItem.fromUri(Uri.parse(user_path))
         //val mediaItem = MediaItem.fromUri(Uri.parse(videoUri.toString()))
         val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
             .createMediaSource(mediaItem)

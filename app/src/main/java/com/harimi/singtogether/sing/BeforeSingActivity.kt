@@ -88,7 +88,8 @@ class BeforeSingActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }else if (way=="녹화"){
-                val intent= Intent(this,VideoActivity::class.java)
+                val intent= Intent(this,Video2Activity::class.java)
+                //val intent= Intent(this,VideoActivity::class.java)
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
