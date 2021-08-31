@@ -10,11 +10,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-
-
-
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -33,7 +29,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".broadcast.LiveThumbnailCaptureActivity"></activity>
+        <activity android:name=".broadcast.LiveStreamingViewActivity"></activity>
+        <activity android:name=".broadcast.LiveThumbnailCaptureActivity" />
         <activity android:name=".sing.AfterRecordActivity" />
         <activity android:name=".sing.VideoActivity" />
         <activity android:name=".sing.AfterSingActivity" />

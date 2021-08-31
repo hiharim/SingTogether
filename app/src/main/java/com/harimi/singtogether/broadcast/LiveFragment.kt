@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -36,7 +37,7 @@ class LiveFragment : Fragment() {
     val liveStreamingPostList: ArrayList<LiveFragmentData> = ArrayList()
     lateinit var rv_fragmentLivePost : RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
-
+    lateinit var  tv_noLive: TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -53,6 +54,8 @@ class LiveFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("라이브: ", "onResume")
+        liveStreamingPostList.clear()
+        liveStreamingPostLoad()
     }
 
 
@@ -63,6 +66,8 @@ class LiveFragment : Fragment() {
         var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
 
         rv_fragmentLivePost = liveFragmentView.findViewById(R.id.rv_fragmentLivePost)
+        tv_noLive = liveFragmentView.findViewById(R.id.tv_noLive)
+
         rv_fragmentLivePost.layoutManager = LinearLayoutManager(activity)
         rv_fragmentLivePost.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         liveFragmentAdapter = LiveFragmentAdapter(liveStreamingPostList,requireContext())
@@ -76,7 +81,6 @@ class LiveFragment : Fragment() {
 
 
     fun liveStreamingPostLoad (){
-
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
         retrofitService.requestGetLiveStreamingPost()
@@ -91,22 +95,37 @@ class LiveFragment : Fragment() {
                         liveStreamingPostList.clear()
 
                         val jsonArray = JSONArray(body)
-                        for (i in 0 until jsonArray.length()) {
-                            val jsonObject = jsonArray.getJSONObject(i)
-                            val idx = jsonObject.getString("idx")
-                            val email = jsonObject.getString("email")
-                            val thumbnail = jsonObject.getString("thumbnail")
-                            val nickName = jsonObject.getString("nickName")
-                            val profile = jsonObject.getString("profile")
-                            val title = jsonObject.getString("title")
-//
-                            Log.d(TAG, "idx($i): $idx")
-                            Log.d(TAG, "songTitle($i): $title")
-                            Log.d(TAG, "singer($i): $email")
+                        if (jsonArray.length()==0 || jsonArray.equals("null")){
+                            tv_noLive.visibility =View.VISIBLE
+                            rv_fragmentLivePost.visibility =View.INVISIBLE
+                        }else {
+                            rv_fragmentLivePost.visibility =View.VISIBLE
+                            tv_noLive.visibility =View.INVISIBLE
 
-                            val liveData = LiveFragmentData(idx,thumbnail, email, nickName, profile, title)
-                            liveStreamingPostList.add(0, liveData)
-                            liveFragmentAdapter.notifyDataSetChanged()
+                            for (i in 0 until jsonArray.length()) {
+                                val jsonObject = jsonArray.getJSONObject(i)
+                                val idx = jsonObject.getString("idx")
+                                val email = jsonObject.getString("email")
+                                val thumbnail = jsonObject.getString("thumbnail")
+                                val nickName = jsonObject.getString("nickName")
+                                val profile = jsonObject.getString("profile")
+                                val title = jsonObject.getString("title")
+//
+                                Log.d(TAG, "idx($i): $idx")
+                                Log.d(TAG, "songTitle($i): $title")
+                                Log.d(TAG, "singer($i): $email")
+
+                                val liveData = LiveFragmentData(
+                                    idx,
+                                    thumbnail,
+                                    email,
+                                    nickName,
+                                    profile,
+                                    title
+                                )
+                                liveStreamingPostList.add(0, liveData)
+                                liveFragmentAdapter.notifyDataSetChanged()
+                            }
                         }
                     }
                 }

@@ -1,6 +1,7 @@
 package com.harimi.singtogether.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,12 +9,14 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.LiveFragmentData
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.LiveStreamingViewActivity
 import de.hdodenhof.circleimageview.CircleImageView
 
 class LiveFragmentAdapter (val LiveStreamingPostList: ArrayList<LiveFragmentData>, val context: Context) : RecyclerView.Adapter<LiveFragmentAdapter.LiveFragmentViewHolder>() {
@@ -43,7 +46,7 @@ class LiveFragmentAdapter (val LiveStreamingPostList: ArrayList<LiveFragmentData
             val Image: LiveFragmentData = LiveStreamingPostList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.profile)
-                .override(100, 75)
+//                .override(100, 75)
                 .into(holder.iv_profile)
         }
 
@@ -54,7 +57,7 @@ class LiveFragmentAdapter (val LiveStreamingPostList: ArrayList<LiveFragmentData
             val Image: LiveFragmentData = LiveStreamingPostList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.thumbnail)
-                .override(100, 75)
+//                .override(100, 75)
                 .into(holder.iv_thumbnail)
         }
 
@@ -68,20 +71,15 @@ class LiveFragmentAdapter (val LiveStreamingPostList: ArrayList<LiveFragmentData
             override fun onClick(v: View?) {
 
 //                var bundle: Bundle = Bundle()
-//                bundle.putString("idx",homePostList.get(position).idx)
-//                bundle.putString("hits",homePostList.get(position).hits)
-//                bundle.putString("songTitle",homePostList.get(position).songTitle)
-//                bundle.putString("singer",homePostList.get(position).singer)
-//                bundle.putString("likeNumber",homePostList.get(position).likeNumber)
-//                bundle.putString("thumbnail",homePostList.get(position).thumbnail)
-//                bundle.putString("uploadUserProfile",homePostList.get(position).uploadUserProfile)
-//                bundle.putString("uploadUserNickName",homePostList.get(position).uploadUserNickName)
-//                bundle.putString("uploadDate",homePostList.get(position).uploadDate)
+//                bundle.putString("idx",LiveStreamingPostList.get(position).idx)
+//
 //                val activity =v!!.context as AppCompatActivity
 //                val postFragment = PostFragment()
 //                postFragment.arguments=bundle
 //                activity.supportFragmentManager.beginTransaction().replace(R.id.activity_main_frame,postFragment).addToBackStack(null).commit()
-
+                val intent = Intent(context,LiveStreamingViewActivity::class.java)
+                intent.putExtra("roomIdx",LiveStreamingPostList.get(position).idx)
+                ContextCompat.startActivity(context,intent,null)
 
             }
 

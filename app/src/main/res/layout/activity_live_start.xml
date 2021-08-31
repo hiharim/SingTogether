@@ -40,13 +40,13 @@
         android:layout_alignParentLeft="true"
         app:srcCompat="@drawable/ic_baseline_close_24" />
 
-    <ImageView
-        android:id="@+id/activity_live_start_iv_switch"
-        android:layout_width="43dp"
-        android:layout_height="38dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_alignParentRight="true"
-        app:srcCompat="@drawable/ic_baseline_switch_camera_24" />
+<!--    <ImageView-->
+<!--        android:id="@+id/activity_live_start_iv_switch"-->
+<!--        android:layout_width="43dp"-->
+<!--        android:layout_height="38dp"-->
+<!--        android:layout_marginTop="16dp"-->
+<!--        android:layout_marginEnd="16dp"-->
+<!--        android:layout_alignParentRight="true"-->
+<!--        app:srcCompat="@drawable/ic_baseline_switch_camera_24" />-->
 
 </RelativeLayout>
