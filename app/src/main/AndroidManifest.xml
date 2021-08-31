@@ -28,7 +28,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".sing.AfterRecordActivity"></activity>
+        <activity android:name=".broadcast.LiveThumbnailCaptureActivity"></activity>
+        <activity android:name=".sing.AfterRecordActivity" />
         <activity android:name=".sing.VideoActivity" />
         <activity android:name=".sing.AfterSingActivity" />
         <activity android:name=".broadcast.StreamingActivity" />

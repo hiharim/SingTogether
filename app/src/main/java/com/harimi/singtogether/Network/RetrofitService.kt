@@ -52,6 +52,11 @@ interface RetrofitService {
     fun requestGetHomePost (
     ) : Call<String>
 
+    @POST("loadLiveStreamingPost.php")
+    fun requestGetLiveStreamingPost (
+    ) : Call<String>
+
+
     @POST("loadReplayPost.php")
     fun requestGetReplayPost (
 
@@ -85,6 +90,16 @@ interface RetrofitService {
         @Part("nickname") nickname :String,
         @Part("social") social :String,
         @Part("token") token :String,
+        @Part file : MultipartBody.Part,
+    ) : Call<String>
+
+    @Multipart
+    @POST("LiveStreamingStart.php")
+    fun requestLiveStreamingStart (
+        @Part("email") email :String,
+        @Part("nickname") nickname :String,
+        @Part("profile") profile :String,
+        @Part("liveTitle") liveTitle :String,
         @Part file : MultipartBody.Part,
     ) : Call<String>
 

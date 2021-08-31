@@ -52,9 +52,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val context :Context=this;
-
-
+        val context: Context = this;
 
         // 구글 버튼 클릭시
         binding.activityLoginBtnLoginGoogle.setOnClickListener {
@@ -88,19 +86,26 @@ class LoginActivity : AppCompatActivity() {
                                 Log.d(TAG, "shared " + result.toString())
 
                                 if (result) {
+                                    val email = jsonObject.getString("email")
+                                    val nickname = jsonObject.getString("nickname")
+                                    val profile = jsonObject.getString("profile")
+                                    user_info.loginUserEmail = email.toString()
+                                    user_info.loginUserNickname = nickname.toString()
+                                    user_info.loginUserProfile =profile.toString()
+
                                     val intent = Intent(applicationContext, MainActivity::class.java)
                                     startActivity(intent)
                                     finish()
                                     return
                                 } else {
 
-                                    kakaoUserInfo()
-                                    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                                        UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
-                                    } else {
-                                        UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
-                                    }
-                                }
+                            kakaoUserInfo()
+                            if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+                                UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
+                            } else {
+                                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+                            }
+                        }
 
                             } else {
                                 Log.e("onResponse", "실패 : " + response.errorBody())
@@ -116,7 +121,8 @@ class LoginActivity : AppCompatActivity() {
 
                     })
             }
-//        }
+        }
+
 
         // 카카오 토큰존재여부 확인하기
 //        if (AuthApiClient.instance.hasToken()) {
@@ -138,9 +144,9 @@ class LoginActivity : AppCompatActivity() {
 //        else {
 //            //로그인 필요
 //        }
+//    }
 
 
-    }
     // 카카오 로그인 공통 callback 구성
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
         if (error != null) {
@@ -164,6 +170,11 @@ class LoginActivity : AppCompatActivity() {
             }
             // 프로필액티비티로 이동
             val intent = Intent(this, ProfileActivity::class.java)
+
+            user_info.loginUserEmail = user_email.toString()
+            user_info.loginUserNickname = user_nickname.toString()
+            user_info.loginUserProfile =user_profile.toString()
+
             intent.putExtra("EMAIL",user_email)
             intent.putExtra("NICKNAME",user_nickname)
             intent.putExtra("PROFILE",user_profile)
@@ -220,12 +231,19 @@ class LoginActivity : AppCompatActivity() {
 
 
                             if (result) {
+                                val email = jsonObject.getString("email")
+                                val nickname = jsonObject.getString("nickname")
+                                val profile = jsonObject.getString("profile")
+                                user_info.loginUserEmail = email.toString()
+                                user_info.loginUserNickname = nickname.toString()
+                                user_info.loginUserProfile =profile.toString()
                                 val intent = Intent(applicationContext, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
                                 return
+
                             } else {
-                                //구글 빌드
+//                                구글 빌드
                                 auth = FirebaseAuth.getInstance()
                                 val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                                     .requestIdToken(getString(R.string.firebase_client))
@@ -272,6 +290,10 @@ class LoginActivity : AppCompatActivity() {
                 user_profile= account.photoUrl.toString()
                 user_social="google"
 
+                user_info.loginUserEmail = user_email.toString()
+                user_info.loginUserNickname = user_nickname.toString()
+                user_info.loginUserProfile =user_profile.toString()
+
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -314,14 +336,84 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
+//        val pref = getSharedPreferences("userEmail", 0)
+//        val autoLogin =
+//            pref.getString("autoLogin", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
+//            Log.e(TAG, "shared " + autoLogin.toString())
+//            if (autoLogin.equals("1")){
+//                val intent = Intent(applicationContext, MainActivity::class.java)
+//                startActivity(intent)
+//                finish()
+//            }
+
         val pref = getSharedPreferences("userEmail", 0)
-        val autoLogin =
-            pref.getString("autoLogin", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
-        Log.e(TAG, "shared " + autoLogin.toString())
-            if (autoLogin.equals("1")){
-                val intent = Intent(applicationContext, MainActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
+        val savedEmail =
+            pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
+
+//        if (!savedEmail.equals("")) { /// null 값이 없을때
+        retrofit = RetrofitClient.getInstance()
+        retrofitService = retrofit.create(RetrofitService::class.java)
+        Log.e(TAG, "shared " + savedEmail.toString())
+
+        retrofitService.requestAutoLogin(savedEmail)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "shared " + response.body() + response.message())
+                        val jsonObject = JSONObject(response.body().toString())
+                        val result = jsonObject.getBoolean("result")
+                        Log.d(TAG, "shared " + result.toString())
+
+
+                        if (result) {
+                            val email = jsonObject.getString("email")
+                            val nickname = jsonObject.getString("nickname")
+                            val profile = jsonObject.getString("profile")
+                            user_info.loginUserEmail = email.toString()
+                            user_info.loginUserNickname = nickname.toString()
+                            user_info.loginUserProfile =profile.toString()
+                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                            return
+
+                        } else {
+////                                구글 빌드
+//                            auth = FirebaseAuth.getInstance()
+//                            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                                .requestIdToken(getString(R.string.firebase_client))
+//                                .requestEmail()
+//                                .build()
+//                            googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
+//                            val signInIntent = googleSignInClient.signInIntent
+//                            startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
+                        }
+
+                    } else {
+                        Log.e("onResponse", "실패 : " + response.errorBody())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(
+                        "실패:", "Failed API call with call: " + call +
+                                " + exception: " + t
+                    )
+                }
+
+            })
+//        }
+    }
+
+    class user_info{
+        companion object {
+            var loginUserEmail = ""
+            var loginUserProfile = ""
+            var loginUserNickname= ""
+
+        }
     }
 }

@@ -69,7 +69,7 @@ class MyBroadcastFragment : Fragment() {
     }
 
     private fun loadMyBroadcast() {
-        val nickname=ProfileActivity.user_info.user_nickname
+        val nickname=LoginActivity.user_info.loginUserNickname
         retrofitService.requestMyBroadcast().enqueue(object : Callback<String> {
         //retrofitService.requestMyBroadcast(nickname).enqueue(object : Callback<String> {
             // 통신에 성공한 경우

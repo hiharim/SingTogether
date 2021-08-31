@@ -36,8 +36,8 @@ class MyPageFragment : Fragment() {
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
 
-        val nickname=ProfileActivity.user_info.user_nickname
-        val profile =ProfileActivity.user_info.user_profile
+        val nickname=LoginActivity.user_info.loginUserNickname
+        val profile =LoginActivity.user_info.loginUserProfile
         // 2. 바인딩으로 TextView 등에 접근
         // 사용자 닉네임
         binding.fragmentMyPageTvNickname.text=nickname

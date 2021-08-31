@@ -21,14 +21,13 @@
 
     <Button
         android:id="@+id/activity_live_start_btn"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="139dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="131dp"
         android:backgroundTint="@color/blue"
-        android:text="실시간 스트리밍 시작"
+        android:text="다음"
         android:textStyle="bold"
         tools:layout_editor_absoluteY="541dp" />
 
