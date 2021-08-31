@@ -73,11 +73,12 @@ class ProfileActivity : AppCompatActivity() {
         nickname= intent.getStringExtra("NICKNAME").toString()
         profile=intent.getStringExtra("PROFILE").toString()
         social=intent.getStringExtra("SOCIAL").toString()
-        token="a"
+        token=intent.getStringExtra("TOKEN").toString()
 
         Log.e("값: ", email + " " + nickname + " " + social + " " + token + " " + profile)
         Log.e("imageFile값: ", imageFile.toString())
         // 닉네임받아와서 set해줌
+
         binding.activityProfileEt.setText(nickname)
         // 프로필받아와서 set해줌
         Glide.with(context).load(profile).into(binding.activityProfileIv)
@@ -108,10 +109,10 @@ class ProfileActivity : AppCompatActivity() {
                                 ) {
                                     if (response.isSuccessful) {
                                         Log.d("onResponse: 성공: ", response.body() + response.message())
-                                        user_info.user_email =email
-                                        user_info.user_profile =profile
-                                        user_info.user_nickname=nickname
-                                        saveDate()
+                                        LoginActivity.user_info.loginUserEmail =email
+                                        LoginActivity.user_info.loginUserProfile =profile
+                                        LoginActivity.user_info.loginUserNickname=nickname
+                                        saveDate(email)
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
                                     } else {
@@ -148,10 +149,10 @@ class ProfileActivity : AppCompatActivity() {
                                         val profile_image = jsonObject.getString("profile")
                                         Log.d("get_profile_image: ", profile_image)
 
-                                        user_info.user_email =email
-                                        user_info.user_profile =profile_image
-                                        user_info.user_nickname=nickname
-                                        saveDate()
+                                        LoginActivity.user_info.loginUserEmail =email
+                                        LoginActivity.user_info.loginUserProfile =profile_image
+                                        LoginActivity.user_info.loginUserNickname=nickname
+                                        saveDate(email)
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)
                                         finish()
@@ -323,19 +324,19 @@ class ProfileActivity : AppCompatActivity() {
 
 
     //스태틱을 쓰기위한 함수
-    class user_info{
-        companion object {
-            var user_email = ""
-            var user_profile = ""
-            var user_nickname= ""
+//    class user_info{
+//        companion object {
+//            var user_email = ""
+//            var user_profile = ""
+//            var user_nickname= ""
+//
+//        }
+//    }
 
-        }
-    }
-
-    fun saveDate(){
+    fun saveDate( loginEmail :String ){
         val pref =getSharedPreferences("userEmail", MODE_PRIVATE)
         val edit = pref.edit() // 수정모드
-        edit.putString("email", email) // 값 넣기
+        edit.putString("email", loginEmail) // 값 넣기
         edit.putString("autoLogin", "1") // 값 넣기
         edit.apply() // 적용하기
 

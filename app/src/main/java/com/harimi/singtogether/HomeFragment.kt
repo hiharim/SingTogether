@@ -30,8 +30,8 @@ class HomeFragment : Fragment() {
 
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
-    val homePostList: ArrayList<HomeData> = ArrayList()
 
+    val homePostList: ArrayList<HomeData> = ArrayList()
     lateinit var fragment_home_recyclerView : RecyclerView
     lateinit var homeAdapter: HomeAdapter
 

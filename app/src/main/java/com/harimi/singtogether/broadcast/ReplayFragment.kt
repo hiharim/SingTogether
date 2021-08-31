@@ -101,7 +101,7 @@ class ReplayFragment : Fragment() {
                         val jsonArray = JSONArray(body)
                         for (i in 0 until jsonArray.length()) {
 
-                            if (jsonArray.length() ==0){
+                            if (jsonArray.length() ==0 || jsonArray.equals("null")){
                                 tv_noReplay.visibility =View.VISIBLE
                                 rv_fragmentReplayPost.visibility =View.INVISIBLE
 

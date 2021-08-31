@@ -1,12 +1,8 @@
 package com.harimi.singtogether.broadcast
 
-import android.content.Intent
-import android.media.AudioManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import org.json.JSONObject
 import org.webrtc.*
@@ -14,43 +10,30 @@ import org.webrtc.audio.JavaAudioDeviceModule
 import java.util.ArrayList
 import java.util.HashMap
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
 
-/**
- * 실시간 방송하는 액티비티 화면
- * */
-class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
-    private lateinit var retrofit : Retrofit
-    private lateinit var retrofitService: RetrofitService
-    private var roomIdx :String? =null
 
+class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback{
     var audioConstraints: MediaConstraints? = null
     var audioSource: AudioSource? = null
     var localAudioTrack: AudioTrack? = null
+    var remoteStreamingView: SurfaceViewRenderer? = null
+    var roomIdx: String? = null
+    private val TAG = "JOIN_ACTIVITY"
     var eglBaseContext: EglBase.Context? = null
     var peerConnectionFactory: PeerConnectionFactory? = null
+    var peerConnection: PeerConnection? = null
     var mediaStream: MediaStream? = null
     var iceServers: MutableList<PeerConnection.IceServer>? = null
-    var peerConnection: PeerConnection? = null
+    var remoteVideoTrack: VideoTrack? = null
     var peerConnectionMap: HashMap<String?, PeerConnection?>? = null
-    private val TAG = "STREAMING_ACTIVITY"
-    var videoCapturer: VideoCapturer? = null
 
-    var localStreamingView: SurfaceViewRenderer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_streaming)
+        setContentView(R.layout.activity_live_streaming_view)
 
-        val getIntent = intent
-        roomIdx = getIntent.getStringExtra("roomIdx")
-        Log.d(TAG, " $roomIdx")
-
+        val getintent = intent
+        roomIdx = getintent.getStringExtra("roomIdx")
+        Log.d(TAG," "+ roomIdx)
         peerConnectionMap = HashMap()
         iceServers = ArrayList()
         iceServers!!.add(PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer())
@@ -78,47 +61,30 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
 
         //비디오 트랙 채널과 소스
-        val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
-        videoCapturer = createCameraCapturer(true)
-        val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
-        videoCapturer!!.initialize(surfaceTextureHelper, applicationContext, videoSource?.capturerObserver)
-        videoCapturer!!.startCapture(480, 640, 30)
-        val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
-
-        localStreamingView = findViewById(R.id.localStreamingView)
-        localStreamingView!!.setMirror(true)
-        localStreamingView!!.init(eglBaseContext, null)
+//        SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext);
+//        VideoCapturer videoCapturer = createCameraCapturer(true);
+//        VideoSource videoSource = peerConnectionFactory.createVideoSource(videoCapturer.isScreencast());
+//        videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+//        videoCapturer.startCapture(480, 640, 30);
+//        VideoTrack videoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
 
 
         //오디오 트랙 채널과 소스
         audioConstraints = MediaConstraints()
-        //        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_ECHO_CANCELLATION_CONSTRAINT, "true"));
-//        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_AUTO_GAIN_CONTROL_CONSTRAINT, "false"));
-//        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_HIGH_PASS_FILTER_CONSTRAINT, "false"));
-//        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_NOISE_SUPPRESSION_CONSTRAINT, "true"));
+
         audioSource = peerConnectionFactory!!.createAudioSource(audioConstraints)
         localAudioTrack = peerConnectionFactory!!.createAudioTrack("101", audioSource)
         localAudioTrack!!.setVolume(10.0)
-
-        //로컬뷰
-        videoTrack!!.addSink(localStreamingView)
-
-
         mediaStream = peerConnectionFactory?.createLocalMediaStream("mediaStream")
-        //미디어 스트림에 비디오트랙 넣기
-        mediaStream!!.addTrack(videoTrack)
-        //미디어 스트림에 오디오 트랙에 넣기
-        mediaStream!!.addTrack(localAudioTrack)
 
-        // 오디오 스피커 모드로 설정하기
-        val am: AudioManager
-        am = getSystemService(AUDIO_SERVICE) as AudioManager
-        am.isSpeakerphoneOn = true
-        Log.d("PeerHashMap", " $peerConnectionMap")
+        //미디어 스트림에 비디오트랙 넣기
+//        mediaStream.addTrack(videoTrack);
+//        //미디어 스트림에 오디오 트랙에 넣기
+//        mediaStream.addTrack(localAudioTrack);
+
+        remoteStreamingView = findViewById(R.id.remoteStreamingView)
+        remoteStreamingView!!.setMirror(true)
+        remoteStreamingView!!.init(eglBaseContext, null)
         get()!!.init(this, roomIdx)
     }
 
@@ -129,7 +95,7 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         if (peerConnection != null) {
             return peerConnection
         }
-        peerConnection = peerConnectionFactory!!.createPeerConnection(iceServers, object : PeerConnectionAdapter("PC:$socketId") {
+        peerConnection = peerConnectionFactory!!.createPeerConnection(iceServers, object : PeerConnectionAdapter("PC :$socketId") {
             override fun onIceCandidate(iceCandidate: IceCandidate) {
                 super.onIceCandidate(iceCandidate)
                 get()!!.sendIceCandidate(iceCandidate, socketId!!)
@@ -137,8 +103,11 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
             override fun onAddStream(mediaStream: MediaStream) {
                 super.onAddStream(mediaStream)
-                val remoteVideoTrack = mediaStream.videoTracks[0]
-                runOnUiThread {}
+                remoteVideoTrack = mediaStream.videoTracks[0]
+                Log.d("onAddStreamRemote", "" + mediaStream.videoTracks[0].toString())
+                Log.d("onAddStreamRemote", "" + remoteVideoTrack)
+                runOnUiThread { remoteVideoTrack?.addSink(remoteStreamingView) }
+
             }
         })
         peerConnection!!.addStream(mediaStream)
@@ -167,8 +136,7 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     }
 
     override fun onPeerLeave(msg: String?) {
-        Log.d(TAG, "onPeerLeave")
-        Log.d(TAG, "msg")
+        println("호출 확인 : $msg")
     }
 
     override fun onOfferReceived(data: JSONObject?) {
@@ -207,74 +175,23 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         ))
     }
 
-
-    ////화면을 나가기 전에 db에 있는 파일을 지워준다 .
-    override fun onStop() {
-        Log.d(TAG, "onStop")
-        super.onStop()
-        retrofit = RetrofitClient.getInstance()
-        retrofitService = retrofit.create(RetrofitService::class.java)
-        retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
-            .enqueue(object : Callback<String> {
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
-                    if (response.isSuccessful) {
-
-                            val jsonObject = JSONObject(response.body().toString())
-//                            val roomIdx = jsonObject.getString("roomIdx")
-                        Log.e(TAG, " " + response.errorBody())
-
-                    } else {
-                        Log.e("onResponse", "실패 : " + response.errorBody())
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d(
-                        "실패:", "Failed API call with call: " + call +
-                                " + exception: " + t
-                    )
-                }
-
-            })
-    }
-
-    //Peer간의 연결을 끊어주고 비디오 백그라운드에서 돌고있는 Render를 종료한다
-    //localView release시켜줌
-    override fun onDestroy() {
+    override fun onDestroy() { //앱 죽여 버릴떄 호출됨
         Log.d(TAG, "onDestroy")
         super.onDestroy()
-        Log.d("PeerHashMap", " $peerConnectionMap")
-        get()!!.destroy()
+        get()!!.destroy() // 소켓으로 끊어 달라고 쏴줌
         if (peerConnection == null) {
-            videoCapturer!!.dispose()
         } else {
             peerConnection!!.dispose()
-            videoCapturer!!.dispose()
-            // 더 이상 카메라 eglRender가 돌아가지않도록 release ;
         }
-        localStreamingView!!.release() // 더 이상 카메라 eglRender가 돌아가지않도록 release ;
-
-
+        remoteStreamingView!!.release() /// 더 이상 eglRender 가 돌아가지 않도록 release 해준다 .
     }
 
-    //디바이스의 카메라 설정
-    private fun createCameraCapturer(isFront: Boolean): VideoCapturer? {
-        Log.d(TAG, "createCameraCapturer")
-        val enumerator = Camera1Enumerator(false)
-        val deviceNames = enumerator.deviceNames
-
-        // First, try to find front facing camera
-        for (deviceName in deviceNames) {
-            if (if (isFront) enumerator.isFrontFacing(deviceName) else enumerator.isBackFacing(deviceName)) {
-                val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
-                if (videoCapturer != null) {
-                    return videoCapturer
-                }
-            }
-        }
-        return null
+    override fun onBackPressed() {
+        super.onBackPressed()
+        println("뒤로가기 버튼 누름 ")
+        //        PackageManager packageManager = getApplicationContext().getPackageManager();
+//        Intent intent = packageManager.getLaunchIntentForPackage(getApplicationContext().getPackageName());
+//        getApplicationContext().startActivity(intent);
+//        Runtime.getRuntime().exit(0);
     }
 }
