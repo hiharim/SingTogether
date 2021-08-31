@@ -52,8 +52,16 @@ interface RetrofitService {
     fun requestGetHomePost (
     ) : Call<String>
 
+
+
     @POST("loadLiveStreamingPost.php")
     fun requestGetLiveStreamingPost (
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("finishLiveStreamingPost.php")
+    fun requestFinishLiveStreamingPost (
+        @Field("roomIdx") roomIdx :String,
     ) : Call<String>
 
 

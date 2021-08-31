@@ -67,7 +67,7 @@
         </LinearLayout>
     </Toolbar>
     <org.webrtc.SurfaceViewRenderer
-        android:id="@+id/videoView"
+        android:id="@+id/localStreamingView"
         android:layout_below="@+id/toolbar_streaming"
         android:layout_above="@+id/linear"
         android:layout_width="match_parent"
