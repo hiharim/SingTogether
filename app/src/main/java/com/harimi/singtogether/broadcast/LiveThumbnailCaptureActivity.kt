@@ -18,10 +18,8 @@ import androidx.core.content.FileProvider
 import com.gun0912.tedpermission.PermissionListener
 import com.gun0912.tedpermission.TedPermission
 import com.harimi.singtogether.LoginActivity
-import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.ProfileActivity
 
 import com.harimi.singtogether.databinding.ActivityLiveThumbnailCaptureBinding
 import okhttp3.MediaType
@@ -70,8 +68,38 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
         Log.d(TAG,"아이디 "+email +" 닉네임 "+nickname+" 프로필사진 "+profile)
         settingPermission()
 
+        binding.ivCancelThumbnailCapture.setOnClickListener {
+
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("취소")
+            builder.setMessage("방 만들기를 취소하겠습니까?")
+
+            builder.setPositiveButton("네") { dialog, which ->
+                Toast.makeText(applicationContext,
+                    "방만들기를 취소하였습니다", Toast.LENGTH_SHORT).show()
+
+                finish()
+            }
+            builder.setNegativeButton("아니요") { dialog, which ->
+                if (imageFile == null){
+                    settingPermission()
+                }else{
+
+                }
+            }
+
+            builder.show()
+        }
 
         binding.btnLiveStart.setOnClickListener {
+
+            if (imageFile ==null){
+                Toast.makeText(applicationContext,"썸네일을 먼저 등록해주세요.",Toast.LENGTH_SHORT).show()
+                settingPermission()
+                return@setOnClickListener
+
+            }
+
 
             retrofit = RetrofitClient.getInstance()
             retrofitService = retrofit.create(RetrofitService::class.java)
@@ -94,9 +122,10 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                                 val roomIdx = jsonObject.getString("roomIdx")
 
                                 Log.d("onResponse: 성공: ", response.body() + response.message())
-                                val intent = Intent(this@LiveThumbnailCaptureActivity, StreamingActivity::class.java)
+                                val intent = Intent(this@LiveThumbnailCaptureActivity, LiveStreamingActivity::class.java)
                                 intent.putExtra("roomIdx", roomIdx)
                                 startActivity(intent)
+                                finish()
                             } else {
                                 Log.e("onResponse", "실패 : " + response.errorBody())
                             }

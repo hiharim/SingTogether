@@ -23,6 +23,7 @@
                 android:layout_width="417dp"
                 android:layout_height="401dp"
                 android:layout_marginTop="86dp"
+
                 android:layout_marginBottom="13dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -42,6 +43,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageView
+                android:id="@+id/iv_cancelThumbnailCapture"
+                android:layout_width="36dp"
+                android:layout_height="31dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="60dp"
+                app:layout_constraintBottom_toTopOf="@+id/iv_thumbnail"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_baseline_close_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
