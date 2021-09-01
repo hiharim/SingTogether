@@ -39,7 +39,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     var mSurfaceHolder: SurfaceHolder? = null
     var mCamera: Camera? = null
     private val recordingVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/recordVideo2.mp4"
+        "${externalCacheDir?.absolutePath}/recordVideo22.mp4"
     }
     private var file_path:String?=null
     private lateinit var mCameraDevice: CameraDevice
@@ -178,7 +178,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         mSurfaceHolder = binding.surfaceView.getHolder()
         mSurfaceHolder!!.addCallback(this)
         mSurfaceHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-
     }
 
     fun startVideoRecorder() {

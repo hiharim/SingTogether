@@ -108,8 +108,7 @@ class AfterSingActivity : AppCompatActivity() {
         audioFile=File(user_path)
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         // Create an image file name
-        //fileName = "$timeStamp.m4a"
-        fileName = "$timeStamp.mp4"
+        fileName = "$timeStamp.m4a"
         var requestBody : RequestBody = RequestBody.create(
             MediaType.parse("multipart/form-data"), audioFile)
         var body : MultipartBody.Part=

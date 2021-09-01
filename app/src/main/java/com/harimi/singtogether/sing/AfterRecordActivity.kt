@@ -98,7 +98,7 @@ class AfterRecordActivity : AppCompatActivity() {
 
     private fun upload() {
         //audioFile=File("${externalCacheDir?.absolutePath}/newUserMrAudio.m4a")
-        audioFile=File(file_path)
+        audioFile=File(user_path)
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         // Create an image file name
         //fileName = "$timeStamp.m4a"

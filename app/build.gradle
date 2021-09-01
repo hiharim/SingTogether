@@ -90,6 +90,9 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
+    // record surfaceView
+    implementation 'com.uncorkedstudios.android:recordable-surfaceview:1.5.7'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

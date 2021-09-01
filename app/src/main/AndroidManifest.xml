@@ -29,10 +29,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".broadcast.LiveStreamingViewActivity"></activity>
+        <activity android:name=".sing.DuetActivity"></activity>
+        <activity android:name=".sing.Video3Activity" />
+        <activity android:name=".broadcast.LiveStreamingViewActivity" />
         <activity android:name=".broadcast.LiveThumbnailCaptureActivity" />
         <activity android:name=".sing.AfterRecordActivity" />
         <activity android:name=".sing.VideoActivity" />
+        <activity android:name=".sing.Video2Activity" />
         <activity android:name=".sing.AfterSingActivity" />
         <activity android:name=".broadcast.StreamingActivity" />
         <activity android:name=".sing.BeforeSingActivity" />

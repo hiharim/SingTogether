@@ -76,7 +76,7 @@ class BeforeSingActivity : AppCompatActivity() {
 
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {
-            if(way=="녹음"){
+            if(way=="녹음") {
                 val intent= Intent(this,RecordActivity::class.java)
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
@@ -88,6 +88,7 @@ class BeforeSingActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }else if (way=="녹화"){
+                //val intent= Intent(this,Video3Activity::class.java)
                 val intent= Intent(this,Video2Activity::class.java)
                 //val intent= Intent(this,VideoActivity::class.java)
                 intent.putExtra("RECORD_IDX",idx)
