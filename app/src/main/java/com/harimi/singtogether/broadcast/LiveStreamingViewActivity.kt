@@ -27,6 +27,8 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     var remoteVideoTrack: VideoTrack? = null
     var peerConnectionMap: HashMap<String?, PeerConnection?>? = null
 
+    var i : Int =0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_streaming_view)
@@ -103,11 +105,16 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
             override fun onAddStream(mediaStream: MediaStream) {
                 super.onAddStream(mediaStream)
-                remoteVideoTrack = mediaStream.videoTracks[0]
-                Log.d("onAddStreamRemote", "" + mediaStream.videoTracks[0].toString())
-                Log.d("onAddStreamRemote", "" + remoteVideoTrack)
+//                if (i!=0){
+//                    remoteStreamingView!!.release()
+//                }else{
+//
+//                }
+                remoteVideoTrack = mediaStream.videoTracks[i]
+                Log.d(TAG, "" + remoteVideoTrack)
                 runOnUiThread { remoteVideoTrack?.addSink(remoteStreamingView) }
 
+//                i += 1
             }
         })
         peerConnection!!.addStream(mediaStream)

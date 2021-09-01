@@ -16,6 +16,7 @@ import com.harimi.singtogether.HomeFragment
 import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
 import org.json.JSONObject
@@ -46,6 +47,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     var peerConnectionMap: HashMap<String?, PeerConnection?>? = null
     private val TAG = "STREAMING_ACTIVITY"
     var videoCapturer: VideoCapturer? = null
+    var videoTrack: VideoTrack? = null
+
     private lateinit var activity_streaming_tv_count :TextView
     private lateinit var activity_streaming_btn_close :ImageView
     private lateinit var activity_streaming_btn_switch_cam_backCamera :ImageButton
@@ -111,7 +114,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             videoSource?.capturerObserver
         )
         videoCapturer!!.startCapture(480, 640, 30)
-        val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
+        videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
 
         localStreamingView = findViewById(R.id.localStreamingView)
         localStreamingView!!.setMirror(true)
@@ -153,53 +156,14 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         activity_streaming_btn_switch_cam_backCamera.setOnClickListener {
 
-            videoCapturer!!.dispose()
-            localStreamingView!!.release()
-            eglBaseContext = EglBase.create().eglBaseContext
-            // create PeerConnectionFactory
-            PeerConnectionFactory.initialize(
-                PeerConnectionFactory.InitializationOptions
-                    .builder(this)
-                    .createInitializationOptions()
-            )
-            val options = PeerConnectionFactory.Options()
-            val defaultVideoEncoderFactory = DefaultVideoEncoderFactory(eglBaseContext, true, true)
-            val defaultVideoDecoderFactory = DefaultVideoDecoderFactory(eglBaseContext)
-
-            peerConnectionFactory = PeerConnectionFactory.builder()
-                .setOptions(options)
-                .setVideoEncoderFactory(defaultVideoEncoderFactory)
-                .setVideoDecoderFactory(defaultVideoDecoderFactory)
-                .createPeerConnectionFactory()
-
-
-            //비디오 트랙 채널과 소스
-            val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
-            videoCapturer = createCameraCapturer(false) ///카메라를 정면선택할지 후면선택할지 선택
-            val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
-            videoCapturer!!.initialize(
-                surfaceTextureHelper,
-                applicationContext,
-                videoSource?.capturerObserver
-            )
-            videoCapturer!!.startCapture(480, 640, 30)
-            val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
-
-            localStreamingView!!.setMirror(true)
-            localStreamingView!!.init(eglBaseContext, null)
-
-
-            videoTrack!!.addSink(localStreamingView)
-
-        }
-
-        activity_streaming_btn_switch_cam_backCamera.setOnClickListener {
             activity_streaming_btn_switch_cam_frontCamera.visibility = View.VISIBLE
             activity_streaming_btn_switch_cam_backCamera.visibility = View.GONE
             videoCapturer!!.dispose()
             localStreamingView!!.release()
+            mediaStream!!.removeTrack(videoTrack)
+
             eglBaseContext = EglBase.create().eglBaseContext
-            // create PeerConnectionFactory
+
             PeerConnectionFactory.initialize(
                 PeerConnectionFactory.InitializationOptions
                     .builder(this)
@@ -216,7 +180,6 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 .createPeerConnectionFactory()
 
 
-            //비디오 트랙 채널과 소스
             val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
             videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
             val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
@@ -226,14 +189,19 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 videoSource?.capturerObserver
             )
             videoCapturer!!.startCapture(480, 640, 30)
-            val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
-
+            videoTrack = peerConnectionFactory!!.createVideoTrack("102", videoSource)
+//
             localStreamingView!!.setMirror(true)
             localStreamingView!!.init(eglBaseContext, null)
-
-
+//
+//
             videoTrack!!.addSink(localStreamingView)
 
+
+            mediaStream!!.addTrack(videoTrack)
+            //미디어 스트림에 오디오 트랙에 넣기
+            mediaStream!!.addTrack(localAudioTrack)
+//            get()!!.init(this, roomIdx)
         }
         activity_streaming_btn_switch_cam_frontCamera.setOnClickListener {
 
@@ -241,8 +209,9 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             activity_streaming_btn_switch_cam_backCamera.visibility = View.VISIBLE
             videoCapturer!!.dispose()
             localStreamingView!!.release()
-            eglBaseContext = EglBase.create().eglBaseContext
-            // create PeerConnectionFactory
+            mediaStream!!.removeTrack(videoTrack)
+
+            eglBaseContext  = EglBase.create().eglBaseContext
             PeerConnectionFactory.initialize(
                 PeerConnectionFactory.InitializationOptions
                     .builder(this)
@@ -257,9 +226,9 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 .setVideoEncoderFactory(defaultVideoEncoderFactory)
                 .setVideoDecoderFactory(defaultVideoDecoderFactory)
                 .createPeerConnectionFactory()
-
-
-            //비디오 트랙 채널과 소스
+////
+//
+//            //비디오 트랙 채널과 소스
             val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
             videoCapturer = createCameraCapturer(false) ///카메라를 정면선택할지 후면선택할지 선택
             val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
@@ -269,14 +238,17 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 videoSource?.capturerObserver
             )
             videoCapturer!!.startCapture(480, 640, 30)
-            val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
+            videoTrack = peerConnectionFactory!!.createVideoTrack("104", videoSource)
 
             localStreamingView!!.setMirror(true)
             localStreamingView!!.init(eglBaseContext, null)
-
-
+//
+//
             videoTrack!!.addSink(localStreamingView)
-
+            mediaStream!!.addTrack(videoTrack)
+            //미디어 스트림에 오디오 트랙에 넣기
+            mediaStream!!.addTrack(localAudioTrack)
+//            get()!!.init(this, roomIdx)
         }
 
         ////나가기 버튼 눌렀을 때
@@ -423,6 +395,14 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
                         val jsonObject = JSONObject(response.body().toString())
 //                            val roomIdx = jsonObject.getString("roomIdx")
+                        var bundle: Bundle = Bundle()
+                        val postFragment = PostFragment()
+                        postFragment.arguments=bundle
+                        this@LiveStreamingActivity.supportFragmentManager.beginTransaction()
+                            .add(R.id.activity_main_frame,postFragment)
+                            .commitAllowingStateLoss() //프래그먼트 다음에 액티비티가 실행된후 그 전에 있던 프래그먼트를 날려버리고 새롭게 시작할 때 사용할 수 있다.
+
+//                        finish()
 
                     } else {
                         Log.e("onResponse", "실패 : " + response.errorBody())

@@ -38,6 +38,7 @@ class LiveFragment : Fragment() {
     lateinit var rv_fragmentLivePost : RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
     lateinit var  tv_noLive: TextView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -57,6 +58,7 @@ class LiveFragment : Fragment() {
         liveStreamingPostList.clear()
         liveStreamingPostLoad()
     }
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
