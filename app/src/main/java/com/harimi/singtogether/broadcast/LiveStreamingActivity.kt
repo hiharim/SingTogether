@@ -4,12 +4,14 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isInvisible
 import com.harimi.singtogether.HomeFragment
 import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.Network.RetrofitClient
@@ -46,8 +48,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     var videoCapturer: VideoCapturer? = null
     private lateinit var activity_streaming_tv_count :TextView
     private lateinit var activity_streaming_btn_close :ImageView
-    private lateinit var activity_streaming_btn_switch_cam :ImageButton
-
+    private lateinit var activity_streaming_btn_switch_cam_backCamera :ImageButton
+    private lateinit var activity_streaming_btn_switch_cam_frontCamera :ImageButton
     private var viewer : String ? ="0"
 
     var localStreamingView: SurfaceViewRenderer? = null
@@ -60,10 +62,11 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         Log.d(TAG, " $roomIdx")
         activity_streaming_tv_count = findViewById<TextView>(R.id.activity_streaming_tv_count) //방송 시청자
         activity_streaming_btn_close = findViewById<ImageView>(R.id.activity_streaming_btn_close)// 나가기 버튼
-        activity_streaming_btn_switch_cam =findViewById(R.id.activity_streaming_btn_switch_cam)// 카메라 전환 버튼
+        activity_streaming_btn_switch_cam_backCamera =findViewById(R.id.activity_streaming_btn_switch_cam_backCamera)// 백 카메라 전환 버튼
+        activity_streaming_btn_switch_cam_frontCamera =findViewById(R.id.activity_streaming_btn_switch_cam_frontCamera)//프론트 카메라 전환 버튼
         activity_streaming_tv_count.text = viewer // 초기 시청자 셋팅
 
-
+        activity_streaming_btn_switch_cam_backCamera.visibility = View.GONE
 
 
         peerConnectionMap = HashMap()
@@ -148,7 +151,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
 
 
-        activity_streaming_btn_switch_cam.setOnClickListener {
+        activity_streaming_btn_switch_cam_backCamera.setOnClickListener {
 
             videoCapturer!!.dispose()
             localStreamingView!!.release()
@@ -189,6 +192,93 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             videoTrack!!.addSink(localStreamingView)
 
         }
+
+        activity_streaming_btn_switch_cam_backCamera.setOnClickListener {
+            activity_streaming_btn_switch_cam_frontCamera.visibility = View.VISIBLE
+            activity_streaming_btn_switch_cam_backCamera.visibility = View.GONE
+            videoCapturer!!.dispose()
+            localStreamingView!!.release()
+            eglBaseContext = EglBase.create().eglBaseContext
+            // create PeerConnectionFactory
+            PeerConnectionFactory.initialize(
+                PeerConnectionFactory.InitializationOptions
+                    .builder(this)
+                    .createInitializationOptions()
+            )
+            val options = PeerConnectionFactory.Options()
+            val defaultVideoEncoderFactory = DefaultVideoEncoderFactory(eglBaseContext, true, true)
+            val defaultVideoDecoderFactory = DefaultVideoDecoderFactory(eglBaseContext)
+
+            peerConnectionFactory = PeerConnectionFactory.builder()
+                .setOptions(options)
+                .setVideoEncoderFactory(defaultVideoEncoderFactory)
+                .setVideoDecoderFactory(defaultVideoDecoderFactory)
+                .createPeerConnectionFactory()
+
+
+            //비디오 트랙 채널과 소스
+            val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
+            videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
+            val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
+            videoCapturer!!.initialize(
+                surfaceTextureHelper,
+                applicationContext,
+                videoSource?.capturerObserver
+            )
+            videoCapturer!!.startCapture(480, 640, 30)
+            val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
+
+            localStreamingView!!.setMirror(true)
+            localStreamingView!!.init(eglBaseContext, null)
+
+
+            videoTrack!!.addSink(localStreamingView)
+
+        }
+        activity_streaming_btn_switch_cam_frontCamera.setOnClickListener {
+
+            activity_streaming_btn_switch_cam_frontCamera.visibility = View.GONE
+            activity_streaming_btn_switch_cam_backCamera.visibility = View.VISIBLE
+            videoCapturer!!.dispose()
+            localStreamingView!!.release()
+            eglBaseContext = EglBase.create().eglBaseContext
+            // create PeerConnectionFactory
+            PeerConnectionFactory.initialize(
+                PeerConnectionFactory.InitializationOptions
+                    .builder(this)
+                    .createInitializationOptions()
+            )
+            val options = PeerConnectionFactory.Options()
+            val defaultVideoEncoderFactory = DefaultVideoEncoderFactory(eglBaseContext, true, true)
+            val defaultVideoDecoderFactory = DefaultVideoDecoderFactory(eglBaseContext)
+
+            peerConnectionFactory = PeerConnectionFactory.builder()
+                .setOptions(options)
+                .setVideoEncoderFactory(defaultVideoEncoderFactory)
+                .setVideoDecoderFactory(defaultVideoDecoderFactory)
+                .createPeerConnectionFactory()
+
+
+            //비디오 트랙 채널과 소스
+            val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
+            videoCapturer = createCameraCapturer(false) ///카메라를 정면선택할지 후면선택할지 선택
+            val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
+            videoCapturer!!.initialize(
+                surfaceTextureHelper,
+                applicationContext,
+                videoSource?.capturerObserver
+            )
+            videoCapturer!!.startCapture(480, 640, 30)
+            val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
+
+            localStreamingView!!.setMirror(true)
+            localStreamingView!!.init(eglBaseContext, null)
+
+
+            videoTrack!!.addSink(localStreamingView)
+
+        }
+
         ////나가기 버튼 눌렀을 때
         activity_streaming_btn_close.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -224,12 +314,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     get()!!.sendIceCandidate(iceCandidate, socketId!!)
 
                 }
-
                 override fun onAddStream(mediaStream: MediaStream) {
                     super.onAddStream(mediaStream)
-
-
-
 //                val remoteVideoTrack = mediaStream.videoTracks[0]
 //                runOnUiThread {
 //                }
