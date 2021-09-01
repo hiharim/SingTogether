@@ -47,7 +47,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     var peerConnectionMap: HashMap<String?, PeerConnection?>? = null
     private val TAG = "STREAMING_ACTIVITY"
     var videoCapturer: VideoCapturer? = null
-    var videoTrack: VideoTrack? = null
+//    var videoTrack: VideoTrack? = null
 
     private lateinit var activity_streaming_tv_count :TextView
     private lateinit var activity_streaming_btn_close :ImageView
@@ -106,7 +106,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         //비디오 트랙 채널과 소스
         val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
-        videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
+        val videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
         val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
         videoCapturer!!.initialize(
             surfaceTextureHelper,
@@ -114,7 +114,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             videoSource?.capturerObserver
         )
         videoCapturer!!.startCapture(480, 640, 30)
-        videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
+        val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
 
         localStreamingView = findViewById(R.id.localStreamingView)
         localStreamingView!!.setMirror(true)
@@ -160,7 +160,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             activity_streaming_btn_switch_cam_backCamera.visibility = View.GONE
             videoCapturer!!.dispose()
             localStreamingView!!.release()
-            mediaStream!!.removeTrack(videoTrack)
+//            mediaStream!!.removeTrack(videoTrack)
 
             eglBaseContext = EglBase.create().eglBaseContext
 
@@ -181,7 +181,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
 
             val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
-            videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
+            val videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
             val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
             videoCapturer!!.initialize(
                 surfaceTextureHelper,
@@ -189,7 +189,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 videoSource?.capturerObserver
             )
             videoCapturer!!.startCapture(480, 640, 30)
-            videoTrack = peerConnectionFactory!!.createVideoTrack("102", videoSource)
+            val videoTrack = peerConnectionFactory!!.createVideoTrack("102", videoSource)
 //
             localStreamingView!!.setMirror(true)
             localStreamingView!!.init(eglBaseContext, null)
@@ -209,7 +209,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             activity_streaming_btn_switch_cam_backCamera.visibility = View.VISIBLE
             videoCapturer!!.dispose()
             localStreamingView!!.release()
-            mediaStream!!.removeTrack(videoTrack)
+//            mediaStream!!.removeTrack(videoTrack)
 
             eglBaseContext  = EglBase.create().eglBaseContext
             PeerConnectionFactory.initialize(
@@ -230,7 +230,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 //
 //            //비디오 트랙 채널과 소스
             val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
-            videoCapturer = createCameraCapturer(false) ///카메라를 정면선택할지 후면선택할지 선택
+            val videoCapturer = createCameraCapturer(false) ///카메라를 정면선택할지 후면선택할지 선택
             val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
             videoCapturer!!.initialize(
                 surfaceTextureHelper,
@@ -238,7 +238,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 videoSource?.capturerObserver
             )
             videoCapturer!!.startCapture(480, 640, 30)
-            videoTrack = peerConnectionFactory!!.createVideoTrack("104", videoSource)
+            val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
 
             localStreamingView!!.setMirror(true)
             localStreamingView!!.init(eglBaseContext, null)
