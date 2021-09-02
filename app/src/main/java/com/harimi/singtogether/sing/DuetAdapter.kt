@@ -28,6 +28,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         val cnt_reply=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_count_reply)
         val cnt_duet=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_count_duet)
         val duet_path=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_duet_path)
+        val duet_date=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_date)
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DuetViewHolder {
@@ -46,6 +48,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         holder.cnt_duet.text=curData.cnt_duet
         holder.nickname.text=curData.nickname
         holder.duet_path.text=curData.duet_path
+        holder.duet_date.text=curData.date
+
 
         Glide.with(holder.itemView).load(curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
@@ -64,6 +68,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             bundle.putString("nickname",curData.nickname)
             bundle.putString("duet_path",curData.duet_path)
             bundle.putString("profile",curData.profile)
+            bundle.putString("date",curData.date)
             detailDuetFragment.arguments=bundle
 
 

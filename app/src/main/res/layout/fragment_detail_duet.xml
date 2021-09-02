@@ -97,11 +97,11 @@
 
                 </com.google.android.exoplayer2.ui.PlayerView>
 
-                <com.google.android.exoplayer2.ui.PlayerControlView
-                    android:id="@+id/pcv"
-                    android:layout_below="@+id/pv"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+<!--                <com.google.android.exoplayer2.ui.PlayerControlView-->
+<!--                    android:id="@+id/pcv"-->
+<!--                    android:layout_below="@+id/pv"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"/>-->
             </RelativeLayout>
         </LinearLayout>
 
@@ -120,7 +120,6 @@
                     android:layout_marginStart="32dp"
                     android:layout_marginBottom="10dp"
                     android:text="제목"
-                    android:lines="2"
                     android:textColor="#000000"
                     android:textSize="17sp"
                     app:layout_constraintBottom_toTopOf="@+id/tv_singer"

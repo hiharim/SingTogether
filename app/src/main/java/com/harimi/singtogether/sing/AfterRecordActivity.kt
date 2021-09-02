@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.databinding.ActivityAfterRecordBinding
@@ -61,7 +62,7 @@ class AfterRecordActivity : AppCompatActivity() {
 
         Log.e("애프터싱액티비티","idx,file_path,user_path,with,way"+
                 idx+" "+file_path+" "+user_path+" "+with+" "+way)
-        nickname="조하림22"
+        nickname= LoginActivity.user_info.loginUserNickname
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
         applicationContext?.let{

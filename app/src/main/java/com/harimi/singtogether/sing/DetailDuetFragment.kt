@@ -24,16 +24,18 @@ import de.hdodenhof.circleimageview.CircleImageView
  */
 class DetailDuetFragment : Fragment() {
 
-    private var idx : Int? = null
+    private var idx : Int? = null // duet 테이블 idx
     private var title : String? = null
     private var singer : String? = null
     private var cnt_play : String? = null
     private var cnt_reply : String? = null
     private var cnt_duet : String? = null
     private var nickname : String? = null
-    private var duet_path : String? = null
+    private var duet_path : String? = null // 사용자 오디오/비디오
     private var profile : String? = null
+    private var date : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +48,8 @@ class DetailDuetFragment : Fragment() {
             cnt_duet=it.getString("cnt_duet")
             nickname=it.getString("nickname")
             duet_path=it.getString("duet_path")
-            profile=it.getString("profile")
+            profile=it.getString("user_profile")
+            date=it.getString("date")
         }
     }
 
@@ -58,8 +61,14 @@ class DetailDuetFragment : Fragment() {
 
         //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
-            // RecordActivity 로 이동
-            val intent= Intent(context,RecordActivity::class.java)
+            // DuetActivity 로 이동
+            val intent= Intent(context,DuetActivity::class.java)
+            intent.putExtra("idx",idx)
+            intent.putExtra("title",title)
+            intent.putExtra("singer",singer)
+            intent.putExtra("nickname",nickname)
+            intent.putExtra("duet_path",duet_path)
+            intent.putExtra("profile",profile)
             startActivity(intent)
         }
 
@@ -68,7 +77,8 @@ class DetailDuetFragment : Fragment() {
         binding.tvSinger.text=singer
         binding.tvHits.text=cnt_play
         binding.tvReviewNumber.text=cnt_reply
-
+        binding.tvUploadDate.text=date
+        Glide.with(this).load(profile).into(binding.ivUploadUserProfile)
         Log.e("디테일프래그","duet_path"+duet_path)
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드

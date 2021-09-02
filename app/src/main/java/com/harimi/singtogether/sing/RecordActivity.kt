@@ -18,6 +18,9 @@ import com.arthenica.mobileffmpeg.FFmpegExecution
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.ActivityRecordBinding
 
+/**
+ * 녹음하는 액티비티
+ * */
 class RecordActivity: AppCompatActivity()  {
 
     private lateinit var binding: ActivityRecordBinding

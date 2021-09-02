@@ -22,6 +22,10 @@ import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.ActivityVideo2Binding
 import java.text.SimpleDateFormat
 
+/**
+ * 녹화하는 액티비티
+ * FFMPEG - MR + 사용자 오디오 merge
+ * */
 class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     private lateinit var binding: ActivityVideo2Binding
@@ -84,8 +88,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         var result=lyrics?.replace(" ★", "\n")
         binding.activityRecordTvLyrics.text= result.toString()
 
-
-
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(song_path)
         mediaPlayer.prepare()
@@ -116,7 +118,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                         }
                         SystemClock.sleep(200)
                     }
-
 
                     // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
                     if(!mediaPlayer.isPlaying) {
