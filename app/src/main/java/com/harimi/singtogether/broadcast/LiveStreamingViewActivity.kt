@@ -110,11 +110,13 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 //                }else{
 //
 //                }
-                remoteVideoTrack = mediaStream.videoTracks[i]
+                remoteVideoTrack = mediaStream.videoTracks[0]
                 Log.d(TAG, "" + remoteVideoTrack)
                 runOnUiThread { remoteVideoTrack?.addSink(remoteStreamingView) }
 
-//                i += 1
+                i += 1
+//
+                Log.d(TAG, "" + i)
             }
         })
         peerConnection!!.addStream(mediaStream)

@@ -97,14 +97,6 @@
             android:layout_height="wrap_content"/>
 
         <ImageButton
-            android:id="@+id/activity_streaming_btn_switch_cam_frontCamera"
-            android:background="@android:color/transparent"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_baseline_flip_camera_ios_24_black"
-            android:layout_height="wrap_content"/>
-
-        <ImageButton
             android:id="@+id/activity_streaming_btn_chat"
             android:background="@android:color/transparent"
             android:layout_width="0dp"
