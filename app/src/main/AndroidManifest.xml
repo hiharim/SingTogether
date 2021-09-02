@@ -37,10 +37,10 @@
         <activity android:name=".sing.VideoActivity" />
         <activity android:name=".sing.Video2Activity" />
         <activity android:name=".sing.AfterSingActivity" />
-        <activity android:name=".broadcast.StreamingActivity" />
+        <activity android:name=".broadcast.LiveStreamingActivity" />
         <activity android:name=".sing.BeforeSingActivity" />
         <activity android:name=".sing.RecordActivity" />
-        <activity android:name=".broadcast.LiveStartActivity" />
+        <activity android:name=".broadcast.LiveMakeTitleActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".LoginActivity">
             <intent-filter>

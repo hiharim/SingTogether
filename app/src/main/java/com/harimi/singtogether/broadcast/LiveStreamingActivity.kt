@@ -2,30 +2,36 @@ package com.harimi.singtogether.broadcast
 
 import android.content.Intent
 import android.media.AudioManager
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isInvisible
+import com.harimi.singtogether.HomeFragment
+import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
 import org.json.JSONObject
 import org.webrtc.*
 import org.webrtc.audio.JavaAudioDeviceModule
-import java.util.ArrayList
-import java.util.HashMap
-import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
-import okhttp3.MediaType
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import java.util.*
 
 /**
  * 실시간 방송하는 액티비티 화면
  * */
-class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
+class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
     private var roomIdx :String? =null
@@ -41,24 +47,43 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     var peerConnectionMap: HashMap<String?, PeerConnection?>? = null
     private val TAG = "STREAMING_ACTIVITY"
     var videoCapturer: VideoCapturer? = null
+    var videoSource: VideoSource? = null
+    var videoTrack: VideoTrack? = null
+
+    private lateinit var activity_streaming_tv_count :TextView
+    private lateinit var activity_streaming_btn_close :ImageView
+    private lateinit var activity_streaming_btn_switch_cam_backCamera :ImageButton
+
+    private var viewer : String ? ="0"
 
     var localStreamingView: SurfaceViewRenderer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_streaming)
+        setContentView(R.layout.activity_live_streaming)
 
         val getIntent = intent
         roomIdx = getIntent.getStringExtra("roomIdx")
         Log.d(TAG, " $roomIdx")
+        activity_streaming_tv_count = findViewById<TextView>(R.id.activity_streaming_tv_count) //방송 시청자
+        activity_streaming_btn_close = findViewById<ImageView>(R.id.activity_streaming_btn_close)// 나가기 버튼
+        activity_streaming_btn_switch_cam_backCamera =findViewById(R.id.activity_streaming_btn_switch_cam_backCamera)//  카메라 전환 버튼
+
+        activity_streaming_tv_count.text = viewer // 초기 시청자 셋팅
+
+
 
         peerConnectionMap = HashMap()
         iceServers = ArrayList()
-        iceServers!!.add(PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer())
+        iceServers!!.add(
+            PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer()
+        )
         eglBaseContext = EglBase.create().eglBaseContext
         // create PeerConnectionFactory
-        PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions
-            .builder(this)
-            .createInitializationOptions())
+        PeerConnectionFactory.initialize(
+            PeerConnectionFactory.InitializationOptions
+                .builder(this)
+                .createInitializationOptions()
+        )
         val options = PeerConnectionFactory.Options()
         val defaultVideoEncoderFactory = DefaultVideoEncoderFactory(eglBaseContext, true, true)
         val defaultVideoDecoderFactory = DefaultVideoDecoderFactory(eglBaseContext)
@@ -69,6 +94,8 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             .setUseHardwareAcousticEchoCanceler(false)
             .setUseHardwareNoiseSuppressor(false)
             .createAudioDeviceModule()
+
+
         peerConnectionFactory = PeerConnectionFactory.builder()
             .setOptions(options)
             .setAudioDeviceModule(audioDeviceModule)
@@ -79,11 +106,15 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         //비디오 트랙 채널과 소스
         val surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext)
-        videoCapturer = createCameraCapturer(true)
-        val videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
-        videoCapturer!!.initialize(surfaceTextureHelper, applicationContext, videoSource?.capturerObserver)
+        videoCapturer = createCameraCapturer(true) ///카메라를 정면선택할지 후면선택할지 선택
+        videoSource = peerConnectionFactory!!.createVideoSource(videoCapturer!!.isScreencast)
+        videoCapturer!!.initialize(
+            surfaceTextureHelper,
+            applicationContext,
+            videoSource?.capturerObserver
+        )
         videoCapturer!!.startCapture(480, 640, 30)
-        val videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
+        videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
 
         localStreamingView = findViewById(R.id.localStreamingView)
         localStreamingView!!.setMirror(true)
@@ -92,14 +123,7 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         //오디오 트랙 채널과 소스
         audioConstraints = MediaConstraints()
-        //        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_ECHO_CANCELLATION_CONSTRAINT, "true"));
-//        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_AUTO_GAIN_CONTROL_CONSTRAINT, "false"));
-//        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_HIGH_PASS_FILTER_CONSTRAINT, "false"));
-//        audioConstraints.mandatory.add(
-//                new MediaConstraints.KeyValuePair(AUDIO_NOISE_SUPPRESSION_CONSTRAINT, "true"));
+
         audioSource = peerConnectionFactory!!.createAudioSource(audioConstraints)
         localAudioTrack = peerConnectionFactory!!.createAudioTrack("101", audioSource)
         localAudioTrack!!.setVolume(10.0)
@@ -120,6 +144,34 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         am.isSpeakerphoneOn = true
         Log.d("PeerHashMap", " $peerConnectionMap")
         get()!!.init(this, roomIdx)
+
+
+
+
+        ////카메라 전환버튼 눌렀을 때
+        activity_streaming_btn_switch_cam_backCamera.setOnClickListener {
+
+            switchCamera()
+
+        }
+
+
+        ////나가기 버튼 눌렀을 때
+        activity_streaming_btn_close.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("종료")
+            builder.setMessage("방송을 종료하시겠습니까?")
+
+            builder.setPositiveButton("네") { dialog, which ->
+                Toast.makeText(applicationContext,
+                    "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+            builder.setNegativeButton("아니요") { dialog, which ->
+            }
+            builder.show()
+        }
+
     }
 
     @Synchronized
@@ -129,18 +181,23 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         if (peerConnection != null) {
             return peerConnection
         }
-        peerConnection = peerConnectionFactory!!.createPeerConnection(iceServers, object : PeerConnectionAdapter("PC:$socketId") {
-            override fun onIceCandidate(iceCandidate: IceCandidate) {
-                super.onIceCandidate(iceCandidate)
-                get()!!.sendIceCandidate(iceCandidate, socketId!!)
-            }
+        peerConnection = peerConnectionFactory!!.createPeerConnection(
+            iceServers,
+            object : PeerConnectionAdapter(
+                "PC:$socketId"
+            ) {
+                override fun onIceCandidate(iceCandidate: IceCandidate) {
+                    super.onIceCandidate(iceCandidate)
+                    get()!!.sendIceCandidate(iceCandidate, socketId!!)
 
-            override fun onAddStream(mediaStream: MediaStream) {
-                super.onAddStream(mediaStream)
-                val remoteVideoTrack = mediaStream.videoTracks[0]
-                runOnUiThread {}
-            }
-        })
+                }
+                override fun onAddStream(mediaStream: MediaStream) {
+                    super.onAddStream(mediaStream)
+//                val remoteVideoTrack = mediaStream.videoTracks[0]
+//                runOnUiThread {
+//                }
+                }
+            })
         peerConnection!!.addStream(mediaStream)
         peerConnectionMap!![socketId] = peerConnection
         return peerConnection
@@ -156,7 +213,17 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         peerConnection!!.createOffer(object : SdpAdapter("createOfferSdp:$socketId") {
             override fun onCreateSuccess(sessionDescription: SessionDescription) {
                 super.onCreateSuccess(sessionDescription)
-                peerConnection.setLocalDescription(SdpAdapter("setLocalSdp:$socketId"), sessionDescription)
+
+                var addViewer = Integer.parseInt(viewer)
+                addViewer++
+                viewer = addViewer.toString()
+                activity_streaming_tv_count.text = viewer
+                Log.d(TAG, "onAddStream" + viewer)
+
+                peerConnection.setLocalDescription(
+                    SdpAdapter("setLocalSdp:$socketId"),
+                    sessionDescription
+                )
                 get()!!.sendSessionDescription(sessionDescription, socketId!!)
             }
         }, MediaConstraints())
@@ -176,12 +243,17 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         runOnUiThread {
             val socketId = data!!.optString("from")
             val peerConnection = getOrCreatePeerConnection(socketId)
-            peerConnection!!.setRemoteDescription(SdpAdapter("setRemoteSdp:$socketId"),
-                SessionDescription(SessionDescription.Type.OFFER, data.optString("sdp")))
+            peerConnection!!.setRemoteDescription(
+                SdpAdapter("setRemoteSdp:$socketId"),
+                SessionDescription(SessionDescription.Type.OFFER, data.optString("sdp"))
+            )
             peerConnection.createAnswer(object : SdpAdapter("localAnswerSdp") {
                 override fun onCreateSuccess(sdp: SessionDescription) {
                     super.onCreateSuccess(sdp)
-                    peerConnectionMap!![socketId]!!.setLocalDescription(SdpAdapter("setLocalSdp:$socketId"), sdp)
+                    peerConnectionMap!![socketId]!!.setLocalDescription(
+                        SdpAdapter("setLocalSdp:$socketId"),
+                        sdp
+                    )
                     get()!!.sendSessionDescription(sdp, socketId)
                 }
             }, MediaConstraints())
@@ -192,19 +264,23 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         Log.d(TAG, "onAnswerReceived" + data.toString())
         val socketId = data!!.optString("from")
         val peerConnection = getOrCreatePeerConnection(socketId)
-        peerConnection!!.setRemoteDescription(SdpAdapter("setRemoteSdp:$socketId"),
-            SessionDescription(SessionDescription.Type.ANSWER, data.optString("sdp")))
+        peerConnection!!.setRemoteDescription(
+            SdpAdapter("setRemoteSdp:$socketId"),
+            SessionDescription(SessionDescription.Type.ANSWER, data.optString("sdp"))
+        )
     }
 
     override fun onIceCandidateReceived(data: JSONObject?) {
         Log.d(TAG, "onIceCandidateReceived" + data.toString())
         val socketId = data!!.optString("from")
         val peerConnection = getOrCreatePeerConnection(socketId)
-        peerConnection!!.addIceCandidate(IceCandidate(
-            data.optString("id"),
-            data.optInt("label"),
-            data.optString("candidate")
-        ))
+        peerConnection!!.addIceCandidate(
+            IceCandidate(
+                data.optString("id"),
+                data.optInt("label"),
+                data.optString("candidate")
+            )
+        )
     }
 
 
@@ -222,9 +298,16 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 ) {
                     if (response.isSuccessful) {
 
-                            val jsonObject = JSONObject(response.body().toString())
+                        val jsonObject = JSONObject(response.body().toString())
 //                            val roomIdx = jsonObject.getString("roomIdx")
-                        Log.e(TAG, " " + response.errorBody())
+                        var bundle: Bundle = Bundle()
+                        val postFragment = PostFragment()
+                        postFragment.arguments=bundle
+                        this@LiveStreamingActivity.supportFragmentManager.beginTransaction()
+                            .add(R.id.activity_main_frame,postFragment)
+                            .commitAllowingStateLoss() //프래그먼트 다음에 액티비티가 실행된후 그 전에 있던 프래그먼트를 날려버리고 새롭게 시작할 때 사용할 수 있다.
+
+//                        finish()
 
                     } else {
                         Log.e("onResponse", "실패 : " + response.errorBody())
@@ -268,7 +351,9 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         // First, try to find front facing camera
         for (deviceName in deviceNames) {
-            if (if (isFront) enumerator.isFrontFacing(deviceName) else enumerator.isBackFacing(deviceName)) {
+            if (if (isFront) enumerator.isFrontFacing(deviceName) else enumerator.isBackFacing(
+                    deviceName
+                )) {
                 val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
                 if (videoCapturer != null) {
                     return videoCapturer
@@ -276,5 +361,15 @@ class StreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             }
         }
         return null
+    }
+
+    private fun switchCamera() {
+        if (videoCapturer != null) {
+            if (videoCapturer is CameraVideoCapturer) {
+                val cameraVideoCapturer = videoCapturer as CameraVideoCapturer
+                cameraVideoCapturer.switchCamera(null)
+            } else {
+            }
+        }
     }
 }

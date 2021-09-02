@@ -1,6 +1,5 @@
 package com.harimi.singtogether
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,11 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.harimi.singtogether.broadcast.BroadcastPagerAdapter
 import com.harimi.singtogether.broadcast.LiveFragment
-import com.harimi.singtogether.broadcast.LiveStartActivity
+import com.harimi.singtogether.broadcast.LiveMakeTitleActivity
 import com.harimi.singtogether.broadcast.ReplayFragment
 import com.harimi.singtogether.databinding.FragmentBroadcastBinding
 
@@ -78,7 +76,7 @@ class BraodcastFragment : Fragment() {
 
         // 비디오버튼 클릭
         binding.fragmentBroadcastIvLive.setOnClickListener{
-            val intent= Intent(context, LiveStartActivity::class.java)
+            val intent= Intent(context, LiveMakeTitleActivity::class.java)
             startActivity(intent)
         }
 
