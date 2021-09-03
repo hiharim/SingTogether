@@ -20,9 +20,11 @@ class DuetActivity : AppCompatActivity() {
     private var idx : Int? = null
     private var title : String? = null
     private var singer : String? = null
-    private var song_path : String? = null
+    private var duet_path : String? = null
+    private var mr_path : String? = null
     private var genre : String? = null
     private var user_profile : String? = null
+    private var user_nickname: String? = null
     private var lyrics : String? = null // 가사
     private val with : String = "듀엣" // 솔로인지 듀엣인지
     private var way : String = "녹화" // 녹화,녹음,연습 인지
@@ -35,15 +37,24 @@ class DuetActivity : AppCompatActivity() {
         idx=intent.getIntExtra("idx",0)
         title=intent.getStringExtra("title")
         singer=intent.getStringExtra("singer")
-        song_path=intent.getStringExtra("song_path")
-        user_profile=intent.getStringExtra("user_profile")
+        duet_path=intent.getStringExtra("duet_path")
+        mr_path=intent.getStringExtra("mr_path")
+        user_profile=intent.getStringExtra("profile")
+        user_nickname=intent.getStringExtra("nickname")
+        lyrics=intent.getStringExtra("lyrics")
 
+
+        binding.activityBeforeSingTvTitle.text=title
+        binding.activityBeforeSingTvSinger.text=singer
 
         // 내 프로필
         val profile = LoginActivity.user_info.loginUserProfile
         Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.activityBeforeSingIvMe)
         //상대방 프로필
         Glide.with(this).load("http://3.35.236.251/"+user_profile).into(binding.activityBeforeSingIvUser)
+        // 상대방 닉네임
+        binding.activityDuetTvUserNickname.text=user_nickname
+
         // 녹화, 녹음버튼 토글
         binding.activityBeforeSingBtnVideo.setOnClickListener {
             way="녹화"
@@ -63,20 +74,21 @@ class DuetActivity : AppCompatActivity() {
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
-                intent.putExtra("RECORD_SONG_PATH",song_path)
+                intent.putExtra("RECORD_SONG_PATH",duet_path)
                 intent.putExtra("RECORD_LYRICS",lyrics)
                 intent.putExtra("WITH",with)
                 intent.putExtra("WAY",way)
                 startActivity(intent)
                 finish()
             }else if (way=="녹화"){
-                //val intent= Intent(this,Video3Activity::class.java)
-                val intent= Intent(this,Video2Activity::class.java)
-                //val intent= Intent(this,VideoActivity::class.java)
+
+                val intent= Intent(this,MergeActivity::class.java)
+
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
-                intent.putExtra("RECORD_SONG_PATH",song_path)
+                intent.putExtra("RECORD_SONG_PATH",duet_path)
+                intent.putExtra("RECORD_MR_PATH",mr_path)
                 intent.putExtra("RECORD_LYRICS",lyrics)
                 intent.putExtra("WITH",with)
                 intent.putExtra("WAY",way)

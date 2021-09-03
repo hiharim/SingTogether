@@ -52,8 +52,9 @@ class DuetFragment : Fragment() {
         binding.fragmentDuetRecyclerView.setHasFixedSize(true)
         duetAdapter= DuetAdapter(duetList)
         binding.fragmentDuetRecyclerView.adapter=duetAdapter
-        loadDuet()
+
         duetAdapter.notifyDataSetChanged()
+        loadDuet()
         return binding.root
     }
 
@@ -69,14 +70,19 @@ class DuetFragment : Fragment() {
     }
 
     // 재개상태로 전환될때마다 필요한 초기화 작업 수행
+//    override fun onPause() {
+//        super.onPause()
+//        Log.d("리플레이: ", "onPause")
+//        duetList.clear()
+//        loadDuet()
+//    }
+
     override fun onResume() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
-        // todo : 처음데이터 불러왔을때 2번불리는 문제점 해결하기
         duetList.clear()
         loadDuet()
     }
-
     private fun loadDuet(){
         retrofitService.requestDuet().enqueue(object : Callback<String> {
             // 통신에 성공한 경우
@@ -100,9 +106,10 @@ class DuetFragment : Fragment() {
                         //val song_path=iObject.getString("song_path")
                         //todo : song_path,duet_path 둘다되게 고치기
                         val song_path=iObject.getString("duet_path")
+                        val mr_path=iObject.getString("song_path")
                         val duet_date=iObject.getString("date")
                         var path="http://3.35.236.251/"+song_path
-                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile,path,duet_date)
+                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile,path,duet_date,mr_path)
                         duetList.add(0,duetData)
                         duetAdapter.notifyDataSetChanged()
                     }

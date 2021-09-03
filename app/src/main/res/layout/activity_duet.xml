@@ -45,62 +45,79 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/activity_before_sing_iv_user"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView1"
         android:layout_below="@+id/linear"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
         android:layout_marginLeft="125dp"
         android:background="@drawable/button_shqpe_purple"
-         />
+        app:cardCornerRadius="45dp">
+
+        <ImageView
+            android:id="@+id/activity_before_sing_iv_user"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+
+            />
+    </androidx.cardview.widget.CardView>
 
 
-    <ImageView
-        android:id="@+id/activity_before_sing_iv_me"
-        android:layout_marginLeft="20dp"
-        android:layout_toEndOf="@+id/activity_before_sing_iv_user"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView2"
         android:layout_below="@+id/linear"
+        android:layout_toEndOf="@+id/cardView1"
+        android:layout_width="76dp"
+        android:layout_height="76dp"
+       android:layout_marginLeft="5dp"
         android:background="@drawable/button_shape"
-         />
+        app:cardCornerRadius="45dp">
 
-    <TextView
-        android:id="@+id/activity_duet_tv_user_nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/arrow"
-        android:text="닉네임" />
+        <ImageView
+            android:id="@+id/activity_before_sing_iv_me"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
 
-    <TextView
-        android:id="@+id/tv_duet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/arrow"
+            />
+    </androidx.cardview.widget.CardView>
+
+    <LinearLayout
+        android:id="@+id/linear3"
         android:layout_centerInParent="true"
-        android:layout_toEndOf="@+id/activity_duet_tv_user_nickname"
-        android:text="님과의 듀엣" />
+        android:layout_below="@+id/cardView2"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/arrow"
-        android:layout_width="55dp"
-        android:layout_height="45dp"
-        android:layout_below="@id/activity_before_sing_iv_me"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="23dp"
-        android:layout_marginBottom="30dp"
-        android:background="@android:color/transparent"
-        android:scaleType="fitXY"
-        android:src="@drawable/ic_baseline_keyboard_arrow_down_24" />
+        <TextView
+            android:id="@+id/activity_duet_tv_user_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/arrow"
+            android:textSize="16sp"
+            android:textColor="@color/purple"
+            android:text="닉네임" />
 
+        <TextView
+            android:id="@+id/tv_duet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/arrow"
+            android:textSize="16sp"
+            android:layout_toEndOf="@+id/activity_duet_tv_user_nickname"
+            android:text="님과의 듀엣" />
+    </LinearLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/activity_before_sing_btn_video"
         android:layout_width="95dp"
         android:layout_height="80dp"
-        android:layout_below="@+id/arrow"
+        android:layout_below="@+id/linear3"
         android:layout_marginLeft="95dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="72dp"
         android:background="@drawable/button_record_select"
         android:drawableTop="@drawable/ic_baseline_videocam_24"
         android:drawableTint="@color/black"
@@ -111,9 +128,9 @@
         android:id="@+id/activity_before_sing_btn_voice"
         android:layout_width="95dp"
         android:layout_height="80dp"
-        android:layout_below="@+id/arrow"
+        android:layout_below="@+id/linear3"
         android:layout_marginLeft="30dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="72dp"
         android:layout_marginRight="20dp"
         android:layout_toRightOf="@+id/activity_before_sing_btn_video"
         android:background="@drawable/button_record"

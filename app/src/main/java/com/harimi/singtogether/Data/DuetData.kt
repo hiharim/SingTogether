@@ -3,7 +3,7 @@ package com.harimi.singtogether.Data
 import com.google.gson.annotations.SerializedName
 
 data class DuetData(
-    //10개
+    //11개
 
     @SerializedName("idx")
     val idx : Int,
@@ -27,4 +27,6 @@ data class DuetData(
     val duet_path : String,
     @SerializedName("date")
     val date : String,
+    @SerializedName("mr_path")
+    val mr_path : String
 )

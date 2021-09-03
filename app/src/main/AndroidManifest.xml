@@ -29,7 +29,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".sing.DuetActivity"></activity>
+        <activity android:name=".sing.MergeActivity"></activity>
+        <activity android:name=".sing.DuetActivity" />
         <activity android:name=".sing.Video3Activity" />
         <activity android:name=".broadcast.LiveStreamingViewActivity" />
         <activity android:name=".broadcast.LiveThumbnailCaptureActivity" />

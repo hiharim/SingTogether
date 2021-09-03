@@ -32,6 +32,7 @@ class DetailDuetFragment : Fragment() {
     private var cnt_duet : String? = null
     private var nickname : String? = null
     private var duet_path : String? = null // 사용자 오디오/비디오
+    private var mr_path : String? = null // mr
     private var profile : String? = null
     private var date : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
@@ -48,7 +49,8 @@ class DetailDuetFragment : Fragment() {
             cnt_duet=it.getString("cnt_duet")
             nickname=it.getString("nickname")
             duet_path=it.getString("duet_path")
-            profile=it.getString("user_profile")
+            mr_path=it.getString("mr_path")
+            profile=it.getString("profile")
             date=it.getString("date")
         }
     }
@@ -68,6 +70,7 @@ class DetailDuetFragment : Fragment() {
             intent.putExtra("singer",singer)
             intent.putExtra("nickname",nickname)
             intent.putExtra("duet_path",duet_path)
+            intent.putExtra("mr_path",mr_path)
             intent.putExtra("profile",profile)
             startActivity(intent)
         }
@@ -78,7 +81,7 @@ class DetailDuetFragment : Fragment() {
         binding.tvHits.text=cnt_play
         binding.tvReviewNumber.text=cnt_reply
         binding.tvUploadDate.text=date
-        Glide.with(this).load(profile).into(binding.ivUploadUserProfile)
+        Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.ivUploadUserProfile)
         Log.e("디테일프래그","duet_path"+duet_path)
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
