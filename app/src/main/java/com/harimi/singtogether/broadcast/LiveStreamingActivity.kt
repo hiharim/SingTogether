@@ -5,21 +5,25 @@ import android.media.AudioManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isInvisible
-import com.harimi.singtogether.HomeFragment
-import com.harimi.singtogether.MainActivity
+
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.harimi.singtogether.*
+
+import com.harimi.singtogether.Data.LocalChattingData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import com.harimi.singtogether.adapter.LocalChattingAdapter
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
+import org.json.JSONArray
 import org.json.JSONObject
+import org.w3c.dom.Text
 import org.webrtc.*
 import org.webrtc.audio.JavaAudioDeviceModule
 import retrofit2.Call
@@ -53,10 +57,22 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private lateinit var activity_streaming_tv_count :TextView
     private lateinit var activity_streaming_btn_close :ImageView
     private lateinit var activity_streaming_btn_switch_cam_backCamera :ImageButton
+    private lateinit var et_chattingInputText :EditText
+    private lateinit var btn_sendInputText :Button
+    private lateinit var activity_streaming_btn_chat :ImageButton
+    private lateinit var activity_streaming_tv_time :TextView
+
+
+    private var messageArea : Boolean = false
 
     private var viewer : String ? ="0"
+    private var timerTask: Timer? = null //타이머
+    private var time = 0 //
+    private val localChattingList: ArrayList<LocalChattingData> = ArrayList()
+    private lateinit var rv_chattingRecyclerView : RecyclerView
+    private lateinit var localChattingAdapter: LocalChattingAdapter
+    private var localStreamingView: SurfaceViewRenderer? = null
 
-    var localStreamingView: SurfaceViewRenderer? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_streaming)
@@ -67,6 +83,16 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         activity_streaming_tv_count = findViewById<TextView>(R.id.activity_streaming_tv_count) //방송 시청자
         activity_streaming_btn_close = findViewById<ImageView>(R.id.activity_streaming_btn_close)// 나가기 버튼
         activity_streaming_btn_switch_cam_backCamera =findViewById(R.id.activity_streaming_btn_switch_cam_backCamera)//  카메라 전환 버튼
+        et_chattingInputText = findViewById<EditText>(R.id.et_chattingInputText)
+        btn_sendInputText = findViewById<Button>(R.id.btn_sendInputText)
+        activity_streaming_btn_chat = findViewById<ImageButton>(R.id.activity_streaming_btn_chat) ////채팅창 visible 설정
+        activity_streaming_tv_time = findViewById<TextView>(R.id.activity_streaming_tv_time) // 타이머
+
+        rv_chattingRecyclerView = findViewById(R.id.rv_chattingRecyclerView)
+        rv_chattingRecyclerView.layoutManager = LinearLayoutManager(this)
+        rv_chattingRecyclerView.addItemDecoration(DividerItemDecoration( this,DividerItemDecoration.VERTICAL))
+        localChattingAdapter = LocalChattingAdapter(localChattingList,this)
+        rv_chattingRecyclerView.adapter = localChattingAdapter
 
         activity_streaming_tv_count.text = viewer // 초기 시청자 셋팅
 
@@ -145,14 +171,48 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         Log.d("PeerHashMap", " $peerConnectionMap")
         get()!!.init(this, roomIdx)
 
+        //방송시간 나타내기
+        timerTask = kotlin.concurrent.timer(period = 1000) {
+            time++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
+            var min = time /60
+            var hour = min / 60
+            runOnUiThread {
+                if (min <=9){
+                    activity_streaming_tv_time.text = "$hour: 0$min"
+                }else{
+                    activity_streaming_tv_time.text = "$hour: $min"
+                }
+            }
+        }
 
+
+        ///채팅 VISIBLE 설정
+        activity_streaming_btn_chat.setOnClickListener {
+            if(messageArea){
+                messageArea = false
+                rv_chattingRecyclerView.visibility  = View.VISIBLE
+                et_chattingInputText.visibility =View.VISIBLE
+                btn_sendInputText.visibility =View.VISIBLE
+
+            }else{
+                messageArea = true
+                rv_chattingRecyclerView.visibility  = View.INVISIBLE
+                et_chattingInputText.visibility =View.INVISIBLE
+                btn_sendInputText.visibility =View.INVISIBLE
+            }
+        }
+
+        ///채팅 보내기 버튼 눌렀을 때
+        btn_sendInputText.setOnClickListener {
+            val chattingText = et_chattingInputText.text.toString()
+            et_chattingInputText.setText("")
+            get()!!.chattingInput(roomIdx!!,LoginActivity.user_info.loginUserNickname,chattingText,LoginActivity.user_info.loginUserProfile)
+        }
 
 
         ////카메라 전환버튼 눌렀을 때
         activity_streaming_btn_switch_cam_backCamera.setOnClickListener {
-
             switchCamera()
-
         }
 
 
@@ -220,6 +280,9 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 activity_streaming_tv_count.text = viewer
                 Log.d(TAG, "onAddStream" + viewer)
 
+                var getViewer = activity_streaming_tv_count.text.toString()
+                get()!!.getLiveStreamingViewer(roomIdx!!,getViewer)
+
                 peerConnection.setLocalDescription(
                     SdpAdapter("setLocalSdp:$socketId"),
                     sessionDescription
@@ -231,6 +294,33 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
     override fun onSelfJoined() {
         Log.d(TAG, "onSelfJoined")
+    }
+
+
+
+    override fun onGetMessage(message:String?) {
+        Log.d(TAG, "onGetMessage" + message)
+
+
+            val jsonArray = JSONArray(message.toString())
+            for (i in 0 until jsonArray.length()) {
+                val jsonObject = jsonArray.getJSONObject(i)
+                val chattingText = jsonObject.getString("inputText")
+                val nickName = jsonObject.getString("nickName")
+                val profile = jsonObject.getString("profile")
+                val localchattingdata = LocalChattingData(nickName,chattingText,profile)
+
+                    runOnUiThread {
+                        localChattingList.add( localchattingdata)
+                        localChattingAdapter.notifyDataSetChanged()
+                    }
+
+            }
+
+    }
+
+    override fun onGetViewer(message: String?) {
+        Log.d(TAG, "onGetViewer")
     }
 
     override fun onPeerLeave(msg: String?) {
@@ -288,6 +378,10 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     override fun onStop() {
         Log.d(TAG, "onStop")
         super.onStop()
+
+        timerTask = null //타이머
+        time = 0 //
+
         retrofit = RetrofitClient.getInstance()
         retrofitService = retrofit.create(RetrofitService::class.java)
         retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
@@ -349,9 +443,10 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         val enumerator = Camera1Enumerator(false)
         val deviceNames = enumerator.deviceNames
 
-        // First, try to find front facing camera
         for (deviceName in deviceNames) {
-            if (if (isFront) enumerator.isFrontFacing(deviceName) else enumerator.isBackFacing(
+            if (
+                if (isFront) enumerator.isFrontFacing(deviceName)
+                else enumerator.isBackFacing(
                     deviceName
                 )) {
                 val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)

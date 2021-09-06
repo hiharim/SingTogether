@@ -4,6 +4,7 @@ import android.util.Log
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.webrtc.IceCandidate
@@ -61,6 +62,16 @@ class SignalingClient private constructor() {
                 Log.e("chao", "room created:" + socket!!.id())
                 callback.onCreateRoom()
             })
+            socket!!.on("chattingMessage", Emitter.Listener { message->
+                Log.d(TAG, "chattingMessage")
+                Log.e("chao", "message " + Arrays.toString(message))
+                callback.onGetMessage(Arrays.toString(message))
+            })
+            socket!!.on("getViewer", Emitter.Listener { message->
+                Log.d(TAG, "getViewer")
+                Log.e("chao", "message " + Arrays.toString(message))
+                callback.onGetViewer(Arrays.toString(message))
+            })
             socket!!.on("full", Emitter.Listener { args: Array<Any?>? ->
                 Log.d(TAG, "full")
                 Log.e("chao", "room full")
@@ -89,6 +100,7 @@ class SignalingClient private constructor() {
                 Log.e("chao", "message " + Arrays.toString(args))
                 val arg = args[0]
                 if (arg is String) {
+
                 } else if (arg is JSONObject) {
                     val data = arg
                     val type = data.optString("type")
@@ -128,6 +140,32 @@ class SignalingClient private constructor() {
         instance = null
     }
 
+    fun chattingInput(roomName: String ,nickName:String ,inputText:String ,profile:String) {
+        val jo = JSONObject()
+        try {
+            jo.put("roomName", roomName)
+            jo.put("nickName", nickName)
+            jo.put("inputText", inputText)
+            jo.put("profile", profile)
+
+            socket!!.emit("chattingMessage", jo)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+    fun getLiveStreamingViewer(roomName: String, viewer: String  ) {
+        val jo = JSONObject()
+        try {
+            jo.put("roomName", roomName)
+            jo.put("viewer", viewer)
+
+            socket!!.emit("getViewer", jo)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
     fun sendIceCandidate(iceCandidate: IceCandidate, to: String) {
         Log.d(TAG, "sendIceCandidate$to")
         //            Log.d(TAG ,"sendSessionDescription" +iceCandidate.toString());
@@ -165,6 +203,8 @@ class SignalingClient private constructor() {
         fun onCreateRoom()
         fun onPeerJoined(socketId: String?)
         fun onSelfJoined()
+        fun onGetMessage(message:String?)
+        fun onGetViewer(message:String?)
         fun onPeerLeave(msg: String?)
         fun onOfferReceived(data: JSONObject?)
         fun onAnswerReceived(data: JSONObject?)

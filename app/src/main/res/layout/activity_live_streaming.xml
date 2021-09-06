@@ -25,21 +25,20 @@
                 android:padding="6dp"
                 android:gravity="center_horizontal"
                 android:textColor="@color/white"
-                android:layout_width="0dp"
-                android:layout_weight="1.3"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/activity_streaming_tv_time"
-                android:background="@drawable/grey_textview"
-                android:text="0:02"
-                android:padding="6dp"
-                android:gravity="center_horizontal"
-                android:textColor="@color/white"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
-                android:layout_width="0dp"
                 android:layout_weight="0.8"
-                android:layout_height="wrap_content"/>
+                android:background="@drawable/grey_textview"
+                android:gravity="center_horizontal"
+                android:padding="6dp"
+                android:text="0:02"
+                android:textColor="@color/white" />
 
             <ImageView
                 android:layout_height="37dp"
@@ -47,14 +46,14 @@
                 android:layout_weight="0.5"
                 android:src="@drawable/ic_baseline_person_24" />
 
+
             <TextView
                 android:id="@+id/activity_streaming_tv_count"
-                android:text=" 2"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:textSize="16sp"
-                android:layout_height="wrap_content"/>
-
+                android:text=" 2"
+                android:textSize="16sp" />
 
             <ImageButton
                 android:id="@+id/activity_streaming_btn_close"
@@ -66,20 +65,39 @@
 
         </LinearLayout>
     </Toolbar>
+
+
     <org.webrtc.SurfaceViewRenderer
         android:id="@+id/localStreamingView"
-        android:layout_below="@+id/toolbar_streaming"
-        android:layout_above="@+id/linear"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-<!--    <org.webrtc.SurfaceViewRenderer-->
-<!--        android:id="@+id/localView"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+        android:layout_height="match_parent"
+        android:layout_above="@+id/linear"
+        android:layout_below="@+id/toolbar_streaming"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="0dp"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_chattingRecyclerView"
+        android:layout_width="match_parent"
+        android:background="@android:color/transparent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/et_chattingInputText"
+        android:layout_marginBottom="0dp" />
+
+
+    <EditText
+        android:id="@+id/et_chattingInputText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/localStreamingView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toStartOf="@+id/btn_sendInputText" />
+
+
     <LinearLayout
         android:id="@+id/linear"
         android:orientation="horizontal"
@@ -122,6 +140,17 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_sendInputText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rv_chattingRecyclerView"
+        android:layout_alignParentEnd="true"
+        android:text="보내기"
+        android:backgroundTint="#ffffff"
+        android:textColor="#000000"
+
+         />
 
 
 </RelativeLayout>
