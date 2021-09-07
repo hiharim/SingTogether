@@ -80,7 +80,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chattingRecyclerView"
         android:layout_width="match_parent"
-        android:background="@android:color/transparent"
+        android:background="#4D000000"
         android:layout_height="wrap_content"
         android:layout_above="@+id/et_chattingInputText"
         android:layout_marginBottom="0dp" />
