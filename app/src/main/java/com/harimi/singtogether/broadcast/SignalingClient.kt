@@ -185,7 +185,15 @@ class SignalingClient private constructor() {
 
     ///시청자가 나갔을 때
     fun outViewer(roomName: String) {
-        socket!!.emit("outViewer", roomName)
+//
+//        val jo = JSONObject()
+//        try {
+//            jo.put("roomName", roomName)
+
+            socket!!.emit("outViewer", roomName)
+//        } catch (e: JSONException) {
+//            e.printStackTrace()
+//        }
     }
 
     ////스트리머가 방송을 종료했을 때
@@ -193,7 +201,7 @@ class SignalingClient private constructor() {
 //        val jo = JSONObject()
 //        try {
 //            jo.put("roomName", roomName)
-//
+
             socket!!.emit("liveStreamingFinish", roomName)
 //        } catch (e: JSONException) {
 //            e.printStackTrace()

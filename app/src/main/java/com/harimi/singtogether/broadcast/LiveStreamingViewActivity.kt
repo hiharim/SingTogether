@@ -260,14 +260,16 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
     override fun onLiveStreamingFinish() {
         Log.d(TAG, "onLiveStreamingFinish")
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("종료")
-        builder.setMessage("방송이 종료되었습니다")
+        runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("종료")
+            builder.setMessage("방송이 종료되었습니다")
 
-        builder.setPositiveButton("확인") { dialog, which ->
-            finish()
+            builder.setPositiveButton("확인") { dialog, which ->
+                finish()
+            }
+            builder.show()
         }
-        builder.show()
     }
 
     override fun onOutViewer() {
@@ -331,6 +333,7 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     override fun onBackPressed() {
         super.onBackPressed()
         println("뒤로가기 버튼 누름 ")
+        get()!!.outViewer(roomIdx!!)
         //        PackageManager packageManager = getApplicationContext().getPackageManager();
 //        Intent intent = packageManager.getLaunchIntentForPackage(getApplicationContext().getPackageName());
 //        getApplicationContext().startActivity(intent);
