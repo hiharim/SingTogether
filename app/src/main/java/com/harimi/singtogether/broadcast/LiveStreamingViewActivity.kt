@@ -4,10 +4,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.TextView
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +40,8 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     var peerConnectionMap: HashMap<String?, PeerConnection?>? = null
     var i : Int =0
     private var messageArea : Boolean = false
+
+    private lateinit var activity_streaming_btn_close :ImageButton
     private lateinit var activity_streaming_btn_chat :ImageButton
     private lateinit var et_chattingInputText :EditText
     private lateinit var btn_sendInputText :Button
@@ -61,6 +61,7 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
 
 
+        activity_streaming_btn_close = findViewById<ImageButton>(R.id.activity_streaming_btn_close)
         activity_streaming_btn_chat = findViewById<ImageButton>(R.id.activity_streaming_btn_chat) ////채팅창 visible 설정
         activity_streaming_tv_count = findViewById<TextView>(R.id.activity_streaming_tv_count)
         et_chattingInputText = findViewById<EditText>(R.id.et_chattingInputText)
@@ -129,12 +130,28 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         get()!!.init(this, roomIdx)
 
 
+        ////채팅보내기
         btn_sendInputText.setOnClickListener {
             val chattingText = et_chattingInputText.text.toString()
-
             et_chattingInputText.setText("")
             get()!!.chattingInput(roomIdx!!, LoginActivity.user_info.loginUserNickname,chattingText,LoginActivity.user_info.loginUserProfile)
         }
+
+        ////방송나가기
+        activity_streaming_btn_close.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("종료")
+            builder.setMessage("방송을 그만보시겠습니까?")
+
+            builder.setPositiveButton("네") { dialog, which ->
+
+                get()!!.outViewer(roomIdx!!)
+                finish()
+            }
+            builder.setNegativeButton("아니요") { dialog, which ->
+            }
+            builder.show()
+    }
 
         ///채팅 VISIBLE 설정
         activity_streaming_btn_chat.setOnClickListener {
@@ -241,6 +258,22 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         }
     }
 
+    override fun onLiveStreamingFinish() {
+        Log.d(TAG, "onLiveStreamingFinish")
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("종료")
+        builder.setMessage("방송이 종료되었습니다")
+
+        builder.setPositiveButton("확인") { dialog, which ->
+            finish()
+        }
+        builder.show()
+    }
+
+    override fun onOutViewer() {
+        Log.d(TAG, "onOutViewer")
+    }
+
 
     override fun onPeerLeave(msg: String?) {
         println("호출 확인 : $msg")
@@ -286,6 +319,8 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         Log.d(TAG, "onDestroy")
         super.onDestroy()
         get()!!.destroy() // 소켓으로 끊어 달라고 쏴줌
+
+
         if (peerConnection == null) {
         } else {
             peerConnection!!.dispose()

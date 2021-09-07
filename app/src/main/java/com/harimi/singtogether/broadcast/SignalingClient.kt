@@ -62,15 +62,29 @@ class SignalingClient private constructor() {
                 Log.e("chao", "room created:" + socket!!.id())
                 callback.onCreateRoom()
             })
+            ////채팅메세지가 들어왔을 때
             socket!!.on("chattingMessage", Emitter.Listener { message->
                 Log.d(TAG, "chattingMessage")
                 Log.e("chao", "message " + Arrays.toString(message))
                 callback.onGetMessage(Arrays.toString(message))
             })
+            ////시청자가 들어왔을 때
             socket!!.on("getViewer", Emitter.Listener { message->
                 Log.d(TAG, "getViewer")
                 Log.e("chao", "message " + Arrays.toString(message))
                 callback.onGetViewer(Arrays.toString(message))
+            })
+            ///시청자가 나갔을 때
+            socket!!.on("outViewer", Emitter.Listener { message->
+                Log.d(TAG, "outViewer")
+                Log.e("chao", "message " + Arrays.toString(message))
+                callback.onOutViewer()
+            })
+            ////스트리머가 방송을 종료했을 때
+            socket!!.on("liveStreamingFinish", Emitter.Listener { message->
+                Log.d(TAG, "liveStreamingFinish")
+                Log.e("chao", "liveStreamingFinish " + Arrays.toString(message))
+                callback.onLiveStreamingFinish()
             })
             socket!!.on("full", Emitter.Listener { args: Array<Any?>? ->
                 Log.d(TAG, "full")
@@ -140,6 +154,8 @@ class SignalingClient private constructor() {
         instance = null
     }
 
+
+    ///채팅할때
     fun chattingInput(roomName: String ,nickName:String ,inputText:String ,profile:String) {
         val jo = JSONObject()
         try {
@@ -154,6 +170,7 @@ class SignalingClient private constructor() {
         }
     }
 
+    ////시청자가 들어왔을 때
     fun getLiveStreamingViewer(roomName: String, viewer: String  ) {
         val jo = JSONObject()
         try {
@@ -164,6 +181,23 @@ class SignalingClient private constructor() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
+    }
+
+    ///시청자가 나갔을 때
+    fun outViewer(roomName: String) {
+        socket!!.emit("outViewer", roomName)
+    }
+
+    ////스트리머가 방송을 종료했을 때
+    fun liveStreamingFinish(roomName: String) {
+//        val jo = JSONObject()
+//        try {
+//            jo.put("roomName", roomName)
+//
+            socket!!.emit("liveStreamingFinish", roomName)
+//        } catch (e: JSONException) {
+//            e.printStackTrace()
+//        }
     }
 
     fun sendIceCandidate(iceCandidate: IceCandidate, to: String) {
@@ -205,6 +239,8 @@ class SignalingClient private constructor() {
         fun onSelfJoined()
         fun onGetMessage(message:String?)
         fun onGetViewer(message:String?)
+        fun onLiveStreamingFinish()
+        fun onOutViewer()
         fun onPeerLeave(msg: String?)
         fun onOfferReceived(data: JSONObject?)
         fun onAnswerReceived(data: JSONObject?)

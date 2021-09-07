@@ -228,6 +228,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             builder.setPositiveButton("네") { dialog, which ->
                 Toast.makeText(applicationContext,
                     "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+
+                get()!!.liveStreamingFinish(roomIdx!!)
                 finish()
             }
             builder.setNegativeButton("아니요") { dialog, which ->
@@ -326,6 +328,19 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         Log.d(TAG, "onGetViewer")
     }
 
+    override fun onLiveStreamingFinish() {
+        Log.d(TAG, "onLiveStreamingFinish")
+    }
+
+    override fun onOutViewer() {
+        Log.d(TAG, "onOutViewer")
+
+        var outViewer = Integer.parseInt(viewer)
+        outViewer--
+        viewer = outViewer.toString()
+        activity_streaming_tv_count.text = viewer
+    }
+
     override fun onPeerLeave(msg: String?) {
         Log.d(TAG, "onPeerLeave")
         Log.d(TAG, "msg")
@@ -404,7 +419,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                             .add(R.id.activity_main_frame,postFragment)
                             .commitAllowingStateLoss() //프래그먼트 다음에 액티비티가 실행된후 그 전에 있던 프래그먼트를 날려버리고 새롭게 시작할 때 사용할 수 있다.
 
-//                        finish()
+                        finish()
 
                     } else {
                         Log.e("onResponse", "실패 : " + response.errorBody())
