@@ -108,7 +108,8 @@
                     android:layout_marginBottom="8dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/ic_baseline_face_24" />
+
+                    app:srcCompat="@drawable/white_face" />
 
                 <TextView
                     android:id="@+id/tv_viewer"
@@ -117,7 +118,8 @@
                     android:layout_marginStart="4dp"
                     android:layout_marginBottom="10dp"
                     android:text="0"
-                    android:textColor="#000000"
+                    android:textColor="#ffffff"
+                    android:textSize="15dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imageView4" />
             </androidx.constraintlayout.widget.ConstraintLayout>

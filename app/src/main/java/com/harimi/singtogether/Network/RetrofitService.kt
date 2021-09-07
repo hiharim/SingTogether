@@ -48,6 +48,13 @@ interface RetrofitService {
 
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("liveStreamingCheck.php")
+    fun requestLiveStreamingCheck (
+        @Field("roomIdx") roomIdx :String
+
+    ) : Call<String>
+
     @POST("loadHomePost.php")
     fun requestGetHomePost (
     ) : Call<String>

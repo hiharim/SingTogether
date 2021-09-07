@@ -205,9 +205,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         ///채팅 보내기 버튼 눌렀을 때
         btn_sendInputText.setOnClickListener {
             val chattingText = et_chattingInputText.text.toString()
-            val localchattingdata = LocalChattingData(LoginActivity.user_info.loginUserNickname,chattingText,LoginActivity.user_info.loginUserProfile)
-            localChattingList.add( localchattingdata)
-            localChattingAdapter.notifyDataSetChanged()
+
             et_chattingInputText.setText("")
             get()!!.chattingInput(roomIdx!!,LoginActivity.user_info.loginUserNickname,chattingText,LoginActivity.user_info.loginUserProfile)
         }
@@ -316,8 +314,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 val localchattingdata = LocalChattingData(nickName,chattingText,profile)
 
                     runOnUiThread {
-//                        localChattingList.add( localchattingdata)
-//                        localChattingAdapter.notifyDataSetChanged()
+                        localChattingList.add( localchattingdata)
+                        localChattingAdapter.notifyDataSetChanged()
                     }
 
             }

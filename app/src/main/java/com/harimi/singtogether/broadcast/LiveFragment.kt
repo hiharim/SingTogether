@@ -83,14 +83,12 @@ class LiveFragment : Fragment() {
 
 
     fun liveStreamingPostLoad (){
+
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestGetLiveStreamingPost()
-            .enqueue(object : Callback<String> {
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
+        retrofitService.requestGetLiveStreamingPost().enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+
                     if (response.isSuccessful) {
                         val body = response.body().toString()
                         Log.d("getHomePost: ", body)
@@ -112,19 +110,13 @@ class LiveFragment : Fragment() {
                                 val nickName = jsonObject.getString("nickName")
                                 val profile = jsonObject.getString("profile")
                                 val title = jsonObject.getString("title")
-//
+                                val viewer = jsonObject.getString("viewer")
+
                                 Log.d(TAG, "idx($i): $idx")
                                 Log.d(TAG, "songTitle($i): $title")
                                 Log.d(TAG, "singer($i): $email")
 
-                                val liveData = LiveFragmentData(
-                                    idx,
-                                    thumbnail,
-                                    email,
-                                    nickName,
-                                    profile,
-                                    title
-                                )
+                                val liveData = LiveFragmentData(idx, thumbnail, email, nickName, profile, title,viewer)
                                 liveStreamingPostList.add(0, liveData)
                                 liveFragmentAdapter.notifyDataSetChanged()
                             }
