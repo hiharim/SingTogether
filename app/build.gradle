@@ -90,6 +90,9 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
+    //스와이프
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
 }
 
 apply plugin: 'com.google.gms.google-services'

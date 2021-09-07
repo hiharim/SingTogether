@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.LiveFragmentData
 import com.harimi.singtogether.Network.RetrofitClient
@@ -38,6 +39,8 @@ class LiveFragment : Fragment() {
     lateinit var rv_fragmentLivePost : RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
     lateinit var  tv_noLive: TextView
+    lateinit var  swipeRefresh: SwipeRefreshLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +70,8 @@ class LiveFragment : Fragment() {
         Log.d("라이브: ", "onCreateView")
         var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
 
+
+        swipeRefresh = liveFragmentView.findViewById(R.id.swipeRefresh)
         rv_fragmentLivePost = liveFragmentView.findViewById(R.id.rv_fragmentLivePost)
         tv_noLive = liveFragmentView.findViewById(R.id.tv_noLive)
 
@@ -75,8 +80,17 @@ class LiveFragment : Fragment() {
         liveFragmentAdapter = LiveFragmentAdapter(liveStreamingPostList,requireContext())
         rv_fragmentLivePost.adapter = liveFragmentAdapter
 
-        liveStreamingPostLoad ()
 
+        ///리사이클러뷰 새로고침
+        swipeRefresh.setOnRefreshListener {
+            // 사용자가 아래로 드래그 했다가 놓았을 때 호출 됩니다.
+            // 이때 새로고침 화살표가 계속 돌아갑니다.
+            liveStreamingPostList.clear()
+            liveStreamingPostLoad()
+            swipeRefresh.isRefreshing = false //서버 통신 완료 후 호출해줍니다.
+        }
+
+        liveStreamingPostLoad ()
         return liveFragmentView
 
     }
