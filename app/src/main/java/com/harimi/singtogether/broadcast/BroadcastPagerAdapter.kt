@@ -26,15 +26,6 @@ class BroadcastPagerAdapter(fragmentActivity: FragmentActivity):FragmentStateAda
             1 -> ReplayFragment()
             else -> HomeFragment()
         }
-
-//        val liveFragment = LiveFragment.newInstance()
-//        val replayFragment = ReplayFragment.newInstance()
-//        return when(position){
-//            0 -> liveFragment
-//            1 -> replayFragment
-//            else -> HomeFragment()
-//        }
-
     }
 
     fun addFragment(fragment: Fragment){

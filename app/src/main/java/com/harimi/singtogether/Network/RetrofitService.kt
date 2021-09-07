@@ -52,7 +52,12 @@ interface RetrofitService {
     @POST("liveStreamingCheck.php")
     fun requestLiveStreamingCheck (
         @Field("roomIdx") roomIdx :String
+    ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("searchLiveStreaming.php")
+    fun requestSearchLiveStreaming (
+        @Field("searchInput") searchInput :String
     ) : Call<String>
 
     @POST("loadHomePost.php")

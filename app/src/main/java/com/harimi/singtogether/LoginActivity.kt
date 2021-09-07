@@ -181,12 +181,14 @@ class LoginActivity : AppCompatActivity() {
             saveDate(user_email.toString())
 
             // 프로필액티비티로 이동
-            val intent = Intent(this, ProfileActivity::class.java)
+
             user_info.loginUserEmail = user_email.toString()
             user_info.loginUserNickname = user_nickname.toString()
             user_info.loginUserProfile =user_profile.toString()
             user_info.loginUserSocial =user_social.toString()
 
+
+            val intent = Intent(this, ProfileActivity::class.java)
             intent.putExtra("EMAIL",user_email)
             intent.putExtra("NICKNAME",user_nickname)
             intent.putExtra("PROFILE",user_profile)
@@ -417,9 +419,7 @@ class LoginActivity : AppCompatActivity() {
                                 " + exception: " + t
                     )
                 }
-
             })
-
     }
 
     class user_info{

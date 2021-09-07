@@ -70,7 +70,12 @@ class LiveFragment : Fragment() {
         Log.d("라이브: ", "onCreateView")
         var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
 
+        initView(liveFragmentView)
+        return liveFragmentView
+    }
 
+
+    fun initView(liveFragmentView : View){
         swipeRefresh = liveFragmentView.findViewById(R.id.swipeRefresh)
         rv_fragmentLivePost = liveFragmentView.findViewById(R.id.rv_fragmentLivePost)
         tv_noLive = liveFragmentView.findViewById(R.id.tv_noLive)
@@ -79,8 +84,6 @@ class LiveFragment : Fragment() {
         rv_fragmentLivePost.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         liveFragmentAdapter = LiveFragmentAdapter(liveStreamingPostList,requireContext())
         rv_fragmentLivePost.adapter = liveFragmentAdapter
-
-
         ///리사이클러뷰 새로고침
         swipeRefresh.setOnRefreshListener {
             // 사용자가 아래로 드래그 했다가 놓았을 때 호출 됩니다.
@@ -91,11 +94,7 @@ class LiveFragment : Fragment() {
         }
 
         liveStreamingPostLoad ()
-        return liveFragmentView
-
     }
-
-
     fun liveStreamingPostLoad (){
 
         retrofit= RetrofitClient.getInstance()

@@ -6,9 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -24,10 +22,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 
-class LiveFragmentAdapter(
-    val LiveStreamingPostList: ArrayList<LiveFragmentData>,
-    val context: Context
-) : RecyclerView.Adapter<LiveFragmentAdapter.LiveFragmentViewHolder>() {
+class LiveFragmentAdapter(val LiveStreamingPostList: ArrayList<LiveFragmentData>, val context: Context) :
+    RecyclerView.Adapter<LiveFragmentAdapter.LiveFragmentViewHolder>(){
 
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
@@ -39,21 +35,9 @@ class LiveFragmentAdapter(
             false
         )
         return  LiveFragmentViewHolder(view)
-//                .apply {
-//                    itemView.setOnClickListener {
-////                        val getPosition : Int = adapterPosition
-////                        val homeData :HomeData = homePostList.get(getPosition)
-//
-//                        val activity =view!!.context as AppCompatActivity
-//                        val postFragment = PostFragment()
-//                        activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_home_recyclerView,postFragment).addToBackStack(null).commit()
-//
-//                    }
-//                }
     }
 
     override fun onBindViewHolder(holder: LiveFragmentAdapter.LiveFragmentViewHolder, position: Int) {
-
         // 프로필 사진
         if (LiveStreamingPostList.get(position).profile.equals("null") || LiveStreamingPostList.get(
                 position
@@ -63,10 +47,8 @@ class LiveFragmentAdapter(
             val Image: LiveFragmentData = LiveStreamingPostList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.profile)
-//                .override(100, 75)
                 .into(holder.iv_profile)
         }
-
         ///썸네일
         if (LiveStreamingPostList.get(position).thumbnail.equals("null") || LiveStreamingPostList.get(
                 position
@@ -76,14 +58,12 @@ class LiveFragmentAdapter(
             val Image: LiveFragmentData = LiveStreamingPostList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.thumbnail)
-//                .override(100, 75)
                 .into(holder.iv_thumbnail)
         }
 
         holder.tv_liveTitle.setText(LiveStreamingPostList.get(position).title)
         holder.tv_viewer.setText(LiveStreamingPostList.get(position).viewer)
         holder.tv_nickName.setText(LiveStreamingPostList.get(position).nickName)
-
 
         ///아이템 온 클릭 리스너
         holder.itemView.setOnClickListener(object : View.OnClickListener {
@@ -98,34 +78,24 @@ class LiveFragmentAdapter(
                         if (response.isSuccessful) {
                             val body = response.body().toString()
                             Log.d("getHomePost: ", body)
-
                             val jsonObject = JSONObject(response.body().toString())
                             val result = jsonObject.getBoolean("result")
                             if (result) {
-
                                 val intent = Intent(context, LiveStreamingViewActivity::class.java)
                                 intent.putExtra("roomIdx", LiveStreamingPostList.get(position).idx)
                                 ContextCompat.startActivity(context, intent, null)
                             } else {
-
-                                Toast.makeText(context, "스트리머가 이미 방송을 종료하였습니다.", Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(context, "스트리머가 이미 방송을 종료하였습니다.", Toast.LENGTH_SHORT).show()
                                 LiveStreamingPostList.removeAt(position)
                                 notifyItemRemoved(position)
                                 notifyDataSetChanged()
                                 return
-
                             }
-
                         }
                     }
-
                     override fun onFailure(call: Call<String>, t: Throwable) {
-
                     }
                 })
-
-
             }
         })
 
@@ -135,7 +105,6 @@ class LiveFragmentAdapter(
         return LiveStreamingPostList.size
     }
 
-
     class LiveFragmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val iv_thumbnail = itemView.findViewById<ImageView>(R.id.iv_thumbnail) //썸네일
         val iv_profile = itemView.findViewById<CircleImageView>(R.id.iv_profile) // 프로필 사진
@@ -143,4 +112,8 @@ class LiveFragmentAdapter(
         val tv_viewer = itemView.findViewById<TextView>(R.id.tv_viewer) // 시청자
         val tv_nickName = itemView.findViewById<TextView>(R.id.tv_nickName) // 닉네임
     }
+
+//    override fun getFilter(): Filter {
+//        Log.d("getFilter: ", body)
+//    }
 }
