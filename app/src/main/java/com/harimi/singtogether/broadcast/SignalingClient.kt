@@ -1,6 +1,7 @@
 package com.harimi.singtogether.broadcast
 
 import android.util.Log
+import com.harimi.singtogether.LoginActivity
 import io.socket.client.IO
 import io.socket.client.Socket
 import io.socket.emitter.Emitter
@@ -78,13 +79,24 @@ class SignalingClient private constructor() {
             socket!!.on("outViewer", Emitter.Listener { message->
                 Log.d(TAG, "outViewer")
                 Log.e("chao", "message " + Arrays.toString(message))
-                callback.onOutViewer()
+                        callback.onOutViewer(Arrays.toString(message))
+            })
+            //시청자 강제퇴장
+            socket!!.on("viewerOutOfHere", Emitter.Listener { message->
+                Log.d(TAG, "viewerOutOfHere")
+                Log.e("chao", "message " + Arrays.toString(message))
+                callback.onViewerOutOfHere(Arrays.toString(message))
             })
             ////스트리머가 방송을 종료했을 때
             socket!!.on("liveStreamingFinish", Emitter.Listener { message->
                 Log.d(TAG, "liveStreamingFinish")
                 Log.e("chao", "liveStreamingFinish " + Arrays.toString(message))
                 callback.onLiveStreamingFinish()
+            })
+            socket!!.on("addViewerList", Emitter.Listener { message->
+                Log.d(TAG, "addViewerList")
+                Log.e("chao", "addViewerList " + Arrays.toString(message))
+                callback.addViewerList(Arrays.toString(message))
             })
             socket!!.on("full", Emitter.Listener { args: Array<Any?>? ->
                 Log.d(TAG, "full")
@@ -98,7 +110,7 @@ class SignalingClient private constructor() {
             socket!!.on("joined", Emitter.Listener { args: Array<Any?>? ->
                 Log.d(TAG, "joined")
                 Log.e("chao", "self joined:" + socket!!.id())
-                callback.onSelfJoined()
+                callback.onSelfJoined(socket!!.id())
             })
             socket!!.on("log", Emitter.Listener { args: Array<Any?>? ->
                 Log.d(TAG, TAG + "log")
@@ -170,6 +182,35 @@ class SignalingClient private constructor() {
         }
     }
 
+    //시청자 강제 퇴장
+    fun viewerOutOfHere (socketId: String){
+        val jo = JSONObject()
+        try {
+//            jo.put("roomName", roomName)
+            jo.put("socketId", socketId)
+
+            socket!!.emit("viewerOutOfHere", jo)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+    }
+
+    ///viewer 리스트 갱신
+    fun addViewerList(roomName: String ,nickName:String ,profile:String,socketId: String) {
+        val jo = JSONObject()
+        try {
+            jo.put("roomName", roomName)
+            jo.put("nickName", nickName)
+            jo.put("socketId", socketId)
+            jo.put("profile", profile)
+
+            socket!!.emit("addViewerList", jo)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
     ////시청자가 들어왔을 때
     fun getLiveStreamingViewer(roomName: String, viewer: String  ) {
         val jo = JSONObject()
@@ -184,28 +225,22 @@ class SignalingClient private constructor() {
     }
 
     ///시청자가 나갔을 때
-    fun outViewer(roomName: String) {
-//
-//        val jo = JSONObject()
-//        try {
-//            jo.put("roomName", roomName)
+    fun outViewer(roomName: String, UserId: String) {
 
-            socket!!.emit("outViewer", roomName)
-//        } catch (e: JSONException) {
-//            e.printStackTrace()
-//        }
+        val jo = JSONObject()
+        try {
+            jo.put("roomName", roomName)
+            jo.put("userId", UserId)
+
+            socket!!.emit("outViewer", jo)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
     }
 
     ////스트리머가 방송을 종료했을 때
     fun liveStreamingFinish(roomName: String) {
-//        val jo = JSONObject()
-//        try {
-//            jo.put("roomName", roomName)
-
             socket!!.emit("liveStreamingFinish", roomName)
-//        } catch (e: JSONException) {
-//            e.printStackTrace()
-//        }
     }
 
     fun sendIceCandidate(iceCandidate: IceCandidate, to: String) {
@@ -244,11 +279,13 @@ class SignalingClient private constructor() {
     interface Callback {
         fun onCreateRoom()
         fun onPeerJoined(socketId: String?)
-        fun onSelfJoined()
+        fun onSelfJoined(UserData : String?)
         fun onGetMessage(message:String?)
         fun onGetViewer(message:String?)
+        fun addViewerList(message:String?)
         fun onLiveStreamingFinish()
-        fun onOutViewer()
+        fun onOutViewer(message :String?)
+        fun onViewerOutOfHere(message: String?)
         fun onPeerLeave(msg: String?)
         fun onOfferReceived(data: JSONObject?)
         fun onAnswerReceived(data: JSONObject?)

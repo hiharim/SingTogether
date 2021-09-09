@@ -91,6 +91,10 @@
         android:id="@+id/rv_chattingRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="100dp"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbars="vertical"
         android:background="#4D000000"
         android:layout_above="@+id/et_chattingInputText"
         android:layout_marginBottom="0dp" />

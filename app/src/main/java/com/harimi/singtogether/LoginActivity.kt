@@ -67,69 +67,14 @@ class LoginActivity : AppCompatActivity() {
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-//            val pref = getSharedPreferences("userEmail", MODE_PRIVATE)
-//            val savedEmail =
-//                pref.getString("email", "").toString() //1번째는 데이터 키 값이고 2번째는 키 값에 데이터가 존재하지않을때 대체 값
-//            Log.e(TAG, "shared " + savedEmail.toString())
-//            if (!savedEmail.equals("")) { /// null 값이 없을때
-
-
-//                retrofit = RetrofitClient.getInstance()
-//                retrofitService = retrofit.create(RetrofitService::class.java)
-
-//
-//                retrofitService.requestAutoLogin(savedEmail)
-//                    .enqueue(object : Callback<String> {
-//                        override fun onResponse(
-//                            call: Call<String>,
-//                            response: Response<String>
-//                        ) {
-//
-//                            if (response.isSuccessful) {
-//                                Log.d(TAG, "shared " + response.body() + response.message())
-//                                val jsonObject = JSONObject(response.body().toString())
-//                                val result = jsonObject.getBoolean("result")
-//                                Log.d(TAG, "shared " + result.toString())
-//
-//                                if (result) {
-//                                    val email = jsonObject.getString("email")
-//                                    val nickname = jsonObject.getString("nickname")
-//                                    val profile = jsonObject.getString("profile")
-//                                    user_info.loginUserEmail = email.toString()
-//                                    user_info.loginUserNickname = nickname.toString()
-//                                    user_info.loginUserProfile =profile.toString()
-//
-//                                    val intent = Intent(applicationContext, MainActivity::class.java)
-//                                    startActivity(intent)
-//                                    finish()
-//                                    return
-//                                } else {
-
                             kakaoUserInfo()
                             if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
                                 UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
                             } else {
                                 UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
                             }
-//                        }
-//
-//                            } else {
-//                                Log.e("onResponse", "실패 : " + response.errorBody())
-//                            }
-//                        }
-//
-//                        override fun onFailure(call: Call<String>, t: Throwable) {
-//                            Log.d(
-//                                "실패:", "Failed API call with call: " + call +
-//                                        " + exception: " + t
-//                            )
-//                        }
-//
-//                    })
             }
         }
-
-
         // 카카오 토큰존재여부 확인하기
 //        if (AuthApiClient.instance.hasToken()) {
 //            UserApiClient.instance.accessTokenInfo { _, error ->
@@ -151,7 +96,6 @@ class LoginActivity : AppCompatActivity() {
 //            //로그인 필요
 //        }
 //    }
-
 
     // 카카오 로그인 공통 callback 구성
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->

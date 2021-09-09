@@ -9,11 +9,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.harimi.singtogether.Data.LocalChattingData
 import com.harimi.singtogether.Data.RemoteChattingData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.R
-import com.harimi.singtogether.adapter.LocalChattingAdapter
 import com.harimi.singtogether.adapter.RemoteChattingAdapter
 import org.json.JSONObject
 import org.webrtc.*
@@ -59,6 +57,10 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         roomIdx = getintent.getStringExtra("roomIdx")
         Log.d(TAG," "+ roomIdx)
 
+        initView()
+
+    }
+    fun initView(){
 
 
         activity_streaming_btn_close = findViewById<ImageButton>(R.id.activity_streaming_btn_close)
@@ -145,13 +147,13 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
             builder.setPositiveButton("네") { dialog, which ->
 
-                get()!!.outViewer(roomIdx!!)
+                get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
                 finish()
             }
             builder.setNegativeButton("아니요") { dialog, which ->
             }
             builder.show()
-    }
+        }
 
         ///채팅 VISIBLE 설정
         activity_streaming_btn_chat.setOnClickListener {
@@ -168,9 +170,7 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                 btn_sendInputText.visibility = View.INVISIBLE
             }
         }
-
     }
-
     @Synchronized
     private fun getOrCreatePeerConnection(socketId: String?): PeerConnection? {
         Log.d(TAG, "getOrCreatePeerConnection")
@@ -186,18 +186,10 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
             override fun onAddStream(mediaStream: MediaStream) {
                 super.onAddStream(mediaStream)
-//                if (i!=0){
-//                    remoteStreamingView!!.release()
-//                }else{
-//
-//                }
+
                 remoteVideoTrack = mediaStream.videoTracks[0]
                 Log.d(TAG, "" + remoteVideoTrack)
                 runOnUiThread { remoteVideoTrack?.addSink(remoteStreamingView) }
-
-                i += 1
-//
-                Log.d(TAG, "" + i)
             }
         })
         peerConnection!!.addStream(mediaStream)
@@ -221,8 +213,9 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         }, MediaConstraints())
     }
 
-    override fun onSelfJoined() {
-        Log.d(TAG, "onSelfJoined")
+    override fun onSelfJoined(socketID : String?) {
+        Log.d(TAG, "onSelfJoined "+socketID)
+        get()!!.addViewerList(roomIdx!!,LoginActivity.user_info.loginUserNickname,LoginActivity.user_info.loginUserProfile,socketID!!)
     }
 
     override fun onGetMessage(message: String?) {
@@ -239,6 +232,7 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
             runOnUiThread {
                 remoteChattingList.add( remotechattingdata)
                 remoteChattingAdapter.notifyDataSetChanged()
+                rv_chattingRecyclerView.scrollToPosition(remoteChattingList.size - 1)
             }
 
         }
@@ -258,22 +252,60 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         }
     }
 
-    override fun onLiveStreamingFinish() {
-        Log.d(TAG, "onLiveStreamingFinish")
-        runOnUiThread {
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("종료")
-            builder.setMessage("방송이 종료되었습니다")
+    override fun addViewerList(message: String?) {
 
-            builder.setPositiveButton("확인") { dialog, which ->
-                finish()
-            }
-            builder.show()
-        }
     }
 
-    override fun onOutViewer() {
+    override fun onLiveStreamingFinish() {
+
+            Log.d(TAG, "onLiveStreamingFinish")
+            runOnUiThread {
+                val builder = AlertDialog.Builder(this)
+                builder.setTitle("종료")
+                builder.setMessage("방송이 종료되었습니다")
+
+                builder.setPositiveButton("확인") { dialog, which ->
+                    finish()
+                }
+                builder.show()
+            }
+
+    }
+
+    //시청자 나갔을 때
+    override fun onOutViewer(message: String?) {
         Log.d(TAG, "onOutViewer")
+        var jsonArray = JSONArray(message.toString())
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val userId = jsonObject.getString("userId")
+                if (!userId.equals(LoginActivity.user_info.loginUserEmail)){
+                    var getViewer = activity_streaming_tv_count.text.toString()
+                    var getViewerInt = Integer.parseInt(getViewer)
+                    getViewerInt--
+                    runOnUiThread {
+                        activity_streaming_tv_count.setText(getViewerInt.toString())
+                    }
+                }
+            }
+    }
+
+    override fun onViewerOutOfHere(message: String?) {
+        Log.d(TAG, "onOutViewer")
+        runOnUiThread {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("강퇴")
+            builder.setMessage("강퇴당하였습니다")
+
+            builder.setPositiveButton("확인") { dialog, which ->
+                Toast.makeText(applicationContext,
+                    "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
+                get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
+                finish()
+            }
+
+            builder.show()
+        }
     }
 
 
@@ -317,11 +349,10 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         ))
     }
 
-    override fun onDestroy() { //앱 죽여 버릴떄 호출됨
+    override fun onDestroy() { //앱 죽여 버릴때 호출됨
         Log.d(TAG, "onDestroy")
         super.onDestroy()
         get()!!.destroy() // 소켓으로 끊어 달라고 쏴줌
-
 
         if (peerConnection == null) {
         } else {
@@ -331,12 +362,21 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
+
         println("뒤로가기 버튼 누름 ")
-        get()!!.outViewer(roomIdx!!)
-        //        PackageManager packageManager = getApplicationContext().getPackageManager();
-//        Intent intent = packageManager.getLaunchIntentForPackage(getApplicationContext().getPackageName());
-//        getApplicationContext().startActivity(intent);
-//        Runtime.getRuntime().exit(0);
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("나가기")
+        builder.setMessage("방송을 나가시겠습니까?")
+
+        builder.setPositiveButton("네") { dialog, which ->
+            Toast.makeText(applicationContext,
+                "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
+            get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
+            finish()
+        }
+        builder.setNegativeButton("아니요") { dialog, which ->
+        }
+        builder.show()
+
     }
 }

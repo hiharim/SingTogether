@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/StreamingDrawerLayout"
     tools:context=".broadcast.LiveStreamingActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+
 
     <Toolbar
         android:id="@+id/toolbar_streaming"
@@ -82,6 +90,10 @@
         android:layout_width="match_parent"
         android:background="#4D000000"
         android:layout_height="100dp"
+        android:scrollbarFadeDuration="0"
+        android:scrollbarSize="5dp"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbars="vertical"
         android:layout_above="@+id/et_chattingInputText"
         android:layout_marginBottom="0dp" />
 
@@ -122,21 +134,30 @@
             android:src="@drawable/ic_baseline_chat_24_black"
             android:layout_height="wrap_content"/>
 
-        <ImageButton
-            android:id="@+id/activity_streaming_btn_song_list"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_format_list_numbered_24"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"/>
 
         <ImageButton
-            android:id="@+id/activity_streaming_btn_song_add"
+            android:id="@+id/activity_streaming_btn_viewerList"
             android:background="@android:color/transparent"
-            android:src="@drawable/ic_baseline_playlist_add_24"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:src="@drawable/ic_baseline_menu_24"
             android:layout_height="wrap_content"/>
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/activity_streaming_btn_song_list"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:src="@drawable/ic_baseline_format_list_numbered_24"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"/>-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/activity_streaming_btn_song_add"-->
+<!--            android:background="@android:color/transparent"-->
+<!--            android:src="@drawable/ic_baseline_playlist_add_24"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:layout_height="wrap_content"/>-->
 
     </LinearLayout>
 
@@ -152,5 +173,13 @@
 
          />
 
-
-</RelativeLayout>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white">
+        <include
+            layout="@layout/navigation_streaming_viewer_list"/>
+    </RelativeLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

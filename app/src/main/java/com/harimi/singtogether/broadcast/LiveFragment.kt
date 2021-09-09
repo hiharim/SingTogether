@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,19 +29,19 @@ import retrofit2.Retrofit
 
 
 /**
- 실시간 방송 프래그먼트
+실시간 방송 프래그먼트
  */
 class LiveFragment : Fragment() {
 
-    private lateinit var retrofit : Retrofit
+    private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
-    private var TAG :String = "LIVE_FRAGMENT"
+    private var TAG: String = "LIVE_FRAGMENT"
 
     val liveStreamingPostList: ArrayList<LiveFragmentData> = ArrayList()
-    lateinit var rv_fragmentLivePost : RecyclerView
+    lateinit var rv_fragmentLivePost: RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
-    lateinit var  tv_noLive: TextView
-    lateinit var  swipeRefresh: SwipeRefreshLayout
+    lateinit var tv_noLive: TextView
+    lateinit var swipeRefresh: SwipeRefreshLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,42 +49,57 @@ class LiveFragment : Fragment() {
         arguments?.let {
 
         }
-        Log.d("라이브: ", "onCreate")
+        Log.d(TAG, "onCreate")
     }
 
     override fun onPause() {
         super.onPause()
-        Log.d("라이브: ", "onPause")
+        Log.d(TAG, "onPause")
     }
 
     override fun onResume() {
         super.onResume()
-        Log.d("라이브: ", "onResume")
-        liveStreamingPostList.clear()
-        liveStreamingPostLoad()
+        Log.d(TAG, "onResume")
+        ////performClick 이란 지정된 객체를 한번 실행시키라는 메소드
+        swipeRefresh.performClick()
+
     }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop")
 
+    }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onStart() {
+        super.onStart()
+        Log.d(TAG, "onStart")
+    }
 
-        Log.d("라이브: ", "onCreateView")
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        Log.d(TAG, "onCreateView")
         var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
-
         initView(liveFragmentView)
         return liveFragmentView
     }
 
 
-    fun initView(liveFragmentView : View){
+    fun initView(liveFragmentView: View) {
         swipeRefresh = liveFragmentView.findViewById(R.id.swipeRefresh)
         rv_fragmentLivePost = liveFragmentView.findViewById(R.id.rv_fragmentLivePost)
         tv_noLive = liveFragmentView.findViewById(R.id.tv_noLive)
 
         rv_fragmentLivePost.layoutManager = LinearLayoutManager(activity)
-        rv_fragmentLivePost.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        liveFragmentAdapter = LiveFragmentAdapter(liveStreamingPostList,requireContext())
+        rv_fragmentLivePost.addItemDecoration(
+            DividerItemDecoration(
+                activity,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        liveFragmentAdapter = LiveFragmentAdapter(liveStreamingPostList, requireContext())
         rv_fragmentLivePost.adapter = liveFragmentAdapter
         ///리사이클러뷰 새로고침
         swipeRefresh.setOnRefreshListener {
@@ -92,55 +109,62 @@ class LiveFragment : Fragment() {
             liveStreamingPostLoad()
             swipeRefresh.isRefreshing = false //서버 통신 완료 후 호출해줍니다.
         }
-
-        liveStreamingPostLoad ()
+        liveStreamingPostLoad()
     }
-    fun liveStreamingPostLoad (){
 
-        retrofit= RetrofitClient.getInstance()
-        retrofitService=retrofit.create(RetrofitService::class.java)
+    fun liveStreamingPostLoad() {
+        retrofit = RetrofitClient.getInstance()
+        retrofitService = retrofit.create(RetrofitService::class.java)
         retrofitService.requestGetLiveStreamingPost().enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
+            override fun onResponse(call: Call<String>, response: Response<String>) {
 
-                    if (response.isSuccessful) {
-                        val body = response.body().toString()
-                        Log.d("getHomePost: ", body)
-                        liveStreamingPostList.clear()
+                if (response.isSuccessful) {
+                    val body = response.body().toString()
+                    Log.d("getHomePost: ", body)
+                    liveStreamingPostList.clear()
 
-                        val jsonArray = JSONArray(body)
-                        if (jsonArray.length()==0 || jsonArray.equals("null")){
-                            tv_noLive.visibility =View.VISIBLE
-                            rv_fragmentLivePost.visibility =View.INVISIBLE
-                        }else {
-                            rv_fragmentLivePost.visibility =View.VISIBLE
-                            tv_noLive.visibility =View.INVISIBLE
+                    val jsonArray = JSONArray(body)
+                    if (jsonArray.length() == 0 || jsonArray.equals("null")) {
+                        tv_noLive.visibility = View.VISIBLE
+                        rv_fragmentLivePost.visibility = View.INVISIBLE
+                    } else {
+                        rv_fragmentLivePost.visibility = View.VISIBLE
+                        tv_noLive.visibility = View.INVISIBLE
 
-                            for (i in 0 until jsonArray.length()) {
-                                val jsonObject = jsonArray.getJSONObject(i)
-                                val idx = jsonObject.getString("idx")
-                                val email = jsonObject.getString("email")
-                                val thumbnail = jsonObject.getString("thumbnail")
-                                val nickName = jsonObject.getString("nickName")
-                                val profile = jsonObject.getString("profile")
-                                val title = jsonObject.getString("title")
-                                val viewer = jsonObject.getString("viewer")
+                        for (i in 0 until jsonArray.length()) {
+                            val jsonObject = jsonArray.getJSONObject(i)
+                            val idx = jsonObject.getString("idx")
+                            val email = jsonObject.getString("email")
+                            val thumbnail = jsonObject.getString("thumbnail")
+                            val nickName = jsonObject.getString("nickName")
+                            val profile = jsonObject.getString("profile")
+                            val title = jsonObject.getString("title")
+                            val viewer = jsonObject.getString("viewer")
 
-                                Log.d(TAG, "idx($i): $idx")
-                                Log.d(TAG, "songTitle($i): $title")
-                                Log.d(TAG, "singer($i): $email")
+                            Log.d(TAG, "idx($i): $idx")
+                            Log.d(TAG, "songTitle($i): $title")
+                            Log.d(TAG, "singer($i): $email")
 
-                                val liveData = LiveFragmentData(idx, thumbnail, email, nickName, profile, title,viewer)
-                                liveStreamingPostList.add(0, liveData)
-                                liveFragmentAdapter.notifyDataSetChanged()
-                            }
+                            val liveData = LiveFragmentData(
+                                idx,
+                                thumbnail,
+                                email,
+                                nickName,
+                                profile,
+                                title,
+                                viewer
+                            )
+                            liveStreamingPostList.add(0, liveData)
+                            liveFragmentAdapter.notifyDataSetChanged()
                         }
                     }
                 }
+            }
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<String>, t: Throwable) {
 
-                }
-            })
+            }
+        })
     }
 
 
@@ -148,10 +172,14 @@ class LiveFragment : Fragment() {
 
         @JvmStatic
         fun newInstance() =
-                LiveFragment().apply {
-                    arguments = Bundle().apply {
+            LiveFragment().apply {
+                arguments = Bundle().apply {
 
-                    }
                 }
+            }
+    }
+    fun refreshFragment(fragment: LiveFragment,fragmentManager: FragmentManager){
+        var ft:FragmentTransaction = fragmentManager.beginTransaction()
+        ft.detach(fragment).attach(fragment).commit()
     }
 }

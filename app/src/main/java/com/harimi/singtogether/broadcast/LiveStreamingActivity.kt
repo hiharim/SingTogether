@@ -1,29 +1,28 @@
 package com.harimi.singtogether.broadcast
 
-import android.content.Intent
 import android.media.AudioManager
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.harimi.singtogether.*
-
+import com.harimi.singtogether.Data.LiveStreamingViewerListData
 import com.harimi.singtogether.Data.LocalChattingData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.R
+import com.harimi.singtogether.R.*
+import com.harimi.singtogether.adapter.LiveStreamingViewerListAdapter
 import com.harimi.singtogether.adapter.LocalChattingAdapter
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
 import org.json.JSONArray
 import org.json.JSONObject
-import org.w3c.dom.Text
 import org.webrtc.*
 import org.webrtc.audio.JavaAudioDeviceModule
 import retrofit2.Call
@@ -61,10 +60,15 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private lateinit var btn_sendInputText :Button
     private lateinit var activity_streaming_btn_chat :ImageButton
     private lateinit var activity_streaming_tv_time :TextView
+    private lateinit var activity_streaming_btn_viewerList : ImageButton
+    private lateinit var StreamingDrawerLayout : DrawerLayout
+    /////DrawerLayout 리사이클러뷰,데이터리스트, 어댑터
+    private lateinit var rv_streamingViewerList : RecyclerView
+    private val liveStreamingViewerList: ArrayList<LiveStreamingViewerListData> = ArrayList()
+    private lateinit var liveStreamingViewerAdapter: LiveStreamingViewerListAdapter
 
 
     private var messageArea : Boolean = false
-
     private var viewer : String ? ="0"
     private var timerTask: Timer? = null //타이머
     private var time = 0 //
@@ -75,29 +79,58 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_live_streaming)
+        setContentView(layout.activity_live_streaming)
 
         val getIntent = intent
         roomIdx = getIntent.getStringExtra("roomIdx")
         Log.d(TAG, " $roomIdx")
-        activity_streaming_tv_count = findViewById<TextView>(R.id.activity_streaming_tv_count) //방송 시청자
-        activity_streaming_btn_close = findViewById<ImageView>(R.id.activity_streaming_btn_close)// 나가기 버튼
-        activity_streaming_btn_switch_cam_backCamera =findViewById(R.id.activity_streaming_btn_switch_cam_backCamera)//  카메라 전환 버튼
-        et_chattingInputText = findViewById<EditText>(R.id.et_chattingInputText)
-        btn_sendInputText = findViewById<Button>(R.id.btn_sendInputText)
-        activity_streaming_btn_chat = findViewById<ImageButton>(R.id.activity_streaming_btn_chat) ////채팅창 visible 설정
-        activity_streaming_tv_time = findViewById<TextView>(R.id.activity_streaming_tv_time) // 타이머
 
-        rv_chattingRecyclerView = findViewById(R.id.rv_chattingRecyclerView)
+        initView()
+
+    }
+
+
+
+
+    fun initView(){
+
+        StreamingDrawerLayout = findViewById<DrawerLayout>(id.StreamingDrawerLayout)
+
+        activity_streaming_btn_viewerList = findViewById<ImageButton>(id.activity_streaming_btn_viewerList)
+        activity_streaming_tv_count = findViewById<TextView>(id.activity_streaming_tv_count) //방송 시청자
+        activity_streaming_btn_close = findViewById<ImageView>(id.activity_streaming_btn_close)// 나가기 버튼
+        activity_streaming_btn_switch_cam_backCamera =findViewById(id.activity_streaming_btn_switch_cam_backCamera)//  카메라 전환 버튼
+        et_chattingInputText = findViewById<EditText>(id.et_chattingInputText)
+        btn_sendInputText = findViewById<Button>(id.btn_sendInputText)
+        activity_streaming_btn_chat = findViewById<ImageButton>(id.activity_streaming_btn_chat) ////채팅창 visible 설정
+        activity_streaming_tv_time = findViewById<TextView>(id.activity_streaming_tv_time) // 타이머
+
+        ////스트리밍 채팅 리사이클러뷰
+        rv_chattingRecyclerView = findViewById(id.rv_chattingRecyclerView)
         rv_chattingRecyclerView.layoutManager = LinearLayoutManager(this)
-        rv_chattingRecyclerView.addItemDecoration(DividerItemDecoration( this,DividerItemDecoration.VERTICAL))
-        localChattingAdapter = LocalChattingAdapter(localChattingList,this)
+        rv_chattingRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        localChattingAdapter = LocalChattingAdapter(localChattingList, this)
         rv_chattingRecyclerView.adapter = localChattingAdapter
 
+        ////현재들어와있는 사람들리스트 리사이클러뷰
+        rv_streamingViewerList = findViewById(id.rv_streamingViewerList)
+        rv_streamingViewerList.layoutManager = LinearLayoutManager(this)
+        rv_streamingViewerList.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        liveStreamingViewerAdapter = LiveStreamingViewerListAdapter(liveStreamingViewerList, this)
+        rv_streamingViewerList.adapter = liveStreamingViewerAdapter
+
+
         activity_streaming_tv_count.text = viewer // 초기 시청자 셋팅
-
-
-
         peerConnectionMap = HashMap()
         iceServers = ArrayList()
         iceServers!!.add(
@@ -142,7 +175,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         videoCapturer!!.startCapture(480, 640, 30)
         videoTrack = peerConnectionFactory!!.createVideoTrack("100", videoSource)
 
-        localStreamingView = findViewById(R.id.localStreamingView)
+        localStreamingView = findViewById(id.localStreamingView)
         localStreamingView!!.setMirror(true)
         localStreamingView!!.init(eglBaseContext, null)
 
@@ -207,7 +240,12 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             val chattingText = et_chattingInputText.text.toString()
 
             et_chattingInputText.setText("")
-            get()!!.chattingInput(roomIdx!!,LoginActivity.user_info.loginUserNickname,chattingText,LoginActivity.user_info.loginUserProfile)
+            get()!!.chattingInput(
+                roomIdx!!,
+                LoginActivity.user_info.loginUserNickname,
+                chattingText,
+                LoginActivity.user_info.loginUserProfile
+            )
         }
 
 
@@ -224,8 +262,10 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             builder.setMessage("방송을 종료하시겠습니까?")
 
             builder.setPositiveButton("네") { dialog, which ->
-                Toast.makeText(applicationContext,
-                    "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    applicationContext,
+                    "방송을 종료합니다", Toast.LENGTH_SHORT
+                ).show()
 
                 get()!!.liveStreamingFinish(roomIdx!!)
                 finish()
@@ -235,8 +275,35 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             builder.show()
         }
 
+        activity_streaming_btn_viewerList.setOnClickListener {
+            clickViewerList(it)
+        }
     }
 
+
+
+    fun clickViewerList(view: View?) {
+        openDrawer(StreamingDrawerLayout)
+    }
+
+    fun openDrawer(drawerLayout: DrawerLayout) {
+        drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    fun closeDrawer(drawerLayout: DrawerLayout) {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            //열려있으면 닫는다.
+            drawerLayout.closeDrawer(GravityCompat.START)
+        }
+    }
+
+
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
+        closeDrawer(StreamingDrawerLayout)
+    }
     @Synchronized
     private fun getOrCreatePeerConnection(socketId: String?): PeerConnection? {
         Log.d(TAG, "getOrCreatePeerConnection")
@@ -254,6 +321,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     get()!!.sendIceCandidate(iceCandidate, socketId!!)
 
                 }
+
                 override fun onAddStream(mediaStream: MediaStream) {
                     super.onAddStream(mediaStream)
 //                val remoteVideoTrack = mediaStream.videoTracks[0]
@@ -271,7 +339,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     }
 
     override fun onPeerJoined(socketId: String?) {
-        Log.d(TAG, "onPeerJoined")
+        Log.d(TAG, "onPeerJoined"+socketId)
         val peerConnection = getOrCreatePeerConnection(socketId)
         peerConnection!!.createOffer(object : SdpAdapter("createOfferSdp:$socketId") {
             override fun onCreateSuccess(sessionDescription: SessionDescription) {
@@ -284,7 +352,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 Log.d(TAG, "onAddStream" + viewer)
 
                 var getViewer = activity_streaming_tv_count.text.toString()
-                get()!!.getLiveStreamingViewer(roomIdx!!,getViewer)
+                get()!!.getLiveStreamingViewer(roomIdx!!, getViewer)
 
                 peerConnection.setLocalDescription(
                     SdpAdapter("setLocalSdp:$socketId"),
@@ -295,53 +363,71 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         }, MediaConstraints())
     }
 
-    override fun onSelfJoined() {
-        Log.d(TAG, "onSelfJoined")
+    override fun onSelfJoined(userData: String ?) {
+        Log.d(TAG, "onSelfJoined"+userData)
     }
 
 
 
-    override fun onGetMessage(message:String?) {
+    override fun onGetMessage(message: String?) {
         Log.d(TAG, "onGetMessage" + message)
-
-
             val jsonArray = JSONArray(message.toString())
             for (i in 0 until jsonArray.length()) {
                 val jsonObject = jsonArray.getJSONObject(i)
                 val chattingText = jsonObject.getString("inputText")
                 val nickName = jsonObject.getString("nickName")
                 val profile = jsonObject.getString("profile")
-                val localchattingdata = LocalChattingData(nickName,chattingText,profile)
+                val localchattingdata = LocalChattingData(nickName, chattingText, profile)
 
                     runOnUiThread {
-                        localChattingList.add( localchattingdata)
+                        localChattingList.add(localchattingdata)
                         localChattingAdapter.notifyDataSetChanged()
+                        rv_chattingRecyclerView.scrollToPosition(localChattingList.size - 1)
                     }
 
             }
 
     }
-
     override fun onGetViewer(message: String?) {
         Log.d(TAG, "onGetViewer")
+    }
+
+    override fun addViewerList(message: String?) {
+        Log.d(TAG, "addViewerList"+message)
+        val jsonArray = JSONArray(message.toString())
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val socketId = jsonObject.getString("socketId")
+            val nickName = jsonObject.getString("nickName")
+            val profile = jsonObject.getString("profile")
+            val liveStreamingViewerData= LiveStreamingViewerListData(nickName, profile,socketId )
+
+            runOnUiThread {
+                liveStreamingViewerList.add(liveStreamingViewerData)
+                liveStreamingViewerAdapter.notifyDataSetChanged()
+            }
+
+        }
     }
 
     override fun onLiveStreamingFinish() {
         Log.d(TAG, "onLiveStreamingFinish")
     }
 
-    override fun onOutViewer() {
+    override fun onOutViewer(message: String?) {
         Log.d(TAG, "onOutViewer")
-
         var outViewer = Integer.parseInt(viewer)
         outViewer--
         viewer = outViewer.toString()
         activity_streaming_tv_count.text = viewer
     }
 
+    override fun onViewerOutOfHere(message: String?) {
+        Log.d(TAG, "onViewerOutOfHere")
+    }
+
     override fun onPeerLeave(msg: String?) {
         Log.d(TAG, "onPeerLeave")
-        Log.d(TAG, "msg")
     }
 
     override fun onOfferReceived(data: JSONObject?) {
@@ -409,15 +495,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     if (response.isSuccessful) {
 
                         val jsonObject = JSONObject(response.body().toString())
-//                            val roomIdx = jsonObject.getString("roomIdx")
-                        var bundle: Bundle = Bundle()
-                        val postFragment = PostFragment()
-                        postFragment.arguments=bundle
-                        this@LiveStreamingActivity.supportFragmentManager.beginTransaction()
-                            .add(R.id.activity_main_frame,postFragment)
-                            .commitAllowingStateLoss() //프래그먼트 다음에 액티비티가 실행된후 그 전에 있던 프래그먼트를 날려버리고 새롭게 시작할 때 사용할 수 있다.
-
-                        finish()
+//                        finish()
 
                     } else {
                         Log.e("onResponse", "실패 : " + response.errorBody())
@@ -483,4 +561,23 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             }
         }
     }
+    /////백버튼 눌렀을 때
+    override fun onBackPressed() {
+//        super.onBackPressed() ///오버라이드 하기위해선 super 받으면 안됨 .
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("종료")
+        builder.setMessage("방송을 종료하시겠습니까?")
+
+        builder.setPositiveButton("네") { dialog, which ->
+            Toast.makeText(applicationContext,
+                "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+
+            get()!!.liveStreamingFinish(roomIdx!!)
+            finish()
+        }
+        builder.setNegativeButton("아니요") { dialog, which ->
+        }
+        builder.show()
+    }
+
 }
