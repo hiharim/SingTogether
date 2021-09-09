@@ -1,3 +1,3 @@
 package com.harimi.singtogether.Data
 
-class LiveStreamingViewerListData  (val nickName:String ,val profile : String , val socketId :String  )
+class LiveStreamingViewerListData  (val nickName:String ,val profile : String , val socketId :String ,val userId : String )

@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.harimi.singtogether.Data.RemoteChattingData
 import com.harimi.singtogether.LoginActivity
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.RemoteChattingAdapter
 import org.json.JSONObject
@@ -20,9 +23,16 @@ import java.util.ArrayList
 import java.util.HashMap
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
 import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 
 class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback{
+    private lateinit var retrofit : Retrofit
+    private lateinit var retrofitService: RetrofitService
+
     var audioConstraints: MediaConstraints? = null
     var audioSource: AudioSource? = null
     var localAudioTrack: AudioTrack? = null
@@ -215,7 +225,7 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
     override fun onSelfJoined(socketID : String?) {
         Log.d(TAG, "onSelfJoined "+socketID)
-        get()!!.addViewerList(roomIdx!!,LoginActivity.user_info.loginUserNickname,LoginActivity.user_info.loginUserProfile,socketID!!)
+        get()!!.addViewerList(roomIdx!!,LoginActivity.user_info.loginUserNickname,LoginActivity.user_info.loginUserProfile,socketID!!,LoginActivity.user_info.loginUserEmail)
     }
 
     override fun onGetMessage(message: String?) {
@@ -265,7 +275,13 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                 builder.setMessage("방송이 종료되었습니다")
 
                 builder.setPositiveButton("확인") { dialog, which ->
+//                    val bundle = Bundle()
+//                    val liveFragment = LiveFragment()
+//                    val transaction = supportFragmentManager.beginTransaction()
+//                    transaction.add(R.id.activity_main_frame, liveFragment)
+//                    transaction.commit()
                     finish()
+
                 }
                 builder.show()
             }
@@ -349,16 +365,48 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         ))
     }
 
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "onStop")
+        retrofit = RetrofitClient.getInstance()
+        retrofitService = retrofit.create(RetrofitService::class.java)
+        retrofitService.requestOutViewer(roomIdx!!)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    if (response.isSuccessful) {
+
+                        val jsonObject = JSONObject(response.body().toString())
+
+
+                    } else {
+//                        Log.e("onResponse", "실패 : " + response.errorBody())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(
+                        "실패:", "Failed API call with call: " + call +
+                                " + exception: " + t
+                    )
+                }
+
+            })
+    }
+
     override fun onDestroy() { //앱 죽여 버릴때 호출됨
         Log.d(TAG, "onDestroy")
         super.onDestroy()
-        get()!!.destroy() // 소켓으로 끊어 달라고 쏴줌
-
+        get()!!.destroy()
         if (peerConnection == null) {
         } else {
             peerConnection!!.dispose()
+            // 더 이상 카메라 eglRender가 돌아가지않도록 release ;
         }
-        remoteStreamingView!!.release() /// 더 이상 eglRender 가 돌아가지 않도록 release 해준다 .
+        remoteStreamingView!!.release() // 더 이상 카메라 eglRender가 돌아가지않도록 release ;
+
     }
 
     override fun onBackPressed() {

@@ -197,13 +197,14 @@ class SignalingClient private constructor() {
     }
 
     ///viewer 리스트 갱신
-    fun addViewerList(roomName: String ,nickName:String ,profile:String,socketId: String) {
+    fun addViewerList(roomName: String ,nickName:String ,profile:String,socketId: String,userId :String) {
         val jo = JSONObject()
         try {
             jo.put("roomName", roomName)
             jo.put("nickName", nickName)
             jo.put("socketId", socketId)
             jo.put("profile", profile)
+            jo.put("userId", userId)
 
             socket!!.emit("addViewerList", jo)
         } catch (e: JSONException) {
@@ -226,7 +227,6 @@ class SignalingClient private constructor() {
 
     ///시청자가 나갔을 때
     fun outViewer(roomName: String, UserId: String) {
-
         val jo = JSONObject()
         try {
             jo.put("roomName", roomName)

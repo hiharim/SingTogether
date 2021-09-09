@@ -400,7 +400,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             val socketId = jsonObject.getString("socketId")
             val nickName = jsonObject.getString("nickName")
             val profile = jsonObject.getString("profile")
-            val liveStreamingViewerData= LiveStreamingViewerListData(nickName, profile,socketId )
+            val userId = jsonObject.getString("userId")
+            val liveStreamingViewerData= LiveStreamingViewerListData(nickName, profile,socketId,userId )
 
             runOnUiThread {
                 liveStreamingViewerList.add(liveStreamingViewerData)
@@ -420,6 +421,23 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         outViewer--
         viewer = outViewer.toString()
         activity_streaming_tv_count.text = viewer
+        val jsonArray = JSONArray(message.toString())
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val userId = jsonObject.getString("userId")
+            for (i in 0 until liveStreamingViewerList.size) {
+                if (liveStreamingViewerList.get(i).userId.equals(userId)){
+                    runOnUiThread {
+                        liveStreamingViewerList.removeAt(i)
+                        liveStreamingViewerAdapter.notifyDataSetChanged()
+                        return@runOnUiThread
+                    }
+                }
+            }
+        }
+
+
     }
 
     override fun onViewerOutOfHere(message: String?) {

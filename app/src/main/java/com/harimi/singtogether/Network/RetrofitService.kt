@@ -60,6 +60,12 @@ interface RetrofitService {
         @Field("searchInput") searchInput :String
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("OutViewer.php")
+    fun requestOutViewer (
+        @Field("roomIdx") roomIdx :String
+    ) : Call<String>
+
     @POST("loadHomePost.php")
     fun requestGetHomePost (
     ) : Call<String>

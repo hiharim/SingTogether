@@ -55,6 +55,8 @@ class LiveFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         Log.d(TAG, "onPause")
+
+
     }
 
     override fun onResume() {
@@ -62,7 +64,6 @@ class LiveFragment : Fragment() {
         Log.d(TAG, "onResume")
         ////performClick 이란 지정된 객체를 한번 실행시키라는 메소드
         swipeRefresh.performClick()
-
     }
 
     override fun onStop() {
@@ -83,6 +84,7 @@ class LiveFragment : Fragment() {
         Log.d(TAG, "onCreateView")
         var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
         initView(liveFragmentView)
+        liveStreamingPostLoad()
         return liveFragmentView
     }
 
@@ -105,11 +107,13 @@ class LiveFragment : Fragment() {
         swipeRefresh.setOnRefreshListener {
             // 사용자가 아래로 드래그 했다가 놓았을 때 호출 됩니다.
             // 이때 새로고침 화살표가 계속 돌아갑니다.
+
             liveStreamingPostList.clear()
             liveStreamingPostLoad()
-            swipeRefresh.isRefreshing = false //서버 통신 완료 후 호출해줍니다.
+            swipeRefresh.isRefreshing = false  //서버 통신 완료 후 호출해줍니다.
         }
-        liveStreamingPostLoad()
+
+
     }
 
     fun liveStreamingPostLoad() {
