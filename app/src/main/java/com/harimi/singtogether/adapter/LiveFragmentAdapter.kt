@@ -1,5 +1,6 @@
 package com.harimi.singtogether.adapter
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.util.Log
@@ -7,13 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.LiveFragmentData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.LiveFragment
 import com.harimi.singtogether.broadcast.LiveStreamingViewActivity
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
@@ -83,7 +87,11 @@ class LiveFragmentAdapter(val LiveStreamingPostList: ArrayList<LiveFragmentData>
                             if (result) {
                                 val intent = Intent(context, LiveStreamingViewActivity::class.java)
                                 intent.putExtra("roomIdx", LiveStreamingPostList.get(position).idx)
-                                ContextCompat.startActivity(context, intent, null)
+                                context.startActivity(intent, null)
+//                                val activity =v!!.context as AppCompatActivity
+//                                val liveFragment = LiveFragment()
+//                                activity.supportFragmentManager.beginTransaction().remove(liveFragment).commit()
+
                             } else {
                                 Toast.makeText(context, "스트리머가 이미 방송을 종료하였습니다.", Toast.LENGTH_SHORT).show()
                                 LiveStreamingPostList.removeAt(position)

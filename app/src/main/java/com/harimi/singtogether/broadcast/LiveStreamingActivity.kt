@@ -66,6 +66,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private lateinit var rv_streamingViewerList : RecyclerView
     private val liveStreamingViewerList: ArrayList<LiveStreamingViewerListData> = ArrayList()
     private lateinit var liveStreamingViewerAdapter: LiveStreamingViewerListAdapter
+    private lateinit var layout_notify: LinearLayout
 
 
     private var messageArea : Boolean = false
@@ -95,7 +96,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     fun initView(){
 
         StreamingDrawerLayout = findViewById<DrawerLayout>(id.StreamingDrawerLayout)
-
+        layout_notify = findViewById<LinearLayout>(id.layout_notify)
         activity_streaming_btn_viewerList = findViewById<ImageButton>(id.activity_streaming_btn_viewerList)
         activity_streaming_tv_count = findViewById<TextView>(id.activity_streaming_tv_count) //방송 시청자
         activity_streaming_btn_close = findViewById<ImageView>(id.activity_streaming_btn_close)// 나가기 버튼
@@ -117,6 +118,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         localChattingAdapter = LocalChattingAdapter(localChattingList, this)
         rv_chattingRecyclerView.adapter = localChattingAdapter
 
+
+
         ////현재들어와있는 사람들리스트 리사이클러뷰
         rv_streamingViewerList = findViewById(id.rv_streamingViewerList)
         rv_streamingViewerList.layoutManager = LinearLayoutManager(this)
@@ -129,6 +132,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         liveStreamingViewerAdapter = LiveStreamingViewerListAdapter(liveStreamingViewerList, this)
         rv_streamingViewerList.adapter = liveStreamingViewerAdapter
 
+        ////초기 뷰어 리스트 셋팅
+        viewerListSetting()
 
         activity_streaming_tv_count.text = viewer // 초기 시청자 셋팅
         peerConnectionMap = HashMap()
@@ -406,6 +411,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             runOnUiThread {
                 liveStreamingViewerList.add(liveStreamingViewerData)
                 liveStreamingViewerAdapter.notifyDataSetChanged()
+                viewerListSetting()
             }
 
         }
@@ -421,8 +427,9 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         outViewer--
         viewer = outViewer.toString()
         activity_streaming_tv_count.text = viewer
-        val jsonArray = JSONArray(message.toString())
+        get()!!.getLiveStreamingViewer(roomIdx!!, viewer.toString())
 
+        val jsonArray = JSONArray(message.toString())
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
             val userId = jsonObject.getString("userId")
@@ -431,10 +438,12 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     runOnUiThread {
                         liveStreamingViewerList.removeAt(i)
                         liveStreamingViewerAdapter.notifyDataSetChanged()
+                        viewerListSetting()
                         return@runOnUiThread
                     }
                 }
             }
+
         }
 
 
@@ -491,6 +500,17 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 data.optString("candidate")
             )
         )
+    }
+
+    /////viewer 리스트 셋팅
+    fun viewerListSetting(){
+        if (liveStreamingViewerList.size ==0 ){
+            layout_notify.visibility = View.VISIBLE
+            rv_streamingViewerList.visibility = View.GONE
+        }else{
+            layout_notify.visibility = View.GONE
+            rv_streamingViewerList.visibility = View.VISIBLE
+        }
     }
 
 

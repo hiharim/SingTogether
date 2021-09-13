@@ -119,11 +119,11 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                             response: Response<String>
                         ) {
                             if (response.isSuccessful) {
-
+                                Log.d("onResponse: 성공: ", response.body() + response.message())
                                 val jsonObject = JSONObject(response.body().toString())
                                 val roomIdx = jsonObject.getString("roomIdx")
 
-                                Log.d("onResponse: 성공: ", response.body() + response.message())
+
                                 val intent = Intent(this@LiveThumbnailCaptureActivity, LiveStreamingActivity::class.java)
                                 intent.putExtra("roomIdx", roomIdx)
                                 startActivity(intent)

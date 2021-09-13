@@ -21,17 +21,6 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.HomeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_fragment_home, parent, false)
         return  HomeViewHolder(view)
-//                .apply {
-//                    itemView.setOnClickListener {
-////                        val getPosition : Int = adapterPosition
-////                        val homeData :HomeData = homePostList.get(getPosition)
-//
-//                        val activity =view!!.context as AppCompatActivity
-//                        val postFragment = PostFragment()
-//                        activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_home_recyclerView,postFragment).addToBackStack(null).commit()
-//
-//                    }
-//                }
     }
 
     override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {

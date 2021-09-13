@@ -137,11 +137,11 @@
 
         <ImageButton
             android:id="@+id/activity_streaming_btn_viewerList"
-            android:background="@android:color/transparent"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_baseline_menu_24"
-            android:layout_height="wrap_content"/>
+            android:background="@android:color/transparent"
+            android:src="@drawable/viewers" />
 
 <!--        <ImageButton-->
 <!--            android:id="@+id/activity_streaming_btn_song_list"-->

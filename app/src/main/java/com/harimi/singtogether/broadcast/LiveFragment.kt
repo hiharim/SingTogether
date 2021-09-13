@@ -13,14 +13,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.LiveFragmentData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
-import com.harimi.singtogether.adapter.HomeAdapter
 import com.harimi.singtogether.adapter.LiveFragmentAdapter
-import com.harimi.singtogether.databinding.FragmentLiveBinding
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
@@ -62,8 +59,13 @@ class LiveFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-        ////performClick 이란 지정된 객체를 한번 실행시키라는 메소드
-        swipeRefresh.performClick()
+        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
+        ft.detach(this).attach(this).commit()
+        liveStreamingPostList.clear()
+        liveFragmentAdapter.notifyDataSetChanged()
+        liveStreamingPostLoad()
+
+//        swipeRefresh.performClick()
     }
 
     override fun onStop() {
@@ -75,6 +77,8 @@ class LiveFragment : Fragment() {
     override fun onStart() {
         super.onStart()
         Log.d(TAG, "onStart")
+        ////performClick 이란 지정된 객체를 한번 실행시키라는 메소드
+
     }
 
     override fun onCreateView(
@@ -85,6 +89,7 @@ class LiveFragment : Fragment() {
         var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
         initView(liveFragmentView)
         liveStreamingPostLoad()
+
         return liveFragmentView
     }
 
@@ -109,11 +114,10 @@ class LiveFragment : Fragment() {
             // 이때 새로고침 화살표가 계속 돌아갑니다.
 
             liveStreamingPostList.clear()
+            liveFragmentAdapter.notifyDataSetChanged()
             liveStreamingPostLoad()
             swipeRefresh.isRefreshing = false  //서버 통신 완료 후 호출해줍니다.
         }
-
-
     }
 
     fun liveStreamingPostLoad() {
@@ -121,11 +125,11 @@ class LiveFragment : Fragment() {
         retrofitService = retrofit.create(RetrofitService::class.java)
         retrofitService.requestGetLiveStreamingPost().enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
-
+                liveStreamingPostList.clear()
                 if (response.isSuccessful) {
                     val body = response.body().toString()
-                    Log.d("getHomePost: ", body)
-                    liveStreamingPostList.clear()
+                    Log.d(TAG,"getHomePost: "+ body)
+
 
                     val jsonArray = JSONArray(body)
                     if (jsonArray.length() == 0 || jsonArray.equals("null")) {
@@ -144,10 +148,6 @@ class LiveFragment : Fragment() {
                             val profile = jsonObject.getString("profile")
                             val title = jsonObject.getString("title")
                             val viewer = jsonObject.getString("viewer")
-
-                            Log.d(TAG, "idx($i): $idx")
-                            Log.d(TAG, "songTitle($i): $title")
-                            Log.d(TAG, "singer($i): $email")
 
                             val liveData = LiveFragmentData(
                                 idx,
@@ -182,8 +182,5 @@ class LiveFragment : Fragment() {
                 }
             }
     }
-    fun refreshFragment(fragment: LiveFragment,fragmentManager: FragmentManager){
-        var ft:FragmentTransaction = fragmentManager.beginTransaction()
-        ft.detach(fragment).attach(fragment).commit()
-    }
+
 }

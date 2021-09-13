@@ -156,9 +156,30 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
             builder.setMessage("방송을 그만보시겠습니까?")
 
             builder.setPositiveButton("네") { dialog, which ->
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                retrofitService.requestOutViewer(roomIdx!!)
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(
+                            call: Call<String>,
+                            response: Response<String>
+                        ) {
+                            if (response.isSuccessful) {
+                                val jsonObject = JSONObject(response.body().toString())
+                                get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
+                                finish()
+                            } else {
+                            }
+                        }
 
-                get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
-                finish()
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.d(
+                                "실패:", "Failed API call with call: " + call +
+                                        " + exception: " + t
+                            )
+                        }
+
+                    })
             }
             builder.setNegativeButton("아니요") { dialog, which ->
             }
@@ -275,35 +296,50 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                 builder.setMessage("방송이 종료되었습니다")
 
                 builder.setPositiveButton("확인") { dialog, which ->
-//                    val bundle = Bundle()
-//                    val liveFragment = LiveFragment()
-//                    val transaction = supportFragmentManager.beginTransaction()
-//                    transaction.add(R.id.activity_main_frame, liveFragment)
-//                    transaction.commit()
-                    finish()
+                    retrofit = RetrofitClient.getInstance()
+                    retrofitService = retrofit.create(RetrofitService::class.java)
+                    retrofitService.requestOutViewer(roomIdx!!)
+                        .enqueue(object : Callback<String> {
+                            override fun onResponse(
+                                call: Call<String>,
+                                response: Response<String>
+                            ) {
+                                if (response.isSuccessful) {
+                                    val jsonObject = JSONObject(response.body().toString())
+                                    finish()
+                                } else {
+                                }
+                            }
 
+                            override fun onFailure(call: Call<String>, t: Throwable) {
+                                Log.d(
+                                    "실패:", "Failed API call with call: " + call +
+                                            " + exception: " + t
+                                )
+                            }
+
+                        })
                 }
                 builder.show()
             }
-
     }
 
     //시청자 나갔을 때
     override fun onOutViewer(message: String?) {
         Log.d(TAG, "onOutViewer")
-        var jsonArray = JSONArray(message.toString())
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            val userId = jsonObject.getString("userId")
-                if (!userId.equals(LoginActivity.user_info.loginUserEmail)){
-                    var getViewer = activity_streaming_tv_count.text.toString()
-                    var getViewerInt = Integer.parseInt(getViewer)
-                    getViewerInt--
-                    runOnUiThread {
-                        activity_streaming_tv_count.setText(getViewerInt.toString())
-                    }
-                }
-            }
+//        var jsonArray = JSONArray(message.toString())
+//        for (i in 0 until jsonArray.length()) {
+//            val jsonObject = jsonArray.getJSONObject(i)
+//            val userId = jsonObject.getString("userId")
+//                if (!userId.equals(LoginActivity.user_info.loginUserEmail)){
+//                    var getViewer = activity_streaming_tv_count.text.toString()
+//                    var getViewerInt = Integer.parseInt(getViewer)
+//                    getViewerInt--
+//                    runOnUiThread {
+//                        activity_streaming_tv_count.setText(getViewerInt.toString())
+//                    }
+//                }
+//            }
     }
 
     override fun onViewerOutOfHere(message: String?) {
@@ -314,10 +350,35 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
             builder.setMessage("강퇴당하였습니다")
 
             builder.setPositiveButton("확인") { dialog, which ->
-                Toast.makeText(applicationContext,
-                    "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
-                get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
-                finish()
+
+
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                retrofitService.requestOutViewer(roomIdx!!)
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(
+                            call: Call<String>,
+                            response: Response<String>
+                        ) {
+                            if (response.isSuccessful) {
+                                val jsonObject = JSONObject(response.body().toString())
+                                Toast.makeText(applicationContext,
+                                    "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
+                                get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
+                                finish()
+                            } else {
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.d(
+                                "실패:", "Failed API call with call: " + call +
+                                        " + exception: " + t
+                            )
+                        }
+
+                    })
+
             }
 
             builder.show()
@@ -368,32 +429,29 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop")
-        retrofit = RetrofitClient.getInstance()
-        retrofitService = retrofit.create(RetrofitService::class.java)
-        retrofitService.requestOutViewer(roomIdx!!)
-            .enqueue(object : Callback<String> {
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
-                    if (response.isSuccessful) {
-
-                        val jsonObject = JSONObject(response.body().toString())
-
-
-                    } else {
-//                        Log.e("onResponse", "실패 : " + response.errorBody())
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d(
-                        "실패:", "Failed API call with call: " + call +
-                                " + exception: " + t
-                    )
-                }
-
-            })
+//        retrofit = RetrofitClient.getInstance()
+//        retrofitService = retrofit.create(RetrofitService::class.java)
+//        retrofitService.requestOutViewer(roomIdx!!)
+//            .enqueue(object : Callback<String> {
+//                override fun onResponse(
+//                    call: Call<String>,
+//                    response: Response<String>
+//                ) {
+//                    if (response.isSuccessful) {
+//                        val jsonObject = JSONObject(response.body().toString())
+//                    } else {
+////                        Log.e("onResponse", "실패 : " + response.errorBody())
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<String>, t: Throwable) {
+//                    Log.d(
+//                        "실패:", "Failed API call with call: " + call +
+//                                " + exception: " + t
+//                    )
+//                }
+//
+//            })
     }
 
     override fun onDestroy() { //앱 죽여 버릴때 호출됨
@@ -410,21 +468,55 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     }
 
     override fun onBackPressed() {
-
+        Log.d(TAG, "onBackPressed")
         println("뒤로가기 버튼 누름 ")
         val builder = AlertDialog.Builder(this)
         builder.setTitle("나가기")
         builder.setMessage("방송을 나가시겠습니까?")
 
         builder.setPositiveButton("네") { dialog, which ->
-            Toast.makeText(applicationContext,
-                "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
-            get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
-            finish()
+
+            retrofit = RetrofitClient.getInstance()
+            retrofitService = retrofit.create(RetrofitService::class.java)
+            retrofitService.requestOutViewer(roomIdx!!)
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(
+                        call: Call<String>,
+                        response: Response<String>
+                    ) {
+                        if (response.isSuccessful) {
+                            val jsonObject = JSONObject(response.body().toString())
+
+                            Toast.makeText(applicationContext,
+                                "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
+                            get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
+//            val liveFragment = LiveFragment()
+//            this@LiveStreamingViewActivity.supportFragmentManager.beginTransaction()
+//                .add(R.id.activity_main_frame,liveFragment)
+//                .commitAllowingStateLoss() //프
+                            finish()
+                        } else {
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d(
+                            "실패:", "Failed API call with call: " + call +
+                                    " + exception: " + t
+                        )
+                    }
+
+                })
+
         }
         builder.setNegativeButton("아니요") { dialog, which ->
         }
         builder.show()
 
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(TAG, "onPause")
     }
 }
