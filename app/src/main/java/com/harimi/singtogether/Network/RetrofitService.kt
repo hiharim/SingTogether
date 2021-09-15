@@ -91,6 +91,12 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("updateReplayHIts.php")
+    fun requestUpdateReplayHIts (
+        @Field("idx") idx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("OutViewer.php")
     fun requestOutViewer (
         @Field("roomIdx") roomIdx :String
@@ -112,10 +118,10 @@ interface RetrofitService {
         @Field("roomIdx") roomIdx :String,
     ) : Call<String>
 
-
+    @FormUrlEncoded
     @POST("loadReplayPost.php")
     fun requestGetReplayPost (
-
+        @Field("userEmail") userEmail :String,
     ) : Call<String>
 
     @POST("loadMR.php")
@@ -131,6 +137,21 @@ interface RetrofitService {
     @POST("loadMySong.php")
     fun requestMySong(
         @Field("nickname") token :String,
+    ):Call<String>
+
+    @FormUrlEncoded
+    @POST("clickReplayLike.php")
+    fun requestClickLike(
+        @Field("ReplayIdx") roomIdx :String,
+        @Field("userEmail") userEmail :String
+    ):Call<String>
+
+    @FormUrlEncoded
+    @POST("cancelReplayLike.php")
+    fun requestCancelLike(
+        @Field("ReplayIdx") roomIdx :String,
+        @Field("userEmail") userEmail :String,
+        @Field("replayPostLikeIdx") replayPostLikeIdx :String
     ):Call<String>
 
    // @FormUrlEncoded

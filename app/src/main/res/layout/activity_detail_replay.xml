@@ -115,7 +115,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
 
                 <ImageView
-                    android:id="@+id/iv_like"
+                    android:id="@+id/iv_normalLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -125,16 +125,29 @@
                     app:layout_constraintStart_toEndOf="@+id/tv_hits"
                     app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
 
+                <ImageView
+                    android:id="@+id/iv_clickLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/click_like"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_hits"
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
+
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="220dp"
                     android:layout_marginBottom="26dp"
                     android:text="5"
                     android:textColor="#000000"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/iv_like" />
+                    app:layout_constraintEnd_toStartOf="@+id/fragment_detail_replay_tv_date"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_date"
@@ -226,18 +239,18 @@
                 <!--                    app:layout_constraintTop_toTopOf="parent"-->
                 <!--                    app:layout_constraintVertical_bias="0.454" />-->
 
-                <TextView
-                    android:id="@+id/tv_reviewNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="0"
-                    android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView8"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_reviewNumber"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginBottom="15dp"-->
+<!--                    android:text="0"-->
+<!--                    android:textColor="#000000"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/textView8"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 

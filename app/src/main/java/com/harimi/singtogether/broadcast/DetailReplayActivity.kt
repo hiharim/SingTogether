@@ -50,16 +50,19 @@ class DetailReplayActivity : AppCompatActivity() {
     private var replayHits : String? = null
     private var replayReviewNumber : String? = null
     private var uploadUserEmail : String? = null
+    private var replayPostLikeIdx : String? = null
+    private var liked : Boolean? = null
 
     private lateinit var fragment_detail_replay_iv_back : ImageView
     private lateinit var fragment_detail_replay_tv_title : TextView
     private lateinit var tv_hits : TextView
-    private lateinit var iv_like : ImageView
+    private lateinit var iv_normalLike : ImageView
+    private lateinit var iv_clickLike : ImageView
     private lateinit var fragment_detail_replay_tv_like : TextView
     private lateinit var fragment_detail_replay_tv_date : TextView
     private lateinit var iv_uploadUserProfile : CircleImageView
     private lateinit var tv_UploadUserNickName : TextView
-    private lateinit var tv_reviewNumber : TextView
+//    private lateinit var tv_reviewNumber : TextView
     private lateinit var et_writeReview : EditText
     private lateinit var iv_uploadReview : ImageView
     private lateinit var exoplayerReplay : PlayerControlView
@@ -90,17 +93,20 @@ class DetailReplayActivity : AppCompatActivity() {
         replayHits = getintent.getStringExtra("replayHits")
         replayReviewNumber = getintent.getStringExtra("replayReviewNumber")
         uploadUserEmail = getintent.getStringExtra("uploadUserEmail")
-
+        replayPostLikeIdx = getintent.getStringExtra("replayPostLikeIdx")
+        liked = getintent.getBooleanExtra("liked",false)
+        Log.d(TAG, replayIdx!!)
 
         fragment_detail_replay_iv_back =findViewById(R.id.fragment_detail_replay_iv_back)
         fragment_detail_replay_tv_title =findViewById(R.id.fragment_detail_replay_tv_title)
         tv_hits =findViewById(R.id.tv_hits)
-        iv_like =findViewById(R.id.iv_like)
+        iv_normalLike =findViewById(R.id.iv_normalLike)
+        iv_clickLike =findViewById(R.id.iv_clickLike)
         fragment_detail_replay_tv_like =findViewById(R.id.fragment_detail_replay_tv_like)
         fragment_detail_replay_tv_date =findViewById(R.id.fragment_detail_replay_tv_date)
         iv_uploadUserProfile =findViewById(R.id.iv_uploadUserProfile)
         tv_UploadUserNickName =findViewById(R.id.tv_UploadUserNickName)
-        tv_reviewNumber =findViewById(R.id.tv_reviewNumber)
+//        tv_reviewNumber =findViewById(R.id.tv_reviewNumber)
         et_writeReview =findViewById(R.id.et_writeReview)
         iv_uploadReview =findViewById(R.id.iv_uploadReview)
         rv_detailReplayReview =findViewById(R.id.rv_detailReplayReview)
@@ -111,6 +117,15 @@ class DetailReplayActivity : AppCompatActivity() {
         rv_detailReplayReview.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         detailReplayReviewAdapter = DetailReplayReviewAdapter(detailReplayReviewDataList,this)
         rv_detailReplayReview.adapter = detailReplayReviewAdapter
+
+
+        if (liked ==true){
+            iv_clickLike.visibility =View.VISIBLE
+            iv_normalLike.visibility =View.GONE
+        }else{
+            iv_clickLike.visibility =View.GONE
+            iv_normalLike.visibility =View.VISIBLE
+        }
 
         ///뒤로가기
         fragment_detail_replay_iv_back.setOnClickListener {
@@ -134,6 +149,7 @@ class DetailReplayActivity : AppCompatActivity() {
                                 var jsonObject = JSONObject(response.body().toString())
                                 var result = jsonObject.getBoolean("result")
                                 if (result){
+                                    et_writeReview.setText("")
                                     var getIdx = jsonObject.getString("idx")
                                     val detailReplayReviewData = DetailReplayReviewData(getIdx,LoginActivity.user_info.loginUserEmail, LoginActivity.user_info.loginUserNickname, LoginActivity.user_info.loginUserProfile, uploadReview, uploadDate, replayIdx!!)
                                     detailReplayReviewDataList.add( detailReplayReviewData)
@@ -147,6 +163,62 @@ class DetailReplayActivity : AppCompatActivity() {
                     })
             }
         }
+
+        //좋아요 클릭 전
+        iv_normalLike.setOnClickListener {
+            retrofit= RetrofitClient.getInstance()
+            retrofitService=retrofit.create(RetrofitService::class.java)
+            retrofitService.requestClickLike(replayIdx!!,LoginActivity.user_info.loginUserEmail)
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful) {
+                            val body = response.body().toString()
+                            Log.d(TAG, body)
+                            var jsonObject = JSONObject(response.body().toString())
+                            var result = jsonObject.getBoolean("result")
+                            if (result){
+                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
+                                var getLikeNumberInt =  getLikeNumber.toInt()
+                                getLikeNumberInt++
+                                fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
+                                iv_clickLike.visibility =View.VISIBLE
+                                iv_normalLike.visibility =View.GONE
+
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                    }
+                })
+        }
+
+        ///좋아요 취소
+        iv_clickLike.setOnClickListener {
+            retrofit= RetrofitClient.getInstance()
+            retrofitService=retrofit.create(RetrofitService::class.java)
+            retrofitService.requestCancelLike(replayIdx!!,LoginActivity.user_info.loginUserEmail,replayPostLikeIdx!!)
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful) {
+                            val body = response.body().toString()
+                            Log.d(TAG, body)
+                            var jsonObject = JSONObject(response.body().toString())
+                            var result = jsonObject.getBoolean("result")
+                            if (result){
+                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
+                                var getLikeNumberInt =  getLikeNumber.toInt()
+                                getLikeNumberInt--
+                                fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
+                                iv_clickLike.visibility =View.GONE
+                                iv_normalLike.visibility =View.VISIBLE
+
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                    }
+                })
+        }
     }
 
     fun setData(){
@@ -155,7 +227,7 @@ class DetailReplayActivity : AppCompatActivity() {
         fragment_detail_replay_tv_like.text= replayLikeNumber
         fragment_detail_replay_tv_date.text = uploadDate
         tv_UploadUserNickName.text =uploadUserNickName
-        tv_reviewNumber.text = replayReviewNumber
+//        tv_reviewNumber.text = replayReviewNumber
 
         if (uploadUserProfile.equals("null") || uploadUserProfile.equals("")) {
             iv_uploadUserProfile.setImageResource(R.mipmap.ic_launcher_round)

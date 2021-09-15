@@ -79,14 +79,9 @@ class DetailReplayReviewAdapter(
                                     editBuilder.setView(editText)
                                     editBuilder.setPositiveButton("확인") { dialog, which ->
                                         retrofit = RetrofitClient.getInstance()
-                                        retrofitService =
-                                            retrofit.create(RetrofitService::class.java)
-                                        retrofitService.requestEditReplayReview(
-                                            detailReplayReviewList.get(position).idx, editText.text.toString()).enqueue(object : Callback<String> {
-                                            override fun onResponse(
-                                                call: Call<String>,
-                                                response: Response<String>
-                                            ) {
+                                        retrofitService = retrofit.create(RetrofitService::class.java)
+                                        retrofitService.requestEditReplayReview(detailReplayReviewList.get(position).idx, editText.text.toString()).enqueue(object : Callback<String> {
+                                            override fun onResponse(call: Call<String>, response: Response<String>) {
 
                                                 if (response.isSuccessful) {
                                                     val body = response.body().toString()
@@ -101,10 +96,8 @@ class DetailReplayReviewAdapter(
                                                 }
                                             }
 
-                                            override fun onFailure(
-                                                call: Call<String>,
-                                                t: Throwable
-                                            ) {
+                                            override fun onFailure(call: Call<String>, t: Throwable) {
+
                                             }
                                         })
 
