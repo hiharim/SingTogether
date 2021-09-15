@@ -78,6 +78,19 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("editReplayReview.php")
+    fun requestEditReplayReview (
+        @Field("idx") idx :String,
+        @Field("editReview") editReview :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("deleteReplayReview.php")
+    fun requestDeleteReplayReview (
+        @Field("idx") idx :String,
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("OutViewer.php")
     fun requestOutViewer (
         @Field("roomIdx") roomIdx :String
