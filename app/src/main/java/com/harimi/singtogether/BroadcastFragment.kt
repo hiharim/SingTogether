@@ -35,10 +35,6 @@ class BraodcastFragment : Fragment() {
         val binding=FragmentBroadcastBinding.inflate(inflater, container, false)
         val pagerAdapter =BroadcastPagerAdapter(requireActivity())
 
-        // 2개의 Fragment Add
-//        pagerAdapter.addFragment(LiveFragment())
-//        pagerAdapter.addFragment(ReplayFragment())
-
         val liveFragment:LiveFragment=LiveFragment.newInstance()
         val replayFragment:ReplayFragment=ReplayFragment.newInstance()
         pagerAdapter.addFragment(liveFragment)

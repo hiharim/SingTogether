@@ -37,6 +37,7 @@ class ReplayFragment : Fragment() {
     lateinit var  tv_noReplay: TextView
     lateinit var replayAdapter: ReplayFragmentAdapter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {

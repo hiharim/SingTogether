@@ -35,14 +35,16 @@ class MyPageFragment : Fragment() {
 
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
-
         val nickname=LoginActivity.user_info.loginUserNickname
         val profile =LoginActivity.user_info.loginUserProfile
+
         // 2. 바인딩으로 TextView 등에 접근
         // 사용자 닉네임
         binding.fragmentMyPageTvNickname.text=nickname
+
         // 사용자 프로필
         Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.fragmentMyPageIvProfile)
+
 
         val pagerAdapter = MyPagePagerAdapter(requireActivity())
         // 2개의 Fragment Add

@@ -88,9 +88,6 @@ class LiveFragmentAdapter(val LiveStreamingPostList: ArrayList<LiveFragmentData>
                                 val intent = Intent(context, LiveStreamingViewActivity::class.java)
                                 intent.putExtra("roomIdx", LiveStreamingPostList.get(position).idx)
                                 context.startActivity(intent, null)
-//                                val activity =v!!.context as AppCompatActivity
-//                                val liveFragment = LiveFragment()
-//                                activity.supportFragmentManager.beginTransaction().remove(liveFragment).commit()
 
                             } else {
                                 Toast.makeText(context, "스트리머가 이미 방송을 종료하였습니다.", Toast.LENGTH_SHORT).show()

@@ -29,7 +29,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".broadcast.SearchLiveStreaming"></activity>
+        <activity android:name=".broadcast.DetailReplayActivity"></activity>
+        <activity android:name=".broadcast.SearchLiveStreaming" />
         <activity android:name=".broadcast.LiveStreamingViewActivity" />
         <activity android:name=".broadcast.LiveThumbnailCaptureActivity" />
         <activity android:name=".sing.AfterRecordActivity" />

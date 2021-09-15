@@ -63,15 +63,15 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_live_streaming_view)
 
-        val getintent = intent
-        roomIdx = getintent.getStringExtra("roomIdx")
-        Log.d(TAG," "+ roomIdx)
-
         initView()
 
     }
+
     fun initView(){
 
+        val getintent = intent
+        roomIdx = getintent.getStringExtra("roomIdx")
+        Log.d(TAG," "+ roomIdx)
 
         activity_streaming_btn_close = findViewById<ImageButton>(R.id.activity_streaming_btn_close)
         activity_streaming_btn_chat = findViewById<ImageButton>(R.id.activity_streaming_btn_chat) ////채팅창 visible 설정
@@ -113,16 +113,6 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
             .setVideoDecoderFactory(defaultVideoDecoderFactory)
             .createPeerConnectionFactory()
 
-
-        //비디오 트랙 채널과 소스
-//        SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", eglBaseContext);
-//        VideoCapturer videoCapturer = createCameraCapturer(true);
-//        VideoSource videoSource = peerConnectionFactory.createVideoSource(videoCapturer.isScreencast());
-//        videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
-//        videoCapturer.startCapture(480, 640, 30);
-//        VideoTrack videoTrack = peerConnectionFactory.createVideoTrack("100", videoSource);
-
-
         //오디오 트랙 채널과 소스
         audioConstraints = MediaConstraints()
 
@@ -130,11 +120,6 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
         localAudioTrack = peerConnectionFactory!!.createAudioTrack("101", audioSource)
         localAudioTrack!!.setVolume(10.0)
         mediaStream = peerConnectionFactory?.createLocalMediaStream("mediaStream")
-
-        //미디어 스트림에 비디오트랙 넣기
-//        mediaStream.addTrack(videoTrack);
-//        //미디어 스트림에 오디오 트랙에 넣기
-//        mediaStream.addTrack(localAudioTrack);
 
         remoteStreamingView = findViewById(R.id.remoteStreamingView)
         remoteStreamingView!!.setMirror(true)
@@ -351,7 +336,6 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
 
             builder.setPositiveButton("확인") { dialog, which ->
 
-
                 retrofit = RetrofitClient.getInstance()
                 retrofitService = retrofit.create(RetrofitService::class.java)
                 retrofitService.requestOutViewer(roomIdx!!)
@@ -369,18 +353,14 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                             } else {
                             }
                         }
-
                         override fun onFailure(call: Call<String>, t: Throwable) {
                             Log.d(
                                 "실패:", "Failed API call with call: " + call +
                                         " + exception: " + t
                             )
                         }
-
                     })
-
             }
-
             builder.show()
         }
     }
@@ -490,10 +470,10 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                             Toast.makeText(applicationContext,
                                 "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
                             get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
-//            val liveFragment = LiveFragment()
-//            this@LiveStreamingViewActivity.supportFragmentManager.beginTransaction()
-//                .add(R.id.activity_main_frame,liveFragment)
-//                .commitAllowingStateLoss() //프
+                //            val liveFragment = LiveFragment()
+                //            this@LiveStreamingViewActivity.supportFragmentManager.beginTransaction()
+                //                .add(R.id.activity_main_frame,liveFragment)
+                //                .commitAllowingStateLoss() //프
                             finish()
                         } else {
                         }
@@ -505,14 +485,11 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                                     " + exception: " + t
                         )
                     }
-
                 })
-
         }
         builder.setNegativeButton("아니요") { dialog, which ->
         }
         builder.show()
-
     }
 
     override fun onPause() {

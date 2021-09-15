@@ -31,9 +31,9 @@ class HomeFragment : Fragment() {
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
 
-    val homePostList: ArrayList<HomeData> = ArrayList()
-    lateinit var fragment_home_recyclerView : RecyclerView
-    lateinit var homeAdapter: HomeAdapter
+    private val homePostList: ArrayList<HomeData> = ArrayList()
+    private lateinit var fragment_home_recyclerView : RecyclerView
+    private lateinit var homeAdapter: HomeAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,50 +61,50 @@ class HomeFragment : Fragment() {
     }
 
 
-fun homePostLoad (){
+    fun homePostLoad (){
 
-    retrofit= RetrofitClient.getInstance()
-    retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestGetHomePost()
-                .enqueue(object : Callback<String> {
-                    override fun onResponse(
-                            call: Call<String>,
-                            response: Response<String>
-                    ) {
-                        if (response.isSuccessful) {
-                            val body = response.body().toString()
-                            Log.d("getHomePost: ", body)
-                            homePostList.clear()
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+            retrofitService.requestGetHomePost()
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(
+                                call: Call<String>,
+                                response: Response<String>
+                        ) {
+                            if (response.isSuccessful) {
+                                val body = response.body().toString()
+                                Log.d(TAG, body)
+                                homePostList.clear()
 
-                            val jsonArray = JSONArray(body)
-                            for (i in 0 until jsonArray.length()) {
-                                val jsonObject = jsonArray.getJSONObject(i)
-                                val idx = jsonObject.getString("idx")
-                                val thumbnail = jsonObject.getString("thumbnail")
-                                val songTitle = jsonObject.getString("songTitle")
-                                val singer = jsonObject.getString("singer")
-                                val hit = jsonObject.getString("hit")
-                                val like = jsonObject.getString("like")
-                                val uploadUserProfile = jsonObject.getString("uploadUserProfile")
-                                val uploadUserNickName = jsonObject.getString("uploadUserNickName")
-                                val uploadDate = jsonObject.getString("uploadDate")
-                                val uploadUserEmail = jsonObject.getString("uploadUserEmail")
-                                Log.d(TAG, "idx($i): $idx")
-                                Log.d(TAG, "songTitle($i): $songTitle")
-                                Log.d(TAG, "singer($i): $singer")
+                                val jsonArray = JSONArray(body)
+                                for (i in 0 until jsonArray.length()) {
+                                    val jsonObject = jsonArray.getJSONObject(i)
+                                    val idx = jsonObject.getString("idx")
+                                    val thumbnail = jsonObject.getString("thumbnail")
+                                    val songTitle = jsonObject.getString("songTitle")
+                                    val singer = jsonObject.getString("singer")
+                                    val hit = jsonObject.getString("hit")
+                                    val like = jsonObject.getString("like")
+                                    val uploadUserProfile = jsonObject.getString("uploadUserProfile")
+                                    val uploadUserNickName = jsonObject.getString("uploadUserNickName")
+                                    val uploadDate = jsonObject.getString("uploadDate")
+                                    val uploadUserEmail = jsonObject.getString("uploadUserEmail")
+                                    Log.d(TAG, "idx($i): $idx")
+                                    Log.d(TAG, "songTitle($i): $songTitle")
+                                    Log.d(TAG, "singer($i): $singer")
 
-                                val homeData = HomeData(idx,thumbnail, songTitle, singer, hit, like, uploadUserProfile, uploadUserNickName,uploadDate,uploadUserEmail)
-                                homePostList.add(0, homeData)
-                                homeAdapter.notifyDataSetChanged()
+                                    val homeData = HomeData(idx,thumbnail, songTitle, singer, hit, like, uploadUserProfile, uploadUserNickName,uploadDate,uploadUserEmail)
+                                    homePostList.add(0, homeData)
+                                    homeAdapter.notifyDataSetChanged()
+                                }
                             }
                         }
-                    }
 
-                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        override fun onFailure(call: Call<String>, t: Throwable) {
 
-                    }
-                })
-}
+                        }
+                    })
+    }
 
 
     companion object {

@@ -83,13 +83,14 @@ class LiveFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         Log.d(TAG, "onCreateView")
-        var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
-        initView(liveFragmentView)
-        liveStreamingPostLoad()
 
+        var liveFragmentView = inflater.inflate(R.layout.fragment_live, container, false)
+
+        initView(liveFragmentView)
+
+        liveStreamingPostLoad()
         return liveFragmentView
     }
 

@@ -45,7 +45,24 @@ interface RetrofitService {
     @POST("autoLoginCheck.php")
     fun requestAutoLogin (
         @Field("email") email :String
+    ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("getDetailReplayReview.php")
+    fun requestGetReplayReview (
+        @Field("replayIdx") replayIdx :String
+    ) : Call<String>
+
+
+    @FormUrlEncoded
+    @POST("WriteReview.php")
+    fun requestWriteReview (
+        @Field("replayIdx") replayIdx :String,
+        @Field("uploadUserEmail") uploadUserEmail :String,
+        @Field("uploadUserProfile") uploadUserProfile :String,
+        @Field("uploadUserNickname") uploadUserNickname :String,
+        @Field("review") review :String,
+        @Field("uploadDate") uploadDate :String
     ) : Call<String>
 
     @FormUrlEncoded

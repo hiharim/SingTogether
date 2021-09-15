@@ -1,6 +1,8 @@
 package com.harimi.singtogether.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +15,9 @@ import com.harimi.singtogether.Data.HomeData
 
 import com.harimi.singtogether.Data.ReplayData
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.DetailReplayActivity
 import com.harimi.singtogether.broadcast.DetailReplayFragment
+import com.harimi.singtogether.broadcast.LiveStreamingViewActivity
 import com.harimi.singtogether.sing.DetailDuetFragment
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -56,13 +60,40 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
         holder.tv_replayLikeNumber.setText(ReplayPostList.get(position).replayLikeNumber)
 
         holder.itemView.setOnClickListener {
-            // DetailReplayFragment 로 이동
-            val activity =it!!.context as AppCompatActivity
-            val detailReplayFragment = DetailReplayFragment()
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.activity_main_frame,detailReplayFragment)
-                .addToBackStack(null)
-                .commit()
+//            // DetailReplayFragment 로 이동
+//            var bundle: Bundle = Bundle()
+//            bundle.putString("idx",ReplayPostList.get(position).idx)
+//            bundle.putString("thumbnail",ReplayPostList.get(position).thumbnail)
+//            bundle.putString("uploadUserProfile",ReplayPostList.get(position).uploadUserProfile)
+//            bundle.putString("uploadUserNickName",ReplayPostList.get(position).uploadUserNickName)
+//            bundle.putString("uploadDate",ReplayPostList.get(position).uploadDate)
+//            bundle.putString("replayTitle",ReplayPostList.get(position).replayTitle)
+//            bundle.putString("replayLikeNumber",ReplayPostList.get(position).replayLikeNumber)
+//            bundle.putString("replayHits",ReplayPostList.get(position).replayHits)
+//            bundle.putString("replayReviewNumber",ReplayPostList.get(position).replayReviewNumber)
+//            bundle.putString("uploadUserEmail",ReplayPostList.get(position).uploadUserEmail)
+//
+//            val activity =it!!.context as AppCompatActivity
+//            val detailReplayFragment = DetailReplayFragment()
+//            detailReplayFragment.arguments=bundle
+//            activity.supportFragmentManager.beginTransaction()
+//                .replace(R.id.activity_main_frame,detailReplayFragment)
+//                .addToBackStack(null)
+//                .commit()
+
+//          DetailReplayActivity 로 이동
+            val intent = Intent(context, DetailReplayActivity::class.java)
+            intent.putExtra("idx", ReplayPostList.get(position).idx)
+            intent.putExtra("thumbnail", ReplayPostList.get(position).thumbnail)
+            intent.putExtra("uploadUserProfile", ReplayPostList.get(position).uploadUserProfile)
+            intent.putExtra("uploadUserNickName", ReplayPostList.get(position).uploadUserNickName)
+            intent.putExtra("uploadDate", ReplayPostList.get(position).uploadDate)
+            intent.putExtra("replayTitle", ReplayPostList.get(position).replayTitle)
+            intent.putExtra("replayLikeNumber", ReplayPostList.get(position).replayLikeNumber)
+            intent.putExtra("replayHits", ReplayPostList.get(position).replayHits)
+            intent.putExtra("replayReviewNumber", ReplayPostList.get(position).replayReviewNumber)
+            intent.putExtra("uploadUserEmail", ReplayPostList.get(position).uploadUserEmail)
+            context.startActivity(intent, null)
         }
     }
 
