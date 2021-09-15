@@ -1,5 +1,6 @@
 package com.harimi.singtogether.sing
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.hardware.Camera
 import android.hardware.camera2.CameraDevice
@@ -17,14 +18,30 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.SeekBar
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.arthenica.mobileffmpeg.FFmpeg
 import com.arthenica.mobileffmpeg.FFmpegExecution
+import com.harimi.singtogether.Data.MRData
+import com.harimi.singtogether.LoginActivity
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.ActivityVideo2Binding
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.Main
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import org.json.JSONArray
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import java.io.File
 import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -34,6 +51,11 @@ import kotlin.coroutines.CoroutineContext
 class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     private lateinit var binding: ActivityVideo2Binding
+    private lateinit var retrofit: Retrofit
+    private lateinit var retrofitService: RetrofitService
+    lateinit var fileName : String // 서버로 보낼 비디오 파일 이름
+    private var videoFile : File?=null // 녹화된 비디오파일
+    private var nickname : String? = null
     private var idx : Int? = null
     private var title : String? = null
     private var singer : String? = null
@@ -49,23 +71,19 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     var mCamera: Camera? = null
 
     private val recordingVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/recordVideos25.mp4"
+        "${externalCacheDir?.absolutePath}/recordVideos28.mp4"
     }
     private val outputVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/outputVideo25.mp4"
+        "${externalCacheDir?.absolutePath}/outputVideo28.mp4"
     }
     private val lastVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/lastVideo25.mp4"
+        "${externalCacheDir?.absolutePath}/lastVideo28.mp4"
     }
     private val extractFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/extractVideo25.m4a"
+        "${externalCacheDir?.absolutePath}/extractVideo28.m4a"
     }
 
-//    lateinit var job: Job
-//    // coroutine의 스레드를 어떠한 형태로 사용할지 지정할 수 있다.
-//    val coroutineContext: CoroutineContext
-//        get() = Dispatchers.Main + job
-
+    var asyncDialog : ProgressDialog?=null
 
     private var file_path:String?=null
     private lateinit var mCameraDevice: CameraDevice
@@ -151,22 +169,23 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                         mCamera!!.lock()
                         isRecording = false
 
-//                        job = Job()
-                        runBlocking {
-                            extract()
-                        }
-//
-//                        Merge()
-//
-//                        CoroutineScope(coroutineContext).launch {
-//                          videoMerge()
-//                        }
+                        //videoMerge2()
 
-                        GlobalScope.launch {
-                            async { Merge() }.await()
-                            async { videoMerge() }.await()
 
-                        }
+                        mixVideo()
+
+//                        val intent= Intent(applicationContext, AfterRecordActivity::class.java)
+//                        intent.putExtra("MR_IDX", idx)
+//                        intent.putExtra("FILE_PATH", file_path)
+//                        intent.putExtra("USER_PATH", recordingVideoFilePath)
+//                        intent.putExtra("WITH", with)
+//                        intent.putExtra("WAY", way)
+//                        Log.e(
+//                            "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
+//                                    idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
+//                        )
+//                        startActivity(intent)
+//                        finish()
 
                     }
 
@@ -196,6 +215,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
         }
 
+        initRetrofit()
         binding.btnConvert.setOnClickListener { switchCamera() }
 
     }
@@ -230,14 +250,11 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
                 mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
                 mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
-                //                    mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                //                    mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                //                    mRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
                 mRecorder!!.setOrientationHint(90)
-                mPath =
-                    Environment.getExternalStorageDirectory().absolutePath + "/record4.mp4"
-                Log.e("메인", "file path is $mPath")
-                file_path=mPath
+//                mPath =
+//                    Environment.getExternalStorageDirectory().absolutePath + "/record4.mp4"
+//                Log.e("메인", "file path is $mPath")
+//                file_path=mPath
                 mRecorder!!.setOutputFile(recordingVideoFilePath)
                 mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
                 try {
@@ -252,16 +269,97 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         }
     }
 
+    // 레트로핏 초기화
+    private fun initRetrofit(){
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+    }
+
+   // 서버에서 mix
+   private fun mixVideo() {
+       val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+       fileName = "$timeStamp.mp4"
+       nickname= LoginActivity.user_info.loginUserNickname
+
+//       asyncDialog  = ProgressDialog(this@Video2Activity)
+//       /* UI Thread: 프로그래스 바 등 준비 */
+//       asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+//       asyncDialog!!.setMessage("믹싱중...")
+//       asyncDialog!!.show()
+
+       videoFile = File(recordingVideoFilePath)
+       var requestBody : RequestBody = RequestBody.create(
+           MediaType.parse("multipart/form-data"), videoFile)
+       var body : MultipartBody.Part=
+           MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
+       song_path.let {
+           retrofitService.requestMixVideo(it,body).enqueue(object : Callback<String> {
+               // 통신에 성공한 경우
+               override fun onResponse(call: Call<String>, response: Response<String>) {
+                   if (response.isSuccessful) {
+                       // 응답을 잘 받은 경우
+                       // asyncDialog!!.dismiss()
+                       Log.e("비디오2", " 통신 성공: ${response.body().toString()}")
+                       // 서버에서 처리된 결과받아야함
+
+                       val jsonArray= JSONArray(response.body().toString())
+                       for(i in 0..jsonArray.length() -1){
+                           val iObject=jsonArray.getJSONObject(i)
+                           val title=iObject.getString("title")
+                       }
+
+
+                       // 업로드 성공 다이얼로그
+                       val builder = AlertDialog.Builder(this@Video2Activity)
+                       builder.setTitle("SingTogether")
+                       builder.setMessage("믹싱을 성공했습니다!")
+                       builder.setPositiveButton("확인") { dialogInterface, i ->
+   //                               val intent= Intent(applicationContext, AfterRecordActivity::class.java)
+   //                               intent.putExtra("MR_IDX", idx)
+   //                               intent.putExtra("FILE_PATH", file_path)
+   //                               intent.putExtra("USER_PATH", recordingVideoFilePath)
+   //                               intent.putExtra("WITH", with)
+   //                               intent.putExtra("WAY", way)
+   //                               Log.e(
+   //                                   "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
+   //                                           idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
+   //                               )
+   //                               startActivity(intent)
+   //                               finish()
+                       }
+                       builder.show()
+
+                   } else {
+                       // 통신은 성공했지만 응답에 문제가 있는 경우
+                       Log.e("비디오2", " 응답 문제" + response.code())
+                   }
+               }
+
+               override fun onFailure(call: Call<String>, t: Throwable) {
+                   Log.e("비디오2", " 통신 실패" + t.message)
+               }
+           })
+
+       }
+   }
+
 
     // 녹화한 mp4 에서 오디오 m4a 만 추출 
-    fun extract(){
+    suspend fun extract(): String {
         val c = arrayOf (
             "-i", recordingVideoFilePath,
             "-map"  , "0:a" ,  "-c"  , "copy" ,
             //"-c:v", "copy", "-c:a", "aac", "-map", "0:v:0", "-map", "1:a:0", "-shortest","-y",
             extractFilePath
         )
-        ExtractAudio(c)
+        //ExtractAudio(c)
+        FFmpeg.executeAsync(c) { executionId, returnCode ->
+            Log.e("hello추출", "return  $returnCode")
+            Log.e("hello추출", "executionID  $executionId")
+            Log.e("hello추출", "FFMPEG  " + FFmpegExecution(executionId, c))
+        }
+
+        return extractFilePath
     }
 
     private fun ExtractAudio(co: Array<String>) {
@@ -275,7 +373,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     // 추출한.m4a + mr.m4a = 병합한.m4a 파일
-    fun Merge() {
+   suspend fun Merge(): String {
         val c = arrayOf (
             "-i", extractFilePath,
             "-i", song_path,
@@ -287,7 +385,14 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
             //"-c:v", "copy", "-c:a", "aac", "-map", "0:v:0", "-map", "1:a:0", "-shortest","-y",
             outputVideoFilePath
         )
-        MergeAudio(c)
+        //MergeAudio(c)
+        FFmpeg.executeAsync(c) { executionId, returnCode ->
+            Log.e("hello병합", "return  $returnCode")
+            Log.e("hello병합", "executionID  $executionId")
+            Log.e("hello병합", "FFMPEG  " + FFmpegExecution(executionId, c))
+        }
+
+        return outputVideoFilePath
     }
 
     private fun MergeAudio(co: Array<String>) {
@@ -302,7 +407,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     // 병합한.m4a + 녹화한.mp4 = 병합한.mp4
-    fun videoMerge(){
+    suspend fun videoMerge(): String {
         val c = arrayOf (
             "-i", recordingVideoFilePath,
             "-i", outputVideoFilePath,
@@ -310,7 +415,27 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
             lastVideoFilePath
         )
         Log.e("새로운비디오", "return" +lastVideoFilePath)
-        MergeVideo(c)
+        //MergeVideo(c)
+        FFmpeg.executeAsync(c) { executionId, returnCode ->
+            Log.e("hello비디오", "return  $returnCode")
+            Log.e("hello비디오", "executionID  $executionId")
+            Log.e("hello비디오", "FFMPEG  " + FFmpegExecution(executionId, c))
+        }
+        file_path= lastVideoFilePath
+//        val intent= Intent(applicationContext, AfterRecordActivity::class.java)
+//        intent.putExtra("MR_IDX", idx)
+//        intent.putExtra("FILE_PATH", file_path)
+//        intent.putExtra("USER_PATH", recordingVideoFilePath)
+//        intent.putExtra("WITH", with)
+//        intent.putExtra("WAY", way)
+//        Log.e(
+//            "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
+//                    idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
+//        )
+//        startActivity(intent)
+//        finish()
+
+        return lastVideoFilePath
     }
 
     private fun MergeVideo(co: Array<String>) {
@@ -335,38 +460,38 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     }
 
-//    // 병합한.m4a + 녹화한.mp4 = 병합한.mp4
-//    fun videoMerge(){
-//        val c = arrayOf (
-//            "-i", recordingVideoFilePath,
-//            "-i", outputVideoFilePath,
-//            "-c:v", "copy", "-c:a", "aac", "-map", "0:v:0", "-map", "1:a:0", "-shortest","-y",
-//            lastVideoFilePath
-//        )
-//        Log.e("새로운비디오", "return" +lastVideoFilePath)
-//        MergeVideo(c)
-//    }
-//
-//    private fun MergeVideo(co: Array<String>) {
-//        FFmpeg.executeAsync(co) { executionId, returnCode ->
-//            Log.e("hello비디오", "return  $returnCode")
-//            Log.e("hello비디오", "executionID  $executionId")
-//            Log.e("hello비디오", "FFMPEG  " + FFmpegExecution(executionId, co))
-//        }
-//        file_path= lastVideoFilePath
-//        val intent= Intent(applicationContext, AfterRecordActivity::class.java)
-//        intent.putExtra("MR_IDX", idx)
-//        intent.putExtra("FILE_PATH", file_path)
-//        intent.putExtra("USER_PATH", recordingVideoFilePath)
-//        intent.putExtra("WITH", with)
-//        intent.putExtra("WAY", way)
-//        Log.e(
-//            "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
-//                    idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
-//        )
-//        startActivity(intent)
-//        finish()
-//    }
+    // 병합한.m4a + 녹화한.mp4 = 병합한.mp4
+    fun videoMerge1() {
+        val c = arrayOf (
+            "-i", recordingVideoFilePath,
+            "-i", outputVideoFilePath,
+            "-c:v", "copy", "-c:a", "aac", "-map", "0:v:0", "-map", "1:a:0", "-shortest","-y",
+            lastVideoFilePath
+        )
+        Log.e("새로운비디오", "return" +lastVideoFilePath)
+        MergeVideo1(c)
+    }
+
+    private fun MergeVideo1(co: Array<String>) {
+        FFmpeg.executeAsync(co) { executionId, returnCode ->
+            Log.e("hello비디오", "return  $returnCode")
+            Log.e("hello비디오", "executionID  $executionId")
+            Log.e("hello비디오", "FFMPEG  " + FFmpegExecution(executionId, co))
+        }
+        file_path= lastVideoFilePath
+        val intent= Intent(applicationContext, AfterRecordActivity::class.java)
+        intent.putExtra("MR_IDX", idx)
+        intent.putExtra("FILE_PATH", file_path)
+        intent.putExtra("USER_PATH", recordingVideoFilePath)
+        intent.putExtra("WITH", with)
+        intent.putExtra("WAY", way)
+        Log.e(
+            "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
+                    idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
+        )
+        startActivity(intent)
+        finish()
+    }
 
     // 카메라 전환
     private fun switchCamera() {

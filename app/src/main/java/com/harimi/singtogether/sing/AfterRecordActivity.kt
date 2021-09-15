@@ -51,6 +51,7 @@ class AfterRecordActivity : AppCompatActivity() {
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
     lateinit var fileName : String // 서버로 보낼 사용자 목소리 + MR 파일 이름
     //private var uploadTask: UploadTask? = null
+    var asyncDialog : ProgressDialog ?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,13 +83,13 @@ class AfterRecordActivity : AppCompatActivity() {
 //                .createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
 //                //.createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
 
-        val mediaItem = MediaItem.fromUri(Uri.parse(file_path))
+        var mediaItem = MediaItem.fromUri(Uri.parse(file_path))
         //val mediaItem = MediaItem.fromUri(Uri.parse(user_path))
 
         if(with.equals("솔로")){
-            MediaItem.fromUri(Uri.parse(user_path))
+            mediaItem=MediaItem.fromUri(Uri.parse(user_path))
         }else if(with.equals("듀엣")){
-            MediaItem.fromUri(Uri.parse(file_path))
+            mediaItem=MediaItem.fromUri(Uri.parse(file_path))
         }
         //val mediaItem = MediaItem.fromUri(Uri.parse(videoUri.toString()))
         val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
@@ -102,6 +103,11 @@ class AfterRecordActivity : AppCompatActivity() {
         simpleExoPlayer!!.play()
         // 업로드 버튼 클릭
         binding.activityAfterRecordBtnUpload.setOnClickListener {
+            asyncDialog  = ProgressDialog(this@AfterRecordActivity)
+            /* UI Thread: 프로그래스 바 등 준비 */
+            asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+            asyncDialog!!.setMessage("업로드 중...")
+            asyncDialog!!.show()
             upload()
 //            uploadTask=UploadTask(binding)
 //            uploadTask?.execute()
@@ -168,15 +174,16 @@ class AfterRecordActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {
                             // 응답을 잘 받은 경우
+                            asyncDialog!!.dismiss()
                             Log.e("비디오", " 통신 성공: ${response.body().toString()}")
-//                            // 업로드 성공 다이얼로그
-//                            val builder = AlertDialog.Builder(this@AfterRecordActivity)
-//                            builder.setTitle("SingTogether")
-//                            builder.setMessage("업로드를 성공했습니다!")
-//                            builder.setPositiveButton("확인") { dialogInterface, i ->
-//                                simpleExoPlayer?.release()
-//                                finish() }
-//                            builder.show()
+                            // 업로드 성공 다이얼로그
+                            val builder = AlertDialog.Builder(this@AfterRecordActivity)
+                            builder.setTitle("SingTogether")
+                            builder.setMessage("업로드를 성공했습니다!")
+                            builder.setPositiveButton("확인") { dialogInterface, i ->
+                                simpleExoPlayer?.release()
+                                finish() }
+                            builder.show()
 
                         } else {
                             // 통신은 성공했지만 응답에 문제가 있는 경우

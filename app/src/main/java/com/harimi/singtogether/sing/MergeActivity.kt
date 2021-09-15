@@ -38,15 +38,15 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private var  mRecorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
     private var isRecording = false
     private var mPath: String=
-        Environment.getExternalStorageDirectory().absolutePath + "/mergeVideo5.mp4"
+        Environment.getExternalStorageDirectory().absolutePath + "/mergeVideo7mp4"
     var mSurfaceHolder: SurfaceHolder? = null
     var mCamera: Camera? = null
 
     private val mergeVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/mergeVideo5.mp4"
+        "${externalCacheDir?.absolutePath}/mergeVideo8.mp4"
     }
     private val finishVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/finishVideo5.mp4"
+        "${externalCacheDir?.absolutePath}/finishVideo8.mp4"
     }
     private var file_path:String?=null
 
@@ -159,6 +159,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
 
     }
+
 
     // 비디오+비디오
     fun Merge() {

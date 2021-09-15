@@ -24,6 +24,14 @@ interface RetrofitService {
 //    ) : Call<String>
 
     @Multipart
+    @POST("mixVideo.php")
+    fun requestMixVideo (
+        @Part("mr_path") mr_path :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
+
+    @Multipart
     @POST("testUpload.php")
     fun requestUpload (
         @Part("mr_idx") mr_idx :Int,
