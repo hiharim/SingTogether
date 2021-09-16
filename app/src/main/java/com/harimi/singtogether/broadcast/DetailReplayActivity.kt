@@ -95,7 +95,9 @@ class DetailReplayActivity : AppCompatActivity() {
         uploadUserEmail = getintent.getStringExtra("uploadUserEmail")
         replayPostLikeIdx = getintent.getStringExtra("replayPostLikeIdx")
         liked = getintent.getBooleanExtra("liked",false)
-        Log.d(TAG, replayIdx!!)
+        Log.d(TAG, replayPostLikeIdx!!)
+        Log.d(TAG, liked!!.toString())
+
 
         fragment_detail_replay_iv_back =findViewById(R.id.fragment_detail_replay_iv_back)
         fragment_detail_replay_tv_title =findViewById(R.id.fragment_detail_replay_tv_title)
@@ -122,6 +124,7 @@ class DetailReplayActivity : AppCompatActivity() {
         if (liked ==true){
             iv_clickLike.visibility =View.VISIBLE
             iv_normalLike.visibility =View.GONE
+
         }else{
             iv_clickLike.visibility =View.GONE
             iv_normalLike.visibility =View.VISIBLE
@@ -131,6 +134,8 @@ class DetailReplayActivity : AppCompatActivity() {
         fragment_detail_replay_iv_back.setOnClickListener {
             finish()
         }
+
+        ////댓글달기
         iv_uploadReview.setOnClickListener {
             var uploadReview = et_writeReview.text.toString()
             if (uploadReview.equals("")){
@@ -166,9 +171,10 @@ class DetailReplayActivity : AppCompatActivity() {
 
         //좋아요 클릭 전
         iv_normalLike.setOnClickListener {
+            var uploadDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
             retrofit= RetrofitClient.getInstance()
             retrofitService=retrofit.create(RetrofitService::class.java)
-            retrofitService.requestClickLike(replayIdx!!,LoginActivity.user_info.loginUserEmail)
+            retrofitService.requestClickLike(replayIdx!!,LoginActivity.user_info.loginUserEmail,uploadDate)
                 .enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {
@@ -176,6 +182,8 @@ class DetailReplayActivity : AppCompatActivity() {
                             Log.d(TAG, body)
                             var jsonObject = JSONObject(response.body().toString())
                             var result = jsonObject.getBoolean("result")
+                            var idx = jsonObject.getString("idx")
+                            replayPostLikeIdx = idx
                             if (result){
                                 var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
                                 var getLikeNumberInt =  getLikeNumber.toInt()
@@ -183,7 +191,6 @@ class DetailReplayActivity : AppCompatActivity() {
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                 iv_clickLike.visibility =View.VISIBLE
                                 iv_normalLike.visibility =View.GONE
-
                             }
                         }
                     }
@@ -194,30 +201,37 @@ class DetailReplayActivity : AppCompatActivity() {
 
         ///좋아요 취소
         iv_clickLike.setOnClickListener {
-            retrofit= RetrofitClient.getInstance()
-            retrofitService=retrofit.create(RetrofitService::class.java)
-            retrofitService.requestCancelLike(replayIdx!!,LoginActivity.user_info.loginUserEmail,replayPostLikeIdx!!)
-                .enqueue(object : Callback<String> {
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        if (response.isSuccessful) {
-                            val body = response.body().toString()
-                            Log.d(TAG, body)
-                            var jsonObject = JSONObject(response.body().toString())
-                            var result = jsonObject.getBoolean("result")
-                            if (result){
-                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
-                                var getLikeNumberInt =  getLikeNumber.toInt()
-                                getLikeNumberInt--
-                                fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
-                                iv_clickLike.visibility =View.GONE
-                                iv_normalLike.visibility =View.VISIBLE
-
+            if (!replayPostLikeIdx.equals("null")) {
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                retrofitService.requestCancelLike(
+                    replayIdx!!,
+                    LoginActivity.user_info.loginUserEmail,
+                    replayPostLikeIdx!!
+                )
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            if (response.isSuccessful) {
+                                val body = response.body().toString()
+                                Log.d(TAG, body)
+                                var jsonObject = JSONObject(response.body().toString())
+                                var result = jsonObject.getBoolean("result")
+                                if (result) {
+                                    var getLikeNumber =
+                                        fragment_detail_replay_tv_like.text.toString()
+                                    var getLikeNumberInt = getLikeNumber.toInt()
+                                    getLikeNumberInt--
+                                    fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
+                                    iv_clickLike.visibility = View.GONE
+                                    iv_normalLike.visibility = View.VISIBLE
+                                }
                             }
                         }
-                    }
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                    }
-                })
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                        }
+                    })
+            }
         }
     }
 

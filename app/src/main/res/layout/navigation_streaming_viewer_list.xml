@@ -6,6 +6,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/sv_searchViewer"
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            app:defaultQueryHint="검색"
+            app:iconifiedByDefault="false"
+            android:layout_height="50dp"/>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/layout_notify"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

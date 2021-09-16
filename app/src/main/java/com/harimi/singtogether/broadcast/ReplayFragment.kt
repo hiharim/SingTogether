@@ -39,8 +39,8 @@ class ReplayFragment : Fragment() {
     private lateinit var  rv_fragmentReplayPost: RecyclerView
     private lateinit var  tv_noReplay: TextView
     private lateinit var replayAdapter: ReplayFragmentAdapter
-    private var like :Boolean ?= null
-    private var replayPostLikeIdx :String ?= null
+    private var like :Boolean ?= false
+    private var replayPostLikeIdx :String ?= "null"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,12 +72,12 @@ class ReplayFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Log.d("리플레이: ", "onCreateView")
         var replayView = inflater.inflate(R.layout.fragment_replay, container, false)
-        initview(replayView)
+        initView(replayView)
         return replayView
 
     }
 
-    fun initview(replayView : View){
+    fun initView(replayView : View){
         rv_fragmentReplayPost = replayView.findViewById(R.id.rv_fragmentReplayPost)
         tv_noReplay = replayView.findViewById(R.id.tv_noReplay)
         rv_fragmentReplayPost.layoutManager = LinearLayoutManager(activity)
@@ -104,7 +104,7 @@ class ReplayFragment : Fragment() {
                         val replayPostList = replayObject.getString("replayPostList")
                         val postArray = JSONArray(replayPostList)
                         val userLikeList = replayObject.getString("userLikeList")
-                        val likeArray = JSONArray(userLikeList)
+
                         for (i in 0 until postArray.length()) {
                             if (postArray.length() ==0 || postArray.equals("null")){
                                 tv_noReplay.visibility =View.VISIBLE
@@ -124,21 +124,21 @@ class ReplayFragment : Fragment() {
                                 var replayReviewNumber = postObject.getString("replayReviewNumber")
                                 var uploadDate = postObject.getString("uploadDate")
 
-                                for (i in 0 until likeArray.length()) {
-                                    var likeObject = likeArray.getJSONObject(i)
-                                    var replayPostIdx = likeObject.getString("replayPostIdx")
-                                     replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
-                                    if (replayPostIdx.equals(idx)){
-                                        like= true
-                                        Log.d(TAG, like.toString())
-                                        break
-
-                                    }else{
-                                        like= false
-                                        Log.d(TAG, like.toString())
-
+                                if (!userLikeList.equals("")){
+                                val likeArray = JSONArray(userLikeList)
+                                    for (i in 0 until likeArray.length()) {
+                                        var likeObject = likeArray.getJSONObject(i)
+                                        var replayPostIdx = likeObject.getString("replayPostIdx")
+                                        replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
+                                        if (replayPostIdx.equals(idx)){
+                                            like= true
+                                            Log.d(TAG, like.toString())
+                                            break
+                                        }else{
+                                            like= false
+                                            Log.d(TAG, like.toString())
+                                        }
                                     }
-
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
                                     replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!)

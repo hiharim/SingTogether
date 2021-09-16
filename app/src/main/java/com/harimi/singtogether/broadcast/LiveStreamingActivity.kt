@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -55,6 +56,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
     private lateinit var activity_streaming_tv_count :TextView
     private lateinit var activity_streaming_btn_close :ImageView
+
+    private lateinit var sv_searchViewer :SearchView
     private lateinit var activity_streaming_btn_switch_cam_backCamera :ImageButton
     private lateinit var et_chattingInputText :EditText
     private lateinit var btn_sendInputText :Button
@@ -65,6 +68,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     /////DrawerLayout 리사이클러뷰,데이터리스트, 어댑터
     private lateinit var rv_streamingViewerList : RecyclerView
     private val liveStreamingViewerList: ArrayList<LiveStreamingViewerListData> = ArrayList()
+    private val tempLiveStreamingViewerList: ArrayList<LiveStreamingViewerListData> = ArrayList()
     private lateinit var liveStreamingViewerAdapter: LiveStreamingViewerListAdapter
     private lateinit var layout_notify: LinearLayout
 
@@ -82,19 +86,16 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_live_streaming)
 
+        initView()
+    }
+
+    fun initView(){
         val getIntent = intent
         roomIdx = getIntent.getStringExtra("roomIdx")
         Log.d(TAG, " $roomIdx")
 
-        initView()
 
-    }
-
-
-
-
-    fun initView(){
-
+        sv_searchViewer = findViewById<SearchView>(id.sv_searchViewer)
         StreamingDrawerLayout = findViewById<DrawerLayout>(id.StreamingDrawerLayout)
         layout_notify = findViewById<LinearLayout>(id.layout_notify)
         activity_streaming_btn_viewerList = findViewById<ImageButton>(id.activity_streaming_btn_viewerList)
@@ -123,13 +124,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         ////현재들어와있는 사람들리스트 리사이클러뷰
         rv_streamingViewerList = findViewById(id.rv_streamingViewerList)
         rv_streamingViewerList.layoutManager = LinearLayoutManager(this)
-        rv_streamingViewerList.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        liveStreamingViewerAdapter = LiveStreamingViewerListAdapter(liveStreamingViewerList, this)
+        rv_streamingViewerList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+        liveStreamingViewerAdapter = LiveStreamingViewerListAdapter(tempLiveStreamingViewerList, this)
         rv_streamingViewerList.adapter = liveStreamingViewerAdapter
 
         ////초기 뷰어 리스트 셋팅
@@ -201,6 +197,33 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         mediaStream!!.addTrack(videoTrack)
         //미디어 스트림에 오디오 트랙에 넣기
         mediaStream!!.addTrack(localAudioTrack)
+
+        //시청자 찾기
+
+        sv_searchViewer.setOnQueryTextListener(object  : SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                TODO("NOT YET")
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                tempLiveStreamingViewerList.clear()
+                val searchText = newText!!.toLowerCase(Locale.getDefault())
+                if (searchText.isNotEmpty()){
+                    liveStreamingViewerList.forEach{
+                        if (it.nickName.toLowerCase(Locale.getDefault()).contains(searchText)){
+                            tempLiveStreamingViewerList.add(it)
+                        }
+                    }
+                    liveStreamingViewerAdapter.notifyDataSetChanged()
+                }else{
+                    tempLiveStreamingViewerList.clear()
+                    tempLiveStreamingViewerList.addAll(liveStreamingViewerList)
+                    liveStreamingViewerAdapter.notifyDataSetChanged()
+                }
+                return false
+            }
+        })
+
 
         // 오디오 스피커 모드로 설정하기
         val am: AudioManager
@@ -406,9 +429,10 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             val nickName = jsonObject.getString("nickName")
             val profile = jsonObject.getString("profile")
             val userId = jsonObject.getString("userId")
-            val liveStreamingViewerData= LiveStreamingViewerListData(nickName, profile,socketId,userId )
 
+            val liveStreamingViewerData= LiveStreamingViewerListData(nickName, profile,socketId,userId )
             runOnUiThread {
+                tempLiveStreamingViewerList.add(liveStreamingViewerData)
                 liveStreamingViewerList.add(liveStreamingViewerData)
                 liveStreamingViewerAdapter.notifyDataSetChanged()
                 viewerListSetting()

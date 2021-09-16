@@ -143,7 +143,8 @@ interface RetrofitService {
     @POST("clickReplayLike.php")
     fun requestClickLike(
         @Field("ReplayIdx") roomIdx :String,
-        @Field("userEmail") userEmail :String
+        @Field("userEmail") userEmail :String,
+        @Field("clickDate") clickDate :String
     ):Call<String>
 
     @FormUrlEncoded

@@ -59,13 +59,14 @@ class LiveFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
+        swipeRefresh.performClick()
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
         ft.detach(this).attach(this).commit()
         liveStreamingPostList.clear()
         liveFragmentAdapter.notifyDataSetChanged()
         liveStreamingPostLoad()
 
-//        swipeRefresh.performClick()
+
     }
 
     override fun onStop() {
