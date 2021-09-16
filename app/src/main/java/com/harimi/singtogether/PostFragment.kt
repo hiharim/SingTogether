@@ -1,6 +1,7 @@
 package com.harimi.singtogether
 
 import android.media.Image
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,74 +12,96 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.R
+import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
+import com.harimi.singtogether.databinding.FragmentPostBinding
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlin.math.log
 
+/**
+ * 홈 포스트아이템 클릭하면 나오는 디테일 프래그먼트
+ */
 
 class PostFragment : Fragment() {
     var TAG :String = "PostFragment "
 
-    private var idx : String? = null
-    private var hits : String? = null
-    private var songTitle : String? = null
+    private var idx : Int? = null // duet 테이블 idx
+    private var title : String? = null
     private var singer : String? = null
-    private var likeNumber : String? = null
-    private var thumbnail : String? = null
-    private var uploadUserProfile : String? = null
-    private var uploadUserNickName : String? = null
-    private var uploadDate : String? = null
+    private var cnt_play : String? = null
+    private var cnt_reply : String? = null
+    private var cnt_like : String? = null
+    private var nickname : String? = null
+    private var collaboration_nickname : String? = null
+    private var song_path : String? = null
+    private var profile : String? = null
+    private var collaboration_profile : String? = null
+    private var date : String? = null
+    private var simpleExoPlayer: ExoPlayer?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            idx = it.getString("idx")
-            hits = it.getString("hits")
-            songTitle = it.getString("songTitle")
-            singer = it.getString("singer")
-            likeNumber = it.getString("likeNumber")
-            thumbnail = it.getString("thumbnail")
-            uploadUserProfile = it.getString("uploadUserProfile")
-            uploadUserNickName = it.getString("uploadUserNickName")
-            uploadDate = it.getString("uploadDate")
+            idx=it.getInt("idx")
+            title=it.getString("title")
+            singer=it.getString("singer")
+            cnt_play=it.getString("cnt_play")
+            cnt_reply=it.getString("cnt_reply")
+            cnt_like=it.getString("cnt_like")
+            nickname=it.getString("nickname")
+            collaboration_nickname=it.getString("collaboration_nickname")
+            song_path=it.getString("song_path")
+            profile=it.getString("profile")
+            collaboration_profile=it.getString("collaboration_profile")
+            date=it.getString("date")
 
         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        val postView = inflater.inflate(R.layout.fragment_post, container, false)
+        val binding= FragmentPostBinding.inflate(inflater,container,false)
 
-        val tv_songTitle :TextView = postView.findViewById(R.id.tv_songTitle)
-        val tv_singer :TextView = postView.findViewById(R.id.tv_singer)
-        val tv_hits :TextView = postView.findViewById(R.id.tv_hits)
-        val tv_uploadDate :TextView = postView.findViewById(R.id.tv_uploadDate)
-        val tv_reviewNumber :TextView = postView.findViewById(R.id.tv_reviewNumber)
-        val iv_mic :ImageView = postView.findViewById(R.id.iv_mic)
-        val et_writeReview :EditText = postView.findViewById(R.id.et_writeReview)
-        val iv_uploadReview :ImageView = postView.findViewById(R.id.iv_uploadReview)
-        val tv_UploadUserNickName :TextView = postView.findViewById(R.id.tv_UploadUserNickName)
-        val iv_uploadUserProfile : CircleImageView = postView.findViewById(R.id.iv_uploadUserProfile)
+        binding.tvUploadUserNickName.text=nickname
+        binding.tvUploadCollaboNickName.text=collaboration_nickname
+        binding.tvSongTitle.text=title
+        binding.tvSinger.text=singer
+        binding.tvHits.text=cnt_play
+        binding.tvReviewNumber.text=cnt_reply
+        binding.tvUploadDate.text=date
+        Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.ivUploadUserProfile)
+        Glide.with(this).load("http://3.35.236.251/"+collaboration_profile).into(binding.ivUploadCollaboProfile)
+        Log.e("디테일프래그","duet_path"+song_path)
 
-        if (uploadUserProfile.equals("null") || uploadUserProfile.equals("")) {
-            iv_uploadUserProfile.setImageResource(R.mipmap.ic_launcher_round)
-        } else {
-            Glide.with(requireActivity())
-                .load("http://3.35.236.251/" + uploadUserProfile)
-                .override(100, 75)
-                .into(iv_uploadUserProfile)
+        // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
+        context?.let{
+            simpleExoPlayer= SimpleExoPlayer.Builder(it).build()
         }
+        binding.pv.player = simpleExoPlayer
+        val factory: DataSource.Factory = DefaultDataSourceFactory(
+            requireContext(),
+            "ExoPlayer"
+        )
+        var mediaItem = MediaItem.fromUri(Uri.parse(song_path))
+        val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
+            .createMediaSource(mediaItem)
+        simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
+        simpleExoPlayer!!.prepare()
+        simpleExoPlayer!!.play()
 
-        tv_songTitle.text =songTitle.toString()
-        tv_singer.text =singer.toString()
-        tv_uploadDate.text =uploadDate.toString()
-        tv_hits.text =hits.toString()
-        tv_UploadUserNickName.text =uploadUserNickName.toString()
+        return binding.root
+    }
 
-
-        return postView
+    override fun onPause() {
+        super.onPause()
+        simpleExoPlayer?.release()
     }
 
     companion object {

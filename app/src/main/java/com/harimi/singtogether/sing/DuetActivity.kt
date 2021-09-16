@@ -11,8 +11,8 @@ import com.harimi.singtogether.databinding.ActivityDuetBinding
 import com.harimi.singtogether.databinding.ActivityVideo3Binding
 
 /**
- * 다른사용자와 듀엣 하는 액티비티 화면
- * ffmpeg - merge 여기서
+ * 다른사용자와 듀엣 하기전에 녹화,녹음 선택하는 화면
+ *
  * */
 class DuetActivity : AppCompatActivity() {
 
@@ -22,6 +22,7 @@ class DuetActivity : AppCompatActivity() {
     private var singer : String? = null
     private var duet_path : String? = null
     private var mr_path : String? = null
+    private var extract_path : String? = null
     private var genre : String? = null
     private var user_profile : String? = null
     private var user_nickname: String? = null
@@ -39,10 +40,10 @@ class DuetActivity : AppCompatActivity() {
         singer=intent.getStringExtra("singer")
         duet_path=intent.getStringExtra("duet_path")
         mr_path=intent.getStringExtra("mr_path")
+        extract_path=intent.getStringExtra("extract_path")
         user_profile=intent.getStringExtra("profile")
         user_nickname=intent.getStringExtra("nickname")
         lyrics=intent.getStringExtra("lyrics")
-
 
         binding.activityBeforeSingTvTitle.text=title
         binding.activityBeforeSingTvSinger.text=singer
@@ -89,9 +90,11 @@ class DuetActivity : AppCompatActivity() {
                 intent.putExtra("RECORD_SINGER",singer)
                 intent.putExtra("RECORD_SONG_PATH",duet_path)
                 intent.putExtra("RECORD_MR_PATH",mr_path)
+                intent.putExtra("RECORD_EXTRACT_PATH",extract_path)
                 intent.putExtra("RECORD_LYRICS",lyrics)
                 intent.putExtra("WITH",with)
                 intent.putExtra("WAY",way)
+                intent.putExtra("COLLABORATION",user_nickname)
                 startActivity(intent)
                 finish()
             }

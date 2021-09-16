@@ -54,7 +54,7 @@ class DuetFragment : Fragment() {
         binding.fragmentDuetRecyclerView.adapter=duetAdapter
 
         duetAdapter.notifyDataSetChanged()
-        loadDuet()
+        //loadDuet()
         return binding.root
     }
 
@@ -107,9 +107,11 @@ class DuetFragment : Fragment() {
                         //todo : song_path,duet_path 둘다되게 고치기
                         val song_path=iObject.getString("duet_path")
                         val mr_path=iObject.getString("song_path")
+                        val extract_path=iObject.getString("extract_path")
                         val duet_date=iObject.getString("date")
-                        var path="http://3.35.236.251/"+song_path
-                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile,path,duet_date,mr_path)
+                        //var path="http://3.35.236.251/"+song_path
+                        var path=song_path
+                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile,path,duet_date,mr_path,extract_path)
                         duetList.add(0,duetData)
                         duetAdapter.notifyDataSetChanged()
                     }

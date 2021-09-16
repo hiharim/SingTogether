@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
@@ -33,6 +34,7 @@ class DetailDuetFragment : Fragment() {
     private var nickname : String? = null
     private var duet_path : String? = null // 사용자 오디오/비디오
     private var mr_path : String? = null // mr
+    private var extract_path : String? = null //
     private var profile : String? = null
     private var date : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
@@ -50,6 +52,7 @@ class DetailDuetFragment : Fragment() {
             nickname=it.getString("nickname")
             duet_path=it.getString("duet_path")
             mr_path=it.getString("mr_path")
+            extract_path=it.getString("extract_path")
             profile=it.getString("profile")
             date=it.getString("date")
         }
@@ -71,6 +74,7 @@ class DetailDuetFragment : Fragment() {
             intent.putExtra("nickname",nickname)
             intent.putExtra("duet_path",duet_path)
             intent.putExtra("mr_path",mr_path)
+            intent.putExtra("extract_path",extract_path)
             intent.putExtra("profile",profile)
             startActivity(intent)
         }
@@ -93,12 +97,12 @@ class DetailDuetFragment : Fragment() {
             requireContext(),
             "ExoPlayer"
         )
-        val mediaSource: ProgressiveMediaSource =
-            ProgressiveMediaSource.Factory(factory)
-                .createMediaSource(Uri.parse(duet_path))
-        simpleExoPlayer?.prepare(mediaSource)
-        simpleExoPlayer!!.playWhenReady = true
-
+        var mediaItem = MediaItem.fromUri(Uri.parse(duet_path))
+        val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
+            .createMediaSource(mediaItem)
+        simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
+        simpleExoPlayer!!.prepare()
+        simpleExoPlayer!!.play()
 
         return binding.root
     }

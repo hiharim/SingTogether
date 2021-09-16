@@ -14,81 +14,74 @@ import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import com.harimi.singtogether.sing.DetailDuetFragment
 import de.hdodenhof.circleimageview.CircleImageView
 
-class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
+class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
+
+    inner class HomeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+        val idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_idx)
+        val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
+        val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
+        val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
+        val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
+        val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
+        val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
+        val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
+        val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_play)
+        val cnt_reply=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_reply)
+        val cnt_like=v.findViewById<TextView>(R.id.rv_fragment_home_tv_like)
+        val song_path=v.findViewById<TextView>(R.id.rv_fragment_home_tv_song_path)
+        val date=v.findViewById<TextView>(R.id.rv_fragment_home_tv_date)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.HomeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_fragment_home, parent, false)
         return  HomeViewHolder(view)
-//                .apply {
-//                    itemView.setOnClickListener {
-////                        val getPosition : Int = adapterPosition
-////                        val homeData :HomeData = homePostList.get(getPosition)
-//
-//                        val activity =view!!.context as AppCompatActivity
-//                        val postFragment = PostFragment()
-//                        activity.supportFragmentManager.beginTransaction().replace(R.id.fragment_home_recyclerView,postFragment).addToBackStack(null).commit()
-//
-//                    }
-//                }
     }
 
     override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {
+        val curData = homePostList[position]
+        holder.idx.text= curData.idx.toString()
+        holder.title.text=curData.title
+        holder.singer.text=curData.singer
+        holder.cnt_play.text=curData.cnt_play
+        holder.cnt_reply.text=curData.cnt_reply
+        holder.cnt_like.text=curData.cnt_like
+        holder.nickname.text=curData.nickname
+        holder.song_path.text=curData.song_path
+        holder.collabo_nickname.text=curData.collaboration_nickname
+        holder.date.text=curData.date
 
-        /// 프로필 사진
-        if (homePostList.get(position).uploadUserProfile.equals("null") || homePostList.get(position).uploadUserProfile.equals("")) {
-            holder.iv_profile.setImageResource(R.mipmap.ic_launcher_round)
-        } else {
-            val Image: HomeData = homePostList.get(position)
-            Glide.with(holder.itemView.context)
-                    .load("http://3.35.236.251/" + Image.uploadUserProfile)
-                    .override(100, 75)
-                    .into(holder.iv_profile)
+        Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
+        Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
+        Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
+
+        holder.itemView.setOnClickListener { v->
+            // PostFragment 로 이동
+            val activity =v!!.context as AppCompatActivity
+            val postFragment = PostFragment()
+            var bundle =Bundle()
+            bundle.putInt("idx",curData.idx)
+            bundle.putString("title",curData.title)
+            bundle.putString("singer",curData.singer)
+            bundle.putString("cnt_play",curData.cnt_play)
+            bundle.putString("cnt_reply",curData.cnt_reply)
+            bundle.putString("cnt_like",curData.cnt_like)
+            bundle.putString("nickname",curData.nickname)
+            bundle.putString("collaboration_nickname",curData.collaboration_nickname)
+            bundle.putString("song_path",curData.song_path)
+            bundle.putString("profile",curData.profile)
+            bundle.putString("collaboration_profile",curData.collaboration_profile)
+            bundle.putString("date",curData.date)
+            postFragment.arguments=bundle
+
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.activity_main_frame,postFragment)
+                .addToBackStack(null)
+                .commit()
+
         }
-
-        ///썸네일
-        if (homePostList.get(position).thumbnail.equals("null") || homePostList.get(position).thumbnail.equals("")) {
-            holder.iv_thumbnail.setImageResource(R.mipmap.ic_launcher_round)
-        } else {
-            val Image: HomeData = homePostList.get(position)
-            Glide.with(holder.itemView.context)
-                    .load("http://3.35.236.251/" + Image.thumbnail)
-                    .override(100, 75)
-                    .into(holder.iv_thumbnail)
-        }
-
-        holder.tv_hits.setText(homePostList.get(position).hits)
-        holder.tv_songTitle.setText(homePostList.get(position).songTitle)
-        holder.tv_singer.setText(homePostList.get(position).singer)
-        holder.tv_likeNumber.setText(homePostList.get(position).likeNumber)
-        holder.tv_nickName.setText(homePostList.get(position).uploadUserNickName)
-
-
-        ///아이템 온 클릭 리스너
-        holder.itemView.setOnClickListener(object :View.OnClickListener{
-            override fun onClick(v: View?) {
-
-                var bundle: Bundle = Bundle()
-                bundle.putString("idx",homePostList.get(position).idx)
-                bundle.putString("hits",homePostList.get(position).hits)
-                bundle.putString("songTitle",homePostList.get(position).songTitle)
-                bundle.putString("singer",homePostList.get(position).singer)
-                bundle.putString("likeNumber",homePostList.get(position).likeNumber)
-                bundle.putString("thumbnail",homePostList.get(position).thumbnail)
-                bundle.putString("uploadUserProfile",homePostList.get(position).uploadUserProfile)
-                bundle.putString("uploadUserNickName",homePostList.get(position).uploadUserNickName)
-                bundle.putString("uploadDate",homePostList.get(position).uploadDate)
-                val activity =v!!.context as AppCompatActivity
-                val postFragment = PostFragment()
-                postFragment.arguments=bundle
-                activity.supportFragmentManager.beginTransaction().replace(R.id.activity_main_frame,postFragment).addToBackStack(null).commit()
-
-
-            }
-
-
-        })
 
     }
 
@@ -97,17 +90,5 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ,val context: Context ) 
     }
 
 
-    class HomeViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
-        val iv_thumbnail = itemView.findViewById<ImageView>(R.id.iv_thumbnail) //썸네일
-        val iv_profile = itemView.findViewById<CircleImageView>(R.id.iv_profile) // 프로필 사진
-        val iv_like = itemView.findViewById<ImageView>(R.id.iv_like) // 좋아요
-        val iv_nonLike = itemView.findViewById<ImageView>(R.id.iv_nonLike) // 좋아요 취소
 
-        val tv_songTitle = itemView.findViewById<TextView>(R.id.tv_songTitle) // 노래제목
-        val tv_singer = itemView.findViewById<TextView>(R.id.tv_singer) // 가수
-        val tv_hits = itemView.findViewById<TextView>(R.id.tv_hits) // 조회수
-        val tv_likeNumber = itemView.findViewById<TextView>(R.id.tv_likeNumber) // 좋아요 개수
-        val tv_nickName = itemView.findViewById<TextView>(R.id.tv_nickName) // 닉네임
-
-    }
 }

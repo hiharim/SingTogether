@@ -283,33 +283,24 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                    if (response.isSuccessful) {
                        // 응답을 잘 받은 경우
                        // asyncDialog!!.dismiss()
-                       Log.e("비디오2", " 통신 성공: "+response.body().toString())
-                       //todo: 서버에서 처리된 결과받아야함
 
                        val jsonObject = JSONObject(response.body().toString())
                        extract_path= "http://3.35.236.251/"+jsonObject.getString("extract_path")
                        finish_path= "http://3.35.236.251/"+jsonObject.getString("finish_path");
 
-//                       val jsonArray = JSONArray(response.body().toString())
-//                       for (i in 0..jsonArray.length() - 1) {
-//                           val iObject = jsonArray.getJSONObject(i)
-//                            extract_path = iObject.getString("extract_path")
-//                            finish_path = iObject.getString("finish_path")
-//                       }
-
-                       Log.e("비디오2", " extract_path:"+extract_path +" finish_path : "+finish_path )
-
-                       // 업로드 성공 다이얼로그
+                       // 믹싱 성공 다이얼로그
                        val builder = AlertDialog.Builder(this@Video2Activity)
                        builder.setTitle("SingTogether")
                        builder.setMessage("믹싱을 성공했습니다!")
                        builder.setPositiveButton("확인") { dialogInterface, i ->
                            val intent = Intent(applicationContext, AfterRecordActivity::class.java)
                            intent.putExtra("MR_IDX", idx)
-                           intent.putExtra("FILE_PATH", finish_path)
-                           intent.putExtra("USER_PATH", recordingVideoFilePath)
+                           intent.putExtra("FILE_PATH", finish_path) // 최종완성된 비디오 파일 path
+                           intent.putExtra("USER_PATH", extract_path) // 추출한 오디오 파일 path
                            intent.putExtra("WITH", with)
                            intent.putExtra("WAY", way)
+                           intent.putExtra("MERGE", "N")
+                           intent.putExtra("COLLABORATION_NICKNAME", "NULL")
                            Log.e(
                                "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
                                        idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way

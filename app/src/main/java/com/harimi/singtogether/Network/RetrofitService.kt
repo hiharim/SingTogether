@@ -23,13 +23,39 @@ interface RetrofitService {
 //        @Field("token") token :String,
 //    ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("uploadMergeVideos.php")
+    fun requestUploadMergeVideo (
+        @Field("mr_idx") mr_idx: Int,
+        @Field("output_path") output_path :String,
+        @Field("nickname") nickname :String,
+        @Field("collaboration_nickname") collaborationNickname :String
+    ) : Call<String>
+
+    @Multipart
+    @POST("mergeVideos.php")
+    fun requestMergeVideo (
+        @Part("mr_path") mr_path :String,
+        @Part("merge_video_path") mergeVideoPath :String,
+        @Part("merge_extract_path") mergeExtractPath :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("uploadVideo.php")
+    fun requestUploadVideo (
+        @Field("mr_idx") mr_idx: Int,
+        @Field("finish_path") finish_path :String,
+        @Field("extract_path") extract_path :String,
+        @Field("nickname") nickname :String
+    ) : Call<String>
+
     @Multipart
     @POST("mixVideo.php")
     fun requestMixVideo (
         @Part("mr_path") mr_path :String,
         @Part file : MultipartBody.Part
     ) : Call<String>
-
 
     @Multipart
     @POST("testUpload.php")

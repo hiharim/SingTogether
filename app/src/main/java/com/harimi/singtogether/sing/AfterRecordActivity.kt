@@ -14,6 +14,8 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.harimi.singtogether.Data.MRData
+import com.harimi.singtogether.Data.MySongData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
@@ -42,7 +44,9 @@ class AfterRecordActivity : AppCompatActivity() {
     private lateinit var retrofitService: RetrofitService
     private lateinit var file_path : String
     private lateinit var user_path : String // 사용자 목소리 녹음한 파일 경로
-    private var nickname : String? = null
+    private var collaborationNickname: String? = null // 듀엣한 사람 닉네임
+    private lateinit var nickname : String
+    private var isMerge : String? = null // 병합,그냥녹화 구분
     private var with : String? = null // 솔로,듀엣 구분
     private var way : String? = null // 녹화,녹음,연습 구분
     private var idx : Int? = null // mr 인덱스 값
@@ -50,7 +54,6 @@ class AfterRecordActivity : AppCompatActivity() {
     lateinit var mediaPlayer: MediaPlayer
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
     lateinit var fileName : String // 서버로 보낼 사용자 목소리 + MR 파일 이름
-    //private var uploadTask: UploadTask? = null
     var asyncDialog : ProgressDialog ?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +62,12 @@ class AfterRecordActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRetrofit()
 
-        file_path=intent.getStringExtra("FILE_PATH").toString()
-        user_path=intent.getStringExtra("USER_PATH").toString()
+        file_path=intent.getStringExtra("FILE_PATH").toString() // 최종완성된 비디오 path
+        user_path=intent.getStringExtra("USER_PATH").toString() // 추출한 오디오 path
         with=intent.getStringExtra("WITH")
         way=intent.getStringExtra("WAY")
+        isMerge=intent.getStringExtra("MERGE")
+        collaborationNickname=intent.getStringExtra("COLLABORATION_NICKNAME")
         idx=intent.getIntExtra("MR_IDX",0)
 
         Log.e("애프터싱액티비티","idx,file_path,user_path,with,way"+
@@ -78,10 +83,6 @@ class AfterRecordActivity : AppCompatActivity() {
             applicationContext,
             "ExoPlayer"
         )
-//        val mediaSource: ProgressiveMediaSource =
-//            ProgressiveMediaSource.Factory(factory)
-//                .createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
-//                //.createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
 
         var mediaItem = MediaItem.fromUri(Uri.parse(file_path))
         //val mediaItem = MediaItem.fromUri(Uri.parse(user_path))
@@ -91,12 +92,9 @@ class AfterRecordActivity : AppCompatActivity() {
         }else if(with.equals("듀엣")){
             mediaItem=MediaItem.fromUri(Uri.parse(file_path))
         }
-        //val mediaItem = MediaItem.fromUri(Uri.parse(videoUri.toString()))
+
         val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
             .createMediaSource(mediaItem)
-        //simpleExoPlayer?.prepare(mediaSource)
-//        simpleExoPlayer?.prepare(progressiveMediaSource)
-//        simpleExoPlayer!!.playWhenReady = true
 
         simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
         simpleExoPlayer!!.prepare()
@@ -108,47 +106,94 @@ class AfterRecordActivity : AppCompatActivity() {
             asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
             asyncDialog!!.setMessage("업로드 중...")
             asyncDialog!!.show()
-            upload()
-//            uploadTask=UploadTask(binding)
-//            uploadTask?.execute()
-        }
 
+            if(isMerge.equals("Y")){
+                uploadMergeVideo()
+            }else if(isMerge.equals("N")){
+                uploadVideo()
+            }
+
+        }
     }
 
-//    inner class UploadTask(private val binding: ActivityAfterRecordBinding) : AsyncTask<String, Int, String>() {
-//        val asyncDialog : ProgressDialog = ProgressDialog(this@AfterRecordActivity)
-//
-//        override fun onPreExecute() {
-//            /* UI Thread: 프로그래스 바 등 준비 */
-//            asyncDialog.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
-//            asyncDialog.setMessage("업로드 중...")
-//            asyncDialog.show()
-//        }
-//        override fun doInBackground(vararg tasks: String): String {
-//            /* Background Thread: 데이터 긁어오기 */
-//            upload()
-//            return "Upload Completed"
-//        }
-//
-//        override fun onProgressUpdate(vararg values: Int?) {
-//            /* UI Thread: 진행도 표시 */
-//        }
-//
-//        override fun onPostExecute(result: String?) {
-//            /* UI Thread: 작업 수행 결과 표시 */
-//            // 종료
-//            asyncDialog.dismiss()
-//            // 업로드 성공 다이얼로그
-//            val builder = AlertDialog.Builder(this@AfterRecordActivity)
-//            builder.setTitle("SingTogether")
-//            builder.setMessage("업로드를 성공했습니다!")
-//            builder.setPositiveButton("확인") { dialogInterface, i ->
-//                simpleExoPlayer?.release()
-//                finish() }
-//            builder.show()
-//
-//        }
-//    }
+    private fun uploadMergeVideo() {
+        idx?.let {
+            collaborationNickname?.let { it1 ->
+                retrofitService.requestUploadMergeVideo(it,file_path,nickname, it1).enqueue(object : Callback<String> {
+                    // 통신에 성공한 경우
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful) {
+                            // 응답을 잘 받은 경우
+                            asyncDialog!!.dismiss()
+
+
+                            Log.e("AfterRecordActivity", " 통신 성공:"+ response.body().toString())
+                            // 업로드 성공 다이얼로그
+                            val builder = AlertDialog.Builder(this@AfterRecordActivity)
+                            builder.setTitle("SingTogether")
+                            builder.setMessage("업로드를 성공했습니다!")
+                            builder.setPositiveButton("확인") { dialogInterface, i ->
+                                simpleExoPlayer?.release()
+                                finish()
+                            }
+                            builder.show()
+                        } else {
+                            // 통신은 성공했지만 응답에 문제가 있는 경우
+                            Log.e("AfterRecordActivity", " 응답 문제" + response.code())
+                            Log.e("AfterRecordActivity", " 응답 문제" + response.errorBody().toString())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.e("AfterRecordActivity", " 통신 실패" + t.message)
+                    }
+
+
+                })
+            }
+        }
+    }
+
+
+
+    private fun uploadVideo() {
+        val nickname=LoginActivity.user_info.loginUserNickname
+        idx?.let {
+            retrofitService.requestUploadVideo(it,file_path,user_path,nickname).enqueue(object : Callback<String> {
+                // 통신에 성공한 경우
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        // 응답을 잘 받은 경우
+                        asyncDialog!!.dismiss()
+                        Log.e("AfterRecordActivity", " 통신 성공:"+ response.body().toString())
+                        // 업로드 성공 다이얼로그
+                        val builder = AlertDialog.Builder(this@AfterRecordActivity)
+                        builder.setTitle("SingTogether")
+                        builder.setMessage("업로드를 성공했습니다!")
+                        builder.setPositiveButton("확인") { dialogInterface, i ->
+                            simpleExoPlayer?.release()
+                            finish() }
+                        builder.show()
+
+                    } else {
+                        // 통신은 성공했지만 응답에 문제가 있는 경우
+                        Log.e("AfterRecordActivity", " 응답 문제" + response.code())
+                        Log.e("AfterRecordActivity", " 응답 문제" + response.errorBody().toString())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.e("AfterRecordActivity", " 통신 실패" + t.message)
+                }
+
+
+            })
+        }
+    }
+
+
+
+
 
     // 사용자 비디오 업로드
     private fun upload() {

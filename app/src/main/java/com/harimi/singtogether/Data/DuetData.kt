@@ -28,5 +28,7 @@ data class DuetData(
     @SerializedName("date")
     val date : String,
     @SerializedName("mr_path")
-    val mr_path : String
+    val mr_path : String,
+    @SerializedName("extract_path")
+    val extract_path : String
 )
