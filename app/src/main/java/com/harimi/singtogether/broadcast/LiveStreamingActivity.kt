@@ -290,13 +290,37 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             builder.setMessage("방송을 종료하시겠습니까?")
 
             builder.setPositiveButton("네") { dialog, which ->
-                Toast.makeText(
-                    applicationContext,
-                    "방송을 종료합니다", Toast.LENGTH_SHORT
-                ).show()
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(
+                            call: Call<String>,
+                            response: Response<String>
+                        ) {
+                            if (response.isSuccessful) {
 
-                get()!!.liveStreamingFinish(roomIdx!!)
-                finish()
+                                val jsonObject = JSONObject(response.body().toString())
+//                        finish()
+                                Toast.makeText(applicationContext,
+                                    "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+
+                                get()!!.liveStreamingFinish(roomIdx!!)
+                                finish()
+                            } else {
+                                Log.e("onResponse", "실패 : " + response.errorBody())
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.d(
+                                "실패:", "Failed API call with call: " + call +
+                                        " + exception: " + t
+                            )
+                        }
+
+                    })
+
             }
             builder.setNegativeButton("아니요") { dialog, which ->
             }
@@ -542,36 +566,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     override fun onStop() {
         Log.d(TAG, "onStop")
         super.onStop()
-
         timerTask = null //타이머
         time = 0 //
-
-        retrofit = RetrofitClient.getInstance()
-        retrofitService = retrofit.create(RetrofitService::class.java)
-        retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
-            .enqueue(object : Callback<String> {
-                override fun onResponse(
-                    call: Call<String>,
-                    response: Response<String>
-                ) {
-                    if (response.isSuccessful) {
-
-                        val jsonObject = JSONObject(response.body().toString())
-//                        finish()
-
-                    } else {
-                        Log.e("onResponse", "실패 : " + response.errorBody())
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d(
-                        "실패:", "Failed API call with call: " + call +
-                                " + exception: " + t
-                    )
-                }
-
-            })
     }
 
     //Peer간의 연결을 끊어주고 비디오 백그라운드에서 돌고있는 Render를 종료한다
@@ -631,11 +627,37 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         builder.setMessage("방송을 종료하시겠습니까?")
 
         builder.setPositiveButton("네") { dialog, which ->
-            Toast.makeText(applicationContext,
-                "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+            retrofit = RetrofitClient.getInstance()
+            retrofitService = retrofit.create(RetrofitService::class.java)
+            retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(
+                        call: Call<String>,
+                        response: Response<String>
+                    ) {
+                        if (response.isSuccessful) {
 
-            get()!!.liveStreamingFinish(roomIdx!!)
-            finish()
+                            val jsonObject = JSONObject(response.body().toString())
+//                        finish()
+                            Toast.makeText(applicationContext,
+                                "방송을 종료합니다", Toast.LENGTH_SHORT).show()
+
+                            get()!!.liveStreamingFinish(roomIdx!!)
+                            finish()
+                        } else {
+                            Log.e("onResponse", "실패 : " + response.errorBody())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d(
+                            "실패:", "Failed API call with call: " + call +
+                                    " + exception: " + t
+                        )
+                    }
+
+                })
+
         }
         builder.setNegativeButton("아니요") { dialog, which ->
         }

@@ -409,29 +409,7 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
     override fun onStop() {
         super.onStop()
         Log.d(TAG, "onStop")
-//        retrofit = RetrofitClient.getInstance()
-//        retrofitService = retrofit.create(RetrofitService::class.java)
-//        retrofitService.requestOutViewer(roomIdx!!)
-//            .enqueue(object : Callback<String> {
-//                override fun onResponse(
-//                    call: Call<String>,
-//                    response: Response<String>
-//                ) {
-//                    if (response.isSuccessful) {
-//                        val jsonObject = JSONObject(response.body().toString())
-//                    } else {
-////                        Log.e("onResponse", "실패 : " + response.errorBody())
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<String>, t: Throwable) {
-//                    Log.d(
-//                        "실패:", "Failed API call with call: " + call +
-//                                " + exception: " + t
-//                    )
-//                }
-//
-//            })
+
     }
 
     override fun onDestroy() { //앱 죽여 버릴때 호출됨
@@ -470,10 +448,6 @@ class LiveStreamingViewActivity : AppCompatActivity() , SignalingClient.Callback
                             Toast.makeText(applicationContext,
                                 "퇴장하였습니다.", Toast.LENGTH_SHORT).show()
                             get()!!.outViewer(roomIdx!!,LoginActivity.user_info.loginUserEmail)
-                //            val liveFragment = LiveFragment()
-                //            this@LiveStreamingViewActivity.supportFragmentManager.beginTransaction()
-                //                .add(R.id.activity_main_frame,liveFragment)
-                //                .commitAllowingStateLoss() //프
                             finish()
                         } else {
                         }

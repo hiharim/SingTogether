@@ -59,7 +59,8 @@ class LiveFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-        swipeRefresh.performClick()
+
+
         val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
         ft.detach(this).attach(this).commit()
         liveStreamingPostList.clear()
@@ -79,7 +80,7 @@ class LiveFragment : Fragment() {
         super.onStart()
         Log.d(TAG, "onStart")
         ////performClick 이란 지정된 객체를 한번 실행시키라는 메소드
-
+//        swipeRefresh.performClick()
     }
 
     override fun onCreateView(

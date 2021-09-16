@@ -32,6 +32,7 @@
         <EditText
             android:id="@+id/et_searchLiveStreaming"
             android:layout_width="309dp"
+            android:hint="게시물 검색"
             android:layout_height="match_parent"
             android:layout_marginBottom="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -51,15 +52,36 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
     </Toolbar>
 
-    <LinearLayout
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_notify"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:text="해당 검색의 게시물이 없습니다"
+        android:textSize="25dp"
+        android:textColor="#000000"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_searchRecyclerView"
+            android:id="@+id/rv_searchLiveRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_searchReplayRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </LinearLayout>
 </LinearLayout>
