@@ -33,6 +33,7 @@ class PostFragment : Fragment() {
     var TAG :String = "PostFragment "
 
     private var idx : Int? = null // duet 테이블 idx
+    private var mr_idx : Int? = null // mr 테이블 idx
     private var title : String? = null
     private var singer : String? = null
     private var cnt_play : String? = null
@@ -50,6 +51,7 @@ class PostFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             idx=it.getInt("idx")
+            mr_idx=it.getInt("mr_idx")
             title=it.getString("title")
             singer=it.getString("singer")
             cnt_play=it.getString("cnt_play")

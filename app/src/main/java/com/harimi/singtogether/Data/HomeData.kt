@@ -33,6 +33,8 @@ data class HomeData(
     val collaboration_profile : String,
     @SerializedName("date")
     val date : String,
+    @SerializedName("mr_idx")
+    val mr_idx : Int
 
 //    val idx:String ,
 //    val thumbnail :String ,

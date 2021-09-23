@@ -62,7 +62,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun loadHomePost(){
-        retrofitService.requestGetHomePost().enqueue(object : Callback<String> {
+        retrofitService.requestGetHomePost2().enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
@@ -81,6 +81,7 @@ class HomeFragment : Fragment() {
                         val song_path=iObject.getString("song_path")
                         val date=iObject.getString("date")
                         val collaboration=iObject.getString("collaboration")
+                        val mr_idx=iObject.getInt("mr_idx")
                         val title=iObject.getString("title")
                         val singer=iObject.getString("singer")
                         val lyrics=iObject.getString("lyrics")
@@ -89,7 +90,7 @@ class HomeFragment : Fragment() {
                         //todo : 상대방 프로필받아오는걸로 고치기
                         val collaboration_profile=iObject.getString("profile")
 
-                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like, nickname, profile, song_path, collaboration, collaboration_profile, date)
+                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like, nickname, profile, song_path, collaboration, collaboration_profile, date,mr_idx)
                         homePostList.add(0,homeData)
                         homeAdapter.notifyDataSetChanged()
                     }

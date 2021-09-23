@@ -85,6 +85,9 @@ interface RetrofitService {
     @POST("loadHomePost.php")
     fun requestGetHomePost (
     ) : Call<String>
+    @POST("loadHomePost2.php")
+    fun requestGetHomePost2 (
+    ) : Call<String>
 
 
 

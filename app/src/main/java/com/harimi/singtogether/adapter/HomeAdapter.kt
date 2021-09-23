@@ -21,6 +21,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
 
     inner class HomeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_idx)
+        val mr_idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_mr_idx)
         val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
         val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
@@ -52,6 +53,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         holder.song_path.text=curData.song_path
         holder.collabo_nickname.text=curData.collaboration_nickname
         holder.date.text=curData.date
+        holder.mr_idx.text= curData.mr_idx.toString()
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
@@ -63,6 +65,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             val postFragment = PostFragment()
             var bundle =Bundle()
             bundle.putInt("idx",curData.idx)
+            bundle.putInt("mr_idx",curData.mr_idx)
             bundle.putString("title",curData.title)
             bundle.putString("singer",curData.singer)
             bundle.putString("cnt_play",curData.cnt_play)
