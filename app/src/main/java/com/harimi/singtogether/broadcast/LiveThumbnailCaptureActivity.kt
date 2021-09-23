@@ -64,12 +64,9 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
         email = LoginActivity.user_info.loginUserEmail
         profile = LoginActivity.user_info.loginUserProfile
         nickname = LoginActivity.user_info.loginUserNickname
-
         binding.ivThumbnail.visibility =View.INVISIBLE
-
         Log.d(TAG,"아이디 "+email +" 닉네임 "+nickname+" 프로필사진 "+profile)
         settingPermission()
-
         binding.ivCancelThumbnailCapture.setOnClickListener {
 
             val builder = AlertDialog.Builder(this)
@@ -122,10 +119,11 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                                 Log.d("onResponse: 성공: ", response.body() + response.message())
                                 val jsonObject = JSONObject(response.body().toString())
                                 val roomIdx = jsonObject.getString("roomIdx")
-
-
+                                val thumbnail = jsonObject.getString("thumbnail")
                                 val intent = Intent(this@LiveThumbnailCaptureActivity, LiveStreamingActivity::class.java)
                                 intent.putExtra("roomIdx", roomIdx)
+                                intent.putExtra("roomTitle", liveTitle)
+                                intent.putExtra("thumbnail", thumbnail)
                                 startActivity(intent)
                                 finish()
                             } else {

@@ -31,6 +31,18 @@ interface RetrofitService {
         @Part file : MultipartBody.Part
     ) : Call<String>
 
+    @Multipart
+    @POST("uploadReplayVideo.php")
+    fun requestUploadReplayVideo (
+        @Part("userEmail") userEmail :String,
+        @Part("nickname")  nickname :String,
+        @Part("profile")  profile :String,
+        @Part("roomTitle")  roomTitle :String,
+        @Part("thumbnail")  thumbnail :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
+
     @FormUrlEncoded
     @POST("join_none.php")
     fun requestJoinNone (
