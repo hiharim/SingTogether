@@ -28,22 +28,8 @@ class MRAdapter(val mrList:ArrayList<MRData>) : RecyclerView.Adapter<MRAdapter.M
     //뷰홀더가 처음 생성될때
    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MRViewHolder {
         val view=LayoutInflater.from(parent.context).inflate(R.layout.rv_fragment_m_r,parent,false)
-
         return MRViewHolder(view)
-//        return MRViewHolder(view).apply {
-//            itemView.setOnClickListener{
-//                // 클릭한 뷰의 순서값
-//                val curPos : Int = adapterPosition
-//                // 객체 형태로 번호 맞게 가져오기
-//                val idx : MRData= mrList.get(curPos)
-//                val title : MRData = mrList.get(curPos)
-//                val singer : MRData = mrList.get(curPos)
-//                val song_path : MRData = mrList.get(curPos)
-//                val genre : MRData = mrList.get(curPos)
-//                val intent= Intent(itemView?.context,BeforeSingActivity::class.java)
-//                ContextCompat.startActivity(itemView?.context,intent,null)
-//            }
-//        }
+
     }
 
     //재활용해주는곳 및 값을 넣어주는 곳

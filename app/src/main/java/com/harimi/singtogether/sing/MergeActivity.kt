@@ -204,8 +204,6 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                     var output_path : String ?=null
                     if (response.isSuccessful) {
                         asyncDialog!!.dismiss()
-
-
                         val jsonObject = JSONObject(response.body().toString())
                         //call_extract_path= "http://3.35.236.251/"+jsonObject.getString("extract_path")
                         output_path= "http://3.35.236.251/"+jsonObject.getString("output_path");

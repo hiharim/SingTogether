@@ -54,6 +54,7 @@ interface RetrofitService {
     @POST("mixVideo.php")
     fun requestMixVideo (
         @Part("mr_path") mr_path :String,
+        @Part("side") side :String,
         @Part file : MultipartBody.Part
     ) : Call<String>
 
@@ -110,7 +111,13 @@ interface RetrofitService {
     @POST("loadMR.php")
     fun requestMR(
     ):Call<String>
-    //):Call<ArrayList<MRData>>
+
+    // 가사 시간 데이터 불러오기
+    @FormUrlEncoded
+    @POST("loadLyrics.php")
+    fun requestLyrics(
+        @Field("mr_idx") mr_idx :String,
+    ):Call<String>
 
     @POST("loadDuet.php")
     fun requestDuet(

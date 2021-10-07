@@ -86,9 +86,7 @@ class HomeFragment : Fragment() {
                         val singer=iObject.getString("singer")
                         val lyrics=iObject.getString("lyrics")
                         val profile=iObject.getString("profile")
-
-                        //todo : 상대방 프로필받아오는걸로 고치기
-                        val collaboration_profile=iObject.getString("profile")
+                        val collaboration_profile=iObject.getString("col_profile")
 
                         val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like, nickname, profile, song_path, collaboration, collaboration_profile, date,mr_idx)
                         homePostList.add(0,homeData)

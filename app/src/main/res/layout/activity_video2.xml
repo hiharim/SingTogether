@@ -72,13 +72,19 @@
             android:layout_width="match_parent"
             android:layout_height="400dp" />
 
-        <TextView
-            android:id="@+id/activity_record_tv_lyrics"
+<!--        <TextView-->
+<!--            android:id="@+id/activity_record_tv_lyrics"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:gravity="center_horizontal"-->
+<!--            android:textSize="18sp"-->
+<!--            android:text="가사" />-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_video2_rv"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:textSize="18sp"
-            android:text="가사" />
+            android:layout_height="wrap_content"/>
 
     </FrameLayout>
 

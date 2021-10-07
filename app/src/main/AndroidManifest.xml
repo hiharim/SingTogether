@@ -17,7 +17,8 @@
         android:required="true" />
     <uses-feature android:name="android.hardware.camera2.full" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
+    <uses-feature android:name="android.hardware.camera.front" />
+    <uses-feature android:name="android.hardware.microphone"/>
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"

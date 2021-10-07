@@ -84,14 +84,14 @@ class AfterRecordActivity : AppCompatActivity() {
             "ExoPlayer"
         )
 
-        var mediaItem = MediaItem.fromUri(Uri.parse(file_path))
+        val mediaItem = MediaItem.fromUri(Uri.parse(file_path))
         //val mediaItem = MediaItem.fromUri(Uri.parse(user_path))
 
-        if(with.equals("솔로")){
-            mediaItem=MediaItem.fromUri(Uri.parse(user_path))
-        }else if(with.equals("듀엣")){
-            mediaItem=MediaItem.fromUri(Uri.parse(file_path))
-        }
+//        if(with.equals("솔로")) {
+//            mediaItem=MediaItem.fromUri(Uri.parse(file_path))
+//        }else if(with.equals("듀엣")){
+//            mediaItem=MediaItem.fromUri(Uri.parse(file_path))
+//        }
 
         val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
             .createMediaSource(mediaItem)
