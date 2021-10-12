@@ -9,10 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
-import com.harimi.singtogether.broadcast.BroadcastPagerAdapter
-import com.harimi.singtogether.broadcast.LiveFragment
-import com.harimi.singtogether.broadcast.LiveMakeTitleActivity
-import com.harimi.singtogether.broadcast.ReplayFragment
+import com.harimi.singtogether.broadcast.*
 import com.harimi.singtogether.databinding.FragmentBroadcastBinding
 
 /**
@@ -38,11 +35,6 @@ class BraodcastFragment : Fragment() {
         val binding=FragmentBroadcastBinding.inflate(inflater, container, false)
         val pagerAdapter =BroadcastPagerAdapter(requireActivity())
 
-        // 2개의 Fragment Add
-//        pagerAdapter.addFragment(LiveFragment())
-//        pagerAdapter.addFragment(ReplayFragment())
-
-
         val liveFragment:LiveFragment=LiveFragment.newInstance()
         val replayFragment:ReplayFragment=ReplayFragment.newInstance()
         pagerAdapter.addFragment(liveFragment)
@@ -65,7 +57,6 @@ class BraodcastFragment : Fragment() {
             when(position) {
                 0 -> {
                     tab.text = "실시간"
-
                 }
                 1 -> {
                     tab.text = "다시보기"
@@ -73,6 +64,12 @@ class BraodcastFragment : Fragment() {
             }
         }.attach()
 
+
+        //검색버튼 클릭
+        binding.fragmentBroadcastIvSearch.setOnClickListener {
+            val intent= Intent(context, SearchLiveStreaming::class.java)
+            startActivity(intent)
+        }
 
         // 비디오버튼 클릭
         binding.fragmentBroadcastIvLive.setOnClickListener{

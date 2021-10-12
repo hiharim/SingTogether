@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context=".broadcast.DetailReplayFragment">
+    tools:context=".broadcast.DetailReplayActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,15 +20,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/imageView7"-->
-<!--                    android:layout_width="30dp"-->
-<!--                    android:layout_height="30dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:src="@drawable/menu"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toStartOf="parent"-->
-<!--                    app:layout_constraintTop_toTopOf="parent" />-->
+                <!--                <ImageView-->
+                <!--                    android:id="@+id/imageView7"-->
+                <!--                    android:layout_width="30dp"-->
+                <!--                    android:layout_height="30dp"-->
+                <!--                    android:layout_marginStart="8dp"-->
+                <!--                    android:src="@drawable/menu"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                    app:layout_constraintStart_toStartOf="parent"-->
+                <!--                    app:layout_constraintTop_toTopOf="parent" />-->
 
                 <ImageView
                     android:id="@+id/fragment_detail_replay_iv_back"
@@ -115,7 +115,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
 
                 <ImageView
-                    android:id="@+id/iv_like"
+                    android:id="@+id/iv_normalLike"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -125,16 +125,29 @@
                     app:layout_constraintStart_toEndOf="@+id/tv_hits"
                     app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
 
+                <ImageView
+                    android:id="@+id/iv_clickLike"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/click_like"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_hits"
+                    app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title" />
+
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="220dp"
                     android:layout_marginBottom="26dp"
                     android:text="5"
                     android:textColor="#000000"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/iv_like" />
+                    app:layout_constraintEnd_toStartOf="@+id/fragment_detail_replay_tv_date"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_date"
@@ -210,34 +223,34 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-<!--                <ImageView-->
-<!--                    android:id="@+id/iv_nextToReview"-->
-<!--                    android:layout_width="35dp"-->
-<!--                    android:layout_height="35dp"-->
-<!--                    android:layout_marginStart="257dp"-->
-<!--                    android:layout_marginTop="13dp"-->
-<!--                    android:layout_marginEnd="1dp"-->
-<!--                    android:layout_marginBottom="13dp"-->
-<!--                    android:src="@drawable/next"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintEnd_toEndOf="parent"-->
-<!--                    app:layout_constraintHorizontal_bias="0.772"-->
-<!--                    app:layout_constraintStart_toEndOf="@+id/tv_reviewNumber"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:layout_constraintVertical_bias="0.454" />-->
+                <!--                <ImageView-->
+                <!--                    android:id="@+id/iv_nextToReview"-->
+                <!--                    android:layout_width="35dp"-->
+                <!--                    android:layout_height="35dp"-->
+                <!--                    android:layout_marginStart="257dp"-->
+                <!--                    android:layout_marginTop="13dp"-->
+                <!--                    android:layout_marginEnd="1dp"-->
+                <!--                    android:layout_marginBottom="13dp"-->
+                <!--                    android:src="@drawable/next"-->
+                <!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+                <!--                    app:layout_constraintEnd_toEndOf="parent"-->
+                <!--                    app:layout_constraintHorizontal_bias="0.772"-->
+                <!--                    app:layout_constraintStart_toEndOf="@+id/tv_reviewNumber"-->
+                <!--                    app:layout_constraintTop_toTopOf="parent"-->
+                <!--                    app:layout_constraintVertical_bias="0.454" />-->
 
-                <TextView
-                    android:id="@+id/tv_reviewNumber"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="0"
-                    android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/textView8"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_reviewNumber"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:layout_marginTop="16dp"-->
+<!--                    android:layout_marginBottom="15dp"-->
+<!--                    android:text="0"-->
+<!--                    android:textColor="#000000"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintStart_toEndOf="@+id/textView8"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
@@ -247,7 +260,7 @@
             android:layout_height="200dp">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_post_recyclerView"
+                android:id="@+id/rv_detailReplayReview"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:scrollbarFadeDuration="0"

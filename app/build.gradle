@@ -5,13 +5,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
     buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId "com.harimi.singtogether"
-        minSdkVersion 24
-        targetSdkVersion 30
+        minSdkVersion 25
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -48,6 +48,8 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     implementation 'com.github.ismaeldivita:chip-navigation-bar:1.3.4'
     implementation 'com.fxn769:ariana:1.0'
+
+
     implementation "com.kakao.sdk:v2-user:2.5.2" // 카카오 로그인
 
     //구글 로그인
@@ -90,11 +92,8 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
-    // record surfaceView
-    implementation 'com.uncorkedstudios.android:recordable-surfaceview:1.5.7'
-
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.0'
+    //스와이프
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
 }
 

@@ -295,7 +295,6 @@ class ProfileActivity : AppCompatActivity() {
             data?.data?.let{ uri ->
                 val selectedImage = uri
                 val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
-
                 val cursor = contentResolver.query(selectedImage!!, filePathColumn, null, null, null)
                 assert(cursor != null)
                 cursor!!.moveToFirst()

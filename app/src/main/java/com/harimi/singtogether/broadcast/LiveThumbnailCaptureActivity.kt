@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
@@ -63,11 +64,9 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
         email = LoginActivity.user_info.loginUserEmail
         profile = LoginActivity.user_info.loginUserProfile
         nickname = LoginActivity.user_info.loginUserNickname
-
-
+        binding.ivThumbnail.visibility =View.INVISIBLE
         Log.d(TAG,"아이디 "+email +" 닉네임 "+nickname+" 프로필사진 "+profile)
         settingPermission()
-
         binding.ivCancelThumbnailCapture.setOnClickListener {
 
             val builder = AlertDialog.Builder(this)
@@ -97,10 +96,10 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext,"썸네일을 먼저 등록해주세요.",Toast.LENGTH_SHORT).show()
                 settingPermission()
                 return@setOnClickListener
-
+                binding.ivThumbnail.visibility =View.INVISIBLE
             }
 
-
+            binding.ivThumbnail.visibility =View.VISIBLE
             retrofit = RetrofitClient.getInstance()
             retrofitService = retrofit.create(RetrofitService::class.java)
             Log.e("imageFile 값: ", imageFile.toString())
@@ -117,13 +116,14 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                             response: Response<String>
                         ) {
                             if (response.isSuccessful) {
-
+                                Log.d("onResponse: 성공: ", response.body() + response.message())
                                 val jsonObject = JSONObject(response.body().toString())
                                 val roomIdx = jsonObject.getString("roomIdx")
-
-                                Log.d("onResponse: 성공: ", response.body() + response.message())
+                                val thumbnail = jsonObject.getString("thumbnail")
                                 val intent = Intent(this@LiveThumbnailCaptureActivity, LiveStreamingActivity::class.java)
                                 intent.putExtra("roomIdx", roomIdx)
+                                intent.putExtra("roomTitle", liveTitle)
+                                intent.putExtra("thumbnail", thumbnail)
                                 startActivity(intent)
                                 finish()
                             } else {
@@ -225,6 +225,7 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             if (resultCode == Activity.RESULT_OK) {
+                binding.ivThumbnail.visibility =View.VISIBLE
                 val file = File(currentPhotoPath)
                 imageFile = file
                 // Create an image file name
@@ -243,12 +244,14 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                     binding.ivThumbnail.setImageBitmap(bitmap)
                 }
             }else{
+                binding.ivThumbnail.visibility =View.INVISIBLE
                 Toast.makeText(applicationContext,"썸네일을 다시 등록해주세요.",Toast.LENGTH_SHORT).show()
                 settingPermission()
                 return
             }
         } else if (requestCode == REQUEST_GALLERY_TAKE) {
             if (resultCode == Activity.RESULT_OK) {
+                binding.ivThumbnail.visibility =View.VISIBLE
                     data?.data?.let { uri ->
                         val selectedImage = uri
                         val filePathColumn = arrayOf(MediaStore.Images.Media.DATA)
@@ -271,6 +274,7 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
                         binding.ivThumbnail.setImageURI(uri)
                     }
                 }else{
+                    binding.ivThumbnail.visibility =View.INVISIBLE
                     Toast.makeText(applicationContext,"썸네일을 다시 등록해주세요.",Toast.LENGTH_SHORT).show()
                     settingPermission()
                     return

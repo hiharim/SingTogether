@@ -126,11 +126,18 @@
                 android:text="0" />
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/iv_normalLike"
                 android:layout_width="13dp"
                 android:layout_height="match_parent"
                 android:layout_marginRight="3dp"
                 app:srcCompat="@drawable/non_like" />
+
+            <ImageView
+                android:id="@+id/iv_clickLike"
+                android:layout_width="13dp"
+                android:layout_height="match_parent"
+                android:layout_marginRight="3dp"
+                app:srcCompat="@drawable/click_like" />
 
             <TextView
                 android:id="@+id/tv_replayLikeNumber"

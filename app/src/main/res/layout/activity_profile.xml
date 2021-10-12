@@ -35,15 +35,25 @@
         </LinearLayout>
     </Toolbar>
 
-    <ImageView
+<!--    <ImageView-->
+<!--        android:id="@+id/activity_profile_iv"-->
+<!--        android:layout_below="@+id/toolbar_profile"-->
+<!--        android:layout_width="140dp"-->
+<!--        android:layout_height="140dp"-->
+<!--        android:layout_marginTop="50dp"-->
+<!--        android:layout_centerHorizontal="true"-->
+<!--        app:srcCompat="@drawable/ic_baseline_account_circle_24" -->
+<!--        />-->
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/activity_profile_iv"
         android:layout_below="@+id/toolbar_profile"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/ic_baseline_account_circle_24" />
-
+        app:srcCompat="@drawable/ic_baseline_account_circle_24"
+        />
 
     <Button
         android:id="@+id/activity_profile_btn_photo"

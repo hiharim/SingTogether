@@ -66,6 +66,18 @@ interface RetrofitService {
         @Part file : MultipartBody.Part
     ) : Call<String>
 
+    @Multipart
+    @POST("uploadReplayVideo.php")
+    fun requestUploadReplayVideo (
+        @Part("userEmail") userEmail :String,
+        @Part("nickname")  nickname :String,
+        @Part("profile")  profile :String,
+        @Part("roomTitle")  roomTitle :String,
+        @Part("thumbnail")  thumbnail :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
+
     @FormUrlEncoded
     @POST("join_none.php")
     fun requestJoinNone (
@@ -80,7 +92,61 @@ interface RetrofitService {
     @POST("autoLoginCheck.php")
     fun requestAutoLogin (
         @Field("email") email :String
+    ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("getDetailReplayReview.php")
+    fun requestGetReplayReview (
+        @Field("replayIdx") replayIdx :String
+    ) : Call<String>
+
+
+    @FormUrlEncoded
+    @POST("WriteReview.php")
+    fun requestWriteReview (
+        @Field("replayIdx") replayIdx :String,
+        @Field("uploadUserEmail") uploadUserEmail :String,
+        @Field("uploadUserProfile") uploadUserProfile :String,
+        @Field("uploadUserNickname") uploadUserNickname :String,
+        @Field("review") review :String,
+        @Field("uploadDate") uploadDate :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("liveStreamingCheck.php")
+    fun requestLiveStreamingCheck (
+        @Field("roomIdx") roomIdx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("searchLiveStreaming.php")
+    fun requestSearchLiveStreaming (
+        @Field("searchInput") searchInput :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("editReplayReview.php")
+    fun requestEditReplayReview (
+        @Field("idx") idx :String,
+        @Field("editReview") editReview :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("deleteReplayReview.php")
+    fun requestDeleteReplayReview (
+        @Field("idx") idx :String,
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("updateReplayHIts.php")
+    fun requestUpdateReplayHIts (
+        @Field("idx") idx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("OutViewer.php")
+    fun requestOutViewer (
+        @Field("roomIdx") roomIdx :String
     ) : Call<String>
 
     @POST("loadHomePost.php")
@@ -102,10 +168,10 @@ interface RetrofitService {
         @Field("roomIdx") roomIdx :String,
     ) : Call<String>
 
-
+    @FormUrlEncoded
     @POST("loadReplayPost.php")
     fun requestGetReplayPost (
-
+        @Field("userEmail") userEmail :String,
     ) : Call<String>
 
     @POST("loadMR.php")
@@ -127,6 +193,22 @@ interface RetrofitService {
     @POST("loadMySong.php")
     fun requestMySong(
         @Field("nickname") token :String,
+    ):Call<String>
+
+    @FormUrlEncoded
+    @POST("clickReplayLike.php")
+    fun requestClickLike(
+        @Field("ReplayIdx") roomIdx :String,
+        @Field("userEmail") userEmail :String,
+        @Field("clickDate") clickDate :String
+    ):Call<String>
+
+    @FormUrlEncoded
+    @POST("cancelReplayLike.php")
+    fun requestCancelLike(
+        @Field("ReplayIdx") roomIdx :String,
+        @Field("userEmail") userEmail :String,
+        @Field("replayPostLikeIdx") replayPostLikeIdx :String
     ):Call<String>
 
    // @FormUrlEncoded
