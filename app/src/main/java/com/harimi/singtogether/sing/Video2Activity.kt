@@ -121,8 +121,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         mediaPlayer.setDataSource(song_path)
         mediaPlayer.prepare()
 
-        //loadLyrics()
-
         initVideoRecorder()
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
