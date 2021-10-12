@@ -9,10 +9,18 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:id="@+id/layoutRoot"
         android:layout_height="match_parent"
         >
 
-
+        <VideoView
+            android:id="@+id/localVideoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="0dp"
+            />
 
     <Toolbar
         android:id="@+id/toolbar_streaming"
@@ -63,6 +71,25 @@
                 android:text=" 2"
                 android:textSize="16sp" />
 
+<!--            <ImageButton-->
+<!--                android:id="@+id/iv_videoRecord"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_weight="0.5"-->
+<!--                android:layout_height="37dp"-->
+<!--                android:layout_marginRight="12dp"-->
+<!--                android:background="@drawable/start_record" />-->
+            <ToggleButton
+                android:id="@+id/iv_videoRecord"
+                android:layout_alignParentBottom="true"
+                android:textOff="Record"
+                android:textOn="Stop"
+                android:textSize="5dp"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_height="37dp"
+                android:layout_marginRight="12dp"
+                android:background="@drawable/start_record"
+                />
             <ImageButton
                 android:id="@+id/activity_streaming_btn_close"
                 android:layout_width="0dp"
@@ -71,11 +98,15 @@
                 android:layout_marginRight="12dp"
                 android:background="@drawable/ic_baseline_close_24" />
 
+
+
         </LinearLayout>
     </Toolbar>
 
 
-    <org.webrtc.SurfaceViewRenderer
+
+
+        <org.webrtc.SurfaceViewRenderer
         android:id="@+id/localStreamingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -85,15 +116,6 @@
         android:layout_marginBottom="0dp"
         />
 
-        <SurfaceView
-                android:id="@+id/localSurfaceView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/linear"
-                android:layout_below="@+id/toolbar_streaming"
-                android:layout_marginTop="1dp"
-                android:layout_marginBottom="0dp"
-            />
 
 
     <androidx.recyclerview.widget.RecyclerView

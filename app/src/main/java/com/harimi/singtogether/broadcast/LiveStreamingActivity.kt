@@ -4,26 +4,40 @@ package com.harimi.singtogether.broadcast
 
 
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.hardware.Camera
+import android.hardware.display.DisplayManager
+import android.hardware.display.VirtualDisplay
 import android.media.AudioManager
-import android.media.CamcorderProfile
 import android.media.MediaRecorder
-
+import android.media.projection.MediaProjection
+import android.media.projection.MediaProjectionManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Log
+import android.util.SparseIntArray
+import android.view.Surface
 import android.view.SurfaceHolder
-import android.view.SurfaceView
-
 import android.view.View
 import android.widget.*
-import androidx.appcompat.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.harimi.singtogether.*
 import com.harimi.singtogether.Data.LiveStreamingViewerListData
 import com.harimi.singtogether.Data.LocalChattingData
@@ -33,28 +47,28 @@ import com.harimi.singtogether.R.*
 import com.harimi.singtogether.adapter.LiveStreamingViewerListAdapter
 import com.harimi.singtogether.adapter.LocalChattingAdapter
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
-
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-
 import org.json.JSONArray
 import org.json.JSONObject
 import org.webrtc.*
-import org.webrtc.AudioTrack
+
 import org.webrtc.audio.JavaAudioDeviceModule
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * 실시간 방송하는 액티비티 화면
  * */
-class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , SurfaceHolder.Callback {
+class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
     private var roomIdx :String? =null
@@ -75,7 +89,34 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
     var videoSource: VideoSource? = null
     var videoTrack: VideoTrack? = null
 
-    private lateinit var localSurfaceView :SurfaceView
+
+
+    private var mScreenDensity = 0
+    private var mediaProjectionManager: MediaProjectionManager? = null
+    private val DISPLAY_WIDTH = 720
+    private val DISPLAY_HEIGHT = 1280
+    private var mMediaProjection: MediaProjection? = null
+    private var mVirtualDisplay: VirtualDisplay? = null
+    private var mMediaProjectionCallback: MediaProjectionCallback? = null
+    private var iv_videoRecord: ToggleButton? = null
+    private lateinit var localVideoView :VideoView
+    private var mediaRecorder: MediaRecorder? = null
+    private lateinit var layoutRoot: RelativeLayout
+    private var videoUri = ""
+
+    companion object {
+
+        private const val REQUEST_CODE_MediaProjection = 1001
+        private val ORIENTATIONS = SparseIntArray()
+        private const val REQUEST_PERMISSIONS = 10
+
+        init {
+            ORIENTATIONS.append(Surface.ROTATION_0, 90)
+            ORIENTATIONS.append(Surface.ROTATION_90, 0)
+            ORIENTATIONS.append(Surface.ROTATION_180, 270)
+            ORIENTATIONS.append(Surface.ROTATION_270, 180)
+        }
+    }
 
     private lateinit var activity_streaming_tv_count :TextView
     private lateinit var activity_streaming_btn_close :ImageView
@@ -87,6 +128,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
     private lateinit var activity_streaming_tv_time :TextView
     private lateinit var activity_streaming_btn_viewerList : ImageButton
     private lateinit var StreamingDrawerLayout : DrawerLayout
+//    private lateinit var iv_videoRecord : ImageButton
+
     /////DrawerLayout 리사이클러뷰,데이터리스트, 어댑터
     private lateinit var rv_streamingViewerList : RecyclerView
     private val liveStreamingViewerList: ArrayList<LiveStreamingViewerListData> = ArrayList()
@@ -105,9 +148,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
     private var localStreamingView: SurfaceViewRenderer? = null
 
     ////스트리밍 녹화
-    private var  mRecorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
+
     private var isRecording = false
-    private var mPath: String? = null
     private var mSurfaceHolder: SurfaceHolder? = null
     private var mCamera: Camera? = null
     private lateinit var fileName : String // 서버로 보낼 비디오 파일 이름
@@ -117,18 +159,43 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
         "${externalCacheDir?.absolutePath}/recordVideos28.mp4"
     }
 
+    ////갤럭시 바텀 네비게이션바 없애기
+    private var decorView: View? = null
+    private var uiOption = 0
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(layout.activity_live_streaming)
 
         initView()
-        startVideoRecorder()
-        mRecorder!!.start()
-        isRecording = true
+
 
     }
 
     fun initView(){
+
+        //바텀 네비게이션 안보이게 하기
+        decorView = window.decorView
+        uiOption = window.decorView.systemUiVisibility
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) uiOption =
+            uiOption or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) uiOption =
+            uiOption or View.SYSTEM_UI_FLAG_FULLSCREEN
+        uiOption =
+            uiOption or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        decorView!!.setSystemUiVisibility(uiOption)
+
+
+        val metrics = DisplayMetrics()
+        windowManager.defaultDisplay.getRealMetrics(metrics)
+        mScreenDensity = metrics.densityDpi
+
+        mediaRecorder = MediaRecorder()
+        mediaProjectionManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
+
+
+
         val getIntent = intent
         roomIdx = getIntent.getStringExtra("roomIdx")
         roomTitle = getIntent.getStringExtra("roomTitle")
@@ -136,7 +203,13 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
 
         initRetrofit()
 
-        localSurfaceView = findViewById<SurfaceView>(id.localSurfaceView)
+        localVideoView = findViewById<VideoView>(id.localVideoView)
+        layoutRoot = findViewById<RelativeLayout>(id.layoutRoot)
+        iv_videoRecord = findViewById<ToggleButton>(id.iv_videoRecord)
+
+//        iv_videoRecord = findViewById<ImageButton>(id.iv_videoRecord)
+//        localSurfaceView = findViewById<SurfaceView>(id.localSurfaceView)
+
         sv_searchViewer = findViewById<SearchView>(id.sv_searchViewer)
         StreamingDrawerLayout = findViewById<DrawerLayout>(id.StreamingDrawerLayout)
         layout_notify = findViewById<LinearLayout>(id.layout_notify)
@@ -166,19 +239,31 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
         ////현재들어와있는 사람들리스트 리사이클러뷰
         rv_streamingViewerList = findViewById(id.rv_streamingViewerList)
         rv_streamingViewerList.layoutManager = LinearLayoutManager(this)
-        rv_streamingViewerList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        liveStreamingViewerAdapter = LiveStreamingViewerListAdapter(tempLiveStreamingViewerList, this)
+        rv_streamingViewerList.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        liveStreamingViewerAdapter = LiveStreamingViewerListAdapter(
+            tempLiveStreamingViewerList,
+            this
+        )
         rv_streamingViewerList.adapter = liveStreamingViewerAdapter
 
         ////초기 뷰어 리스트 셋팅
         viewerListSetting()
 
         activity_streaming_tv_count.text = viewer // 초기 시청자 셋팅
+
+        //스턴서버를통하여서 ICE 프레임워크를 사용하여서 P2P연결을하는데 최적의 경로를 찾아줌
         peerConnectionMap = HashMap()
         iceServers = ArrayList()
-        iceServers!!.add(
-            PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer()
-        )
+        Log.d(TAG, "iceServers_Add")
+        iceServers!!.add(PeerConnection.IceServer.builder("stun:stun.l.google.com:19302").createIceServer())
+
+
+
         eglBaseContext = EglBase.create().eglBaseContext
         // create PeerConnectionFactory
         PeerConnectionFactory.initialize(
@@ -244,11 +329,25 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
         am.isSpeakerphoneOn = true
         Log.d("PeerHashMap", " $peerConnectionMap")
         get()!!.init(this, roomIdx)
-        ///스트리밍 녹화
-        initVideoRecorder()
 
-        //시청자 찾기
-        sv_searchViewer.setOnQueryTextListener(object  : SearchView.OnQueryTextListener{
+
+        ///스트리밍 녹화
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("녹화")
+        builder.setMessage("방송 녹화를 하시겠습니까?")
+
+        builder.setPositiveButton("네") { dialog, which ->
+            iv_videoRecord!!.performClick()
+        }
+        builder.setNegativeButton("아니요") { dialog, which ->
+        }
+        builder.show()
+
+
+
+
+        //시청자 찾기 , 실시간 텍스쳐 검사
+        sv_searchViewer.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 TODO("NOT YET")
             }
@@ -256,14 +355,14 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             override fun onQueryTextChange(newText: String?): Boolean {
                 tempLiveStreamingViewerList.clear()
                 val searchText = newText!!.toLowerCase(Locale.getDefault())
-                if (searchText.isNotEmpty()){
-                    liveStreamingViewerList.forEach{
-                        if (it.nickName.toLowerCase(Locale.getDefault()).contains(searchText)){
+                if (searchText.isNotEmpty()) {
+                    liveStreamingViewerList.forEach {
+                        if (it.nickName.toLowerCase(Locale.getDefault()).contains(searchText)) {
                             tempLiveStreamingViewerList.add(it)
                         }
                     }
                     liveStreamingViewerAdapter.notifyDataSetChanged()
-                }else{
+                } else {
                     tempLiveStreamingViewerList.clear()
                     tempLiveStreamingViewerList.addAll(liveStreamingViewerList)
                     liveStreamingViewerAdapter.notifyDataSetChanged()
@@ -272,9 +371,41 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             }
         })
 
+        ////녹화하기
+        iv_videoRecord!!.setOnClickListener(View.OnClickListener { v ->
+            if ((ContextCompat.checkSelfPermission(this@LiveStreamingActivity, Manifest.permission.RECORD_AUDIO)
+                        + ContextCompat.checkSelfPermission(this@LiveStreamingActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        + ContextCompat.checkSelfPermission(this@LiveStreamingActivity, Manifest.permission.FOREGROUND_SERVICE))
+                != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this@LiveStreamingActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this@LiveStreamingActivity, Manifest.permission.RECORD_AUDIO)
+                    ||
+                    ActivityCompat.shouldShowRequestPermissionRationale(this@LiveStreamingActivity, Manifest.permission.FOREGROUND_SERVICE)) {
+                    iv_videoRecord!!.setChecked(true)
+
+                    Snackbar.make(layoutRoot!!, "Permission", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Enable") {
+                            ActivityCompat.requestPermissions(this@LiveStreamingActivity, arrayOf(
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.FOREGROUND_SERVICE
+                            ), REQUEST_PERMISSIONS)
+                        }.show()
+                } else {
+                    ActivityCompat.requestPermissions(this@LiveStreamingActivity, arrayOf(
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.FOREGROUND_SERVICE
+                    ), REQUEST_PERMISSIONS)
+                }
+            } else {
+                toggleScreenShare(v)
+            }
+        })
 
 
-        //방송시간 나타내기
+
+
+    //방송시간 나타내기
         timerTask = kotlin.concurrent.timer(period = 1000) {
             time++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
             var min = time /60
@@ -324,7 +455,6 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             switchCamera()
         }
 
-
         ////나가기 버튼 눌렀을 때
         activity_streaming_btn_close.setOnClickListener {
             val builder = AlertDialog.Builder(this)
@@ -332,125 +462,209 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             builder.setMessage("방송을 종료하시겠습니까?")
 
             builder.setPositiveButton("네") { dialog, which ->
-                retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
-                    .enqueue(object : Callback<String> {
-                        override fun onResponse(
-                            call: Call<String>,
-                            response: Response<String>
-                        ) {
-                            if (response.isSuccessful) {
-                                val jsonObject = JSONObject(response.body().toString())
-                                Toast.makeText(applicationContext, "방송을 종료합니다", Toast.LENGTH_SHORT).show()
-                                uploadVideo()
-                                get()!!.liveStreamingFinish(roomIdx!!)
-                                finish()
-                            } else {
-                                Log.e("onResponse", "실패 : " + response.errorBody())
-                            }
-                        }
-                        override fun onFailure(call: Call<String>, t: Throwable) {
-                            Log.d(
-                                "실패:", "Failed API call with call: " + call +
-                                        " + exception: " + t
-                            )
-                        }
-                    })
+                finishActivity()
             }
             builder.setNegativeButton("아니요") { dialog, which ->
             }
             builder.show()
         }
 
+        ////시청자 보기
         activity_streaming_btn_viewerList.setOnClickListener {
             clickViewerList(it)
         }
     }
-    private fun initVideoRecorder() {
-        mCamera = Camera.open()
-        mCamera!!.setDisplayOrientation(90)
-        mSurfaceHolder = localSurfaceView!!.getHolder()
-        mSurfaceHolder!!.addCallback(this)
-        mSurfaceHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
+
+
+    ///////화면녹화하기
+    private fun initMediaProjection() {
+        Log.v(TAG, "initView")
+        val intent = Intent(this@LiveStreamingActivity, MyService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+            startMediaProjection()
+        } else {
+            startService(intent)
+            startMediaProjection()
+        }
 
     }
 
-    private fun startVideoRecorder() {
-        Log.d(TAG, "init")
-        if (isRecording) {
-            Log.d(TAG, "녹화종료")
-            mRecorder!!.stop()
-            mRecorder!!.release()
-            mRecorder = null
-            mCamera!!.lock()
-            isRecording = false
+    private fun startMediaProjection() {
+        Log.v(TAG, "startMediaProjection")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            startActivityForResult(mediaProjectionManager!!.createScreenCaptureIntent(), REQUEST_CODE_MediaProjection)
+        }
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_PERMISSIONS -> {
+                Log.v(TAG, "REQUEST_PERMISSIONS")
+                if (grantResults.size > 0 && grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    toggleScreenShare(iv_videoRecord)
+                } else {
+                    iv_videoRecord!!.isChecked = false
+                    Snackbar.make(layoutRoot!!, "Permission", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Enable") {
+                            ActivityCompat.requestPermissions(this@LiveStreamingActivity, arrayOf(
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.FOREGROUND_SERVICE
+                            ), REQUEST_PERMISSIONS)
+                        }.show()
+                }
+                return
+            }
+
+        }
+    }
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (requestCode == REQUEST_CODE_MediaProjection && resultCode == RESULT_OK) {
+            Log.v(TAG, "onActivityResult")
+            mMediaProjectionCallback = MediaProjectionCallback()
+            mMediaProjection = mediaProjectionManager!!.getMediaProjection(resultCode, data!!)
+            mMediaProjection!!.registerCallback(mMediaProjectionCallback, null)
+            mVirtualDisplay = createVirtualDisplay()
+            mediaRecorder!!.start()
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+
+    }
+    private fun createVirtualDisplay(): VirtualDisplay {
+        Log.v(TAG, "createVirtualDisplay")
+        return mMediaProjection!!.createVirtualDisplay("MainActivity",
+            DISPLAY_WIDTH, DISPLAY_HEIGHT, mScreenDensity,
+            DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR,
+            mediaRecorder!!.surface, null /*Callbacks*/, null /*Handler*/
+        )
+    }
+
+    private fun toggleScreenShare(v: View?) {
+        if ((v as ToggleButton?)!!.isChecked) {
+            Log.v(TAG, "Start Recording")
+            initMediaProjection()
+            initRecorder()
 
         } else {
-            runOnUiThread {
-                Log.d(TAG, "녹화중")
-                mRecorder = MediaRecorder()
-                mCamera!!.unlock()
-                mRecorder!!.setCamera(mCamera)
-                mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-                mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
-                mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
-                mRecorder!!.setOrientationHint(90)
-                mRecorder!!.setOutputFile(recordingVideoFilePath)
-                mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
-                try {
-                    mRecorder!!.prepare()
-
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-
-
-            }
+            mediaRecorder!!.stop()
+            mediaRecorder!!.reset()
+            Log.v(TAG, "Stopping Recording")
+            stopRecordScreen()
+//            localVideoView!!.visibility = View.VISIBLE
+//            localVideoView!!.setVideoURI(Uri.parse(videoUri))
+//            localVideoView!!.start()
         }
     }
 
-    private fun initRetrofit(){
-        retrofit=RetrofitClient.getInstance()
-        retrofitService=retrofit.create(RetrofitService::class.java)
+    private inner class MediaProjectionCallback : MediaProjection.Callback() {
+        override fun onStop() {
+            Log.v(TAG, "MediaProjectionCallback")
+            if (iv_videoRecord!!.isChecked) {
+                iv_videoRecord!!.isChecked = false
+                mediaRecorder!!.stop()
+                mediaRecorder!!.reset()
+                Log.v(TAG, "Recording Stopped")
+            }
+            mMediaProjection = null
+            stopRecordScreen()
+        }
+    }
+    private fun stopRecordScreen() {
+        if (mVirtualDisplay == null) {
+            return
+        }
+        mVirtualDisplay!!.release()
+        destroyMediaProjection()
+    }
+    private fun destroyMediaProjection() {
+        Log.v(TAG, "destroyMediaProjection")
+        if (mMediaProjection != null) {
+            mMediaProjection!!.unregisterCallback(mMediaProjectionCallback)
+            mMediaProjection!!.stop()
+            mMediaProjection = null
+        }
+        Log.i(TAG, "MediaProjection Stopped")
     }
 
+    private fun initRecorder() {
+        Log.v(TAG, "initRecorder")
+        try {
+            mediaRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+            mediaRecorder!!.setVideoSource(MediaRecorder.VideoSource.SURFACE)
+            mediaRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            videoUri = Environment
+                .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + StringBuilder("/EDMTRecord_").append(
+                SimpleDateFormat("dd-MM-yyyy-mm-ss")
+                    .format(Date())).append(".mp4").toString()
+            mediaRecorder!!.setOutputFile(videoUri)
+            mediaRecorder!!.setVideoSize(DISPLAY_WIDTH, DISPLAY_HEIGHT)
+            mediaRecorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264)
+            mediaRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            mediaRecorder!!.setVideoEncodingBitRate(512 * 1000)
+            mediaRecorder!!.setVideoFrameRate(30)
+            val rotation = windowManager.defaultDisplay.rotation
+            val orientation = ORIENTATIONS[rotation + 90]
+            mediaRecorder!!.setOrientationHint(orientation)
+            mediaRecorder!!.prepare()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
     private fun uploadVideo() {
-    Log.d(TAG, "업로드")
+        Log.d(TAG, "업로드")
 
-    if(isRecording) {
-        Log.d(TAG, "녹화중지")
-//        mRecorder!!.stop()
-        mRecorder!!.release()
-        mRecorder = null
-        mCamera!!.lock()
-        isRecording = false
-    }
+        mediaRecorder!!.stop()
+        mediaRecorder!!.reset()
+        Log.v(TAG, "Stopping Recording")
+        stopRecordScreen()
+
         val uploadTime : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         fileName = "$uploadTime.mp4"
         var email= LoginActivity.user_info.loginUserEmail
         var nickname= LoginActivity.user_info.loginUserNickname
         var profile =LoginActivity.user_info.loginUserProfile
 
-        videoFile = File(recordingVideoFilePath)
-        var requestBody : RequestBody = RequestBody.create(MediaType.parse("multipart/form-data"), videoFile)
+        videoFile = File(videoUri)
+        var requestBody : RequestBody = RequestBody.create(
+            MediaType.parse("multipart/form-data"),
+            videoFile
+        )
         var body : MultipartBody.Part=
             MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
-            retrofitService.requestUploadReplayVideo(email,nickname,profile,roomTitle!!,thumbnail!!,body).enqueue(object : Callback<String> {
-                // 통신에 성공한 경우
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.isSuccessful) {
+        retrofitService.requestUploadReplayVideo(
+            email,
+            nickname,
+            profile,
+            roomTitle!!,
+            thumbnail!!,
+            body
+        ).enqueue(object : Callback<String> {
+            // 통신에 성공한 경우
+            override fun onResponse(call: Call<String>, response: Response<String>) {
+                if (response.isSuccessful) {
 
-                        Log.e(TAG, "videoUpload  "+ response.body().toString())
-                        //                        val jsonObject = JSONObject(response.body().toString())
-                    } else {
+                    Log.e(TAG, "videoUpload  " + response.body().toString())
+//                        val jsonObject = JSONObject(response.body().toString())
+                } else {
 
-                    }
                 }
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.e(TAG, "통신실패")
-                }
-            })
+            }
+
+            override fun onFailure(call: Call<String>, t: Throwable) {
+                Log.e(TAG, "통신실패")
+            }
+        })
     }
+    //////////////////
+
+
+
+    private fun initRetrofit(){
+        retrofit=RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+    }
+
     ///현재 들어와있는 시청자 보기
     fun clickViewerList(view: View?) {
         openDrawer(StreamingDrawerLayout)
@@ -483,20 +697,21 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
         }
         peerConnection = peerConnectionFactory!!.createPeerConnection(
             iceServers,
-            object : PeerConnectionAdapter(
-                "PC:$socketId"
-            ) {
+            object : PeerConnectionAdapter("PC:$socketId") {
                 override fun onIceCandidate(iceCandidate: IceCandidate) {
                     super.onIceCandidate(iceCandidate)
+                    Log.d(TAG, "onIceCandidate")
                     get()!!.sendIceCandidate(iceCandidate, socketId!!)
 
                 }
 
                 override fun onAddStream(mediaStream: MediaStream) {
                     super.onAddStream(mediaStream)
+                    Log.d(TAG, "getOronAddStreamCreatePeerConnection")
 //                val remoteVideoTrack = mediaStream.videoTracks[0]
-//                runOnUiThread {
-//                }
+//                    runOnUiThread {
+//
+//                    }
                 }
             })
         peerConnection!!.addStream(mediaStream)
@@ -511,18 +726,17 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
 
     ////시청자가 들어왔을 때 peer 연결
     override fun onPeerJoined(socketId: String?) {
-        Log.d(TAG, "onPeerJoined"+socketId)
+        Log.d(TAG, "onPeerJoined " + socketId)
         val peerConnection = getOrCreatePeerConnection(socketId)
         peerConnection!!.createOffer(object : SdpAdapter("createOfferSdp:$socketId") {
             override fun onCreateSuccess(sessionDescription: SessionDescription) {
                 super.onCreateSuccess(sessionDescription)
 
-                var addViewer = Integer.parseInt(viewer)
+                var addViewer = Integer.parseInt(viewer!!)
                 addViewer++
                 viewer = addViewer.toString()
                 activity_streaming_tv_count.text = viewer
                 Log.d(TAG, "onAddStream" + viewer)
-
                 var getViewer = activity_streaming_tv_count.text.toString()
                 get()!!.getLiveStreamingViewer(roomIdx!!, getViewer)
 
@@ -535,8 +749,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
         }, MediaConstraints())
     }
 
-    override fun onSelfJoined(userData: String ?) {
-        Log.d(TAG, "onSelfJoined"+userData)
+    override fun onSelfJoined(userData: String?) {
+        Log.d(TAG, "onSelfJoined" + userData)
     }
 
     ////메세지 왔을 때
@@ -549,7 +763,6 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
                 val nickName = jsonObject.getString("nickName")
                 val profile = jsonObject.getString("profile")
                 val localchattingdata = LocalChattingData(nickName, chattingText, profile)
-
                     runOnUiThread {
                         localChattingList.add(localchattingdata)
                         localChattingAdapter.notifyDataSetChanged()
@@ -565,7 +778,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
 
     ///시청자가 들어왔을 때
     override fun addViewerList(message: String?) {
-        Log.d(TAG, "addViewerList"+message)
+        Log.d(TAG, "addViewerList" + message)
         val jsonArray = JSONArray(message.toString())
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
@@ -573,8 +786,12 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             val nickName = jsonObject.getString("nickName")
             val profile = jsonObject.getString("profile")
             val userId = jsonObject.getString("userId")
-
-            val liveStreamingViewerData= LiveStreamingViewerListData(nickName, profile,socketId,userId )
+            val liveStreamingViewerData= LiveStreamingViewerListData(
+                nickName,
+                profile,
+                socketId,
+                userId
+            )
             runOnUiThread {
                 tempLiveStreamingViewerList.add(liveStreamingViewerData)
                 liveStreamingViewerList.add(liveStreamingViewerData)
@@ -592,12 +809,11 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
     ////시청자가 나갔을 때 함수
     override fun onOutViewer(message: String?) {
         Log.d(TAG, "onOutViewer")
-        var outViewer = Integer.parseInt(viewer)
+        var outViewer = Integer.parseInt(viewer!!)
         outViewer--
         viewer = outViewer.toString()
         activity_streaming_tv_count.text = viewer
         get()!!.getLiveStreamingViewer(roomIdx!!, viewer.toString())
-
         val jsonArray = JSONArray(message.toString())
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
@@ -703,7 +919,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             // 더 이상 카메라 eglRender가 돌아가지않도록 release ;
         }
         localStreamingView!!.release() // 더 이상 카메라 eglRender가 돌아가지않도록 release ;
-
+        destroyMediaProjection()
 
     }
 
@@ -736,8 +952,38 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
             } else {
             }
         }
-
     }
+
+    private fun finishActivity() {
+        retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        val jsonObject = JSONObject(response.body().toString())
+                        Toast.makeText(applicationContext, "방송을 종료합니다", Toast.LENGTH_SHORT)
+                            .show()
+                        uploadVideo()
+                        get()!!.liveStreamingFinish(roomIdx!!)
+                        finish()
+                    } else {
+                        Log.e("onResponse", "실패 : " + response.errorBody())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(
+                        "실패:", "Failed API call with call: " + call +
+                                " + exception: " + t
+                    )
+                }
+            })
+    }
+
+
+
     /////백버튼 눌렀을 때
     override fun onBackPressed() {
 //        super.onBackPressed() ///오버라이드 하기위해선 super 받으면 안됨 .
@@ -745,51 +991,11 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback , S
         builder.setTitle("종료")
         builder.setMessage("방송을 종료하시겠습니까?")
         builder.setPositiveButton("네") { dialog, which ->
-
-
-            retrofitService.requestFinishLiveStreamingPost(roomIdx!!)
-                .enqueue(object : Callback<String> {
-                    override fun onResponse(
-                        call: Call<String>,
-                        response: Response<String>
-                    ) {
-                        if (response.isSuccessful) {
-                            val jsonObject = JSONObject(response.body().toString())
-                            isRecording =true
-                            Toast.makeText(applicationContext, "방송을 종료합니다", Toast.LENGTH_SHORT).show()
-                            uploadVideo()
-                            get()!!.liveStreamingFinish(roomIdx!!)
-                            finish()
-                        } else {
-                            Log.e("onResponse", "실패 : " + response.errorBody())
-                        }
-                    }
-
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.d(
-                            "실패:", "Failed API call with call: " + call +
-                                    " + exception: " + t
-                        )
-                    }
-
-                })
-
+            finishActivity()
         }
         builder.setNegativeButton("아니요") { dialog, which ->
         }
         builder.show()
-    }
-
-    override fun surfaceCreated(holder: SurfaceHolder) {
-
-    }
-
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
-
-    }
-
-    override fun surfaceDestroyed(holder: SurfaceHolder) {
-
     }
 
 }
