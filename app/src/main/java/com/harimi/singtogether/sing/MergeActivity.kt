@@ -20,10 +20,7 @@ import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.ActivityMergeBinding
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

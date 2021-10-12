@@ -64,6 +64,7 @@ class LiveThumbnailCaptureActivity : AppCompatActivity() {
         email = LoginActivity.user_info.loginUserEmail
         profile = LoginActivity.user_info.loginUserProfile
         nickname = LoginActivity.user_info.loginUserNickname
+
         binding.ivThumbnail.visibility =View.INVISIBLE
         Log.d(TAG,"아이디 "+email +" 닉네임 "+nickname+" 프로필사진 "+profile)
         settingPermission()

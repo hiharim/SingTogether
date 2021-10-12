@@ -17,12 +17,11 @@
             android:id="@+id/localVideoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="0dp"
-            />
+            android:visibility="invisible" />
 
-    <Toolbar
+        <Toolbar
         android:id="@+id/toolbar_streaming"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -22,7 +22,7 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.LyricsAdapter
 import com.harimi.singtogether.databinding.ActivityVideo2Binding
-import kotlinx.coroutines.*
+
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody

@@ -47,7 +47,7 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.uploadUserProfile)
 //                .override(mat, 75)
-                .thumbnail(0.1f)
+//                .thumbnail(0.1f)
                 .into(holder.iv_uploadUserProfile)
         }
 
@@ -104,6 +104,7 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
                             intent.putExtra("uploadUserEmail", ReplayPostList.get(position).uploadUserEmail)
                             intent.putExtra("replayPostLikeIdx", ReplayPostList.get(position).replayPostLikeIdx)
                             intent.putExtra("liked", ReplayPostList.get(position).liked)
+                            intent.putExtra("replayVideo", ReplayPostList.get(position).replayVideo)
                             context.startActivity(intent, null)
                         }
                     }
