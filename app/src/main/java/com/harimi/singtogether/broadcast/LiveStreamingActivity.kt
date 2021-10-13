@@ -100,7 +100,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var mVirtualDisplay: VirtualDisplay? = null
     private var mMediaProjectionCallback: MediaProjectionCallback? = null
     private var iv_videoRecord: ToggleButton? = null
-    private lateinit var localVideoView :VideoView
+//    private lateinit var localVideoView :VideoView
     private var mediaRecorder: MediaRecorder? = null
     private lateinit var layoutRoot: RelativeLayout
     private var videoUri = ""
@@ -204,7 +204,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         initRetrofit()
 
-        localVideoView = findViewById<VideoView>(id.localVideoView)
+//        localVideoView = findViewById<VideoView>(id.localVideoView)
         layoutRoot = findViewById<RelativeLayout>(id.layoutRoot)
         iv_videoRecord = findViewById<ToggleButton>(id.iv_videoRecord)
 

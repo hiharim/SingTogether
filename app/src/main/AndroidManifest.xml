@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.RECORD_VIDEO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -20,7 +20,8 @@
     <uses-feature android:name="android.hardware.camera2.full" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature android:name="android.hardware.camera.front" />
-    <uses-feature android:name="android.hardware.microphone"/>
+    <uses-feature android:name="android.hardware.microphone" />
+
     <application
         android:name=".GlobalApplication"
         android:allowBackup="true"
@@ -31,16 +32,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
-        android:usesCleartextTraffic="true"
-        >
-        <service android:name=".broadcast.MyService"
-            android:foregroundServiceType="mediaProjection"/>
+        android:usesCleartextTraffic="true">
+        <activity android:name=".ProfileEditActivity"></activity>
 
-        <activity android:name=".broadcast.DetailReplayActivity"></activity>
+        <service
+            android:name=".broadcast.MyService"
+            android:foregroundServiceType="mediaProjection" />
+
+        <activity android:name=".broadcast.DetailReplayActivity" />
         <activity android:name=".broadcast.SearchLiveStreaming" />
         <activity android:name=".broadcast.LiveStreamingViewActivity" />
-        android:usesCleartextTraffic="true">
-        <activity android:name=".sing.MergeActivity"></activity>
+        <activity android:name=".sing.MergeActivity" />
         <activity android:name=".sing.DuetActivity" />
         <activity android:name=".sing.Video3Activity" />
         <activity android:name=".broadcast.LiveStreamingViewActivity" />
