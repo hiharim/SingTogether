@@ -22,7 +22,6 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.LyricsAdapter
 import com.harimi.singtogether.databinding.ActivityVideo2Binding
-import kotlinx.coroutines.*
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -104,7 +103,8 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 val seconds=array[i]
                 //7
                 val line= array[i].substring(7)
-                val lyricsData=LyricsData(seconds, line)
+                //val next_seconds=array[i].substring(7,12)
+                val lyricsData=LyricsData(seconds,line)
                 lyricsList.add(lyricsData)
             }
         }
@@ -440,39 +440,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     }
 
-    private fun loadLyrics() {
-        retrofitService.requestLyrics(idx.toString()).enqueue(object : Callback<String> {
-            // 통신에 성공한 경우
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    val jsonArray = JSONArray(response.body().toString())
-                    for (i in 0..jsonArray.length() - 1) {
-                        val iObject = jsonArray.getJSONObject(i)
-                        val line_1 = iObject.getString("line_1")
-                        val line_2 = iObject.getString("line_2")
-                        val line_3 = iObject.getString("line_3")
-                        val line_4 = iObject.getString("line_4")
-                        val line_5 = iObject.getString("line_5")
-                        val line_6 = iObject.getString("line_6")
-                        Log.e(
-                            "가사 초",
-                            ":" + line_1 + "," + line_2 + "," + line_3 + "," + line_4 + "," + line_5 + "," + line_6
-                        )
-                    }
 
-                } else {
-                    // 통신은 성공했지만 응답에 문제가 있는 경우
-                    Log.e("MRFragment", "getMR 응답 문제" + response.code())
-                }
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("MRFragment", "getMR 통신 실패" + t.message)
-            }
-
-
-        })
-    }
 
 
 

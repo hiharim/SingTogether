@@ -57,6 +57,8 @@ public class DeviceOrientation {
                     orientation = calculateOrientation();
                 }
             }
+
+
         }
 
         @Override

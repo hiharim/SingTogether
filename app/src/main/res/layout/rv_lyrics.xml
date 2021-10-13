@@ -12,7 +12,13 @@
         android:bufferType="spannable"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
+    <TextView
+        android:id="@+id/rv_lyrics_tv_next_seconds"
+        android:text="00:11"
+        android:visibility="gone"
+        android:bufferType="spannable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/rv_lyrics_tv_line"
         android:text="참 많이 궁금해"
