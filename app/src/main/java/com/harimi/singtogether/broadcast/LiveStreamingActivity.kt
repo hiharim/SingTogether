@@ -7,7 +7,6 @@ package com.harimi.singtogether.broadcast
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.hardware.Camera
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
@@ -15,12 +14,10 @@ import android.media.AudioManager
 import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.net.Uri
 import android.os.Build
 
 import android.os.Bundle
 import android.os.Environment
-import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.SparseIntArray
@@ -47,6 +44,7 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R.*
 import com.harimi.singtogether.adapter.LiveStreamingViewerListAdapter
 import com.harimi.singtogether.adapter.LocalChattingAdapter
+import com.harimi.singtogether.adapter.PeerConnectionAdapter
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
 import okhttp3.MediaType
 import okhttp3.MultipartBody

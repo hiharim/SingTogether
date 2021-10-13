@@ -1,4 +1,4 @@
-package com.harimi.singtogether.broadcast
+package com.harimi.singtogether.adapter
 
 import android.util.Log
 import org.webrtc.*

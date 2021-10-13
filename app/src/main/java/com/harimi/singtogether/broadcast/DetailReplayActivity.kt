@@ -61,6 +61,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private var replayVideo : String? = null
     private var liked : Boolean? = null
 
+    private var getLikeNumber :String ? =null
 
     //실제 비디오를 플레이하는 객체의 참조 변수
     var player: ExoPlayer? = null
@@ -112,6 +113,8 @@ class DetailReplayActivity : AppCompatActivity() {
         replayPostLikeIdx = getintent.getStringExtra("replayPostLikeIdx")
         liked = getintent.getBooleanExtra("liked",false)
         replayVideo = getintent.getStringExtra("replayVideo")
+
+        getLikeNumber =replayLikeNumber
 
         Log.d(TAG, replayPostLikeIdx!!)
         Log.d(TAG, liked!!.toString())
@@ -207,9 +210,12 @@ class DetailReplayActivity : AppCompatActivity() {
                             var idx = jsonObject.getString("idx")
                             replayPostLikeIdx = idx
                             if (result){
-                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
-                                var getLikeNumberInt =  getLikeNumber.toInt()
+//                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
+//                                var getLikeNumberInt =  getLikeNumber.toInt()
+//                                getLikeNumberInt++
+                                var getLikeNumberInt =  getLikeNumber!!.toInt()
                                 getLikeNumberInt++
+
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                 iv_clickLike.visibility =View.VISIBLE
                                 iv_normalLike.visibility =View.GONE
@@ -239,11 +245,12 @@ class DetailReplayActivity : AppCompatActivity() {
                                 var jsonObject = JSONObject(response.body().toString())
                                 var result = jsonObject.getBoolean("result")
                                 if (result) {
-                                    var getLikeNumber =
-                                        fragment_detail_replay_tv_like.text.toString()
-                                    var getLikeNumberInt = getLikeNumber.toInt()
-                                    getLikeNumberInt--
-                                    fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
+//                                    var getLikeNumber =
+//                                        fragment_detail_replay_tv_like.text.toString()
+//                                    var getLikeNumberInt = getLikeNumber!!.toInt()
+//                                    getLikeNumberInt --
+
+                                    fragment_detail_replay_tv_like.setText(getLikeNumber.toString())
                                     iv_clickLike.visibility = View.GONE
                                     iv_normalLike.visibility = View.VISIBLE
                                 }
@@ -258,8 +265,13 @@ class DetailReplayActivity : AppCompatActivity() {
     }
 
     fun setData(){
+
+        var getReplayHits =  replayHits
+        var getReplayHitsInt =  getReplayHits!!.toInt()
+        getReplayHitsInt++
+
         fragment_detail_replay_tv_title.text =replayTitle
-        tv_hits.text = replayHits
+        tv_hits.text = getReplayHitsInt.toString()
         fragment_detail_replay_tv_like.text= replayLikeNumber
         fragment_detail_replay_tv_date.text = uploadDate
         tv_UploadUserNickName.text =uploadUserNickName

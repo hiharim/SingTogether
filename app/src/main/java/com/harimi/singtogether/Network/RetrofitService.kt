@@ -225,10 +225,10 @@ interface RetrofitService {
         @Field("replayPostLikeIdx") replayPostLikeIdx :String
     ):Call<String>
 
-   // @FormUrlEncoded
+    @FormUrlEncoded
     @POST("loadMyBroadcast.php")
     fun requestMyBroadcast(
-        //@Field("nickname") token :String,
+       @Field("userEmail") userEmail :String
     ):Call<String>
 
     @Multipart
