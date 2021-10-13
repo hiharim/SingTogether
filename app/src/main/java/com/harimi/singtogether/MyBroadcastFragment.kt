@@ -155,51 +155,7 @@ class MyBroadcastFragment : Fragment() {
                 }
             })
     }
-//    private fun loadMyBroadcast() {
-//        val userEmail=LoginActivity.user_info.loginUserEmail
-//        retrofitService.requestMyBroadcast(userEmail).enqueue(object : Callback<String> {
-//            // 통신에 성공한 경우
-//            override fun onResponse(call: Call<String>, response: Response<String>) {
-//                if (response.isSuccessful) {
-//                    // 응답을 잘 받은 경우
-//                    Log.e("MyBroadcastFragment", " 통신 성공: ${response.body().toString()}")
-//
-//
-////                    val jsonArray= JSONArray(response.body().toString())
-////                    for(i in 0..jsonArray.length() -1){
-////                        val iObject=jsonArray.getJSONObject(i)
-////                        val idx=iObject.getInt("idx")
-////                        val thumbnail=iObject.getString("thumbnail")
-////                        val replayVideo=iObject.getString("replayVideo")
-////                        val replayReviewNumber=iObject.getString("replayReviewNumber")
-////                        val replayLikeNumber=iObject.getString("replayLikeNumber")
-////                        val replayTitle=iObject.getString("replayTitle")
-////                        val replayHits=iObject.getString("replayHits")
-////                        val uploadDate=iObject.getString("uploadDate")
-////                        var uploadUserEmail = iObject.getString("uploadUserEmail")
-////                        var uploadUserProfile = iObject.getString("uploadUserProfile")
-////                        var uploadUserNickName = iObject.getString("uploadUserNickName")
-////
-////
-////                        val myBroadcastData= MyBroadcastData(idx, thumbnail, replayVideo,replayReviewNumber,replayLikeNumber,replayTitle,replayHits,uploadDate
-////                            ,uploadUserEmail,uploadUserProfile,uploadUserNickName)
-////                        myBroadcastList.add(0,myBroadcastData)
-////                        myBroadcastAdapter.notifyDataSetChanged()
-////                    }
-////
-////                } else {
-////                    // 통신은 성공했지만 응답에 문제가 있는 경우
-////                    Log.e("MyBroadcastFragment", " 응답 문제" + response.code())
-////                }
-////            }
-////
-////            override fun onFailure(call: Call<String>, t: Throwable) {
-////                Log.e("MyBroadcastFragment", " 통신 실패" + t.message)
-////            }
-//                }
-//                }
-//        })
-//    }
+
 
     private fun initRetrofit(){
         retrofit= RetrofitClient.getInstance()

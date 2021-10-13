@@ -78,20 +78,28 @@ class MySongFragment : Fragment() {
                 if (response.isSuccessful) {
                     // 응답을 잘 받은 경우
                     Log.e("MySongFragment", " 통신 성공: ${response.body().toString()}")
+                    val body = response.body().toString()
 
-                    val jsonArray= JSONArray(response.body().toString())
-                    for(i in 0..jsonArray.length() -1){
-                        val iObject=jsonArray.getJSONObject(i)
-                        val idx=iObject.getInt("idx")
-                        val thumbnail=iObject.getString("thumbnail")
-                        val title=iObject.getString("title")
-                        val nickname=iObject.getString("nickname")
-                        val date=iObject.getString("date")
+                    val jsonArray= JSONArray(body)
+                        if (jsonArray.length() == 0 || jsonArray.equals("")) {
 
-                        val mySongData= MySongData(idx, thumbnail, title,nickname,date)
-                        mySongList.add(0,mySongData)
-                        mySongAdapter.notifyDataSetChanged()
-                    }
+                        } else {
+
+                            for (i in 0..jsonArray.length() - 1) {
+                                val iObject = jsonArray.getJSONObject(i)
+                                val idx = iObject.getInt("idx")
+                                val thumbnail = iObject.getString("thumbnail")
+                                val title = iObject.getString("title")
+                                val nickname = iObject.getString("nickname")
+                                val date = iObject.getString("date")
+
+                                val mySongData = MySongData(idx, thumbnail, title, nickname, date)
+                                mySongList.add(0, mySongData)
+                                mySongAdapter.notifyDataSetChanged()
+                            }
+                        }
+
+
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우
