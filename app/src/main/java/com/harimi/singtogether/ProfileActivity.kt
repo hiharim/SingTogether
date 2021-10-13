@@ -167,7 +167,6 @@ class ProfileActivity : AppCompatActivity() {
                                             " + exception: " + t
                                     )
                                 }
-
                             })
                 }
             }

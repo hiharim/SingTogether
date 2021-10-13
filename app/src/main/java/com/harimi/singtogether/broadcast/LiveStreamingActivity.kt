@@ -7,7 +7,6 @@ package com.harimi.singtogether.broadcast
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.res.Resources
 import android.hardware.Camera
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
@@ -15,11 +14,10 @@ import android.media.AudioManager
 import android.media.MediaRecorder
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
-import android.net.Uri
 import android.os.Build
+
 import android.os.Bundle
 import android.os.Environment
-import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.util.Log
 import android.util.SparseIntArray
@@ -46,6 +44,7 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R.*
 import com.harimi.singtogether.adapter.LiveStreamingViewerListAdapter
 import com.harimi.singtogether.adapter.LocalChattingAdapter
+import com.harimi.singtogether.adapter.PeerConnectionAdapter
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -99,7 +98,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var mVirtualDisplay: VirtualDisplay? = null
     private var mMediaProjectionCallback: MediaProjectionCallback? = null
     private var iv_videoRecord: ToggleButton? = null
-    private lateinit var localVideoView :VideoView
+//    private lateinit var localVideoView :VideoView
     private var mediaRecorder: MediaRecorder? = null
     private lateinit var layoutRoot: RelativeLayout
     private var videoUri = ""
@@ -203,7 +202,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         initRetrofit()
 
-        localVideoView = findViewById<VideoView>(id.localVideoView)
+//        localVideoView = findViewById<VideoView>(id.localVideoView)
         layoutRoot = findViewById<RelativeLayout>(id.layoutRoot)
         iv_videoRecord = findViewById<ToggleButton>(id.iv_videoRecord)
 
@@ -338,6 +337,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         builder.setPositiveButton("네") { dialog, which ->
             iv_videoRecord!!.performClick()
+            isRecording = true
+            iv_videoRecord!!.visibility = View.GONE
         }
         builder.setNegativeButton("아니요") { dialog, which ->
         }
@@ -373,6 +374,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         ////녹화하기
         iv_videoRecord!!.setOnClickListener(View.OnClickListener { v ->
+            isRecording = true
             if ((ContextCompat.checkSelfPermission(this@LiveStreamingActivity, Manifest.permission.RECORD_AUDIO)
                         + ContextCompat.checkSelfPermission(this@LiveStreamingActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                         + ContextCompat.checkSelfPermission(this@LiveStreamingActivity, Manifest.permission.FOREGROUND_SERVICE))
@@ -624,6 +626,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         var email= LoginActivity.user_info.loginUserEmail
         var nickname= LoginActivity.user_info.loginUserNickname
         var profile =LoginActivity.user_info.loginUserProfile
+        Log.e(TAG, "profile  " +profile.toString())
+
 
         videoFile = File(videoUri)
         var requestBody : RequestBody = RequestBody.create(
@@ -902,6 +906,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         super.onStop()
         timerTask = null //타이머
         time = 0 //
+
     }
 
     //Peer간의 연결을 끊어주고 비디오 백그라운드에서 돌고있는 Render를 종료한다
@@ -962,12 +967,27 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     response: Response<String>
                 ) {
                     if (response.isSuccessful) {
-                        val jsonObject = JSONObject(response.body().toString())
-                        Toast.makeText(applicationContext, "방송을 종료합니다", Toast.LENGTH_SHORT)
-                            .show()
-                        uploadVideo()
+//                        val jsonObject = JSONObject(response.body().toString())
+                        Toast.makeText(applicationContext, "방송을 종료합니다", Toast.LENGTH_SHORT).show()
                         get()!!.liveStreamingFinish(roomIdx!!)
-                        finish()
+
+                        if (isRecording){
+                            val builder = AlertDialog.Builder(this@LiveStreamingActivity)
+                            builder.setTitle("다시보기 업로드")
+                            builder.setMessage("업로드 하시겠습니까?")
+                            builder.setPositiveButton("네") { dialog, which ->
+                                uploadVideo()
+                                finish()
+                            }
+                            builder.setNegativeButton("아니요") { dialog, which ->
+                                finish()
+                            }
+                            builder.show()
+                        }else{
+                            finish()
+                        }
+
+
                     } else {
                         Log.e("onResponse", "실패 : " + response.errorBody())
                     }

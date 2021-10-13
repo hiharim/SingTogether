@@ -1,5 +1,6 @@
 package com.harimi.singtogether.broadcast
 
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,7 +15,13 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerControlView
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.harimi.singtogether.Data.DetailReplayReviewData
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.LoginActivity
@@ -51,7 +58,17 @@ class DetailReplayActivity : AppCompatActivity() {
     private var replayReviewNumber : String? = null
     private var uploadUserEmail : String? = null
     private var replayPostLikeIdx : String? = null
+    private var replayVideo : String? = null
     private var liked : Boolean? = null
+
+    private var getLikeNumber :String ? =null
+
+    //실제 비디오를 플레이하는 객체의 참조 변수
+    var player: ExoPlayer? = null
+    //컨트롤러 뷰 참조 변수
+    var exoplayerControlView: PlayerControlView? = null
+    var exoPlayerView: PlayerView? = null
+    var videoUri: Uri? = null
 
     private lateinit var fragment_detail_replay_iv_back : ImageView
     private lateinit var fragment_detail_replay_tv_title : TextView
@@ -95,6 +112,10 @@ class DetailReplayActivity : AppCompatActivity() {
         uploadUserEmail = getintent.getStringExtra("uploadUserEmail")
         replayPostLikeIdx = getintent.getStringExtra("replayPostLikeIdx")
         liked = getintent.getBooleanExtra("liked",false)
+        replayVideo = getintent.getStringExtra("replayVideo")
+
+        getLikeNumber =replayLikeNumber
+
         Log.d(TAG, replayPostLikeIdx!!)
         Log.d(TAG, liked!!.toString())
 
@@ -112,7 +133,11 @@ class DetailReplayActivity : AppCompatActivity() {
         et_writeReview =findViewById(R.id.et_writeReview)
         iv_uploadReview =findViewById(R.id.iv_uploadReview)
         rv_detailReplayReview =findViewById(R.id.rv_detailReplayReview)
-        exoplayerReplay =findViewById(R.id.exoplayerReplay)
+        exoPlayerView = findViewById(R.id.exoPlayerView)
+        exoplayerControlView = findViewById(R.id.exoplayerControlView)
+
+
+
 
         rv_detailReplayReview = findViewById(R.id.rv_detailReplayReview)
         rv_detailReplayReview.layoutManager = LinearLayoutManager(this)
@@ -185,9 +210,12 @@ class DetailReplayActivity : AppCompatActivity() {
                             var idx = jsonObject.getString("idx")
                             replayPostLikeIdx = idx
                             if (result){
-                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
-                                var getLikeNumberInt =  getLikeNumber.toInt()
+//                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
+//                                var getLikeNumberInt =  getLikeNumber.toInt()
+//                                getLikeNumberInt++
+                                var getLikeNumberInt =  getLikeNumber!!.toInt()
                                 getLikeNumberInt++
+
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                 iv_clickLike.visibility =View.VISIBLE
                                 iv_normalLike.visibility =View.GONE
@@ -217,11 +245,12 @@ class DetailReplayActivity : AppCompatActivity() {
                                 var jsonObject = JSONObject(response.body().toString())
                                 var result = jsonObject.getBoolean("result")
                                 if (result) {
-                                    var getLikeNumber =
-                                        fragment_detail_replay_tv_like.text.toString()
-                                    var getLikeNumberInt = getLikeNumber.toInt()
-                                    getLikeNumberInt--
-                                    fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
+//                                    var getLikeNumber =
+//                                        fragment_detail_replay_tv_like.text.toString()
+//                                    var getLikeNumberInt = getLikeNumber!!.toInt()
+//                                    getLikeNumberInt --
+
+                                    fragment_detail_replay_tv_like.setText(getLikeNumber.toString())
                                     iv_clickLike.visibility = View.GONE
                                     iv_normalLike.visibility = View.VISIBLE
                                 }
@@ -236,8 +265,13 @@ class DetailReplayActivity : AppCompatActivity() {
     }
 
     fun setData(){
+
+        var getReplayHits =  replayHits
+        var getReplayHitsInt =  getReplayHits!!.toInt()
+        getReplayHitsInt++
+
         fragment_detail_replay_tv_title.text =replayTitle
-        tv_hits.text = replayHits
+        tv_hits.text = getReplayHitsInt.toString()
         fragment_detail_replay_tv_like.text= replayLikeNumber
         fragment_detail_replay_tv_date.text = uploadDate
         tv_UploadUserNickName.text =uploadUserNickName
@@ -248,7 +282,7 @@ class DetailReplayActivity : AppCompatActivity() {
         } else {
             Glide.with(this)
                 .load("http://3.35.236.251/" + uploadUserProfile)
-                .thumbnail(0.1f)
+//                .thumbnail(0.1f)
                 .into(iv_uploadUserProfile)
         }
 
@@ -278,6 +312,7 @@ class DetailReplayActivity : AppCompatActivity() {
                             val uploadDate = jsonObject.getString("uploadDate")
                             val replayIdx = jsonObject.getString("replayIdx")
 
+
                             val detailReplayReviewData = DetailReplayReviewData(idx,uploadUserEmail, uploadUserNickname, uploadUserProfile, review, uploadDate, replayIdx)
                             detailReplayReviewDataList.add( detailReplayReviewData)
                             detailReplayReviewAdapter.notifyDataSetChanged()
@@ -290,5 +325,44 @@ class DetailReplayActivity : AppCompatActivity() {
 
                 }
             })
+    }
+
+    fun playVideo(){
+
+    }
+    override fun onStart() {
+        super.onStart()
+        videoUri = Uri.parse("http://3.35.236.251/" + replayVideo)
+        Log.d("path ", videoUri.toString())
+        //SimpleExoPlayer객체 생성
+        player = SimpleExoPlayer.Builder(this.applicationContext).build()
+        //플레이어뷰에게 플레이어 설정
+        exoPlayerView!!.player = player
+        //플레이어 컨트럴뷰와 플레이어 연동
+        exoplayerControlView!!.player = player
+
+
+        //비디오데이터 소스를 관리하는 DataSource 객체를 만들어주는 팩토리 객체 생성
+        val factory: DataSource.Factory = DefaultDataSourceFactory(this, "Ex89VideoAndExoPlayer")
+        //비디오데이터를 Uri로 부터 추출해서 DataSource객체 (CD or LP판 같은 ) 생성
+        val mediaSource = ProgressiveMediaSource.Factory(factory).createMediaSource(videoUri!!)
+
+        //만들어진 비디오데이터 소스객체인 mediaSource를
+        //플레이어 객체에게 전당하여 준비하도록!![ 로딩하도록 !!]
+        player!!.prepare(mediaSource)
+
+        //로딩이 완료되어 준비가 되었을 때
+        //자동 실행되도록..
+        player!!.setPlayWhenReady(true);
+        exoplayerControlView!!.hide()
+    }
+
+    //화면에 안보일 때..
+    override fun onStop() {
+        super.onStop()
+        //플레이어뷰 및 플레이어 객체 초기화
+        exoPlayerView!!.player = null
+        player!!.release()
+        player = null
     }
 }

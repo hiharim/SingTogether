@@ -54,14 +54,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/pv"
+                    android:id="@+id/exoPlayerView"
+                    android:background="#000000"
                     android:layout_width="match_parent"
                     android:layout_height="400dp">
-
                 </com.google.android.exoplayer2.ui.PlayerView>
 
                 <com.google.android.exoplayer2.ui.PlayerControlView
-                    android:id="@+id/exoplayerReplay"
+                    android:id="@+id/exoplayerControlView"
                     android:layout_marginBottom="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="400dp"/>
@@ -93,12 +93,13 @@
                     android:id="@+id/iv_hits"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginStart="20dp"
                     android:src="@drawable/ic_baseline_play_arrow_24"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/tv_hits"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/fragment_detail_replay_tv_title"
                     app:layout_constraintVertical_bias="0.518" />
 
@@ -140,20 +141,22 @@
                     android:id="@+id/fragment_detail_replay_tv_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="52dp"
                     android:layout_marginTop="40dp"
-                    android:layout_marginEnd="220dp"
                     android:layout_marginBottom="26dp"
                     android:text="5"
                     android:textColor="#000000"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/fragment_detail_replay_tv_date"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintStart_toEndOf="@+id/tv_hits"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.0" />
 
                 <TextView
                     android:id="@+id/fragment_detail_replay_tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
+                    android:textColor="#000000"
                     android:layout_marginBottom="29dp"
                     android:text="2021-08-13"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -273,9 +276,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginLeft="5dp"
+            android:layout_margin="5dp"
             android:layout_height="40dp">
 
             <EditText

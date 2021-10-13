@@ -77,6 +77,20 @@ interface RetrofitService {
         @Part file : MultipartBody.Part
     ) : Call<String>
 
+    @Multipart
+    @POST("editUserProfile.php")
+    fun requestEditUserProfile (
+        @Part("userEmail") userEmail :String,
+        @Part("nickname")  nickname :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("editUserProfile.php")
+    fun requestEditUserNickname (
+        @Field("userEmail") email :String,
+        @Field("nickname") nickname :String
+    ) : Call<String>
 
     @FormUrlEncoded
     @POST("join_none.php")
@@ -211,10 +225,10 @@ interface RetrofitService {
         @Field("replayPostLikeIdx") replayPostLikeIdx :String
     ):Call<String>
 
-   // @FormUrlEncoded
+    @FormUrlEncoded
     @POST("loadMyBroadcast.php")
     fun requestMyBroadcast(
-        //@Field("nickname") token :String,
+       @Field("userEmail") userEmail :String
     ):Call<String>
 
     @Multipart

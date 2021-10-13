@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.ReplayData
 import com.harimi.singtogether.LoginActivity
@@ -123,6 +124,9 @@ class ReplayFragment : Fragment() {
                                 var replayHits = postObject.getString("replayHits")
                                 var replayReviewNumber = postObject.getString("replayReviewNumber")
                                 var uploadDate = postObject.getString("uploadDate")
+                                var replayVideo = postObject.getString("replayVideo")
+
+
 
                                 if (!userLikeList.equals("")){
                                 val likeArray = JSONArray(userLikeList)
@@ -141,7 +145,7 @@ class ReplayFragment : Fragment() {
                                     }
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo)
                                 replayDataList.add(0, replayData)
                                 replayAdapter.notifyDataSetChanged()
                             }

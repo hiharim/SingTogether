@@ -1,9 +1,11 @@
-package com.harimi.singtogether.broadcast
+package com.harimi.singtogether.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.harimi.singtogether.HomeFragment
+import com.harimi.singtogether.broadcast.LiveFragment
+import com.harimi.singtogether.broadcast.ReplayFragment
 
 /***
  * 방송 프래그먼트 PagerStateAdapter

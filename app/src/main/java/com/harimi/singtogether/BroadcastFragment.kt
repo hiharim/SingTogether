@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.harimi.singtogether.adapter.BroadcastPagerAdapter
 import com.harimi.singtogether.broadcast.*
 import com.harimi.singtogether.databinding.FragmentBroadcastBinding
 
@@ -33,7 +34,7 @@ class BraodcastFragment : Fragment() {
     ): View? {
 
         val binding=FragmentBroadcastBinding.inflate(inflater, container, false)
-        val pagerAdapter =BroadcastPagerAdapter(requireActivity())
+        val pagerAdapter = BroadcastPagerAdapter(requireActivity())
 
         val liveFragment:LiveFragment=LiveFragment.newInstance()
         val replayFragment:ReplayFragment=ReplayFragment.newInstance()

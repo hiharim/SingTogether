@@ -13,8 +13,8 @@ import com.harimi.singtogether.Data.RemoteChattingData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import com.harimi.singtogether.adapter.PeerConnectionAdapter
 import com.harimi.singtogether.adapter.RemoteChattingAdapter
 import org.json.JSONObject
 import org.webrtc.*

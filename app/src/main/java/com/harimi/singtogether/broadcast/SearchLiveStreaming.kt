@@ -150,10 +150,11 @@ class SearchLiveStreaming : AppCompatActivity() {
                                 val replayLikeNumber = replayObject.getString("replayLikeNumber")
                                 val replayHits = replayObject.getString("replayHits")
                                 val uploadDate = replayObject.getString("uploadDate")
+                                val replayVideo = replayObject.getString("replayVideo")
                                 val replayReviewNumber = replayObject.getString("replayReviewNumber")
 
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,true,"1")
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,true,"1",replayVideo)
                                 replayDataList.add(0, replayData)
                                 replayFragmentAdapter.notifyDataSetChanged()
                             }

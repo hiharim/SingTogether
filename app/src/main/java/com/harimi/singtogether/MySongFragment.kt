@@ -70,43 +70,6 @@ class MySongFragment : Fragment() {
             }
     }
 
-//    private fun loadMySong() {
-//        val nickname=LoginActivity.user_info.loginUserNickname
-//        retrofitService.requestMySong(nickname).enqueue(object : Callback<String> {
-//            // 통신에 성공한 경우
-//            override fun onResponse(call: Call<String>, response: Response<String>) {
-//                if (response.isSuccessful) {
-//                    // 응답을 잘 받은 경우
-//                    Log.e("MySongFragment", " 통신 성공: ${response.body().toString()}")
-//
-//                    val jsonArray= JSONArray(response.body().toString())
-//                    for(i in 0..jsonArray.length() -1){
-//                        val iObject=jsonArray.getJSONObject(i)
-//                        val idx=iObject.getInt("idx")
-//                        val thumbnail=iObject.getString("thumbnail")
-//                        val title=iObject.getString("title")
-//                        val nickname=iObject.getString("nickname")
-//                        val date=iObject.getString("date")
-//
-//                        val mySongData= MySongData(idx, thumbnail, title,nickname,date)
-//                        mySongList.add(0,mySongData)
-//                        mySongAdapter.notifyDataSetChanged()
-//                    }
-//
-//                } else {
-//                    // 통신은 성공했지만 응답에 문제가 있는 경우
-//                    Log.e("MySongFragment", " 응답 문제" + response.code())
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<String>, t: Throwable) {
-//                Log.e("MySongFragment", " 통신 실패" + t.message)
-//            }
-//
-//
-//        })
-//    }
-
     private fun loadMySong() {
         val nickname=LoginActivity.user_info.loginUserNickname
         retrofitService.requestMySong(nickname).enqueue(object : Callback<String> {
@@ -118,23 +81,23 @@ class MySongFragment : Fragment() {
                     val body = response.body().toString()
 
                     val jsonArray= JSONArray(body)
-                    if (jsonArray.length() == 0 || jsonArray.equals("")) {
+                        if (jsonArray.length() == 0 || jsonArray.equals("")) {
 
-                    } else {
+                        } else {
 
-                        for (i in 0..jsonArray.length() - 1) {
-                            val iObject = jsonArray.getJSONObject(i)
-                            val idx = iObject.getInt("idx")
-                            val thumbnail = iObject.getString("thumbnail")
-                            val title = iObject.getString("title")
-                            val nickname = iObject.getString("nickname")
-                            val date = iObject.getString("date")
+                            for (i in 0..jsonArray.length() - 1) {
+                                val iObject = jsonArray.getJSONObject(i)
+                                val idx = iObject.getInt("idx")
+                                val thumbnail = iObject.getString("thumbnail")
+                                val title = iObject.getString("title")
+                                val nickname = iObject.getString("nickname")
+                                val date = iObject.getString("date")
 
-                            val mySongData = MySongData(idx, thumbnail, title, nickname, date)
-                            mySongList.add(0, mySongData)
-                            mySongAdapter.notifyDataSetChanged()
+                                val mySongData = MySongData(idx, thumbnail, title, nickname, date)
+                                mySongList.add(0, mySongData)
+                                mySongAdapter.notifyDataSetChanged()
+                            }
                         }
-                    }
 
 
 

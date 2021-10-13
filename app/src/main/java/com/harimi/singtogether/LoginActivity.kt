@@ -371,6 +371,5 @@ class LoginActivity : AppCompatActivity() {
         edit.putString("email", loginEmail) // 값 넣기
         edit.putString("autoLogin", "1") // 값 넣기
         edit.apply() // 적용하기
-
     }
 }
