@@ -98,7 +98,6 @@
             </LinearLayout>
         </Toolbar>
 
-
         <org.webrtc.SurfaceViewRenderer
             android:id="@+id/localStreamingView"
             android:layout_width="match_parent"
@@ -107,6 +106,7 @@
             android:layout_below="@+id/toolbar_streaming"
             android:layout_marginTop="1dp"
             android:layout_marginBottom="0dp" />
+
 
 
         <androidx.recyclerview.widget.RecyclerView

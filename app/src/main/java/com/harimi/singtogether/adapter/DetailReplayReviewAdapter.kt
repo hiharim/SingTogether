@@ -44,9 +44,7 @@ class DetailReplayReviewAdapter(
         position: Int
     ) {
 
-        if (detailReplayReviewList.get(position).uploadUserProfile.equals("null") || detailReplayReviewList.get(
-                position
-            ).uploadUserProfile.equals("")) {
+        if (detailReplayReviewList.get(position).uploadUserProfile.equals("null") || detailReplayReviewList.get(position).uploadUserProfile.equals("")) {
             holder.iv_uploadUserProfile.setImageResource(R.mipmap.ic_launcher_round)
         } else {
             val Image: DetailReplayReviewData = detailReplayReviewList.get(position)
@@ -118,7 +116,7 @@ class DetailReplayReviewAdapter(
                                         retrofitService =
                                             retrofit.create(RetrofitService::class.java)
                                         retrofitService.requestDeleteReplayReview(
-                                            detailReplayReviewList.get(position).idx).enqueue(object : Callback<String> {
+                                            detailReplayReviewList.get(position).idx,detailReplayReviewList.get(position).replayIdx).enqueue(object : Callback<String> {
                                             override fun onResponse(call: Call<String>, response: Response<String>) {
                                                 if (response.isSuccessful) {
                                                     val body = response.body().toString()

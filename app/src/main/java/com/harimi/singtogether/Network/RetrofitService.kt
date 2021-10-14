@@ -74,6 +74,7 @@ interface RetrofitService {
         @Part("profile")  profile :String,
         @Part("roomTitle")  roomTitle :String,
         @Part("thumbnail")  thumbnail :String,
+        @Part("time")  time :String,
         @Part file : MultipartBody.Part
     ) : Call<String>
 
@@ -127,6 +128,19 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("deleteReplay.php")
+    fun requestDeleteReplay (
+        @Field("replayIdx") replayIdx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("deleteUser.php")
+    fun requestDeleteUser (
+        @Field("userEmail") userEmail :String
+    ) : Call<String>
+
+
+    @FormUrlEncoded
     @POST("liveStreamingCheck.php")
     fun requestLiveStreamingCheck (
         @Field("roomIdx") roomIdx :String
@@ -149,6 +163,7 @@ interface RetrofitService {
     @POST("deleteReplayReview.php")
     fun requestDeleteReplayReview (
         @Field("idx") idx :String,
+        @Field("replayIdx") replayIdx :String
     ) : Call<String>
 
     @FormUrlEncoded

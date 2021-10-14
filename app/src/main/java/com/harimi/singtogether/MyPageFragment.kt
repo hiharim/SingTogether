@@ -43,7 +43,11 @@ class MyPageFragment : Fragment() {
         binding.fragmentMyPageTvNickname.text=nickname
 
         // 사용자 프로필
-        Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.fragmentMyPageIvProfile)
+        if (profile.equals("null")){
+
+        }else{
+            Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.fragmentMyPageIvProfile)
+        }
 
 
         val pagerAdapter = MyPagePagerAdapter(requireActivity())

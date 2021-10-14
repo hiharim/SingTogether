@@ -67,6 +67,8 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
         holder.tv_replayHits.setText(ReplayPostList.get(position).replayHits)
         holder.tv_replayReviewNumber.setText(ReplayPostList.get(position).replayReviewNumber)
         holder.tv_replayLikeNumber.setText(ReplayPostList.get(position).replayLikeNumber)
+        holder.time.setText(ReplayPostList.get(position).time)
+
 
         if (ReplayPostList.get(position).liked == true){
             holder.iv_clickLike.visibility = View.VISIBLE
@@ -134,6 +136,7 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
         val tv_replayHits = itemView.findViewById<TextView>(R.id.tv_replayHits) // 조회수
         val iv_clickLike = itemView.findViewById<ImageView>(R.id.iv_clickLike) // 좋아요
         val iv_normalLike = itemView.findViewById<ImageView>(R.id.iv_normalLike) // 좋아요
+        val time = itemView.findViewById<TextView>(R.id.time) // 좋아요
 
 
 

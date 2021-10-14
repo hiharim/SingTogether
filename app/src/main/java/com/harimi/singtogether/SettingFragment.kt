@@ -4,6 +4,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,15 +16,24 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.broadcast.LiveStreamingViewActivity
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 
 /**
     마이페이지 프래그먼트
  */
 class SettingFragment : Fragment() {
-
+    private var TAG = "SETTING_ACTIVITY"
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var retrofitService: RetrofitService
+    private lateinit var retrofit : Retrofit
 
     private lateinit var mAuth : FirebaseAuth  ;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,18 +90,38 @@ class SettingFragment : Fragment() {
             builder.setTitle("회원탈퇴")
             builder.setMessage("회원탈퇴를 하시겠습니까? ")
             builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                retrofit= RetrofitClient.getInstance()
+                retrofitService=retrofit.create(RetrofitService::class.java)
+                retrofitService.requestDeleteUser(LoginActivity.user_info.loginUserEmail)
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            if (response.isSuccessful) {
+                                val body = response.body().toString()
+                                Log.d(TAG, body)
+                                var jsonObject = JSONObject(response.body().toString())
+                                var result = jsonObject.getBoolean("result")
 
-                val pref = requireActivity().getSharedPreferences("userEmail", MODE_PRIVATE)
-                val edit = pref.edit() // 수정모드
-                edit.putString("email", "") // 값 넣기
-                edit.apply() // 적용하기
+                                if (result) {
+                                    val pref = requireActivity().getSharedPreferences("userEmail", MODE_PRIVATE)
+                                    val edit = pref.edit() // 수정모드
+                                    edit.putString("email", "") // 값 넣기
+                                    edit.apply() // 적용하기
 
-                if (LoginActivity.user_info.loginUserSocial.equals("google")){
-                    mAuth = FirebaseAuth.getInstance();
-                    mAuth.currentUser!!.delete()
-                }
-                val intent = Intent(context, LoginActivity::class.java)
-                startActivity(intent)
+                                    if (LoginActivity.user_info.loginUserSocial.equals("google")){
+                                        mAuth = FirebaseAuth.getInstance();
+                                        mAuth.currentUser!!.delete()
+                                    }
+                                    val intent = Intent(context, LoginActivity::class.java)
+                                    startActivity(intent)
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                        }
+                    })
+
+
             }
             builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
 

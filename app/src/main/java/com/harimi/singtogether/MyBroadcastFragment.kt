@@ -94,59 +94,63 @@ class MyBroadcastFragment : Fragment() {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
                         val body = response.body().toString()
-                        Log.d(TAG, body)
                         myBroadcastList.clear()
                         val replayObject = JSONObject (body)
                         Log.d(TAG, replayObject.toString())
-                        val replayPostList = replayObject.getString("replayPostList")
-                        val postArray = JSONArray(replayPostList)
-                        val userLikeList = replayObject.getString("userLikeList")
 
-                        for (i in 0 until postArray.length()) {
-                            if (postArray.length() ==0 || postArray.equals("null")){
+                        val replayPostList = replayObject.getString("replayPostList")
+                        if (replayPostList.equals("") || replayPostList.equals("null")){
+
+                        }else{
+                            val postArray = JSONArray(replayPostList)
+                            for (i in 0 until postArray.length()) {
+                                if (postArray.length() ==0 || postArray.equals("")){
 //                                tv_noReplay.visibility =View.VISIBLE
 //                                rv_fragmentReplayPost.visibility =View.GONE
-                            }else {
+                                }else {
+                                    val userLikeList = replayObject.getString("userLikeList")
 //                                rv_fragmentReplayPost.visibility =View.VISIBLE
 //                                tv_noReplay.visibility =View.GONE
 
-                                var postObject = postArray.getJSONObject(i)
-                                var idx = postObject.getString("idx")
-                                var thumbnail = postObject.getString("thumbnail")
-                                var replayTitle = postObject.getString("replayTitle")
-                                var uploadUserEmail = postObject.getString("uploadUserEmail")
-                                var uploadUserProfile = postObject.getString("uploadUserProfile")
-                                var uploadUserNickName = postObject.getString("uploadUserNickName")
-                                var replayLikeNumber = postObject.getString("replayLikeNumber")
-                                var replayHits = postObject.getString("replayHits")
-                                var replayReviewNumber = postObject.getString("replayReviewNumber")
-                                var uploadDate = postObject.getString("uploadDate")
-                                var replayVideo = postObject.getString("replayVideo")
+                                    var postObject = postArray.getJSONObject(i)
+                                    var idx = postObject.getString("idx")
+                                    var thumbnail = postObject.getString("thumbnail")
+                                    var replayTitle = postObject.getString("replayTitle")
+                                    var uploadUserEmail = postObject.getString("uploadUserEmail")
+                                    var uploadUserProfile = postObject.getString("uploadUserProfile")
+                                    var uploadUserNickName = postObject.getString("uploadUserNickName")
+                                    var replayLikeNumber = postObject.getString("replayLikeNumber")
+                                    var replayHits = postObject.getString("replayHits")
+                                    var replayReviewNumber = postObject.getString("replayReviewNumber")
+                                    var uploadDate = postObject.getString("uploadDate")
+                                    var replayVideo = postObject.getString("replayVideo")
 
 
 
-                                if (!userLikeList.equals("")){
-                                    val likeArray = JSONArray(userLikeList)
-                                    for (i in 0 until likeArray.length()) {
-                                        var likeObject = likeArray.getJSONObject(i)
-                                        var replayPostIdx = likeObject.getString("replayPostIdx")
-                                        replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
-                                        if (replayPostIdx.equals(idx)){
-                                            like= true
-                                            Log.d(TAG, like.toString())
-                                            break
-                                        }else{
-                                            like= false
-                                            Log.d(TAG, like.toString())
+                                    if (!userLikeList.equals("")){
+                                        val likeArray = JSONArray(userLikeList)
+                                        for (i in 0 until likeArray.length()) {
+                                            var likeObject = likeArray.getJSONObject(i)
+                                            var replayPostIdx = likeObject.getString("replayPostIdx")
+                                            replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
+                                            if (replayPostIdx.equals(idx)){
+                                                like= true
+                                                Log.d(TAG, like.toString())
+                                                break
+                                            }else{
+                                                like= false
+                                                Log.d(TAG, like.toString())
+                                            }
                                         }
                                     }
+                                    val myBroadcastData = MyBroadcastData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
+                                        replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo)
+                                    myBroadcastList.add(0, myBroadcastData)
+                                    myBroadcastAdapter.notifyDataSetChanged()
                                 }
-                                val myBroadcastData = MyBroadcastData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo)
-                                myBroadcastList.add(0, myBroadcastData)
-                                myBroadcastAdapter.notifyDataSetChanged()
                             }
                         }
+
                     }
                 }
 
