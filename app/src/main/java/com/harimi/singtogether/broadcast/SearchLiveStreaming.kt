@@ -36,7 +36,8 @@ class SearchLiveStreaming : AppCompatActivity() {
     private lateinit var tv_notify : TextView
     private lateinit var iv_finishActivity : ImageView
     private lateinit var iv_search : ImageButton
-
+    private var like :Boolean ?= false
+    private var replayPostLikeIdx :String ?= "null"
     private lateinit var rv_searchLiveRecyclerView : RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
     private val liveStreamingPostList: ArrayList<LiveFragmentData> = ArrayList()
@@ -109,6 +110,7 @@ class SearchLiveStreaming : AppCompatActivity() {
                     val result = jsonObject.getBoolean("result")
                     val liveStreamingList = jsonObject.getString("liveStreamingList")
                     val replayPostList = jsonObject.getString("replayPostList")
+                    val userLikeList = jsonObject.getString("userLikeList")
 
                     if (liveStreamingList.equals("") && replayPostList.equals("")){
                         tv_notify.visibility = View.VISIBLE
@@ -153,10 +155,29 @@ class SearchLiveStreaming : AppCompatActivity() {
                                 val replayVideo = replayObject.getString("replayVideo")
                                 val replayReviewNumber = replayObject.getString("replayReviewNumber")
                                 val time = replayObject.getString("time")
+
+
+
+                                if (!userLikeList.equals("")){
+                                    val likeArray = JSONArray(userLikeList)
+                                    for (i in 0 until likeArray.length()) {
+                                        var likeObject = likeArray.getJSONObject(i)
+                                        var replayPostIdx = likeObject.getString("replayPostIdx")
+                                        replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
+                                        if (replayPostIdx.equals(idx)){
+                                            like= true
+                                            Log.d(TAG, like.toString())
+                                            break
+                                        }else{
+                                            like= false
+                                            Log.d(TAG, like.toString())
+                                        }
+                                    }
+                                }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,true,"1",replayVideo,time)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time)
                                 replayDataList.add(0, replayData)
-                                replayFragmentAdapter.notifyDataSetChanged()
+                                liveFragmentAdapter.notifyDataSetChanged()
                             }
                         }
                     }else{

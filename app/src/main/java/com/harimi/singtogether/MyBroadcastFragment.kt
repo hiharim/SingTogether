@@ -73,12 +73,6 @@ class MyBroadcastFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-
-
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.detach(this).attach(this).commit()
-        myBroadcastList.clear()
-        myBroadcastAdapter.notifyDataSetChanged()
         loadMyBroadcast()
 
 
