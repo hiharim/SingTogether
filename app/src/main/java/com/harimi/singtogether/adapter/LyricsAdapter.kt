@@ -71,26 +71,6 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: Str
 //        }
 
 
-//        for (i in lyricsList){
-//            if(holder.seconds.text.contains(time)){
-//                while (holder.seconds.text.substring(4,6).toInt()<holder.next_seconds.text.substring(3).toInt()){
-//                    holder.line.setTextColor(Color.BLUE)
-//                }
-//            }else{
-//                holder.line.setTextColor(Color.BLACK)
-//            }
-//        }
-
-
-//        for(i in lyricsList){
-//            while (holder.seconds.text.substring(4,6).toInt()<holder.next_seconds.text.substring(3).toInt()){
-//                if(holder.seconds.text.contains(time)){
-//                    holder.line.setTextColor(Color.BLUE)
-//                }
-//            }
-//        }
-
-
 
         for ((index,value) in lyricsList.withIndex()) {
             Log.e("가사어댑터", "index : " + "$index")
@@ -100,65 +80,25 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: Str
             if(lyricsList.size==a){
                 break
             }else{
-
                     val b=lyricsList.get(a)
                     Log.e("가사어댑터", "lyricsList.size-index : " + b)
                     val c=b.seconds.substring(4,6).toInt()
                     Log.e("가사어댑터", "c : " + c)
                     if (mSeconds <= mTime  && mTime < c){
-                        holder.line.setTextColor(Color.BLUE)
+                        holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
                     }
                     else if(mTime<mSeconds && mTime>c){
-                        holder.line.setTextColor(Color.BLACK)
+                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
+                       
                     }else{
 //                    lyricsList.get(index).line
-                        holder.line.setTextColor(Color.BLACK)
+                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
                     }
 
             }
-
             Log.e("가사어댑터", "value.seconds : " + value.seconds)
-
-
         }
 
-
-//
-//        if(holder.seconds.text.contains(time)){
-//            while(mTime<=mSeconds){
-//                holder.line.setTextColor(Color.BLUE)
-//
-//                if (mTime>mSeconds){
-//                    continue
-//                }
-//            }
-//        }else{
-//            holder.line.setTextColor(Color.BLACK)
-//        }
-
-
-
-//        for (i in lyricsList){
-//            while (holder.seconds.text==holder.next_seconds.text){
-//                if(holder.seconds.text.contains(time)) {
-//                        Log.e("가사어댑터", "time 후 : " + time)
-//                        holder.line.setTextColor(Color.BLUE)
-//
-//                }else {
-//                    holder.line.setTextColor(Color.BLACK)
-//                }
-//            }
-//        }
-
-//        lyricsList.forEach {
-//            if (holder.seconds.text.contains(time)) {
-//                Log.e("가사어댑터", "time 후 : " + time)
-//                holder.line.setTextColor(Color.BLUE)
-//
-//            } else {
-//                holder.line.setTextColor(Color.BLACK)
-//            }
-//        }
 
 
 //        for (i in lyricsList.indices) {

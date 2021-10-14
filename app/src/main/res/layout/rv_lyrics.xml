@@ -22,10 +22,12 @@
     <TextView
         android:id="@+id/rv_lyrics_tv_line"
         android:text="참 많이 궁금해"
+        android:textStyle="bold"
+        android:textColor="@color/y_grey"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
         android:bufferType="spannable"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:layout_marginBottom="7dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>

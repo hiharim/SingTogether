@@ -1,7 +1,6 @@
 package com.harimi.singtogether.sing
 
 import android.graphics.Color
-import android.graphics.drawable.ClipDrawable.VERTICAL
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,12 +17,10 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.FragmentMRBinding
 import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import kotlin.math.sin
 
 
 /**
@@ -56,13 +53,23 @@ class MRFragment : Fragment() {
         //리사이클러뷰 설정
         binding.fragmentMRRecyclerView.layoutManager=LinearLayoutManager(context)
         binding.fragmentMRRecyclerView.setHasFixedSize(true)
-        binding.fragmentMRRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        binding.fragmentMRRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                activity,
+                DividerItemDecoration.VERTICAL
+            )
+        )
         mrAdapter= MRAdapter(mrList)
         binding.fragmentMRRecyclerView.adapter=mrAdapter
+        loadMR()
 
         // 스피너 설정
         var sData=resources.getStringArray(R.array.genre)
-        var sAdapter=ArrayAdapter<String>(requireContext(),android.R.layout.simple_list_item_1,sData)
+        var sAdapter=ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_list_item_1,
+            sData
+        )
         binding.spinner.adapter=sAdapter
         binding.spinner.onItemSelectedListener=object : AdapterView.OnItemSelectedListener{
             override fun onItemSelected(
@@ -71,16 +78,36 @@ class MRFragment : Fragment() {
                 position: Int,
                 id: Long
             ) {
-
+                var charSequence =""
+                val select=binding.spinner.selectedItem.toString()
+                Log.e("mr프래그먼트","선택 :" + select)
+                if (select== "발라드") {
+                    charSequence = "발라드"
+                } else if (select == "댄스") {
+                    charSequence = "댄스"
+                } else if (select == "랩/힙합") {
+                    charSequence = "랩/힙합"
+                } else if (select == "알앤비") {
+                    charSequence = "알앤비"
+                } else if (select == "락/메탈") {
+                    charSequence = "락/메탈"
+                } else if (select == "인디") {
+                    charSequence = "인디"
+                } else if (select == "트로트") {
+                    charSequence = "트로트"
+                } else if (select == "동요/만화") {
+                    charSequence = "동요/만화"
+                } else {
+                    //전체보기 필터해제
+                    charSequence = ""
+                }
+                mrAdapter.getFilter().filter(charSequence)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
 
         }
-
-        loadMR()
 
         return binding.root
     }
@@ -105,18 +132,18 @@ class MRFragment : Fragment() {
                     // 응답을 잘 받은 경우
                     Log.e("MRFragment", "getMR 통신 성공: ${response.body().toString()}")
 
-                    val jsonArray=JSONArray(response.body().toString())
-                    for(i in 0..jsonArray.length() -1){
-                        val iObject=jsonArray.getJSONObject(i)
-                        val idx=iObject.getInt("idx")
-                        val title=iObject.getString("title")
-                        val singer=iObject.getString("singer")
-                        val song_path=iObject.getString("song_path")
-                        val genre=iObject.getString("genre")
-                        val lyrics=iObject.getString("lyrics")
+                    val jsonArray = JSONArray(response.body().toString())
+                    for (i in 0..jsonArray.length() - 1) {
+                        val iObject = jsonArray.getJSONObject(i)
+                        val idx = iObject.getInt("idx")
+                        val title = iObject.getString("title")
+                        val singer = iObject.getString("singer")
+                        val song_path = iObject.getString("song_path")
+                        val genre = iObject.getString("genre")
+                        val lyrics = iObject.getString("lyrics")
 
-                        val mrData=MRData(idx,title, singer,song_path,genre,lyrics)
-                        mrList.add(0,mrData)
+                        val mrData = MRData(idx, title, singer, song_path, genre, lyrics)
+                        mrList.add(0, mrData)
                         mrAdapter.notifyDataSetChanged()
                     }
 

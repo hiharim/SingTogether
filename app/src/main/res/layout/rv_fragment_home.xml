@@ -11,6 +11,8 @@
         android:id="@+id/rv_fragment_home_iv_thumbnail"
         android:layout_width="87dp"
         android:layout_height="94dp"
+        android:scaleType="fitXY"
+        android:background="#dedcee"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         tools:srcCompat="@tools:sample/avatars" />

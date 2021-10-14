@@ -83,7 +83,7 @@ class DuetFragment : Fragment() {
         duetList.clear()
         loadDuet()
     }
-    private fun loadDuet(){
+    private fun loadDuet() {
         retrofitService.requestDuet().enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {

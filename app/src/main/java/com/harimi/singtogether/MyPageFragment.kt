@@ -45,7 +45,6 @@ class MyPageFragment : Fragment() {
         // 사용자 프로필
         Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.fragmentMyPageIvProfile)
 
-
         val pagerAdapter = MyPagePagerAdapter(requireActivity())
         // 2개의 Fragment Add
         pagerAdapter.addFragment(MySongFragment())

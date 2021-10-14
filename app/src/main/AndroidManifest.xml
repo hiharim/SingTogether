@@ -33,7 +33,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileEditActivity"></activity>
+        <activity android:name=".sing.SearchSongActivity"></activity>
+        <activity android:name=".ProfileEditActivity" />
 
         <service
             android:name=".broadcast.MyService"

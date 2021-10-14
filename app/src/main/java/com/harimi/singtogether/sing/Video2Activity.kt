@@ -2,6 +2,7 @@ package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.hardware.Camera
 import android.media.CamcorderProfile
 import android.media.MediaPlayer
@@ -113,6 +114,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         //리사이클러뷰 설정
         binding.activityVideo2Rv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityVideo2Rv.setHasFixedSize(true)
+        binding.activityVideo2Rv.setBackgroundColor(Color.parseColor("#81000000"))
 //        lyricsAdapter= LyricsAdapter(lyricsList,time!!)
 //        binding.activityVideo2Rv.adapter=lyricsAdapter
 //        lyricsAdapter.notifyDataSetChanged()
