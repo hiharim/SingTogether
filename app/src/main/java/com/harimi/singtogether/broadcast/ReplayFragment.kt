@@ -63,10 +63,7 @@ class ReplayFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.detach(this).attach(this).commit()
-        replayDataList.clear()
-        replayAdapter.notifyDataSetChanged()
+
         replayPostLoad()
     }
 
