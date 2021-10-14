@@ -73,9 +73,11 @@ class MyBroadcastFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
+//        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
+//        ft.detach(this).attach(this).commit()
+        myBroadcastList.clear()
+        myBroadcastAdapter.notifyDataSetChanged()
         loadMyBroadcast()
-
-
     }
 
     companion object {
@@ -102,13 +104,13 @@ class MyBroadcastFragment : Fragment() {
 
                         val replayPostList = replayObject.getString("replayPostList")
                         if (replayPostList.equals("") || replayPostList.equals("null")){
-
+                            tv_noMyBroadcast.visibility =View.VISIBLE
+                            fragment_my_broadcast_recyclerView.visibility =View.GONE
                         }else{
                             val postArray = JSONArray(replayPostList)
                             for (i in 0 until postArray.length()) {
                                 if (postArray.length() ==0 || postArray.equals("")){
-                                    tv_noMyBroadcast.visibility =View.VISIBLE
-                                    fragment_my_broadcast_recyclerView.visibility =View.GONE
+
                                 }else {
                                     val userLikeList = replayObject.getString("userLikeList")
                                     fragment_my_broadcast_recyclerView.visibility =View.VISIBLE

@@ -174,13 +174,11 @@ class DetailReplayActivity : AppCompatActivity() {
         /////수정, 삭제
         iv_editMenu.setOnClickListener {
             val popupMenu = PopupMenu(applicationContext, it)
-            popupMenu.inflate(R.menu.edit_and_delete)
+            popupMenu.inflate(R.menu.replay_delete)
             popupMenu.show()
             popupMenu.setOnMenuItemClickListener { menuItem ->
                 when (menuItem.itemId) {
-                    R.id.post_edit -> {
 
-                    }
                     R.id.post_delete -> {
                         val builder =
                             AlertDialog.Builder(this@DetailReplayActivity)

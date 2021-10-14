@@ -426,9 +426,11 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     hour = min / 60
                 }
                 if (min <=9){
-                    activity_streaming_tv_time.text = "$min 분 $time 초"
+//                    activity_streaming_tv_time.text = "$min 분 $time 초"
+                    activity_streaming_tv_time.text = "$min : $time "
                 }else{
-                    activity_streaming_tv_time.text = "$hour 시간 $min 분"
+//                    activity_streaming_tv_time.text = "$hour 시간 $min 분"
+                    activity_streaming_tv_time.text = "$hour : $min "
                 }
             }
         }
