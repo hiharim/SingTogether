@@ -15,6 +15,7 @@ import kotlin.time.seconds
 // 가사 어댑터
 class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: String): RecyclerView.Adapter<LyricsAdapter.LyricsViewHolder>() {
 
+    var baseIndex = 0
 
     // 리스트 아이템에 있는 뷰 참조
     inner class LyricsViewHolder(v: View) : RecyclerView.ViewHolder(v){
@@ -33,20 +34,40 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: Str
     }
 
     override fun onBindViewHolder(holder: LyricsAdapter.LyricsViewHolder, position: Int) {
+
         val curData = lyricsList[position]
         holder.seconds.text=curData.seconds
         //holder.next_seconds.text=curData.next_seconds
         holder.line.text=curData.line
-        Log.e("가사어댑터", "time 전 : " + "[" + time + "]")
+//        Log.e("가사어댑터", "time 전 : " + "[" + time + "]")
 
         val mTime=time.substring(3).toInt()
-        Log.e("가사어댑터", "mTime : " + mTime)
+//        Log.e("가사어댑터", "mTime : " + mTime)
         val mSeconds=holder.seconds.text.substring(4,6).toInt()
-        Log.e("가사어댑터", "mSeconds : " + mSeconds)
+//        Log.e("가사어댑터", "mSeconds : " + mSeconds)
 //        val mNextSeconds=holder.next_seconds.text.substring(3).toInt()
 //        Log.e("가사어댑터", "mNextSeconds : " + mNextSeconds)
         val mNextSeconds=holder.next_seconds.text.substring(3).toInt()
-        Log.e("가사어댑터", "mNextSeconds : " + mNextSeconds)
+//        Log.e("가사어댑터", "mNextSeconds : " + mNextSeconds)
+
+
+        var a=baseIndex
+        var b=lyricsList.get(a)
+        var c=b.seconds.substring(4,6).toInt()
+        Log.e("가사어댑터", "index : " + "$c" )
+        if(c <=mTime){
+
+            Log.e("가사어댑터", "baseIndex : " + "$baseIndex")
+            if (baseIndex.toString().equals(position.toString())) {
+                baseIndex++
+                Log.e("가사어댑터", "baseIndex : " + "$baseIndex")
+                holder.line.setTextColor(Color.BLUE)
+            }
+
+
+        }else {
+            holder.line.setTextColor(Color.BLACK)
+        }
 
 //        if(holder.seconds.text.contains(time)){
 //            Log.e("가사어댑터", "time 후 : " + time)
@@ -92,35 +113,56 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: Str
 
 
 
-        for ((index,value) in lyricsList.withIndex()) {
-            Log.e("가사어댑터", "index : " + "$index")
-
-            val a=index+1
-            Log.e("가사어댑터", "index+1 : " + a)
-            if(lyricsList.size==a){
-                break
-            }else{
-
-                    val b=lyricsList.get(a)
-                    Log.e("가사어댑터", "lyricsList.size-index : " + b)
-                    val c=b.seconds.substring(4,6).toInt()
-                    Log.e("가사어댑터", "c : " + c)
-                    if (mSeconds <= mTime  && mTime < c){
-                        holder.line.setTextColor(Color.BLUE)
-                    }
-                    else if(mTime<mSeconds && mTime>c){
-                        holder.line.setTextColor(Color.BLACK)
-                    }else{
-//                    lyricsList.get(index).line
-                        holder.line.setTextColor(Color.BLACK)
-                    }
-
-            }
-
-            Log.e("가사어댑터", "value.seconds : " + value.seconds)
+//        for ((index,value) in lyricsList.withIndex()) {
+//                val a=baseIndex
+//                val b=lyricsList.get(a)
+//                val c=b.seconds.substring(4,6).toInt()
+////            Log.e("가사어댑터", "index : " + "$index" )
+//                Log.e("가사어댑터", "c : " + c )
+//                Log.e("가사어댑터", "mTime : " + mTime)
+//                if(c <=mTime){
+//                    if (baseIndex == index){
+//                        Log.e("가사어댑터", "index : " + "$index" )
+//                        holder.line.setTextColor(Color.BLUE)
+//                        baseIndex++
+//                        Log.e("가사어댑터", "baseIndex : " + "$baseIndex")
+//                    }else{
+//
+//                    }
+//                }else{
+//                    Log.e("가사어댑터", "else " )
+////                holder.line.setTextColor(Color.BLACK)
+//                }
+//
 
 
-        }
+
+//            val a=index+1
+//            Log.e("가사어댑터", "index+1 : " + a)
+//            if(lyricsList.size==a){
+//                break
+//            }else{
+
+//                    val b=lyricsList.get(a)
+//                    Log.e("가사어댑터", "lyricsList.size-index : " + b)
+//                    val c=b.seconds.substring(4,6).toInt()
+//                    Log.e("가사어댑터", "c : " + c)
+//                    if (mSeconds <= mTime  && mTime < c){
+//                        holder.line.setTextColor(Color.BLUE)
+//                    }
+//                    else if(mTime<mSeconds && mTime>c){
+//                        holder.line.setTextColor(Color.BLACK)
+//                    }else{
+////                    lyricsList.get(index).line
+//                        holder.line.setTextColor(Color.BLACK)
+//                    }
+
+//            }
+
+//            Log.e("가사어댑터", "value.seconds : " + value.seconds)
+
+
+//        }
 
 
 //
