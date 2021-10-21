@@ -266,7 +266,7 @@
             android:layout_height="200dp">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/fragment_post_recyclerView"
+                android:id="@+id/fragment_detail_duet_recyclerView"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>

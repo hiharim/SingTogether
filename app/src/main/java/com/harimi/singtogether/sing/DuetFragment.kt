@@ -77,6 +77,8 @@ class DuetFragment : Fragment() {
 //        loadDuet()
 //    }
 
+
+
     override fun onResume() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
