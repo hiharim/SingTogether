@@ -1,10 +1,12 @@
 package com.harimi.singtogether
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +19,9 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.HomeAdapter
 import com.harimi.singtogether.databinding.FragmentDuetBinding
 import com.harimi.singtogether.databinding.FragmentHomeBinding
+import com.harimi.singtogether.sing.BeforeSingActivity
 import com.harimi.singtogether.sing.DuetAdapter
+import com.harimi.singtogether.sing.SearchSongActivity
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
@@ -46,10 +50,16 @@ class HomeFragment : Fragment() {
         val binding= FragmentHomeBinding.inflate(inflater,container,false)
         binding.fragmentHomeRecyclerView.layoutManager=LinearLayoutManager(context)
         binding.fragmentHomeRecyclerView.setHasFixedSize(true)
+        binding.fragmentHomeRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         homeAdapter= HomeAdapter(homePostList)
         binding.fragmentHomeRecyclerView.adapter= homeAdapter
         homeAdapter.notifyDataSetChanged()
 
+        // 검색버튼클릭
+        binding.fragmentHomeIvSearch.setOnClickListener {
+            val intent= Intent(context, SearchSongActivity::class.java)
+            startActivity(intent)
+        }
 
         return binding.root
 
@@ -87,8 +97,9 @@ class HomeFragment : Fragment() {
                         val lyrics=iObject.getString("lyrics")
                         val profile=iObject.getString("profile")
                         val collaboration_profile=iObject.getString("col_profile")
+                        val kinds=iObject.getString("kinds")
 
-                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like, nickname, profile, song_path, collaboration, collaboration_profile, date,mr_idx)
+                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like, nickname, profile, song_path, collaboration, collaboration_profile, date,kinds,mr_idx)
                         homePostList.add(0,homeData)
                         homeAdapter.notifyDataSetChanged()
                     }

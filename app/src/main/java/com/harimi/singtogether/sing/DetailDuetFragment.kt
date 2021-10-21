@@ -18,6 +18,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.harimi.singtogether.Data.DuetData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
@@ -119,19 +120,24 @@ class DetailDuetFragment : Fragment() {
         simpleExoPlayer!!.play()
 
         initRetrofit()
-        // 게시물 삭제
-        binding.fragmentDetailDuetBtnDelete.setOnClickListener {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("삭제하기")
-            builder.setMessage("삭제 하시겠습니까? ")
-            builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
-                deleteSong()
-            }
-            builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+        val login_user= LoginActivity.user_info.loginUserNickname
+        if(nickname.equals(login_user)){
+            binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
+            // 게시물 삭제
+            binding.fragmentDetailDuetBtnDelete.setOnClickListener {
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("삭제하기")
+                builder.setMessage("삭제 하시겠습니까? ")
+                builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                    deleteSong()
+                }
+                builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
 
+                }
+                builder.show()
             }
-            builder.show()
         }
+
 
         return binding.root
     }

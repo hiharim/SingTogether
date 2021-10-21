@@ -36,6 +36,7 @@ import java.util.*
 /**
  * 노래 녹화 다 하고 확인하고 서버에 업로드 하는 화면
  * 비디오+오디오 둘다 업로드
+ * 비디오만
  * */
 class AfterRecordActivity : AppCompatActivity() {
 
@@ -107,7 +108,7 @@ class AfterRecordActivity : AppCompatActivity() {
             asyncDialog!!.setMessage("업로드 중...")
             asyncDialog!!.show()
 
-            if(isMerge.equals("Y")){
+            if(isMerge.equals("Y")) {
                 uploadMergeVideo()
             }else if(isMerge.equals("N")){
                 uploadVideo()

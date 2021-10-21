@@ -11,8 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="300dp"
         android:layout_marginTop="52dp"
+        app:use_artwork="true"
         app:resize_mode="fill" >
 
+        <ImageView
+            android:id="@+id/imageView_thumb"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="95dp"
+            android:layout_height="95dp">
+        </ImageView>
 
     </com.google.android.exoplayer2.ui.PlayerView>
 

@@ -97,7 +97,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         binding.activityRecordTvLyrics.text= result.toString()
 
         mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(mr_path)
+        //mediaPlayer.setDataSource(mr_path)
+        mediaPlayer.setDataSource(duet_path)
         mediaPlayer.prepare()
 
         initVideoRecorder()

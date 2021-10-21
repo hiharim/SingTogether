@@ -55,6 +55,7 @@ public class DeviceOrientation {
                     averagePitch = addValue(orientationData[1], pitches);
                     averageRoll = addValue(orientationData[2], rolls);
                     orientation = calculateOrientation();
+
                 }
             }
 

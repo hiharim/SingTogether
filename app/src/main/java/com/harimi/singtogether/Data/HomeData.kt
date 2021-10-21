@@ -32,7 +32,9 @@ data class HomeData(
     @SerializedName("collaboration_profile")
     val collaboration_profile : String,
     @SerializedName("date")
-    val date : String,
+    val date: String,
+    @SerializedName("kinds")
+    val kinds : String,
     @SerializedName("mr_idx")
     val mr_idx : Int
 

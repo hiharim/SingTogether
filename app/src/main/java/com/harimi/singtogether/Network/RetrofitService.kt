@@ -9,6 +9,15 @@ import retrofit2.http.*
 // POST 방식으로 데이터를 주고 받을 때 넘기는 변수는 Field라고 해야한다.
 interface RetrofitService {
 
+    //검색
+    @FormUrlEncoded
+    @POST("loadSearchResult.php")
+    fun loadSearchResult(
+        @Field("searchInput") searchInput : String,
+        @Field("which") which : String // 어떤프래그먼트이냐 resultMR,resultSong,resultDuet 구분해주는 변수
+        // which 변수 왜필요하냐-서버에서 구분시켜서보내주기위해서
+    ) : Call<String>
+
     //내노래 삭제
     @FormUrlEncoded
     @POST("deleteMySong.php")
@@ -47,7 +56,27 @@ interface RetrofitService {
     @POST("mixVideo.php")
     fun requestMixVideo (
         @Part("mr_path") mr_path :String,
-        @Part("side") side :String,
+        @Part("side") side :String, // 전면카메라인지 후면카메라인지
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("uploadAudio.php")
+    fun requestUploadAudio (
+        @Field("mr_idx") mr_idx: Int,
+        @Field("thumbnail_path") thumbnail_path :String,
+        @Field("song_path") song_path :String,
+        @Field("extract_path") extract_path :String,
+        @Field("nickname") nickname :String,
+        @Field("kinds") kinds :String, // 녹음,녹화 구분위해서
+        @Field("with") with :String // 솔로,듀엣 구분위해서
+    ) : Call<String>
+
+    @Multipart
+    @POST("mixAudio.php")
+    fun requestMixAudio (
+        @Part("mr_path") mr_path :String,
+        @Part("nickname") nickname: String,
         @Part file : MultipartBody.Part
     ) : Call<String>
 

@@ -1,5 +1,7 @@
 package com.harimi.singtogether.sing
 
+import android.annotation.SuppressLint
+import android.app.ProgressDialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.media.MediaPlayer
@@ -8,13 +10,18 @@ import androidx.appcompat.app.AppCompatActivity
 import com.harimi.singtogether.R
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.ProfileActivity
@@ -52,7 +59,10 @@ class AfterSingActivity : AppCompatActivity() {
     lateinit var fileName : String // 서버로 보낼 사용자 목소리 + MR 파일 이름
     private var videoUri : Uri? = null // video 저장될 Uri
     private var uri : Uri?=null
+    private var circle_profile : String? = null
+    var asyncDialog : ProgressDialog?=null
 
+    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityAfterSingBinding.inflate(layoutInflater)
@@ -65,6 +75,7 @@ class AfterSingActivity : AppCompatActivity() {
         way=intent.getStringExtra("WAY")
         idx=intent.getIntExtra("MR_IDX",0)
         videoUri=intent.getParcelableExtra("URI")
+        circle_profile=intent.getStringExtra("CIRCLE_PROFILE")
 
         Log.e("애프터싱액티비티","idx,file_path,user_path,with,way,uri"+
                 idx+" "+file_path+" "+user_path+" "+with+" "+way+""+videoUri)
@@ -79,48 +90,48 @@ class AfterSingActivity : AppCompatActivity() {
             applicationContext,
             "ExoPlayer"
         )
-//        val mediaSource: ProgressiveMediaSource =
-//            ProgressiveMediaSource.Factory(factory)
-//                .createMediaSource(Uri.parse(user_path)) // 사용자 목소리만 녹음한 파일
-//                //.createMediaSource(Uri.parse(file_path)) // 사용자목소리+mr merge 한 파일
-
-        val mediaItem = MediaItem.fromUri(Uri.parse(user_path))
-        //val mediaItem = MediaItem.fromUri(Uri.parse(videoUri.toString()))
+        val mediaItem = MediaItem.fromUri(Uri.parse(file_path))
         val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
             .createMediaSource(mediaItem)
-        //simpleExoPlayer?.prepare(mediaSource)
-//        simpleExoPlayer?.prepare(progressiveMediaSource)
-//        simpleExoPlayer!!.playWhenReady = true
 
         simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
         simpleExoPlayer!!.prepare()
+        Glide.with(this).load(circle_profile).into(binding.imageViewThumb)
+        binding.imageViewThumb.visibility=View.VISIBLE
+
         simpleExoPlayer!!.play()
         // 업로드 버튼 클릭
         binding.activityAfterSingBtnUpload.setOnClickListener {
-            upload()
+            asyncDialog = ProgressDialog(this@AfterSingActivity)
+            asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+            asyncDialog!!.setMessage("업로드중...")
+            asyncDialog!!.show()
+            if(with.equals("솔로")) {
+                uploadAudio()
+            }else if(with.equals("듀엣")){
+                uploadMergeAudio()
+            }
 
         }
 
     }
 
-    private fun upload() {
-        //audioFile=File("${externalCacheDir?.absolutePath}/newUserMrAudio.m4a")
-        audioFile=File(user_path)
-        val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-        // Create an image file name
-        fileName = "$timeStamp.m4a"
-        var requestBody : RequestBody = RequestBody.create(
-            MediaType.parse("multipart/form-data"), audioFile)
-        var body : MultipartBody.Part=
-            MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
+    private fun uploadMergeAudio() {
+        TODO("Not yet implemented")
+    }
+
+    private fun uploadAudio() {
+        val nickname= LoginActivity.user_info.loginUserNickname
+        val kinds="녹음"
         idx?.let {
-            nickname?.let { it1 ->
-                retrofitService.requestUpload(it, it1,body).enqueue(object : Callback<String> {
+            circle_profile?.let { it1 ->
+                retrofitService.requestUploadAudio(it, it1,file_path,user_path,nickname,kinds,with!!).enqueue(object : Callback<String> {
                     // 통신에 성공한 경우
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {
                             // 응답을 잘 받은 경우
-                            Log.e("비디오", " 통신 성공: ${response.body().toString()}")
+                            asyncDialog!!.dismiss()
+                            Log.e("AfterSingActivity", " 통신 성공:"+ response.body().toString())
                             // 업로드 성공 다이얼로그
                             val builder = AlertDialog.Builder(this@AfterSingActivity)
                             builder.setTitle("SingTogether")
@@ -132,17 +143,61 @@ class AfterSingActivity : AppCompatActivity() {
 
                         } else {
                             // 통신은 성공했지만 응답에 문제가 있는 경우
-                            Log.e("비디오", " 응답 문제" + response.code())
+                            Log.e("AfterRecordActivity", " 응답 문제" + response.code())
+                            Log.e("AfterRecordActivity", " 응답 문제" + response.errorBody().toString())
                         }
                     }
 
                     override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.e("비디오", " 통신 실패" + t.message)
+                        Log.e("AfterRecordActivity", " 통신 실패" + t.message)
                     }
+
+
                 })
             }
         }
     }
+
+//    private fun upload() {
+//        //audioFile=File("${externalCacheDir?.absolutePath}/newUserMrAudio.m4a")
+//        audioFile=File(user_path)
+//        val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+//        // Create an image file name
+//        fileName = "$timeStamp.m4a"
+//        var requestBody : RequestBody = RequestBody.create(
+//            MediaType.parse("multipart/form-data"), audioFile)
+//        var body : MultipartBody.Part=
+//            MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
+//        idx?.let {
+//            nickname?.let { it1 ->
+//                retrofitService.requestUpload(it, it1,body).enqueue(object : Callback<String> {
+//                    // 통신에 성공한 경우
+//                    override fun onResponse(call: Call<String>, response: Response<String>) {
+//                        if (response.isSuccessful) {
+//                            // 응답을 잘 받은 경우
+//                            Log.e("비디오", " 통신 성공: ${response.body().toString()}")
+//                            // 업로드 성공 다이얼로그
+//                            val builder = AlertDialog.Builder(this@AfterSingActivity)
+//                            builder.setTitle("SingTogether")
+//                            builder.setMessage("업로드를 성공했습니다!")
+//                            builder.setPositiveButton("확인") { dialogInterface, i ->
+//                                simpleExoPlayer?.release()
+//                                finish() }
+//                            builder.show()
+//
+//                        } else {
+//                            // 통신은 성공했지만 응답에 문제가 있는 경우
+//                            Log.e("비디오", " 응답 문제" + response.code())
+//                        }
+//                    }
+//
+//                    override fun onFailure(call: Call<String>, t: Throwable) {
+//                        Log.e("비디오", " 통신 실패" + t.message)
+//                    }
+//                })
+//            }
+//        }
+//    }
 
 
 
@@ -151,3 +206,5 @@ class AfterSingActivity : AppCompatActivity() {
         retrofitService=retrofit.create(RetrofitService::class.java)
     }
 }
+
+

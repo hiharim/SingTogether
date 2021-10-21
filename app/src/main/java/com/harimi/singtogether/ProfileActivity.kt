@@ -73,7 +73,8 @@ class ProfileActivity : AppCompatActivity() {
         nickname= intent.getStringExtra("NICKNAME").toString()
         profile=intent.getStringExtra("PROFILE").toString()
         social=intent.getStringExtra("SOCIAL").toString()
-        token=intent.getStringExtra("TOKEN").toString()
+       // token=intent.getStringExtra("TOKEN").toString()
+        token=""
 
         Log.e("값: ", email + " " + nickname + " " + social + " " + token + " " + profile)
         Log.e("imageFile값: ", imageFile.toString())

@@ -53,6 +53,8 @@ class SingFragment : Fragment() {
                 }
             }
         }.attach()
+
+
         return binding.root
     }
 

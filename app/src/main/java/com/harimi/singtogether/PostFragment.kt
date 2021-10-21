@@ -45,6 +45,8 @@ class PostFragment : Fragment() {
     private var profile : String? = null
     private var collaboration_profile : String? = null
     private var date : String? = null
+    private var kinds : String? = null
+    private var thumbnail : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +65,8 @@ class PostFragment : Fragment() {
             profile=it.getString("profile")
             collaboration_profile=it.getString("collaboration_profile")
             date=it.getString("date")
+            kinds=it.getString("kinds")
+            thumbnail=it.getString("thumbnail")
 
         }
     }
@@ -82,6 +86,16 @@ class PostFragment : Fragment() {
         Glide.with(this).load("http://3.35.236.251/"+collaboration_profile).into(binding.ivUploadCollaboProfile)
         Log.e("디테일프래그","duet_path"+song_path)
 
+        if(binding.tvUploadUserNickName.text.equals(binding.tvUploadCollaboNickName.text)){
+            binding.tvUploadCollaboNickName.visibility=View.GONE
+            binding.ivUploadCollaboProfile.visibility=View.GONE
+            binding.collaboCardView.visibility=View.GONE
+        }
+
+        if(kinds.equals("녹음")){
+            Glide.with(this).load(thumbnail).into(binding.imageViewThumb)
+            binding.imageViewThumb.visibility=View.VISIBLE
+        }
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
         context?.let{
             simpleExoPlayer= SimpleExoPlayer.Builder(it).build()

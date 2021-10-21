@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
@@ -34,7 +35,11 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val cnt_like=v.findViewById<TextView>(R.id.rv_fragment_home_tv_like)
         val song_path=v.findViewById<TextView>(R.id.rv_fragment_home_tv_song_path)
         val date=v.findViewById<TextView>(R.id.rv_fragment_home_tv_date)
+        val and=v.findViewById<TextView>(R.id.and)
+        val kinds=v.findViewById<TextView>(R.id.rv_fragment_home_tv_kinds)
+        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
     }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeAdapter.HomeViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.rv_fragment_home, parent, false)
@@ -53,11 +58,19 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         holder.song_path.text=curData.song_path
         holder.collabo_nickname.text=curData.collaboration_nickname
         holder.date.text=curData.date
+        holder.kinds.text=curData.kinds
         holder.mr_idx.text= curData.mr_idx.toString()
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
+
+        if(holder.nickname.text.equals(holder.collabo_nickname.text)){
+            holder.collabo_profile.visibility=View.GONE
+            holder.collabo_nickname.visibility=View.GONE
+            holder.and.visibility=View.GONE
+            holder.collaboCardView.visibility=View.GONE
+        }
 
         holder.itemView.setOnClickListener { v->
             // PostFragment 로 이동
@@ -77,6 +90,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             bundle.putString("profile",curData.profile)
             bundle.putString("collaboration_profile",curData.collaboration_profile)
             bundle.putString("date",curData.date)
+            bundle.putString("kinds",curData.kinds)
+            bundle.putString("thumbnail",curData.thumbnail)
             postFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()
