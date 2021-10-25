@@ -49,9 +49,10 @@ class MyPageFragment : Fragment() {
             Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.fragmentMyPageIvProfile)
         }
 
-        val pagerAdapter = MyPagePagerAdapter(requireActivity())
+        val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
 
-        // 2개의 Fragment Add
+        // 3개의 Fragment Add
+        pagerAdapter.addFragment(MyPostFragment())
         pagerAdapter.addFragment(MySongFragment())
         pagerAdapter.addFragment(MyBroadcastFragment())
 
@@ -69,13 +70,13 @@ class MyPageFragment : Fragment() {
                 tab,position->
             when(position){
                 0 ->{
-                    tab.text="듀엣초대"
+                    tab.text="포스팅"
                }
                 1 ->{
-                    tab.text="방송"
+                    tab.text="듀엣초대"
                 }
                 2 ->{
-                    tab.text="포스팅"
+                    tab.text="방송"
                 }
             }
         }.attach()

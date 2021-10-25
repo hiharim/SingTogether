@@ -169,6 +169,14 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("AddFollow.php")
+    fun requestAddFollow (
+        @Field("followingUser") followingUser :String,
+        @Field("follower") follower :String,
+
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("WritePostReview.php")
     fun requestWritePostReview (
         @Field("postIdx") postIdx :String,
@@ -188,6 +196,14 @@ interface RetrofitService {
         @Field("uploadUserNickname") uploadUserNickname :String,
         @Field("review") review :String,
         @Field("uploadDate") uploadDate :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("LookAtUserProfile.php")
+    fun requestLookAtUserProfile (
+        @Field("otherUserEmail") otherUserEmail :String,
+        @Field("UserEmail") UserEmail :String,
+
     ) : Call<String>
 
 
