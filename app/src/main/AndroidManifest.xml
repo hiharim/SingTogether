@@ -33,7 +33,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".ProfileEditActivity"></activity>
+        <activity android:name=".MyFollowingActivity"></activity>
+        <activity android:name=".MyFollowerActivity" />
+        <activity android:name=".LookAtUserProfileActivity" />
+        <activity android:name=".ProfileEditActivity" />
 
         <service
             android:name=".broadcast.MyService"
