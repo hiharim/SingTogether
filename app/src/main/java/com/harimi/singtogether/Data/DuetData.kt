@@ -19,6 +19,8 @@ data class DuetData(
     val cnt_reply : String,
     @SerializedName("cnt_duet")
     val cnt_duet : String,
+    @SerializedName("email")
+    val email : String,
     @SerializedName("nickname")
     val nickname : String,
     @SerializedName("profile")

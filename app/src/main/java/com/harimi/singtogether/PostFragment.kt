@@ -40,6 +40,8 @@ class PostFragment : Fragment() {
     private var cnt_reply : String? = null
     private var cnt_like : String? = null
     private var nickname : String? = null
+    private var email : String? = null
+    private var collabo_email : String? = null
     private var collaboration_nickname : String? = null
     private var song_path : String? = null
     private var profile : String? = null
@@ -60,6 +62,8 @@ class PostFragment : Fragment() {
             cnt_reply=it.getString("cnt_reply")
             cnt_like=it.getString("cnt_like")
             nickname=it.getString("nickname")
+            email=it.getString("email")
+            collabo_email=it.getString("collabo_email")
             collaboration_nickname=it.getString("collaboration_nickname")
             song_path=it.getString("song_path")
             profile=it.getString("profile")

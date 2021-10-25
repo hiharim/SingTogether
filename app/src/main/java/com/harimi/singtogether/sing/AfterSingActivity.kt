@@ -76,10 +76,10 @@ class AfterSingActivity : AppCompatActivity() {
         idx=intent.getIntExtra("MR_IDX",0)
         videoUri=intent.getParcelableExtra("URI")
         circle_profile=intent.getStringExtra("CIRCLE_PROFILE")
+        Log.e("AfterRecordActivity", " idx" + idx)
 
         Log.e("애프터싱액티비티","idx,file_path,user_path,with,way,uri"+
                 idx+" "+file_path+" "+user_path+" "+with+" "+way+""+videoUri)
-        nickname="조하림22"
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
         applicationContext?.let{
@@ -122,10 +122,11 @@ class AfterSingActivity : AppCompatActivity() {
 
     private fun uploadAudio() {
         val nickname= LoginActivity.user_info.loginUserNickname
+        val email= LoginActivity.user_info.loginUserEmail
         val kinds="녹음"
         idx?.let {
             circle_profile?.let { it1 ->
-                retrofitService.requestUploadAudio(it, it1,file_path,user_path,nickname,kinds,with!!).enqueue(object : Callback<String> {
+                retrofitService.requestUploadAudio(it, it1,file_path,user_path,nickname,email,kinds,with!!).enqueue(object : Callback<String> {
                     // 통신에 성공한 경우
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {

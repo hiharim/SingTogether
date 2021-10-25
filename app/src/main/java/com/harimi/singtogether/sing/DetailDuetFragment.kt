@@ -45,6 +45,7 @@ class DetailDuetFragment : Fragment() {
     private var cnt_reply : String? = null
     private var cnt_duet : String? = null
     private var nickname : String? = null
+    private var email : String? = null
     private var duet_path : String? = null // 사용자 오디오/비디오
     private var mr_path : String? = null // mr
     private var extract_path : String? = null //
@@ -65,6 +66,7 @@ class DetailDuetFragment : Fragment() {
             cnt_reply=it.getString("cnt_reply")
             cnt_duet=it.getString("cnt_duet")
             nickname=it.getString("nickname")
+            email=it.getString("email")
             duet_path=it.getString("duet_path")
             mr_path=it.getString("mr_path")
             extract_path=it.getString("extract_path")
@@ -87,6 +89,7 @@ class DetailDuetFragment : Fragment() {
             intent.putExtra("title",title)
             intent.putExtra("singer",singer)
             intent.putExtra("nickname",nickname)
+            intent.putExtra("email",email)
             intent.putExtra("duet_path",duet_path)
             intent.putExtra("mr_path",mr_path)
             intent.putExtra("extract_path",extract_path)
@@ -120,8 +123,8 @@ class DetailDuetFragment : Fragment() {
         simpleExoPlayer!!.play()
 
         initRetrofit()
-        val login_user= LoginActivity.user_info.loginUserNickname
-        if(nickname.equals(login_user)){
+        val login_user= LoginActivity.user_info.loginUserEmail
+        if(email.equals(login_user)){
             binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
             // 게시물 삭제
             binding.fragmentDetailDuetBtnDelete.setOnClickListener {

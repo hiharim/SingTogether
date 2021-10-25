@@ -2,21 +2,17 @@ package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
 import android.content.Intent
-import android.graphics.Camera
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.media.audiofx.AcousticEchoCanceler
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.SeekBar
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.arthenica.mobileffmpeg.FFmpeg
-import com.arthenica.mobileffmpeg.FFmpegExecution
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.LyricsData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
@@ -34,6 +30,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 녹음하는 액티비티
@@ -63,7 +60,9 @@ class RecordActivity: AppCompatActivity()  {
     //private var nickname : String? = null
     private val lyricsList : ArrayList<LyricsData> = ArrayList()
     private lateinit var lyricsAdapter: LyricsAdapter
-    var time :String?=null
+
+    private val timeList:ArrayList<String> = ArrayList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,14 +70,14 @@ class RecordActivity: AppCompatActivity()  {
         setContentView(binding.root)
         initRetrofit()
 
-        idx=intent.getIntExtra("RECORD_IDX",0)
+        idx=intent.getIntExtra("RECORD_IDX", 0)
         title=intent.getStringExtra("RECORD_TITLE")
         singer=intent.getStringExtra("RECORD_SINGER")
         lyrics=intent.getStringExtra("RECORD_LYRICS")
         with=intent.getStringExtra("WITH")
         way=intent.getStringExtra("WAY")
         song_path= intent.getStringExtra("RECORD_SONG_PATH").toString()
-
+        Log.e("RecordActivity", " idx" + idx)
         // 툴바 색깔 지정
         binding.toolbarRecord.setBackgroundColor(resources.getColor(R.color.dark_purple))
 
@@ -89,8 +88,26 @@ class RecordActivity: AppCompatActivity()  {
 
         // 가사
        // var splitArray= lyrics?.split(" ★")
-        var result=lyrics?.replace(" ★","\n")
-        binding.activityRecordTvLyrics.text= result.toString()
+//        var result=lyrics?.replace(" ★","\n")
+//        binding.activityRecordTvLyrics.text= result.toString()
+        val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
+        if (array != null) {
+            for (i in array.indices) {
+                println(array[i])
+                val seconds=array[i]
+                //7
+                val line= array[i].substring(6)
+                val lyricsData=LyricsData(seconds, line)
+                lyricsList.add(lyricsData)
+
+                val times=array[i].substring(1,5)
+                Log.e("레코드액티비티","times"+times)
+                timeList.add(times)
+            }
+        }
+        binding.activityRecordRv.layoutManager= LinearLayoutManager(applicationContext)
+        binding.activityRecordRv.setHasFixedSize(true)
+
 
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(song_path)
@@ -102,6 +119,7 @@ class RecordActivity: AppCompatActivity()  {
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
+                var timeFormat2 = SimpleDateFormat("m.ss")  //"분:초"를 나타낼 수 있도록 포멧팅
                 var timeFormat = SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
                 override fun run() {
                     super.run()
@@ -114,8 +132,24 @@ class RecordActivity: AppCompatActivity()  {
                             binding.seekBar.progress = mediaPlayer.currentPosition
                             binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer.currentPosition)
                             binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
+
+                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
+                            time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
+                            //time=binding.activityRecordTvIngTime.text.toString()
+                            lyricsAdapter= LyricsAdapter(lyricsList)
+                            binding.activityRecordRv.adapter=lyricsAdapter
+
+                            for(i in timeList) {
+                                var minus_one=(i.toFloat()-0.01).toFloat()
+                                Log.e("레코드액티비티","포문 안 i"+i)
+                                if(time_info.pTime.toFloat()==minus_one){
+//                                    lyricsList.removeAt(0)
+//                                    lyricsAdapter.notifyItemRemoved(0)
+                                }
+                            }
+
                         }
-                        SystemClock.sleep(200)
+                        SystemClock.sleep(1000)
                     }
 
                     // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
@@ -147,6 +181,7 @@ class RecordActivity: AppCompatActivity()  {
 
                 }
             }.start()
+
             binding.seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(
                     seekBar: SeekBar?,
@@ -224,21 +259,22 @@ class RecordActivity: AppCompatActivity()  {
                         asyncDialog!!.dismiss()
                         val jsonObject = JSONObject(response.body().toString())
                         mix_path = "http://3.35.236.251/" + jsonObject.getString("mix_path")
-                        circle_profile = "http://3.35.236.251/" + jsonObject.getString("circle_profile");
-                        Log.e("레코드액티비티", " mix_path" +mix_path)
-                        Log.e("레코드액티비티", " circle_profile" +circle_profile)
+                        circle_profile =
+                            "http://3.35.236.251/" + jsonObject.getString("circle_profile");
+                        Log.e("레코드액티비티", " mix_path" + mix_path)
+                        Log.e("레코드액티비티", " circle_profile" + circle_profile)
                         // 믹싱 성공 다이얼로그
                         val builder = AlertDialog.Builder(this@RecordActivity)
                         builder.setTitle("SingTogether")
                         builder.setMessage("믹싱을 성공했습니다!")
                         builder.setPositiveButton("확인") { dialogInterface, i ->
-                            val intent= Intent(applicationContext,AfterSingActivity::class.java)
-                            intent.putExtra("MR_IDX",idx)
-                            intent.putExtra("FILE_PATH",mix_path)
-                            intent.putExtra("USER_PATH",recordingFilePath)
-                            intent.putExtra("WITH",with)
-                            intent.putExtra("WAY",way)
-                            intent.putExtra("CIRCLE_PROFILE",circle_profile)
+                            val intent = Intent(applicationContext, AfterSingActivity::class.java)
+                            intent.putExtra("MR_IDX", idx)
+                            intent.putExtra("FILE_PATH", mix_path)
+                            intent.putExtra("USER_PATH", recordingFilePath)
+                            intent.putExtra("WITH", with)
+                            intent.putExtra("WAY", way)
+                            intent.putExtra("CIRCLE_PROFILE", circle_profile)
                             startActivity(intent)
                             finish()
 
@@ -266,6 +302,11 @@ class RecordActivity: AppCompatActivity()  {
         Log.e("비디오2", " 통신 실패" + 404)
     }
 
+    class time_info{
+        companion object {
+            var pTime = ""
+        }
+    }
 
     // 오디오.m4a + 오디오.m4a = output.m4a 오디오
 //    fun Merge() {

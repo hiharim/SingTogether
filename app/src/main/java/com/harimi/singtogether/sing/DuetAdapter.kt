@@ -24,6 +24,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         val singer=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_singer)
         val profile=v.findViewById<ImageView>(R.id.rv_fragment_duet_iv_profile)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_nickname)
+        val email=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_email)
         val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_count_play)
         val cnt_reply=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_count_reply)
         val cnt_duet=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_count_duet)
@@ -48,6 +49,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         holder.cnt_play.text=curData.cnt_play
         holder.cnt_reply.text=curData.cnt_reply
         holder.cnt_duet.text=curData.cnt_duet
+        holder.email.text=curData.email
         holder.nickname.text=curData.nickname
         holder.duet_path.text=curData.duet_path
         holder.mr_path.text=curData.mr_path
@@ -69,6 +71,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             bundle.putString("cnt_play",curData.cnt_play)
             bundle.putString("cnt_reply",curData.cnt_reply)
             bundle.putString("cnt_duet",curData.cnt_duet)
+            bundle.putString("email",curData.email)
             bundle.putString("nickname",curData.nickname)
             bundle.putString("duet_path",curData.duet_path)
             bundle.putString("mr_path",curData.mr_path)

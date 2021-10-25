@@ -152,7 +152,8 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                             //time=tf.format(mediaPlayer.currentPosition).toString()
                             //time=getTimeString(mediaPlayer.currentPosition.toLong())
 
-                            lyricsAdapter= LyricsAdapter(lyricsList, time!!)
+                            lyricsAdapter= LyricsAdapter(lyricsList)
+                            //lyricsAdapter= LyricsAdapter(lyricsList, time!!)
                             Log.e("비디오2", "time : " + time.toString())
                             binding.activityVideo2Rv.adapter=lyricsAdapter
                             lyricsAdapter.notifyDataSetChanged()

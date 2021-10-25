@@ -83,6 +83,7 @@ class ResultSongPostFragment : Fragment() {
                                 val cnt_reply=iObject.getString("cnt_reply")
                                 val cnt_like=iObject.getString("cnt_like")
                                 val nickname=iObject.getString("nickname")
+                                val email=iObject.getString("email")
                                 val song_path=iObject.getString("song_path")
                                 val date=iObject.getString("date")
                                 val collaboration=iObject.getString("collaboration")
@@ -92,8 +93,10 @@ class ResultSongPostFragment : Fragment() {
                                 val lyrics=iObject.getString("lyrics")
                                 val profile=iObject.getString("profile")
                                 val collaboration_profile=iObject.getString("col_profile")
+                                val collabo_email=iObject.getString("collabo_email")
                                 val kinds=iObject.getString("kinds")
-                                val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like, nickname, profile, song_path, collaboration, collaboration_profile, date,kinds,mr_idx)
+
+                                val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx)
                                 homePostList.add(0,homeData)
                                 homeAdapter.notifyDataSetChanged()
                             }

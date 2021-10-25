@@ -26,6 +26,7 @@ class DuetActivity : AppCompatActivity() {
     private var genre : String? = null
     private var user_profile : String? = null
     private var user_nickname: String? = null
+    private var user_email: String? = null
     private var lyrics : String? = null // 가사
     private val with : String = "듀엣" // 솔로인지 듀엣인지
     private var way : String = "녹화" // 녹화,녹음,연습 인지
@@ -43,6 +44,7 @@ class DuetActivity : AppCompatActivity() {
         extract_path=intent.getStringExtra("extract_path")
         user_profile=intent.getStringExtra("profile")
         user_nickname=intent.getStringExtra("nickname")
+        user_email=intent.getStringExtra("email")
         lyrics=intent.getStringExtra("lyrics")
 
         binding.activityBeforeSingTvTitle.text=title

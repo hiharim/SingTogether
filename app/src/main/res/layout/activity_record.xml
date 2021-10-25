@@ -67,17 +67,14 @@
         android:layout_below="@+id/toolbar_record"
         android:layout_marginTop="0dp">
 
-<!--        <SurfaceView-->
-<!--            android:id="@+id/surfaceView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="400dp" />-->
-
-        <TextView
-            android:id="@+id/activity_record_tv_lyrics"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:text="가사" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_record_rv"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:layout_marginTop="10dp"
+                android:padding="20dp"
+                tools:itemCount="4"
+                 />
 
     </FrameLayout>
 
@@ -106,7 +103,15 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="19dp"
         android:text="03:00" />
-
+    <TextView
+        android:id="@+id/activity_record_tv_play_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_below="@+id/seekBar"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="19dp"
+        android:text="03:00" />
     <ImageButton
         android:id="@+id/activity_record_btn_start"
         android:src="@drawable/ic_baseline_mic_24"

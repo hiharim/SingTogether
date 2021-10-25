@@ -37,6 +37,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val date=v.findViewById<TextView>(R.id.rv_fragment_home_tv_date)
         val and=v.findViewById<TextView>(R.id.and)
         val kinds=v.findViewById<TextView>(R.id.rv_fragment_home_tv_kinds)
+        val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
+        val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
         val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
     }
 
@@ -55,8 +57,10 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         holder.cnt_reply.text=curData.cnt_reply
         holder.cnt_like.text=curData.cnt_like
         holder.nickname.text=curData.nickname
+        holder.email.text=curData.email
         holder.song_path.text=curData.song_path
         holder.collabo_nickname.text=curData.collaboration_nickname
+        holder.collabo_email.text=curData.collabo_email
         holder.date.text=curData.date
         holder.kinds.text=curData.kinds
         holder.mr_idx.text= curData.mr_idx.toString()
@@ -85,10 +89,12 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             bundle.putString("cnt_reply",curData.cnt_reply)
             bundle.putString("cnt_like",curData.cnt_like)
             bundle.putString("nickname",curData.nickname)
+            bundle.putString("email",curData.email)
             bundle.putString("collaboration_nickname",curData.collaboration_nickname)
             bundle.putString("song_path",curData.song_path)
             bundle.putString("profile",curData.profile)
             bundle.putString("collaboration_profile",curData.collaboration_profile)
+            bundle.putString("collabo_email",curData.collabo_email)
             bundle.putString("date",curData.date)
             bundle.putString("kinds",curData.kinds)
             bundle.putString("thumbnail",curData.thumbnail)

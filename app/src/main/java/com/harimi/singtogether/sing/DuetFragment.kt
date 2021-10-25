@@ -100,6 +100,7 @@ class DuetFragment : Fragment() {
                         val singer=iObject.getString("singer")
                         val cnt_play=iObject.getString("cnt_play")
                         val cnt_reply=iObject.getString("cnt_reply")
+                        val email=iObject.getString("email")
                         val nickname=iObject.getString("nickname")
                         val profile=iObject.getString("profile")
                         val cnt_duet=iObject.getString("cnt_duet")
@@ -111,7 +112,7 @@ class DuetFragment : Fragment() {
                         val duet_date=iObject.getString("date")
                         //var path="http://3.35.236.251/"+song_path
                         var path=song_path
-                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, nickname, profile,path,duet_date,mr_path,extract_path)
+                        val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path)
                         duetList.add(0,duetData)
                         duetAdapter.notifyDataSetChanged()
                     }

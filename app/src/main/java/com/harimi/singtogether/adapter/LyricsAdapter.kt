@@ -9,12 +9,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.harimi.singtogether.Data.LyricsData
 import com.harimi.singtogether.R
+import com.harimi.singtogether.sing.RecordActivity
 import kotlin.time.seconds
 
 
 // 가사 어댑터
-class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: String): RecyclerView.Adapter<LyricsAdapter.LyricsViewHolder>() {
+class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter<LyricsAdapter.LyricsViewHolder>() {
 
+    var time="";
 
     // 리스트 아이템에 있는 뷰 참조
     inner class LyricsViewHolder(v: View) : RecyclerView.ViewHolder(v){
@@ -35,93 +37,64 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>, private var time: Str
     override fun onBindViewHolder(holder: LyricsAdapter.LyricsViewHolder, position: Int) {
         val curData = lyricsList[position]
         holder.seconds.text=curData.seconds
-        //holder.next_seconds.text=curData.next_seconds
         holder.line.text=curData.line
-        Log.e("가사어댑터", "time 전 : " + "[" + time + "]")
+        Log.e("가사어댑터", "position : " + position)
 
-        val mTime=time.substring(3).toInt()
-        Log.e("가사어댑터", "mTime : " + mTime)
-        val mSeconds=holder.seconds.text.substring(4,6).toInt()
-        Log.e("가사어댑터", "mSeconds : " + mSeconds)
-//        val mNextSeconds=holder.next_seconds.text.substring(3).toInt()
-//        Log.e("가사어댑터", "mNextSeconds : " + mNextSeconds)
-        val mNextSeconds=holder.next_seconds.text.substring(3).toInt()
-        Log.e("가사어댑터", "mNextSeconds : " + mNextSeconds)
+//        val mTime=time.substring(3).toInt()
+//        Log.e("가사어댑터", "mTime : " + mTime)
+        val mSeconds=holder.seconds.text.substring(1,5)
+        //Log.e("가사어댑터", "mSeconds : " + mSeconds)
 
-//        if(holder.seconds.text.contains(time)){
-//            Log.e("가사어댑터", "time 후 : " + time)
-//            //holder.line.setTextColor(Color.BLUE)
-//            if(mTime<mNextSeconds)
-//        }
-
-
-
-//        if(holder.seconds.text.contains(time)) {
-//            Log.e("가사어댑터", "time 후 : " + time)
-//            //holder.line.setTextColor(Color.BLUE)
-//            while (mTime<mNextSeconds) {
-//                holder.line.setTextColor(Color.BLUE)
-//                if(mTime>mNextSeconds){
-//                    break
-//                }
-//            }
+//        for ((index,value) in lyricsList.withIndex()) {
+//            Log.e("가사어댑터", "index : " + "$index")
 //
-//        }else {
-//            holder.line.setTextColor(Color.BLACK)
+//            val a=index+1
+//            Log.e("가사어댑터", "index+1 : " + a)
+//            if(lyricsList.size==a){
+//                break
+//            }else{
+//                    val b=lyricsList.get(a)
+//                    Log.e("가사어댑터", "lyricsList.size-index : " + b)
+//                    val c=b.seconds.substring(4,6).toInt()
+//                    Log.e("가사어댑터", "c : " + c)
+//                    if (mSeconds <= mTime  && mTime < c){
+//                        holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
+//                    }
+//                    else if(mTime<mSeconds && mTime>c){
+//                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
+//
+//                    }else{
+//                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
+//                    }
+//
+//            }
+//            Log.e("가사어댑터", "value.seconds : " + value.seconds)
 //        }
 
 
+        var mTime=mSeconds.toFloat()
+        time= RecordActivity.time_info.pTime
 
-        for ((index,value) in lyricsList.withIndex()) {
-            Log.e("가사어댑터", "index : " + "$index")
+        var now_Time=time.toFloat()
+        Log.e("가사어댑터", "mTime : " + mTime)
+        Log.e("가사어댑터", "now_Time : " + now_Time)
 
-            val a=index+1
-            Log.e("가사어댑터", "index+1 : " + a)
-            if(lyricsList.size==a){
-                break
-            }else{
-                    val b=lyricsList.get(a)
-                    Log.e("가사어댑터", "lyricsList.size-index : " + b)
-                    val c=b.seconds.substring(4,6).toInt()
-                    Log.e("가사어댑터", "c : " + c)
-                    if (mSeconds <= mTime  && mTime < c){
-                        holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
-                    }
-                    else if(mTime<mSeconds && mTime>c){
-                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
-                       
-                    }else{
-//                    lyricsList.get(index).line
-                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
-                    }
-
-            }
-            Log.e("가사어댑터", "value.seconds : " + value.seconds)
+        if(mTime<=now_Time) {
+            holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
+        }else{
+            holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
         }
 
 
-
-//        for (i in lyricsList.indices) {
-//            if(holder.seconds.text.contains(time)) {
-//                Log.e("가사어댑터", "time 후 : " + time)
-//                //holder.line.setTextColor(Color.BLUE)
-//                while (holder.seconds.text.equals(holder.next_seconds.text)){
-//                    holder.line.setTextColor(Color.RED)
-//                    if(holder.seconds.text!=holder.next_seconds.text){
-//                     continue
-//                    }
-//                }
-//
-//            }else {
-//                holder.line.setTextColor(Color.BLACK)
-//            }
+//        var minus_one=(mTime-0.01).toFloat()
+//        if(now_Time==minus_one){
 //
 //        }
 
 
-
-
     }
+
+
 
     override fun getItemCount(): Int=lyricsList.size
 }

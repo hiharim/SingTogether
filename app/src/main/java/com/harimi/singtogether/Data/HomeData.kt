@@ -23,12 +23,16 @@ data class HomeData(
     val cnt_like : String,
     @SerializedName("nickname")
     val nickname : String,
+    @SerializedName("email")
+    val email : String,
     @SerializedName("profile")
     val profile : String,
     @SerializedName("song_path")
     val song_path : String,
     @SerializedName("collaboration_nickname")
     val collaboration_nickname : String,
+    @SerializedName("collabo_email")
+    val collabo_email : String,
     @SerializedName("collaboration_profile")
     val collaboration_profile : String,
     @SerializedName("date")

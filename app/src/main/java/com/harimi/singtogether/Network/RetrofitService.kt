@@ -68,6 +68,7 @@ interface RetrofitService {
         @Field("song_path") song_path :String,
         @Field("extract_path") extract_path :String,
         @Field("nickname") nickname :String,
+        @Field("email") email :String,
         @Field("kinds") kinds :String, // 녹음,녹화 구분위해서
         @Field("with") with :String // 솔로,듀엣 구분위해서
     ) : Call<String>
@@ -228,7 +229,7 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("loadMySong.php")
     fun requestMySong(
-        @Field("nickname") token :String,
+        @Field("email") email :String,
     ):Call<String>
 
     @FormUrlEncoded

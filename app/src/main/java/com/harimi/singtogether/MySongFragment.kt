@@ -72,7 +72,8 @@ class MySongFragment : Fragment() {
 
     private fun loadMySong() {
         val nickname=LoginActivity.user_info.loginUserNickname
-        retrofitService.requestMySong(nickname).enqueue(object : Callback<String> {
+        val email=LoginActivity.user_info.loginUserEmail
+        retrofitService.requestMySong(email).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
