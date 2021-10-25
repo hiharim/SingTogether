@@ -60,11 +60,6 @@ class LiveFragment : Fragment() {
         super.onResume()
         Log.d(TAG, "onResume")
 
-
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.detach(this).attach(this).commit()
-        liveStreamingPostList.clear()
-        liveFragmentAdapter.notifyDataSetChanged()
         liveStreamingPostLoad()
 
 

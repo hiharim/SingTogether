@@ -23,6 +23,7 @@ import android.util.Log
 import android.util.SparseIntArray
 import android.view.Surface
 import android.view.SurfaceHolder
+import android.view.SurfaceView
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -90,6 +91,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
 
 
+    /////화면녹화
     private var mScreenDensity = 0
     private var mediaProjectionManager: MediaProjectionManager? = null
     private val DISPLAY_WIDTH = 720
@@ -98,10 +100,10 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var mVirtualDisplay: VirtualDisplay? = null
     private var mMediaProjectionCallback: MediaProjectionCallback? = null
     private var iv_videoRecord: ToggleButton? = null
-//    private lateinit var localVideoView :VideoView
     private var mediaRecorder: MediaRecorder? = null
     private lateinit var layoutRoot: RelativeLayout
     private var videoUri = ""
+
 
     companion object {
 
@@ -141,6 +143,9 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var viewer : String ? ="0"
     private var timerTask: Timer? = null //타이머
     private var time = 0 //
+    private var min  =0
+    private var hour = 0
+
     private val localChattingList: ArrayList<LocalChattingData> = ArrayList()
     private lateinit var rv_chattingRecyclerView : RecyclerView
     private lateinit var localChattingAdapter: LocalChattingAdapter
@@ -149,8 +154,6 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     ////스트리밍 녹화
 
     private var isRecording = false
-    private var mSurfaceHolder: SurfaceHolder? = null
-    private var mCamera: Camera? = null
     private lateinit var fileName : String // 서버로 보낼 비디오 파일 이름
     private var videoFile : File ?=null // 녹화된 비디오파일
 
@@ -186,11 +189,14 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         decorView!!.setSystemUiVisibility(uiOption)
 
 
+        /////화면 크기설정
         val metrics = DisplayMetrics()
         windowManager.defaultDisplay.getRealMetrics(metrics)
         mScreenDensity = metrics.densityDpi
 
+        ////미디어레코더
         mediaRecorder = MediaRecorder()
+
         mediaProjectionManager = getSystemService(MEDIA_PROJECTION_SERVICE) as MediaProjectionManager
 
 
@@ -410,13 +416,21 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     //방송시간 나타내기
         timerTask = kotlin.concurrent.timer(period = 1000) {
             time++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
-            var min = time /60
-            var hour = min / 60
+
+//            var min = time /60
+//             min = 0
             runOnUiThread {
+                if (time ==60){
+                    time =0
+                    min ++
+                    hour = min / 60
+                }
                 if (min <=9){
-                    activity_streaming_tv_time.text = "$hour: 0$min"
+//                    activity_streaming_tv_time.text = "$min 분 $time 초"
+                    activity_streaming_tv_time.text = "$min : $time "
                 }else{
-                    activity_streaming_tv_time.text = "$hour: $min"
+//                    activity_streaming_tv_time.text = "$hour 시간 $min 분"
+                    activity_streaming_tv_time.text = "$hour : $min "
                 }
             }
         }
@@ -544,6 +558,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private fun toggleScreenShare(v: View?) {
         if ((v as ToggleButton?)!!.isChecked) {
             Log.v(TAG, "Start Recording")
+
             initMediaProjection()
             initRecorder()
 
@@ -552,9 +567,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             mediaRecorder!!.reset()
             Log.v(TAG, "Stopping Recording")
             stopRecordScreen()
-//            localVideoView!!.visibility = View.VISIBLE
-//            localVideoView!!.setVideoURI(Uri.parse(videoUri))
-//            localVideoView!!.start()
+
         }
     }
 
@@ -615,7 +628,6 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
     private fun uploadVideo() {
         Log.d(TAG, "업로드")
-
         mediaRecorder!!.stop()
         mediaRecorder!!.reset()
         Log.v(TAG, "Stopping Recording")
@@ -636,14 +648,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         )
         var body : MultipartBody.Part=
             MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
-        retrofitService.requestUploadReplayVideo(
-            email,
-            nickname,
-            profile,
-            roomTitle!!,
-            thumbnail!!,
-            body
-        ).enqueue(object : Callback<String> {
+        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,activity_streaming_tv_time.text.toString(), body).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {

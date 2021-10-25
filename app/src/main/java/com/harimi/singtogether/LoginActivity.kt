@@ -341,6 +341,7 @@ class LoginActivity : AppCompatActivity() {
                             gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                         }
 
+
                     } else {
                         Log.e("onResponse", "실패 : " + response.errorBody())
                     }

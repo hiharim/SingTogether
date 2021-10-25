@@ -17,6 +17,7 @@ import kotlin.time.seconds
 class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter<LyricsAdapter.LyricsViewHolder>() {
 
     var time="";
+    var baseIndex = 0
 
     // 리스트 아이템에 있는 뷰 참조
     inner class LyricsViewHolder(v: View) : RecyclerView.ViewHolder(v){
@@ -68,7 +69,6 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
 //                    }
 //
 //            }
-//            Log.e("가사어댑터", "value.seconds : " + value.seconds)
 //        }
 
 

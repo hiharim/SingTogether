@@ -43,6 +43,7 @@ class ProfileEditActivity : AppCompatActivity() {
     private lateinit var tv_nickName : TextView
     private lateinit var btn_cancel : Button
     private lateinit var btn_profileEdit : Button
+    private lateinit var iv_nickNameEdit : ImageView
 
     private var mediaPath: String? = null
     private var imageFile : File?=null
@@ -65,6 +66,8 @@ class ProfileEditActivity : AppCompatActivity() {
         iv_profileImage = findViewById(R.id.iv_profileImage)
         btn_cancel = findViewById(R.id.btn_cancel)
         btn_profileEdit = findViewById(R.id.btn_profileEdit)
+        iv_nickNameEdit = findViewById(R.id.iv_nickNameEdit)
+
 
         nickname=LoginActivity.user_info.loginUserNickname
         profile =LoginActivity.user_info.loginUserProfile
@@ -73,15 +76,30 @@ class ProfileEditActivity : AppCompatActivity() {
         initRetrofit()
 
         tv_nickName.text=nickname
-        Glide.with(this).load("http://3.35.236.251/" + profile).into(iv_profileImage)
 
+        if (profile.equals("null")){
+            iv_profileImage.setImageResource(R.mipmap.ic_launcher_round)
+        }else{
+            Glide.with(this).load("http://3.35.236.251/" + profile).into(iv_profileImage)
+
+        }
+
+        ////프로필 변경
         iv_profileImage.setOnClickListener {
             settingPermission()
         }
-
+        ///////////////
+        /////닉네임 변경
         tv_nickName.setOnClickListener {
             editNickName()
         }
+        iv_nickNameEdit.setOnClickListener {
+            editNickName()
+        }
+        //////////////
+
+
+
 
         btn_profileEdit.setOnClickListener {
             editProfile()

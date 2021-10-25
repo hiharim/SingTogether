@@ -30,6 +30,7 @@ class SingFragment : Fragment() {
         val binding= FragmentSingBinding.inflate(inflater,container,false)
         val pagerAdapter = SingPagerAdapter(requireActivity())
         // 2개의 Fragment Add
+
         pagerAdapter.addFragment(DuetFragment())
         pagerAdapter.addFragment(MRFragment())
         // viewPager 와 pagerAdapter 연결

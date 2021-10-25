@@ -1,16 +1,15 @@
 package com.harimi.singtogether.broadcast
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,23 +22,22 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.harimi.singtogether.Data.DetailReplayReviewData
-import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.DetailReplayReviewAdapter
-import com.harimi.singtogether.adapter.HomeAdapter
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONArray
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.http.Field
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import javax.xml.transform.ErrorListener
 
 class DetailReplayActivity : AppCompatActivity() {
 
@@ -83,6 +81,8 @@ class DetailReplayActivity : AppCompatActivity() {
     private lateinit var et_writeReview : EditText
     private lateinit var iv_uploadReview : ImageView
     private lateinit var exoplayerReplay : PlayerControlView
+    private lateinit var iv_editMenu : ImageView
+
 
     private val detailReplayReviewDataList: ArrayList<DetailReplayReviewData> = ArrayList()
     private lateinit var rv_detailReplayReview : RecyclerView
@@ -111,7 +111,7 @@ class DetailReplayActivity : AppCompatActivity() {
         replayReviewNumber = getintent.getStringExtra("replayReviewNumber")
         uploadUserEmail = getintent.getStringExtra("uploadUserEmail")
         replayPostLikeIdx = getintent.getStringExtra("replayPostLikeIdx")
-        liked = getintent.getBooleanExtra("liked",false)
+        liked = getintent.getBooleanExtra("liked", false)
         replayVideo = getintent.getStringExtra("replayVideo")
 
         getLikeNumber =replayLikeNumber
@@ -135,14 +135,25 @@ class DetailReplayActivity : AppCompatActivity() {
         rv_detailReplayReview =findViewById(R.id.rv_detailReplayReview)
         exoPlayerView = findViewById(R.id.exoPlayerView)
         exoplayerControlView = findViewById(R.id.exoplayerControlView)
+        iv_editMenu = findViewById(R.id.iv_editMenu)
 
+        if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
+            iv_editMenu.visibility =View.VISIBLE
+        }else{
+            iv_editMenu.visibility =View.GONE
+        }
 
 
 
         rv_detailReplayReview = findViewById(R.id.rv_detailReplayReview)
         rv_detailReplayReview.layoutManager = LinearLayoutManager(this)
-        rv_detailReplayReview.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        detailReplayReviewAdapter = DetailReplayReviewAdapter(detailReplayReviewDataList,this)
+        rv_detailReplayReview.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        detailReplayReviewAdapter = DetailReplayReviewAdapter(detailReplayReviewDataList, this)
         rv_detailReplayReview.adapter = detailReplayReviewAdapter
 
 
@@ -160,17 +171,86 @@ class DetailReplayActivity : AppCompatActivity() {
             finish()
         }
 
+        /////수정, 삭제
+        iv_editMenu.setOnClickListener {
+            val popupMenu = PopupMenu(applicationContext, it)
+            popupMenu.inflate(R.menu.replay_delete)
+            popupMenu.show()
+            popupMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+
+                    R.id.post_delete -> {
+                        val builder =
+                            AlertDialog.Builder(this@DetailReplayActivity)
+                        //빌더 타이틀
+                        builder.setTitle("삭제")
+                        //빌더 메세지
+                        builder.setMessage("삭제 하시겠습니까?")
+                        builder.setPositiveButton("네") {
+                                dialog, which ->
+
+                            retrofit= RetrofitClient.getInstance()
+                            retrofitService=retrofit.create(RetrofitService::class.java)
+                            retrofitService.requestDeleteReplay(replayIdx!!)
+                                .enqueue(object : Callback<String> {
+                                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                                        if (response.isSuccessful) {
+                                            val body = response.body().toString()
+                                            Log.d(TAG, body)
+                                            var jsonObject = JSONObject(response.body().toString())
+                                            var result = jsonObject.getBoolean("result")
+
+                                            if (result) {
+                                                val builder =
+                                                    AlertDialog.Builder(this@DetailReplayActivity)
+                                                //빌더 타이틀
+                                                builder.setTitle("완료")
+                                                //빌더 메세지
+                                                builder.setMessage("삭제 되었습니다")
+                                                builder.setPositiveButton("확인") {
+                                                        dialog, which ->
+                                                    finish()
+                                                }
+                                                builder.show()
+                                            }
+                                        }
+                                    }
+
+                                    override fun onFailure(call: Call<String>, t: Throwable) {
+                                    }
+                                })
+
+                        }
+                        builder.setNegativeButton("아니요") {
+                                dialog, which -> dialog.dismiss()
+
+                        }
+                        builder.show()
+                    }
+                }
+                false
+            }
+
+        }
+
         ////댓글달기
         iv_uploadReview.setOnClickListener {
             var uploadReview = et_writeReview.text.toString()
             if (uploadReview.equals("")){
-                Toast.makeText(this,"댓글을 입력해주세요",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "댓글을 입력해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }else{
                 var uploadDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
                 retrofit= RetrofitClient.getInstance()
                 retrofitService=retrofit.create(RetrofitService::class.java)
-                retrofitService.requestWriteReview(replayIdx!!,LoginActivity.user_info.loginUserEmail,LoginActivity.user_info.loginUserProfile,LoginActivity.user_info.loginUserNickname,uploadReview,uploadDate)
+                retrofitService.requestWriteReview(
+                    replayIdx!!,
+                    LoginActivity.user_info.loginUserEmail,
+                    LoginActivity.user_info.loginUserProfile,
+                    LoginActivity.user_info.loginUserNickname,
+                    uploadReview,
+                    uploadDate
+                )
                     .enqueue(object : Callback<String> {
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             if (response.isSuccessful) {
@@ -178,16 +258,27 @@ class DetailReplayActivity : AppCompatActivity() {
                                 Log.d(TAG, body)
                                 var jsonObject = JSONObject(response.body().toString())
                                 var result = jsonObject.getBoolean("result")
-                                if (result){
+                                if (result) {
                                     et_writeReview.setText("")
                                     var getIdx = jsonObject.getString("idx")
-                                    val detailReplayReviewData = DetailReplayReviewData(getIdx,LoginActivity.user_info.loginUserEmail, LoginActivity.user_info.loginUserNickname, LoginActivity.user_info.loginUserProfile, uploadReview, uploadDate, replayIdx!!)
-                                    detailReplayReviewDataList.add( detailReplayReviewData)
+                                    val detailReplayReviewData = DetailReplayReviewData(
+                                        getIdx,
+                                        LoginActivity.user_info.loginUserEmail,
+                                        LoginActivity.user_info.loginUserNickname,
+                                        LoginActivity.user_info.loginUserProfile,
+                                        uploadReview,
+                                        uploadDate,
+                                        replayIdx!!
+                                    )
+                                    detailReplayReviewDataList.add(detailReplayReviewData)
                                     detailReplayReviewAdapter.notifyDataSetChanged()
-                                    rv_detailReplayReview.scrollToPosition(detailReplayReviewDataList.size - 1)
+                                    rv_detailReplayReview.scrollToPosition(
+                                        detailReplayReviewDataList.size - 1
+                                    )
                                 }
                             }
                         }
+
                         override fun onFailure(call: Call<String>, t: Throwable) {
                         }
                     })
@@ -199,7 +290,11 @@ class DetailReplayActivity : AppCompatActivity() {
             var uploadDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
             retrofit= RetrofitClient.getInstance()
             retrofitService=retrofit.create(RetrofitService::class.java)
-            retrofitService.requestClickLike(replayIdx!!,LoginActivity.user_info.loginUserEmail,uploadDate)
+            retrofitService.requestClickLike(
+                replayIdx!!,
+                LoginActivity.user_info.loginUserEmail,
+                uploadDate
+            )
                 .enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {
@@ -209,19 +304,20 @@ class DetailReplayActivity : AppCompatActivity() {
                             var result = jsonObject.getBoolean("result")
                             var idx = jsonObject.getString("idx")
                             replayPostLikeIdx = idx
-                            if (result){
+                            if (result) {
 //                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
 //                                var getLikeNumberInt =  getLikeNumber.toInt()
 //                                getLikeNumberInt++
-                                var getLikeNumberInt =  getLikeNumber!!.toInt()
+                                var getLikeNumberInt = getLikeNumber!!.toInt()
                                 getLikeNumberInt++
 
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
-                                iv_clickLike.visibility =View.VISIBLE
-                                iv_normalLike.visibility =View.GONE
+                                iv_clickLike.visibility = View.VISIBLE
+                                iv_normalLike.visibility = View.GONE
                             }
                         }
                     }
+
                     override fun onFailure(call: Call<String>, t: Throwable) {
                     }
                 })
@@ -313,8 +409,16 @@ class DetailReplayActivity : AppCompatActivity() {
                             val replayIdx = jsonObject.getString("replayIdx")
 
 
-                            val detailReplayReviewData = DetailReplayReviewData(idx,uploadUserEmail, uploadUserNickname, uploadUserProfile, review, uploadDate, replayIdx)
-                            detailReplayReviewDataList.add( detailReplayReviewData)
+                            val detailReplayReviewData = DetailReplayReviewData(
+                                idx,
+                                uploadUserEmail,
+                                uploadUserNickname,
+                                uploadUserProfile,
+                                review,
+                                uploadDate,
+                                replayIdx
+                            )
+                            detailReplayReviewDataList.add(detailReplayReviewData)
                             detailReplayReviewAdapter.notifyDataSetChanged()
                             rv_detailReplayReview.scrollToPosition(detailReplayReviewDataList.size - 1)
                         }
@@ -327,9 +431,6 @@ class DetailReplayActivity : AppCompatActivity() {
             })
     }
 
-    fun playVideo(){
-
-    }
     override fun onStart() {
         super.onStart()
         videoUri = Uri.parse("http://3.35.236.251/" + replayVideo)

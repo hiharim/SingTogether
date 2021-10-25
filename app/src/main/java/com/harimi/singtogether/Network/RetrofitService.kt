@@ -97,6 +97,7 @@ interface RetrofitService {
         @Part("profile")  profile :String,
         @Part("roomTitle")  roomTitle :String,
         @Part("thumbnail")  thumbnail :String,
+        @Part("time")  time :String,
         @Part file : MultipartBody.Part
     ) : Call<String>
 
@@ -137,6 +138,18 @@ interface RetrofitService {
         @Field("replayIdx") replayIdx :String
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("getMainPostReview.php")
+    fun requestGetMainPostReview (
+        @Field("postIdx") postIdx: String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("getDetailDuetReview.php")
+    fun requestGetDetailDuetReview (
+        @Field("detailDuetIdx") detailDuetIdx: String
+    ) : Call<String>
+
 
     @FormUrlEncoded
     @POST("WriteReview.php")
@@ -148,6 +161,43 @@ interface RetrofitService {
         @Field("review") review :String,
         @Field("uploadDate") uploadDate :String
     ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("WritePostReview.php")
+    fun requestWritePostReview (
+        @Field("postIdx") postIdx :String,
+        @Field("uploadUserEmail") uploadUserEmail :String,
+        @Field("uploadUserProfile") uploadUserProfile :String,
+        @Field("uploadUserNickname") uploadUserNickname :String,
+        @Field("review") review :String,
+        @Field("uploadDate") uploadDate :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("WriteDetailDuetReview.php")
+    fun requestWriteDetailDuetReview (
+        @Field("detailDuetIdx") detailDuetIdx :String,
+        @Field("uploadUserEmail") uploadUserEmail :String,
+        @Field("uploadUserProfile") uploadUserProfile :String,
+        @Field("uploadUserNickname") uploadUserNickname :String,
+        @Field("review") review :String,
+        @Field("uploadDate") uploadDate :String
+    ) : Call<String>
+
+
+
+    @FormUrlEncoded
+    @POST("deleteReplay.php")
+    fun requestDeleteReplay (
+        @Field("replayIdx") replayIdx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("deleteUser.php")
+    fun requestDeleteUser (
+        @Field("userEmail") userEmail :String
+    ) : Call<String>
+
 
     @FormUrlEncoded
     @POST("liveStreamingCheck.php")
@@ -169,9 +219,39 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("editPostReview.php")
+    fun requestEditPostReview (
+        @Field("idx") idx :String,
+        @Field("editReview") editReview :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("editDetailDuetReview.php")
+    fun requestEditDetailDuetReview (
+        @Field("idx") idx :String,
+        @Field("editReview") editReview :String
+    ) : Call<String>
+
+
+    @FormUrlEncoded
     @POST("deleteReplayReview.php")
     fun requestDeleteReplayReview (
         @Field("idx") idx :String,
+        @Field("replayIdx") replayIdx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("deletePostReview.php")
+    fun requestDeletePostReview (
+        @Field("idx") idx :String,
+        @Field("postIdx") postIdx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("deleteDetailDuetReview.php")
+    fun requestDeleteDetailDuetReview (
+        @Field("idx") idx :String,
+        @Field("detailDuetIdx") detailDuetIdx :String
     ) : Call<String>
 
     @FormUrlEncoded

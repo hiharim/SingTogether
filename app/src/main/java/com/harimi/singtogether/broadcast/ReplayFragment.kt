@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.ReplayData
@@ -42,7 +43,7 @@ class ReplayFragment : Fragment() {
     private lateinit var replayAdapter: ReplayFragmentAdapter
     private var like :Boolean ?= false
     private var replayPostLikeIdx :String ?= "null"
-
+    private lateinit var swipeRefresh: SwipeRefreshLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -62,10 +63,7 @@ class ReplayFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
-        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-        ft.detach(this).attach(this).commit()
-        replayDataList.clear()
-        replayAdapter.notifyDataSetChanged()
+
         replayPostLoad()
     }
 
@@ -85,9 +83,20 @@ class ReplayFragment : Fragment() {
         rv_fragmentReplayPost.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         replayAdapter = ReplayFragmentAdapter(replayDataList,requireContext())
         rv_fragmentReplayPost.adapter = replayAdapter
+        swipeRefresh = replayView.findViewById(R.id.swipeRefresh)
+
 
         replayPostLoad()
 
+        swipeRefresh.setOnRefreshListener {
+            // 사용자가 아래로 드래그 했다가 놓았을 때 호출 됩니다.
+            // 이때 새로고침 화살표가 계속 돌아갑니다.
+
+            replayDataList.clear()
+            replayAdapter.notifyDataSetChanged()
+            replayPostLoad()
+            swipeRefresh.isRefreshing = false  //서버 통신 완료 후 호출해줍니다.
+        }
     }
 
     fun replayPostLoad (){
@@ -125,6 +134,7 @@ class ReplayFragment : Fragment() {
                                 var replayReviewNumber = postObject.getString("replayReviewNumber")
                                 var uploadDate = postObject.getString("uploadDate")
                                 var replayVideo = postObject.getString("replayVideo")
+                                var time = postObject.getString("time")
 
 
 
@@ -145,7 +155,7 @@ class ReplayFragment : Fragment() {
                                     }
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time)
                                 replayDataList.add(0, replayData)
                                 replayAdapter.notifyDataSetChanged()
                             }

@@ -71,10 +71,13 @@ class ProfileActivity : AppCompatActivity() {
         // 인텐트 값 받기
         email= intent.getStringExtra("EMAIL").toString()
         nickname= intent.getStringExtra("NICKNAME").toString()
-        profile=intent.getStringExtra("PROFILE").toString()
+//        profile=intent.getStringExtra("PROFILE").toString()
         social=intent.getStringExtra("SOCIAL").toString()
-       // token=intent.getStringExtra("TOKEN").toString()
-        token=""
+
+        ////이거 없애거나 수정해줘야됨
+        token="null"
+        profile="null"
+
 
         Log.e("값: ", email + " " + nickname + " " + social + " " + token + " " + profile)
         Log.e("imageFile값: ", imageFile.toString())
@@ -82,7 +85,13 @@ class ProfileActivity : AppCompatActivity() {
 
         binding.activityProfileEt.setText(nickname)
         // 프로필받아와서 set해줌
-        Glide.with(context).load(profile).into(binding.activityProfileIv)
+
+        if (profile.equals("null")){
+            binding.activityProfileIv.setImageResource(R.mipmap.ic_launcher_round)
+        }else{
+            Glide.with(context).load(profile).into(binding.activityProfileIv)
+        }
+
 
         // 프로필사진 클릭
         binding.activityProfileIv.setOnClickListener {

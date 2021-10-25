@@ -7,12 +7,16 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.PopupMenu
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.harimi.singtogether.Data.DetailReplayReviewData
+import com.harimi.singtogether.Data.DetailDuetReviewData
+import com.harimi.singtogether.Data.PostReviewData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
@@ -23,46 +27,46 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import java.util.*
+import java.util.ArrayList
 
-class DetailReplayReviewAdapter(
-    val detailReplayReviewList: ArrayList<DetailReplayReviewData>, val context: Context
-) : RecyclerView.Adapter<DetailReplayReviewAdapter.DetailReplayReviewViewHolder>() {
+class DetailDuetReviewAdapter (val detailDuetReviewList: ArrayList<DetailDuetReviewData>, val context: Context
+) : RecyclerView.Adapter<DetailDuetReviewAdapter.DetailDuetReviewViewHolder>() {
+
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailReplayReviewAdapter.DetailReplayReviewViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailDuetReviewAdapter.DetailDuetReviewViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.rv_detail_replay_review,
+            R.layout.rv_post_review,
             parent,
             false
         )
-        return DetailReplayReviewAdapter.DetailReplayReviewViewHolder(view)
+        return  DetailDuetReviewAdapter.DetailDuetReviewViewHolder(view)
     }
 
     override fun onBindViewHolder(
-        holder: DetailReplayReviewAdapter.DetailReplayReviewViewHolder,
+        holder: DetailDuetReviewAdapter.DetailDuetReviewViewHolder,
         position: Int
     ) {
 
-        if (detailReplayReviewList.get(position).uploadUserEmail.equals(LoginActivity.user_info.loginUserEmail)){
+        if (detailDuetReviewList.get(position).uploadUserEmail.equals(LoginActivity.user_info.loginUserEmail)){
             holder.iv_editAndDelete.visibility = View.VISIBLE
         }else{
             holder.iv_editAndDelete.visibility = View.GONE
         }
 
-        if (detailReplayReviewList.get(position).uploadUserProfile.equals("null") || detailReplayReviewList.get(position).uploadUserProfile.equals("")) {
+        if (detailDuetReviewList.get(position).uploadUserProfile.equals("null") || detailDuetReviewList.get(position).uploadUserProfile.equals("")) {
             holder.iv_uploadUserProfile.setImageResource(R.mipmap.ic_launcher_round)
         } else {
-            val Image: DetailReplayReviewData = detailReplayReviewList.get(position)
+            val Image: DetailDuetReviewData = detailDuetReviewList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.uploadUserProfile)
                 .into(holder.iv_uploadUserProfile)
         }
 
-        holder.tv_uploadUserNickname.setText(detailReplayReviewList.get(position).uploadUserNickname)
-        holder.tv_review.setText(detailReplayReviewList.get(position).review)
-        holder.tv_uploadDate.setText(detailReplayReviewList.get(position).uploadDate)
+        holder.tv_uploadUserNickname.setText(detailDuetReviewList.get(position).uploadUserNickname)
+        holder.tv_review.setText(detailDuetReviewList.get(position).review)
+        holder.tv_uploadDate.setText(detailDuetReviewList.get(position).uploadDate)
 
         ///아이템 온 클릭 리스너
         holder.iv_editAndDelete.setOnClickListener(object : View.OnClickListener {
@@ -78,14 +82,15 @@ class DetailReplayReviewAdapter(
                             when (menuItem.itemId) {
                                 R.id.post_edit -> {
                                     val editText = EditText(context)
-                                    editText.setText(detailReplayReviewList.get(position).review)
+                                    editText.setText(detailDuetReviewList.get(position).review)
                                     val editBuilder = AlertDialog.Builder(context)
                                     editBuilder.setTitle("수정")
                                     editBuilder.setView(editText)
                                     editBuilder.setPositiveButton("확인") { dialog, which ->
                                         retrofit = RetrofitClient.getInstance()
                                         retrofitService = retrofit.create(RetrofitService::class.java)
-                                        retrofitService.requestEditReplayReview(detailReplayReviewList.get(position).idx, editText.text.toString()).enqueue(object : Callback<String> {
+                                        retrofitService.requestEditDetailDuetReview(detailDuetReviewList.get(position).idx, editText.text.toString()).enqueue(object :
+                                            Callback<String> {
                                             override fun onResponse(call: Call<String>, response: Response<String>) {
 
                                                 if (response.isSuccessful) {
@@ -122,8 +127,9 @@ class DetailReplayReviewAdapter(
                                         retrofit = RetrofitClient.getInstance()
                                         retrofitService =
                                             retrofit.create(RetrofitService::class.java)
-                                        retrofitService.requestDeleteReplayReview(
-                                            detailReplayReviewList.get(position).idx,detailReplayReviewList.get(position).replayIdx).enqueue(object : Callback<String> {
+                                        retrofitService.requestDeleteDetailDuetReview(
+                                            detailDuetReviewList.get(position).idx,detailDuetReviewList.get(position).detailDuetIdx).enqueue(object :
+                                            Callback<String> {
                                             override fun onResponse(call: Call<String>, response: Response<String>) {
                                                 if (response.isSuccessful) {
                                                     val body = response.body().toString()
@@ -133,7 +139,7 @@ class DetailReplayReviewAdapter(
                                                     )
                                                     val result = jsonObject.getBoolean("result")
                                                     if (result) {
-                                                        detailReplayReviewList.removeAt(position)
+                                                        detailDuetReviewList.removeAt(position)
                                                         notifyItemRemoved(position)
                                                         notifyDataSetChanged()
                                                     }
@@ -163,11 +169,11 @@ class DetailReplayReviewAdapter(
     }
 
     override fun getItemCount(): Int {
-        return detailReplayReviewList.size
+        return detailDuetReviewList.size
     }
 
 
-    class DetailReplayReviewViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
+    class DetailDuetReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
 
         val iv_uploadUserProfile = itemView.findViewById<CircleImageView>(R.id.iv_uploadUserProfile)
         val tv_uploadUserNickname = itemView.findViewById<TextView>(R.id.tv_uploadUserNickname)
