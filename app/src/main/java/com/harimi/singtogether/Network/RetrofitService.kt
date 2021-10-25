@@ -30,8 +30,11 @@ interface RetrofitService {
     fun requestUploadMergeVideo (
         @Field("mr_idx") mr_idx: Int,
         @Field("output_path") output_path :String,
+        @Field("email") email :String,
         @Field("nickname") nickname :String,
-        @Field("collaboration_nickname") collaborationNickname :String
+        @Field("collaboration_nickname") collaborationNickname :String,
+        @Field("collabo_email") collabo_email :String,
+        @Field("kinds") kinds :String
     ) : Call<String>
 
     @Multipart
@@ -49,7 +52,10 @@ interface RetrofitService {
         @Field("mr_idx") mr_idx: Int,
         @Field("finish_path") finish_path :String,
         @Field("extract_path") extract_path :String,
-        @Field("nickname") nickname :String
+        @Field("nickname") nickname :String,
+        @Field("email") email :String,
+        @Field("kinds") kinds :String,
+        @Field("with") with :String // 솔로,듀엣 구분위해서
     ) : Call<String>
 
     @Multipart

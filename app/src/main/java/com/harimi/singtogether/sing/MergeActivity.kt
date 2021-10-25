@@ -2,6 +2,7 @@ package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.hardware.Camera
 import android.media.CamcorderProfile
 import android.media.MediaPlayer
@@ -13,12 +14,15 @@ import android.view.SurfaceHolder
 import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.arthenica.mobileffmpeg.FFmpeg
 import com.arthenica.mobileffmpeg.FFmpegExecution
+import com.harimi.singtogether.Data.LyricsData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
+import com.harimi.singtogether.adapter.LyricsAdapter
 import com.harimi.singtogether.databinding.ActivityMergeBinding
 
 import okhttp3.MediaType
@@ -66,8 +70,10 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     lateinit var fileName : String // 서버로 보낼 비디오 파일 이름
     private var videoFile : File?=null // 녹화된 비디오파일
     var asyncDialog : ProgressDialog ?=null
-    private var collaborationNickname : String? = null // 병합하고자하는 유저의 닉네임
-
+    private lateinit var collaborationNickname : String // 병합하고자하는 유저의 닉네임
+    private lateinit var collaborationEmail : String // 병합하고자하는 유저의 이메일
+    private val lyricsList : ArrayList<LyricsData> = ArrayList()
+    private lateinit var lyricsAdapter: LyricsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +90,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         duet_path= intent.getStringExtra("RECORD_SONG_PATH").toString()
         extract_path= intent.getStringExtra("RECORD_EXTRACT_PATH").toString()
         collaborationNickname= intent.getStringExtra("COLLABORATION").toString()
+        collaborationEmail= intent.getStringExtra("COLLABO_EMAIL").toString()
 
         // 툴바 색깔 지정
         binding.toolbarRecord.setBackgroundColor(resources.getColor(R.color.dark_purple))
@@ -93,11 +100,25 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         // 가수
         binding.activityRecordTvSinger.text=singer
         // 가사
-        var result=lyrics?.replace(" ★", "\n")
-        binding.activityRecordTvLyrics.text= result.toString()
+        Log.e("MergeActivity", "가사 : " + lyrics)
+        val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
+        if (array != null) {
+            for (i in array.indices) {
+                println(array[i])
+                val seconds=array[i]
+                //7
+                val line= array[i].substring(6)
+                val lyricsData= LyricsData(seconds, line)
+                lyricsList.add(lyricsData)
+
+            }
+        }
+        //리사이클러뷰 설정
+        binding.activityMergeRv.layoutManager= LinearLayoutManager(applicationContext)
+        binding.activityMergeRv.setHasFixedSize(true)
+        binding.activityMergeRv.setBackgroundColor(Color.parseColor("#81000000"))
 
         mediaPlayer = MediaPlayer()
-        //mediaPlayer.setDataSource(mr_path)
         mediaPlayer.setDataSource(duet_path)
         mediaPlayer.prepare()
 
@@ -112,7 +133,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
-                var timeFormat = SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
+                var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  //"분:초"를 나타낼 수 있도록 포멧팅
+                var timeFormat = android.icu.text.SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
                 override fun run() {
                     super.run()
                     if (mediaPlayer == null)
@@ -124,6 +146,11 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             binding.seekBar.progress = mediaPlayer.currentPosition
                             binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer.currentPosition)
                             binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
+
+                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
+                            RecordActivity.time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
+                            lyricsAdapter= LyricsAdapter(lyricsList)
+                            binding.activityMergeRv.adapter=lyricsAdapter
                         }
                         SystemClock.sleep(200)
                     }
@@ -219,6 +246,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             intent.putExtra("WAY", way)
                             intent.putExtra("MERGE", "Y")
                             intent.putExtra("COLLABORATION_NICKNAME", collaborationNickname)
+                            intent.putExtra("COLLABO_EMAIL", collaborationEmail)
                             Log.e(
                                 "머지액티비티", "idx,file_path,mergeVideoFilePath,with,way" +
                                         idx + " " + file_path + " " + mergeVideoFilePath + " " + with + " " + way

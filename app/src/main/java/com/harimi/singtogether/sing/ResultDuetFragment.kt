@@ -89,9 +89,11 @@ class ResultDuetFragment : Fragment() {
                                 val mr_path=iObject.getString("song_path")
                                 val extract_path=iObject.getString("extract_path")
                                 val duet_date=iObject.getString("date")
+                                val kinds=iObject.getString("kinds")
+                                val lyrics=iObject.getString("lyrics")
                                 //var path="http://3.35.236.251/"+song_path
                                 var path=song_path
-                                val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path)
+                                val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics)
                                 duetList.add(0,duetData)
                                 duetAdapter.notifyDataSetChanged()
                             }

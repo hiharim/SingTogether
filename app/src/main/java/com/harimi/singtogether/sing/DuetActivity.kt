@@ -3,6 +3,8 @@ package com.harimi.singtogether.sing
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.LoginActivity
@@ -23,6 +25,7 @@ class DuetActivity : AppCompatActivity() {
     private var duet_path : String? = null
     private var mr_path : String? = null
     private var extract_path : String? = null
+    private var kinds : String? = null
     private var genre : String? = null
     private var user_profile : String? = null
     private var user_nickname: String? = null
@@ -46,7 +49,9 @@ class DuetActivity : AppCompatActivity() {
         user_nickname=intent.getStringExtra("nickname")
         user_email=intent.getStringExtra("email")
         lyrics=intent.getStringExtra("lyrics")
+        kinds=intent.getStringExtra("kinds")
 
+        Log.e("DuetActivity", "가사 : " + lyrics)
         binding.activityBeforeSingTvTitle.text=title
         binding.activityBeforeSingTvSinger.text=singer
 
@@ -59,15 +64,23 @@ class DuetActivity : AppCompatActivity() {
         binding.activityDuetTvUserNickname.text=user_nickname
 
         // 녹화, 녹음버튼 토글
-        binding.activityBeforeSingBtnVideo.setOnClickListener {
-            way="녹화"
-            binding.activityBeforeSingBtnVideo.background= ContextCompat.getDrawable(this, R.drawable.button_record_select)
-            binding.activityBeforeSingBtnVoice.background= ContextCompat.getDrawable(this, R.drawable.button_record)
-        }
-        binding.activityBeforeSingBtnVoice.setOnClickListener {
-            way="녹음"
-            binding.activityBeforeSingBtnVideo.background= ContextCompat.getDrawable(this, R.drawable.button_record)
-            binding.activityBeforeSingBtnVoice.background= ContextCompat.getDrawable(this, R.drawable.button_record_select)
+//        binding.activityBeforeSingBtnVideo.setOnClickListener {
+//            way="녹화"
+//            binding.activityBeforeSingBtnVideo.background= ContextCompat.getDrawable(this, R.drawable.button_record_select)
+//            binding.activityBeforeSingBtnVoice.background= ContextCompat.getDrawable(this, R.drawable.button_record)
+//        }
+//        binding.activityBeforeSingBtnVoice.setOnClickListener {
+//            way="녹음"
+//            binding.activityBeforeSingBtnVideo.background= ContextCompat.getDrawable(this, R.drawable.button_record)
+//            binding.activityBeforeSingBtnVoice.background= ContextCompat.getDrawable(this, R.drawable.button_record_select)
+//        }
+
+        if(kinds.equals("녹음")){
+            binding.activityBeforeSingBtnVoice.visibility= View.VISIBLE
+            binding.activityBeforeSingBtnVideo.visibility=View.GONE
+        }else{
+            binding.activityBeforeSingBtnVoice.visibility= View.GONE
+            binding.activityBeforeSingBtnVideo.visibility=View.VISIBLE
         }
 
         // 부르기 버튼 클릭
@@ -86,7 +99,6 @@ class DuetActivity : AppCompatActivity() {
             }else if (way=="녹화"){
 
                 val intent= Intent(this,MergeActivity::class.java)
-
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
@@ -97,6 +109,7 @@ class DuetActivity : AppCompatActivity() {
                 intent.putExtra("WITH",with)
                 intent.putExtra("WAY",way)
                 intent.putExtra("COLLABORATION",user_nickname)
+                intent.putExtra("COLLABO_EMAIL",user_email)
                 startActivity(intent)
                 finish()
             }

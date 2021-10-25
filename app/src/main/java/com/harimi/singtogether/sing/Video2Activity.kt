@@ -103,7 +103,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 println(array[i])
                 val seconds=array[i]
                 //7
-                val line= array[i].substring(7)
+                val line= array[i].substring(6)
                 //val next_seconds=array[i].substring(7,12)
                 val lyricsData=LyricsData(seconds,line)
                 lyricsList.add(lyricsData)
@@ -115,9 +115,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         binding.activityVideo2Rv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityVideo2Rv.setHasFixedSize(true)
         binding.activityVideo2Rv.setBackgroundColor(Color.parseColor("#81000000"))
-//        lyricsAdapter= LyricsAdapter(lyricsList,time!!)
-//        binding.activityVideo2Rv.adapter=lyricsAdapter
-//        lyricsAdapter.notifyDataSetChanged()
 
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(song_path)
@@ -133,9 +130,8 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
-                //var timeFormat = SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
-                var timeFormat = SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
-                var tf = SimpleDateFormat("mm:ss.SSS")
+                var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  //"분:초"를 나타낼 수 있도록 포멧팅
+                var timeFormat = android.icu.text.SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
 
                 override fun run() {
                     super.run()
@@ -148,15 +144,13 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                             binding.seekBar.progress = mediaPlayer.currentPosition
                             binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer.currentPosition)
                             binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
-                            time=binding.activityRecordTvIngTime.text.toString()
-                            //time=tf.format(mediaPlayer.currentPosition).toString()
-                            //time=getTimeString(mediaPlayer.currentPosition.toLong())
+                            binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
+
+                            RecordActivity.time_info.pTime= binding.activityVideo2TvPlayTime.text.toString()
 
                             lyricsAdapter= LyricsAdapter(lyricsList)
-                            //lyricsAdapter= LyricsAdapter(lyricsList, time!!)
-                            Log.e("비디오2", "time : " + time.toString())
                             binding.activityVideo2Rv.adapter=lyricsAdapter
-                            lyricsAdapter.notifyDataSetChanged()
+                            //lyricsAdapter.notifyDataSetChanged()
                         }
 
                         SystemClock.sleep(1000)
@@ -228,19 +222,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     }
 
-    private fun getTimeString(millis: Long): String? {
-        val buf = StringBuffer()
-        val minutes = (millis % (1000 * 60 * 60) / (1000 * 60)).toInt()
-        val seconds = (millis % (1000 * 60 * 60) % (1000 * 60) / 1000).toInt()
-        //val milliSeconds = (millis % (1000 * 60 * 60) % (1000 * 60) / 1000).toInt()
-        buf
-            .append(String.format("%02d", minutes))
-            .append(":")
-            .append(String.format("%02d", seconds))
-            .append(".")
-            .append(String.format("%02d", millis))
-        return buf.toString()
-    }
+
 
     fun initVideoRecorder() {
         mCamera = Camera.open()
@@ -339,6 +321,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                            intent.putExtra("WAY", way)
                            intent.putExtra("MERGE", "N")
                            intent.putExtra("COLLABORATION_NICKNAME", "NULL")
+                           intent.putExtra("COLLABO_EMAIL", "NULL")
                            Log.e(
                                "비디오액티비티", "idx,file_path,recordingVideoFilePath,with,way" +
                                        idx + " " + file_path + " " + recordingVideoFilePath + " " + with + " " + way
@@ -367,6 +350,12 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     fun fail(){
         Log.e("비디오2", " 통신 실패" + 404)
+    }
+
+    class time_info{
+        companion object {
+            var pTime = ""
+        }
     }
 
     fun changeCamera(){

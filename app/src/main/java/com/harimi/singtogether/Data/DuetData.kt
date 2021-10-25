@@ -32,5 +32,9 @@ data class DuetData(
     @SerializedName("mr_path")
     val mr_path : String,
     @SerializedName("extract_path")
-    val extract_path : String
+    val extract_path : String,
+    @SerializedName("kinds")
+    val kinds: String,
+    @SerializedName("lyrics")
+    val lyrics: String
 )

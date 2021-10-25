@@ -46,6 +46,7 @@ class AfterRecordActivity : AppCompatActivity() {
     private lateinit var file_path : String
     private lateinit var user_path : String // 사용자 목소리 녹음한 파일 경로
     private var collaborationNickname: String? = null // 듀엣한 사람 닉네임
+    private var collaborationEmail: String? = null // 듀엣한 사람 닉네임
     private lateinit var nickname : String
     private var isMerge : String? = null // 병합,그냥녹화 구분
     private var with : String? = null // 솔로,듀엣 구분
@@ -69,6 +70,7 @@ class AfterRecordActivity : AppCompatActivity() {
         way=intent.getStringExtra("WAY")
         isMerge=intent.getStringExtra("MERGE")
         collaborationNickname=intent.getStringExtra("COLLABORATION_NICKNAME")
+        collaborationEmail=intent.getStringExtra("COLLABO_EMAIL")
         idx=intent.getIntExtra("MR_IDX",0)
 
         Log.e("애프터싱액티비티","idx,file_path,user_path,with,way"+
@@ -118,39 +120,43 @@ class AfterRecordActivity : AppCompatActivity() {
     }
 
     private fun uploadMergeVideo() {
+        val email= LoginActivity.user_info.loginUserEmail
+        val kinds="녹화"
         idx?.let {
             collaborationNickname?.let { it1 ->
-                retrofitService.requestUploadMergeVideo(it,file_path,nickname, it1).enqueue(object : Callback<String> {
-                    // 통신에 성공한 경우
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        if (response.isSuccessful) {
-                            // 응답을 잘 받은 경우
-                            asyncDialog!!.dismiss()
+                collaborationEmail?.let { it2 ->
+                    retrofitService.requestUploadMergeVideo(it,file_path,email,nickname, it1, it2,kinds).enqueue(object : Callback<String> {
+                        // 통신에 성공한 경우
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            if (response.isSuccessful) {
+                                // 응답을 잘 받은 경우
+                                asyncDialog!!.dismiss()
 
 
-                            Log.e("AfterRecordActivity", " 통신 성공:"+ response.body().toString())
-                            // 업로드 성공 다이얼로그
-                            val builder = AlertDialog.Builder(this@AfterRecordActivity)
-                            builder.setTitle("SingTogether")
-                            builder.setMessage("업로드를 성공했습니다!")
-                            builder.setPositiveButton("확인") { dialogInterface, i ->
-                                simpleExoPlayer?.release()
-                                finish()
+                                Log.e("AfterRecordActivity", " 통신 성공:"+ response.body().toString())
+                                // 업로드 성공 다이얼로그
+                                val builder = AlertDialog.Builder(this@AfterRecordActivity)
+                                builder.setTitle("SingTogether")
+                                builder.setMessage("업로드를 성공했습니다!")
+                                builder.setPositiveButton("확인") { dialogInterface, i ->
+                                    simpleExoPlayer?.release()
+                                    finish()
+                                }
+                                builder.show()
+                            } else {
+                                // 통신은 성공했지만 응답에 문제가 있는 경우
+                                Log.e("AfterRecordActivity", " 응답 문제" + response.code())
+                                Log.e("AfterRecordActivity", " 응답 문제" + response.errorBody().toString())
                             }
-                            builder.show()
-                        } else {
-                            // 통신은 성공했지만 응답에 문제가 있는 경우
-                            Log.e("AfterRecordActivity", " 응답 문제" + response.code())
-                            Log.e("AfterRecordActivity", " 응답 문제" + response.errorBody().toString())
                         }
-                    }
 
-                    override fun onFailure(call: Call<String>, t: Throwable) {
-                        Log.e("AfterRecordActivity", " 통신 실패" + t.message)
-                    }
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.e("AfterRecordActivity", " 통신 실패" + t.message)
+                        }
 
 
-                })
+                    })
+                }
             }
         }
     }
@@ -159,8 +165,10 @@ class AfterRecordActivity : AppCompatActivity() {
 
     private fun uploadVideo() {
         val nickname=LoginActivity.user_info.loginUserNickname
+        val email=LoginActivity.user_info.loginUserEmail
+        val kinds="녹화"
         idx?.let {
-            retrofitService.requestUploadVideo(it,file_path,user_path,nickname).enqueue(object : Callback<String> {
+            retrofitService.requestUploadVideo(it,file_path,user_path,nickname,email,kinds,with!!).enqueue(object : Callback<String> {
                 // 통신에 성공한 경우
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {

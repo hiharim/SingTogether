@@ -32,6 +32,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         val extract_path=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_extract_path)
         val mr_path=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_mr)
         val duet_date=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_date)
+        val kinds=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_kinds)
+        val lyrics=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_lyrics)
 
     }
 
@@ -55,6 +57,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         holder.mr_path.text=curData.mr_path
         holder.extract_path.text=curData.extract_path
         holder.duet_date.text=curData.date
+        holder.kinds.text=curData.kinds
+        holder.lyrics.text=curData.lyrics
 
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
@@ -66,6 +70,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             val detailDuetFragment = DetailDuetFragment()
             var bundle =Bundle()
             bundle.putInt("idx",curData.idx)
+            bundle.putString("thumbnail",curData.thumbnail)
             bundle.putString("title",curData.title)
             bundle.putString("singer",curData.singer)
             bundle.putString("cnt_play",curData.cnt_play)
@@ -78,6 +83,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             bundle.putString("extract_path",curData.extract_path)
             bundle.putString("profile",curData.profile)
             bundle.putString("date",curData.date)
+            bundle.putString("kinds",curData.kinds)
+            bundle.putString("lyrics",curData.lyrics)
             detailDuetFragment.arguments=bundle
 
 

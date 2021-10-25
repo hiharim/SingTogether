@@ -253,12 +253,14 @@ class RecordActivity: AppCompatActivity()  {
                 // 통신에 성공한 경우
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     var mix_path: String? = null
+                    var extract_path: String? = null
                     var circle_profile: String? = null
                     if (response.isSuccessful) {
                         // 응답을 잘 받은 경우
                         asyncDialog!!.dismiss()
                         val jsonObject = JSONObject(response.body().toString())
                         mix_path = "http://3.35.236.251/" + jsonObject.getString("mix_path")
+                        extract_path = "http://3.35.236.251/" + jsonObject.getString("extract_path")
                         circle_profile =
                             "http://3.35.236.251/" + jsonObject.getString("circle_profile");
                         Log.e("레코드액티비티", " mix_path" + mix_path)
@@ -271,7 +273,7 @@ class RecordActivity: AppCompatActivity()  {
                             val intent = Intent(applicationContext, AfterSingActivity::class.java)
                             intent.putExtra("MR_IDX", idx)
                             intent.putExtra("FILE_PATH", mix_path)
-                            intent.putExtra("USER_PATH", recordingFilePath)
+                            intent.putExtra("USER_PATH", extract_path)
                             intent.putExtra("WITH", with)
                             intent.putExtra("WAY", way)
                             intent.putExtra("CIRCLE_PROFILE", circle_profile)

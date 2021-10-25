@@ -23,20 +23,13 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.Data.DetailDuetReviewData
-import com.harimi.singtogether.Data.PostReviewData
-import com.harimi.singtogether.LoginActivity
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
-import com.harimi.singtogether.SettingFragment
 import com.harimi.singtogether.SingFragment
 import com.harimi.singtogether.adapter.DetailDuetReviewAdapter
-import com.harimi.singtogether.adapter.PostFragmentReviewAdapter
 import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
 import org.json.JSONArray
 import org.json.JSONObject
@@ -44,13 +37,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import de.hdodenhof.circleimageview.CircleImageView
-import org.json.JSONArray
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -65,6 +52,7 @@ class DetailDuetFragment : Fragment() {
     private lateinit var retrofit : Retrofit
 
     private var idx : Int? = null // duet 테이블 idx
+    private var thumbnail: String? = null
     private var title : String? = null
     private var singer : String? = null
     private var cnt_play : String? = null
@@ -77,6 +65,8 @@ class DetailDuetFragment : Fragment() {
     private var extract_path : String? = null //
     private var profile : String? = null
     private var date : String? = null
+    private var kinds : String? = null
+    private var lyrics : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
 
@@ -88,6 +78,7 @@ class DetailDuetFragment : Fragment() {
         super.onCreate(savedInstanceState)
         arguments?.let {
             idx=it.getInt("idx")
+            thumbnail=it.getString("thumbnail")
             title=it.getString("title")
             singer=it.getString("singer")
             cnt_play=it.getString("cnt_play")
@@ -100,16 +91,19 @@ class DetailDuetFragment : Fragment() {
             extract_path=it.getString("extract_path")
             profile=it.getString("profile")
             date=it.getString("date")
+            kinds=it.getString("kinds")
+            lyrics=it.getString("lyrics")
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(
+    override fun onCreateView (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
         Log.e("디테일프래그","idx"+idx)
+
         //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
             // DuetActivity 로 이동
@@ -123,6 +117,8 @@ class DetailDuetFragment : Fragment() {
             intent.putExtra("mr_path",mr_path)
             intent.putExtra("extract_path",extract_path)
             intent.putExtra("profile",profile)
+            intent.putExtra("kinds",kinds)
+            intent.putExtra("lyrics",lyrics)
             startActivity(intent)
         }
 
@@ -135,6 +131,10 @@ class DetailDuetFragment : Fragment() {
         Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.ivUploadUserProfile)
         Log.e("디테일프래그","duet_path"+duet_path)
 
+        if(kinds.equals("녹음")){
+            Glide.with(this).load(thumbnail).into(binding.imageViewThumb)
+            binding.imageViewThumb.visibility=View.VISIBLE
+        }
 
         binding.fragmentDetailDuetRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.fragmentDetailDuetRecyclerView.addItemDecoration(
@@ -182,6 +182,7 @@ class DetailDuetFragment : Fragment() {
                 builder.show()
             }
         }
+
 
 
         //프로필 액티비티로 넘어가기
@@ -248,7 +249,8 @@ class DetailDuetFragment : Fragment() {
 
         return binding.root
     }
-    fun detailDuetReviewLoad(recyclerview : RecyclerView){
+
+    fun detailDuetReviewLoad(recyclerview : RecyclerView) {
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
         retrofitService.requestGetDetailDuetReview(idx.toString())
@@ -282,7 +284,35 @@ class DetailDuetFragment : Fragment() {
                                 detailDuetIdx
                             )
 
-    fun deleteSong(){
+
+                            detailDuetReviewList.add(detailDuetReviewData)
+                            detailDuetReviewAdapter.notifyDataSetChanged()
+                            recyclerview.scrollToPosition(
+                                detailDuetReviewList.size - 1
+                            )
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+
+                }
+            })
+    }
+
+
+
+    private fun initRetrofit() {
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        simpleExoPlayer?.release()
+    }
+
+    fun deleteSong() {
         idx?.let {
             retrofitService.deleteMySong(it).enqueue(object : Callback<String> {
                 // 통신에 성공한 경우
@@ -317,30 +347,6 @@ class DetailDuetFragment : Fragment() {
 
             })
         }
-    }
-
-    private fun initRetrofit() {
-        retrofit= RetrofitClient.getInstance()
-        retrofitService=retrofit.create(RetrofitService::class.java)
-    }
-
-                            detailDuetReviewList.add(detailDuetReviewData)
-                            detailDuetReviewAdapter.notifyDataSetChanged()
-                            recyclerview.scrollToPosition(
-                                detailDuetReviewList.size - 1
-                            )
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-
-                }
-            })
-    }
-    override fun onPause() {
-        super.onPause()
-        simpleExoPlayer?.release()
     }
 
     companion object {

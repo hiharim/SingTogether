@@ -106,11 +106,13 @@ class AfterSingActivity : AppCompatActivity() {
             asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
             asyncDialog!!.setMessage("업로드중...")
             asyncDialog!!.show()
-            if(with.equals("솔로")) {
-                uploadAudio()
-            }else if(with.equals("듀엣")){
-                uploadMergeAudio()
-            }
+//            if(with.equals("솔로")) {
+//                uploadAudio()
+//            }else if(with.equals("듀엣")){
+//                uploadMergeAudio()
+//            }
+
+            uploadAudio()
 
         }
 
