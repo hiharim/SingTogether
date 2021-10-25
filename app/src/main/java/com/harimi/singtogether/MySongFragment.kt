@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.Data.MySongData
 import com.harimi.singtogether.Network.RetrofitClient
@@ -27,16 +29,18 @@ import retrofit2.Retrofit
  * 마이페이지 '내 노래' 프래그먼트
  */
 class MySongFragment : Fragment() {
-
+    var TAG :String = "MySongFragment "
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
     private val mySongList : ArrayList<MySongData> = ArrayList()
     private lateinit var mySongAdapter: MySongAdapter
+    private var myEmail : String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
+            myEmail=it.getString("email")
+            Log.e(TAG ,"myEmail:" + myEmail)
         }
         // 서버 연결
         initRetrofit()
@@ -53,7 +57,7 @@ class MySongFragment : Fragment() {
         binding.fragmentMySongRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         mySongAdapter= MySongAdapter(mySongList)
         binding.fragmentMySongRecyclerView.adapter=mySongAdapter
-        loadMySong()
+        loadMySong(binding.tvNoMySong,binding.fragmentMySongRecyclerView)
 
         return binding.root
     }
@@ -70,10 +74,10 @@ class MySongFragment : Fragment() {
             }
     }
 
-    private fun loadMySong() {
-        val nickname=LoginActivity.user_info.loginUserNickname
-        val email=LoginActivity.user_info.loginUserEmail
-        retrofitService.requestMySong(email).enqueue(object : Callback<String> {
+    private fun loadMySong(noSong : TextView, recyclerview : RecyclerView) {
+//        val nickname=LoginActivity.user_info.loginUserNickname
+//        val email=LoginActivity.user_info.loginUserEmail
+        retrofitService.requestMySong(myEmail!!).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
@@ -84,7 +88,11 @@ class MySongFragment : Fragment() {
                     val jsonArray= JSONArray(body)
                         if (jsonArray.length() == 0 || jsonArray.equals("")) {
 
+                            noSong.visibility = View.VISIBLE
+                            recyclerview.visibility = View.GONE
                         } else {
+                            noSong.visibility = View.GONE
+                            recyclerview.visibility = View.VISIBLE
 
                             for (i in 0..jsonArray.length() - 1) {
                                 val iObject = jsonArray.getJSONObject(i)

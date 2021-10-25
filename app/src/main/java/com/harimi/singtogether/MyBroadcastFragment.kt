@@ -42,13 +42,14 @@ class MyBroadcastFragment : Fragment() {
     private var replayPostLikeIdx :String ?= "null"
     private lateinit var tv_noMyBroadcast: TextView
     private lateinit var fragment_my_broadcast_recyclerView: RecyclerView
-
+    private var myEmail : String?=null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
+            myEmail=it.getString("email")
+            Log.e(TAG ,"myEmail:" + myEmail)
         }
         // 서버 연결
         initRetrofit()
@@ -73,8 +74,7 @@ class MyBroadcastFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "onResume")
-//        val ft: FragmentTransaction = parentFragmentManager.beginTransaction()
-//        ft.detach(this).attach(this).commit()
+
         myBroadcastList.clear()
         myBroadcastAdapter.notifyDataSetChanged()
         loadMyBroadcast()
@@ -90,10 +90,10 @@ class MyBroadcastFragment : Fragment() {
             }
     }
     fun loadMyBroadcast (){
-        val userEmail=LoginActivity.user_info.loginUserEmail
+//        val userEmail=LoginActivity.user_info.loginUserEmail
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestMyBroadcast(userEmail)
+        retrofitService.requestMyBroadcast(myEmail!!)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
@@ -157,9 +157,7 @@ class MyBroadcastFragment : Fragment() {
 
                     }
                 }
-
                 override fun onFailure(call: Call<String>, t: Throwable) {
-
                 }
             })
     }

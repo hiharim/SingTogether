@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,20 +24,14 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.harimi.singtogether.*
 import com.harimi.singtogether.Data.DuetData
-import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.Data.DetailDuetReviewData
-import com.harimi.singtogether.Data.PostReviewData
-import com.harimi.singtogether.LoginActivity
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.R
-import com.harimi.singtogether.SettingFragment
-import com.harimi.singtogether.SingFragment
 import com.harimi.singtogether.adapter.DetailDuetReviewAdapter
 import com.harimi.singtogether.adapter.PostFragmentReviewAdapter
+import com.harimi.singtogether.broadcast.SearchLiveStreaming
 import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
 import org.json.JSONArray
 import org.json.JSONObject
@@ -44,13 +39,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import de.hdodenhof.circleimageview.CircleImageView
-import org.json.JSONArray
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -185,10 +174,55 @@ class DetailDuetFragment : Fragment() {
 
 
         //프로필 액티비티로 넘어가기
+        binding.cardView.setOnClickListener{
+            if (LoginActivity.user_info.loginUserEmail.equals(email)){
+                val activity =it!!.context as AppCompatActivity
+                val MyPageFragment = MyPageFragment()
+                var bundle =Bundle()
+                activity.supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_main_frame,MyPageFragment)
+                    .commit()
+            }else{
+                retrofit= RetrofitClient.getInstance()
+                retrofitService=retrofit.create(RetrofitService::class.java)
+                retrofitService.requestLookAtUserProfile(
+                   email!!,
+                   LoginActivity.user_info.loginUserEmail
+                )
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            if (response.isSuccessful) {
+                                val body = response.body().toString()
+                                Log.d(TAG, body)
+                                var jsonObject = JSONObject(response.body().toString())
+                                var result = jsonObject.getBoolean("result")
+                                if (result) {
+//                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
+                                    var followingUserNumber = jsonObject.getString("followingUserNumber")
+                                    var followUserNumber = jsonObject.getString("followUserNumber")
+                                    var isFollow = jsonObject.getBoolean("isFollow")
 
-//        binding.cardView.setOnClickListener{
-//            if (LoginActivity.user_info.loginUserEmail.equals())
-//        }
+                                    val intent= Intent(context, LookAtUserProfileActivity::class.java)
+                                    intent.putExtra("otherUserEmail",email)
+                                    Log.d(TAG, email)
+                                    intent.putExtra("nickname",nickname)
+                                    intent.putExtra("profile",profile)
+                                    intent.putExtra("followingUserNumber",followingUserNumber)
+                                    intent.putExtra("followUserNumber",followUserNumber)
+                                    intent.putExtra("isFollow",isFollow)
+                                    startActivity(intent)
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                        }
+                    })
+
+
+            }
+        }
 
 
         ///댓글달기
@@ -281,6 +315,20 @@ class DetailDuetFragment : Fragment() {
                                 uploadDate,
                                 detailDuetIdx
                             )
+                            detailDuetReviewList.add(detailDuetReviewData)
+                            detailDuetReviewAdapter.notifyDataSetChanged()
+                            recyclerview.scrollToPosition(
+                                detailDuetReviewList.size - 1
+                            )
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+
+                }
+            })
+    }
 
     fun deleteSong(){
         idx?.let {
@@ -324,20 +372,7 @@ class DetailDuetFragment : Fragment() {
         retrofitService=retrofit.create(RetrofitService::class.java)
     }
 
-                            detailDuetReviewList.add(detailDuetReviewData)
-                            detailDuetReviewAdapter.notifyDataSetChanged()
-                            recyclerview.scrollToPosition(
-                                detailDuetReviewList.size - 1
-                            )
-                        }
-                    }
-                }
 
-                override fun onFailure(call: Call<String>, t: Throwable) {
-
-                }
-            })
-    }
     override fun onPause() {
         super.onPause()
         simpleExoPlayer?.release()
