@@ -51,9 +51,11 @@ class MyPageFragment : Fragment() {
 
 
         val pagerAdapter = MyPagePagerAdapter(requireActivity())
+
         // 2개의 Fragment Add
         pagerAdapter.addFragment(MySongFragment())
         pagerAdapter.addFragment(MyBroadcastFragment())
+
         // viewPager 와 pagerAdapter 연결
         binding.fragmentMyPageViewPager.adapter=pagerAdapter
         binding.fragmentMyPageViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
@@ -68,10 +70,13 @@ class MyPageFragment : Fragment() {
                 tab,position->
             when(position){
                 0 ->{
-                    tab.text="내 노래"
+                    tab.text="듀엣초대"
                }
                 1 ->{
-                    tab.text="내 방송"
+                    tab.text="방송"
+                }
+                2 ->{
+                    tab.text="포스팅"
                 }
             }
         }.attach()

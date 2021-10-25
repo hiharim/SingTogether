@@ -146,6 +146,12 @@ class DetailDuetFragment : Fragment() {
         simpleExoPlayer!!.prepare()
         simpleExoPlayer!!.play()
 
+        //프로필 액티비티로 넘어가기
+
+//        binding.cardView.setOnClickListener{
+//            if (LoginActivity.user_info.loginUserEmail.equals())
+//        }
+
 
         ///댓글달기
         binding.ivUploadReview.setOnClickListener {
