@@ -42,13 +42,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import de.hdodenhof.circleimageview.CircleImageView
-import org.json.JSONArray
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
