@@ -10,17 +10,26 @@ import android.view.ViewGroup
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.MyPagePagerAdapter
 import com.harimi.singtogether.databinding.FragmentMyPageBinding
 import com.harimi.singtogether.sing.DuetFragment
 import com.harimi.singtogether.sing.MRFragment
 import com.harimi.singtogether.sing.SingPagerAdapter
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 /**
  * 마이페이지 화면
  * */
 class MyPageFragment : Fragment() {
-
+    private var TAG :String = "MyPageFragment"
+    private lateinit var retrofitService: RetrofitService
+    private lateinit var retrofit : Retrofit
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -91,6 +100,35 @@ class MyPageFragment : Fragment() {
         return binding.root
     }
 
+    private fun initView(){
+
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+        retrofitService.requestLookAtMyFollow(
+            LoginActivity.user_info.loginUserEmail
+        )
+            .enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+                        Log.d(TAG, body)
+                        var jsonObject = JSONObject(response.body().toString())
+                        var result = jsonObject.getBoolean("result")
+                        if (result) {
+//                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
+                            var followingUserNumber = jsonObject.getString("followingUserNumber")
+                            var followUserNumber = jsonObject.getString("followUserNumber")
+
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                }
+            })
+
+
+    }
     companion object {
 
         fun newInstance(param1: String, param2: String) =

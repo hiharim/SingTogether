@@ -21,7 +21,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 
 class LookAtUserProfileActivity : AppCompatActivity() {
-    var TAG :String = "LookAtUserProfileActivity "
+    private var TAG :String = "LookAtUserProfileActivity "
     private lateinit var iv_profileImage : CircleImageView
     private lateinit var tv_nickname : TextView
     private lateinit var tv_follwingNumber : TextView
@@ -80,6 +80,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
             btn_follow.visibility = View.GONE
             btn_followCancel.visibility = View.VISIBLE
         }
+
 
         btn_follow.setOnClickListener {
             retrofit= RetrofitClient.getInstance()

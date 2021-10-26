@@ -206,7 +206,12 @@ interface RetrofitService {
 
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("LookAtMyFollow.php")
+    fun requestLookAtMyFollow (
+        @Field("UserEmail") UserEmail :String
 
+        ) : Call<String>
 
     @FormUrlEncoded
     @POST("deleteReplay.php")
