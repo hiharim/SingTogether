@@ -46,6 +46,16 @@ interface RetrofitService {
         @Part file : MultipartBody.Part
     ) : Call<String>
 
+    @Multipart
+    @POST("mergeAudios.php")
+    fun requestMergeAudio (
+        @Part("mr_path") mr_path :String,
+        @Part("original_email") original_email :String,
+        @Part("collaboration_email") collaboration_email :String,
+        @Part("merge_extract_path") mergeExtractPath :String,
+        @Part file : MultipartBody.Part
+    ) : Call<String>
+
     @FormUrlEncoded
     @POST("uploadVideo.php")
     fun requestUploadVideo (
@@ -83,7 +93,7 @@ interface RetrofitService {
     @POST("mixAudio.php")
     fun requestMixAudio (
         @Part("mr_path") mr_path :String,
-        @Part("nickname") nickname: String,
+        @Part("email") email: String,
         @Part file : MultipartBody.Part
     ) : Call<String>
 

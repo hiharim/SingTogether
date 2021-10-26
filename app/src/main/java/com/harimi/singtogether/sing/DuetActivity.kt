@@ -86,18 +86,23 @@ class DuetActivity : AppCompatActivity() {
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {
             if(way=="녹음") {
-                val intent= Intent(this,RecordActivity::class.java)
+                //val intent= Intent(this,RecordActivity::class.java)
+                val intent= Intent(this,MergeAudioActivity::class.java)
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
+                intent.putExtra("RECORD_MR_PATH",mr_path)
                 intent.putExtra("RECORD_SONG_PATH",duet_path)
+                intent.putExtra("RECORD_EXTRACT_PATH",extract_path)
                 intent.putExtra("RECORD_LYRICS",lyrics)
                 intent.putExtra("WITH",with)
                 intent.putExtra("WAY",way)
+                intent.putExtra("COLLABORATION",user_nickname)
+                intent.putExtra("COLLABO_EMAIL",user_email)
                 startActivity(intent)
                 finish()
-            }else if (way=="녹화"){
 
+            }else if (way=="녹화"){
                 val intent= Intent(this,MergeActivity::class.java)
                 intent.putExtra("RECORD_IDX",idx)
                 intent.putExtra("RECORD_TITLE",title)
