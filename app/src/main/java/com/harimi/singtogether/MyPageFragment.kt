@@ -7,11 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.MyPagePagerAdapter
 import com.harimi.singtogether.databinding.FragmentMyPageBinding
 import com.harimi.singtogether.sing.DuetFragment
@@ -28,6 +28,8 @@ import retrofit2.Retrofit
  * */
 class MyPageFragment : Fragment() {
     private var TAG :String = "MyPageFragment"
+    private lateinit var apiService: APIService
+
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,12 @@ class MyPageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService::class.java)
+
+
+        sendNotification("enVj7L-oSW-Vv7R5zC6WZe:APA91bGA42SaNJRYSnqYBOyEOtOl_gjJz2CzDlFv28SovOsug8jln2jFCew8VQzbw7LMuTyJrZ-ugJ_ax8-t7dfZlKQOoEvqW4xOcdN588lpXR4rkuY7QGvlycYMxawY3JGnSffPXzrF","hi","hi")
 
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
@@ -138,6 +146,28 @@ class MyPageFragment : Fragment() {
 
         // 3. 프래그먼트 레이아웃 뷰 반환
         return binding.root
+    }
+    private fun sendNotification(usertoken:String,title: String,message: String){
+        var data= Data(title,message)
+        var sender: NotificationSender = NotificationSender(data,usertoken)
+
+        apiService.sendNotifcation(sender)!!.enqueue(object : Callback<MyResponse?> {
+
+            override fun onResponse(call: Call<MyResponse?>, response: Response<MyResponse?>) {
+                if (response.code() === 200) {
+
+                    if (response.body()!!.success !== 1) {
+                        Toast.makeText(requireContext(), "Failed ", Toast.LENGTH_LONG).show()
+                    }else{
+                        Toast.makeText(requireContext(), "success ", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<MyResponse?>, t: Throwable?) {
+
+            }
+        })
     }
 
 
