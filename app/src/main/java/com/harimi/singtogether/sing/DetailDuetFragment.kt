@@ -1,5 +1,6 @@
 package com.harimi.singtogether.sing
 
+import android.content.ContentValues.TAG
 import android.content.DialogInterface
 import android.content.Intent
 
@@ -14,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -112,7 +114,7 @@ class DetailDuetFragment : Fragment() {
         apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService::class.java)
 
 
-        sendNotification("dVwJ9XCuTQKECJ895CNQzd:APA91bEK3GHIE1WAeAaa59og103_lIrz50-XeQ3vP6f1pN3VEbV_sAPtLJsqnFiDvezraWvD49pkeKH_HZOQi_T3tdZV3fXffgObS1cFQ6gVMZEU4ANy0axNk2aquni3o-II5eHuaugz","hi","hi")
+//        sendNotification("dVwJ9XCuTQKECJ895CNQzd:APA91bEK3GHIE1WAeAaa59og103_lIrz50-XeQ3vP6f1pN3VEbV_sAPtLJsqnFiDvezraWvD49pkeKH_HZOQi_T3tdZV3fXffgObS1cFQ6gVMZEU4ANy0axNk2aquni3o-II5eHuaugz","hi","hi")
         //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
             // DuetActivity 로 이동
@@ -321,7 +323,7 @@ class DetailDuetFragment : Fragment() {
 
             return binding.root
         }
-    }
+
 
 
 

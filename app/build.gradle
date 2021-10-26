@@ -3,7 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
 }
-
+apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.2"
@@ -58,11 +58,13 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-auth:7.2.0"
 
     // firebase FCM
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-core:19.0.2'
-    implementation 'com.google.firebase:firebase-messaging:22.0.0'
 
-
+    // Declare the dependencies for the Firebase Cloud Messaging and Analytics libraries
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'androidx.work:work-runtime:2.5.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     // Gson
     implementation 'com.google.code.gson:gson:2.8.6'
     // Retrofit2
@@ -103,5 +105,5 @@ dependencies {
 
 }
 
-apply plugin: 'com.google.gms.google-services'
+
 

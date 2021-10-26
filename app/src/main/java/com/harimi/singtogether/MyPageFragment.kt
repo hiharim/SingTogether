@@ -1,6 +1,7 @@
 package com.harimi.singtogether
 
 import android.content.Intent
+import android.icu.text.CaseMap
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,6 +12,7 @@ import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
+
 import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.MyPagePagerAdapter
 import com.harimi.singtogether.databinding.FragmentMyPageBinding
@@ -45,10 +47,9 @@ class MyPageFragment : Fragment() {
     ): View? {
 
 
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService::class.java)
+        apiService = Client.getClient("https://fcm.googleapis.com").create(APIService::class.java)
 
 
-        sendNotification("enVj7L-oSW-Vv7R5zC6WZe:APA91bGA42SaNJRYSnqYBOyEOtOl_gjJz2CzDlFv28SovOsug8jln2jFCew8VQzbw7LMuTyJrZ-ugJ_ax8-t7dfZlKQOoEvqW4xOcdN588lpXR4rkuY7QGvlycYMxawY3JGnSffPXzrF","hi","hi")
 
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)

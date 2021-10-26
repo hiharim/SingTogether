@@ -53,20 +53,20 @@ class LoginActivity : AppCompatActivity() {
         setContentView(binding.root)
         val context: Context = this;
 
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-
-            // Get new FCM registration token
-            val token = task.result
-
-            // Log and toast
-
-            Log.d(TAG, token)
-            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
-        })
+//        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+//            if (!task.isSuccessful) {
+//                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+//                return@OnCompleteListener
+//            }
+//
+//            // Get new FCM registration token
+//            val token = task.result
+//
+//            // Log and toast
+//
+//            Log.d(TAG, token)
+//            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+//        })
 
         // 구글 버튼 클릭시
         binding.activityLoginBtnLoginGoogle.setOnClickListener {
