@@ -19,7 +19,8 @@ import com.harimi.singtogether.databinding.ActivityVideo3Binding
 class DuetActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDuetBinding
-    private var idx : Int? = null
+    private var duet_idx : Int? = null
+    private var mr_idx : Int? = null
     private var title : String? = null
     private var singer : String? = null
     private var duet_path : String? = null
@@ -39,7 +40,8 @@ class DuetActivity : AppCompatActivity() {
         binding= ActivityDuetBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        idx=intent.getIntExtra("idx",0)
+        duet_idx=intent.getIntExtra("duet_idx",0)
+        mr_idx=intent.getIntExtra("mr_idx",0)
         title=intent.getStringExtra("title")
         singer=intent.getStringExtra("singer")
         duet_path=intent.getStringExtra("duet_path")
@@ -85,10 +87,11 @@ class DuetActivity : AppCompatActivity() {
 
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {
-            if(way=="녹음") {
+            if(kinds=="녹음") {
                 //val intent= Intent(this,RecordActivity::class.java)
                 val intent= Intent(this,MergeAudioActivity::class.java)
-                intent.putExtra("RECORD_IDX",idx)
+                intent.putExtra("RECORD_DUET_IDX",duet_idx)
+                intent.putExtra("RECORD_MR_IDX",mr_idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
                 intent.putExtra("RECORD_MR_PATH",mr_path)
@@ -102,9 +105,10 @@ class DuetActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
 
-            }else if (way=="녹화"){
+            }else if (kinds=="녹화"){
                 val intent= Intent(this,MergeActivity::class.java)
-                intent.putExtra("RECORD_IDX",idx)
+                intent.putExtra("RECORD_DUET_IDX",duet_idx)
+                intent.putExtra("RECORD_MR_IDX",mr_idx)
                 intent.putExtra("RECORD_TITLE",title)
                 intent.putExtra("RECORD_SINGER",singer)
                 intent.putExtra("RECORD_SONG_PATH",duet_path)

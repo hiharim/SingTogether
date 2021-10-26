@@ -42,7 +42,8 @@ class MergeAudioActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMergeAudioBinding
     private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
-    private var idx : Int? = null
+    private var duet_idx : Int? = null
+    private var mr_idx : Int? = null
     private var title : String? = null
     private var singer : String? = null
     private var with : String? = null
@@ -70,7 +71,8 @@ class MergeAudioActivity : AppCompatActivity() {
         setContentView(binding.root)
         initRetrofit()
 
-        idx=intent.getIntExtra("RECORD_IDX", 0)
+        duet_idx=intent.getIntExtra("RECORD_DUET_IDX", 0)
+        mr_idx=intent.getIntExtra("RECORD_MR_IDX", 0)
         title=intent.getStringExtra("RECORD_TITLE")
         singer=intent.getStringExtra("RECORD_SINGER")
         lyrics=intent.getStringExtra("RECORD_LYRICS")
@@ -128,7 +130,7 @@ class MergeAudioActivity : AppCompatActivity() {
                             binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
 
                             binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
-                            time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
+                            RecordActivity.time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
 
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityRecordRv.adapter=lyricsAdapter
@@ -231,24 +233,28 @@ class MergeAudioActivity : AppCompatActivity() {
                     if (response.isSuccessful) {
                         // 응답을 잘 받은 경우
                         asyncDialog!!.dismiss()
+                        Log.e("MergeAudioActivity", "body : " + response.body().toString())
                         val jsonObject = JSONObject(response.body().toString())
                         output_path = "http://3.35.236.251/" + jsonObject.getString("output_path")
-                        circle_profile =
-                            "http://3.35.236.251/" + jsonObject.getString("circle_profile");
-                        Log.e("레코드액티비티", " output_path" +output_path)
-                        Log.e("레코드액티비티", " circle_profile" + circle_profile)
+                        circle_profile = "http://3.35.236.251/" + jsonObject.getString("merge_thumbnail_path")
+                        Log.e("MergeAudioActivity", " output_path" +output_path)
+                        Log.e("MergeAudioActivity", " circle_profile" + circle_profile)
                         // 믹싱 성공 다이얼로그
                         val builder = AlertDialog.Builder(this@MergeAudioActivity)
                         builder.setTitle("SingTogether")
                         builder.setMessage("믹싱을 성공했습니다!")
                         builder.setPositiveButton("확인") { dialogInterface, i ->
                             val intent = Intent(applicationContext, AfterSingActivity::class.java)
-                            intent.putExtra("MR_IDX", idx)
+                            intent.putExtra("DUET_IDX", duet_idx)
+                            intent.putExtra("MR_IDX", mr_idx)
                             intent.putExtra("FILE_PATH", output_path)
                             intent.putExtra("USER_PATH", extract_path)
                             intent.putExtra("WITH", with)
                             intent.putExtra("WAY", way)
                             intent.putExtra("CIRCLE_PROFILE", circle_profile)
+                            intent.putExtra("MERGE", "Y")
+                            intent.putExtra("COLLABORATION_NICKNAME", collaborationNickname)
+                            intent.putExtra("COLLABO_EMAIL", collaborationEmail)
                             startActivity(intent)
                             finish()
 
@@ -281,11 +287,11 @@ class MergeAudioActivity : AppCompatActivity() {
         Log.e("MergeAudioActivity", " 통신 실패" + 404)
     }
 
-    class time_info{
-        companion object {
-            var pTime = ""
-        }
-    }
+//    class time_info{
+//        companion object {
+//            var pTime = ""
+//        }
+//    }
 
     // 레트로핏 초기화
     private fun initRetrofit(){

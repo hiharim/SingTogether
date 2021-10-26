@@ -5,8 +5,10 @@ import com.google.gson.annotations.SerializedName
 data class DuetData(
     //11개
 
-    @SerializedName("idx")
-    val idx : Int,
+    @SerializedName("duet_idx")
+    val duet_idx : Int,
+    @SerializedName("mr_idx")
+    val mr_idx : Int,
     @SerializedName("thumbnail")
     val thumbnail : String,
     @SerializedName("title")

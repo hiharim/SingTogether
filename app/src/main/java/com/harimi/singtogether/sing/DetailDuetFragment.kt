@@ -55,7 +55,8 @@ class DetailDuetFragment : Fragment() {
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
 
-    private var idx : Int? = null // duet 테이블 idx
+    private var duet_idx : Int? = null // duet 테이블 idx
+    private var mr_idx : Int? = null // mr 테이블 idx
     private var thumbnail: String? = null
     private var title : String? = null
     private var singer : String? = null
@@ -81,7 +82,8 @@ class DetailDuetFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            idx=it.getInt("idx")
+            duet_idx=it.getInt("duet_idx")
+            mr_idx=it.getInt("mr_idx")
             thumbnail=it.getString("thumbnail")
             title=it.getString("title")
             singer=it.getString("singer")
@@ -106,13 +108,14 @@ class DetailDuetFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
-        Log.e("디테일프래그","idx"+idx)
+        Log.e("디테일프래그","duet_idx"+duet_idx)
 
         //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
             // DuetActivity 로 이동
             val intent= Intent(context,DuetActivity::class.java)
-            intent.putExtra("idx",idx)
+            intent.putExtra("duet_idx",duet_idx)
+            intent.putExtra("mr_idx",mr_idx)
             intent.putExtra("title",title)
             intent.putExtra("singer",singer)
             intent.putExtra("nickname",nickname)
@@ -187,7 +190,12 @@ class DetailDuetFragment : Fragment() {
             }
         }
 
-
+        // 듀엣 완성 포스팅 보기
+        binding.fragmentDetailDuetTvComplete.setOnClickListener {
+            val intent= Intent(context, CompleteDuetActivity::class.java)
+            intent.putExtra("duet_idx",duet_idx)
+            startActivity(intent)
+        }
 
         //프로필 액티비티로 넘어가기
         binding.cardView.setOnClickListener{
@@ -254,7 +262,7 @@ class DetailDuetFragment : Fragment() {
                 retrofit= RetrofitClient.getInstance()
                 retrofitService=retrofit.create(RetrofitService::class.java)
                 retrofitService.requestWriteDetailDuetReview(
-                    idx.toString()!!,
+                    duet_idx.toString()!!,
                     LoginActivity.user_info.loginUserEmail,
                     LoginActivity.user_info.loginUserProfile,
                     LoginActivity.user_info.loginUserNickname,
@@ -278,7 +286,7 @@ class DetailDuetFragment : Fragment() {
                                         LoginActivity.user_info.loginUserProfile,
                                         uploadReview,
                                         uploadDate,
-                                        idx.toString()!!
+                                        duet_idx.toString()!!
                                     )
                                     detailDuetReviewList.add(detailDuetReviewData)
                                     detailDuetReviewAdapter.notifyDataSetChanged()
@@ -302,7 +310,7 @@ class DetailDuetFragment : Fragment() {
     fun detailDuetReviewLoad(recyclerview : RecyclerView) {
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestGetDetailDuetReview(idx.toString())
+        retrofitService.requestGetDetailDuetReview(duet_idx.toString())
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
@@ -347,8 +355,8 @@ class DetailDuetFragment : Fragment() {
             })
     }
 
-    fun deleteSong(){
-        idx?.let {
+    fun deleteSong() {
+        duet_idx?.let {
             retrofitService.deleteMySong(it).enqueue(object : Callback<String> {
                 // 통신에 성공한 경우
                 override fun onResponse(call: Call<String>, response: Response<String>) {

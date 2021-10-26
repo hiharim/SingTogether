@@ -33,7 +33,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SingTogether"
         android:usesCleartextTraffic="true">
-        <activity android:name=".sing.MergeAudioActivity"></activity>
+        <activity android:name=".sing.CompleteDuetActivity"></activity>
+        <activity android:name=".sing.MergeAudioActivity" />
         <activity android:name=".MyPostFragment" />
         <activity android:name=".sing.SearchSongActivity" />
         <activity android:name=".ProfileEditActivity" />

@@ -9,6 +9,12 @@ import retrofit2.http.*
 // POST 방식으로 데이터를 주고 받을 때 넘기는 변수는 Field라고 해야한다.
 interface RetrofitService {
 
+    @FormUrlEncoded
+    @POST("loadCompleteDuet.php")
+    fun loadCompleteDuet(
+        @Field("duet_idx") duet_idx: Int
+    ) : Call<String>
+
     //검색
     @FormUrlEncoded
     @POST("loadSearchResult.php")
@@ -37,6 +43,19 @@ interface RetrofitService {
         @Field("kinds") kinds :String
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("uploadMergeAudios.php")
+    fun requestUploadMergeAudio (
+        @Field("mr_idx") mr_idx: Int,
+        @Field("duet_idx") duet_idx: Int,
+        @Field("thumbnail_path") thumbnail_path :String,
+        @Field("output_path") output_path :String,
+        @Field("email") email :String,
+        @Field("nickname") nickname :String,
+        @Field("collaboration_nickname") collaborationNickname :String,
+        @Field("collabo_email") collabo_email :String,
+        @Field("kinds") kinds :String
+    ) : Call<String>
     @Multipart
     @POST("mergeVideos.php")
     fun requestMergeVideo (

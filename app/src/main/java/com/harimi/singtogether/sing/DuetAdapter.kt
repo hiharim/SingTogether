@@ -18,7 +18,8 @@ import com.harimi.singtogether.R
 class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<DuetAdapter.DuetViewHolder>() {
 
     inner class DuetViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val idx=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_idx)
+        val duet_idx=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_duet_idx)
+        val mr_idx=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_mr_idx)
         val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_duet_iv_thumbnail)
         val title=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_singer)
@@ -45,7 +46,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
 
     override fun onBindViewHolder(holder: DuetViewHolder, position: Int) {
         val curData = duetList[position]
-        holder.idx.text= curData.idx.toString()
+        holder.duet_idx.text= curData.duet_idx.toString()
+        holder.mr_idx.text= curData.mr_idx.toString()
         holder.title.text=curData.title
         holder.singer.text=curData.singer
         holder.cnt_play.text=curData.cnt_play
@@ -69,7 +71,8 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             val activity =v!!.context as AppCompatActivity
             val detailDuetFragment = DetailDuetFragment()
             var bundle =Bundle()
-            bundle.putInt("idx",curData.idx)
+            bundle.putInt("duet_idx",curData.duet_idx)
+            bundle.putInt("mr_idx",curData.mr_idx)
             bundle.putString("thumbnail",curData.thumbnail)
             bundle.putString("title",curData.title)
             bundle.putString("singer",curData.singer)

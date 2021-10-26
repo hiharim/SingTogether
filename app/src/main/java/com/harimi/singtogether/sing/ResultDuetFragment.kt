@@ -73,7 +73,8 @@ class ResultDuetFragment : Fragment() {
 
                             for(i in 0..jsonArray.length() -1){
                                 val iObject=jsonArray.getJSONObject(i)
-                                val idx=iObject.getInt("idx")
+                                val duet_idx=iObject.getInt("duet_idx")
+                                val mr_idx=iObject.getInt("mr_idx")
                                 val thumbnail=iObject.getString("thumbnail")
                                 val title=iObject.getString("title")
                                 val singer=iObject.getString("singer")
@@ -93,7 +94,7 @@ class ResultDuetFragment : Fragment() {
                                 val lyrics=iObject.getString("lyrics")
                                 //var path="http://3.35.236.251/"+song_path
                                 var path=song_path
-                                val duetData=DuetData(idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics)
+                                val duetData=DuetData(duet_idx,mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics)
                                 duetList.add(0,duetData)
                                 duetAdapter.notifyDataSetChanged()
                             }

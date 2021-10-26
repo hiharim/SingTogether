@@ -52,7 +52,11 @@ class AfterSingActivity : AppCompatActivity() {
     private var nickname : String? = null
     private var with : String? = null // 솔로,듀엣 구분
     private var way : String? = null // 녹화,녹음,연습 구분
-    private var idx : Int? = null // mr 인덱스 값
+    private var mr_idx : Int? = null // mr 인덱스 값
+    private var duet_idx : Int? = null // duet 인덱스 값
+    private var collaborationNickname: String? = null // 듀엣한 사람 닉네임
+    private var collaborationEmail: String? = null // 듀엣한 사람 닉네임
+    private var isMerge : String? = null // 병합,그냥녹화 구분
     private var simpleExoPlayer: ExoPlayer?=null
     lateinit var mediaPlayer: MediaPlayer
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
@@ -73,13 +77,15 @@ class AfterSingActivity : AppCompatActivity() {
         user_path=intent.getStringExtra("USER_PATH").toString()
         with=intent.getStringExtra("WITH")
         way=intent.getStringExtra("WAY")
-        idx=intent.getIntExtra("MR_IDX",0)
-        videoUri=intent.getParcelableExtra("URI")
+        mr_idx=intent.getIntExtra("MR_IDX",0)
+        duet_idx=intent.getIntExtra("DUET_IDX",0)
         circle_profile=intent.getStringExtra("CIRCLE_PROFILE")
-        Log.e("AfterRecordActivity", " idx" + idx)
-
-        Log.e("애프터싱액티비티","idx,file_path,user_path,with,way,uri"+
-                idx+" "+file_path+" "+user_path+" "+with+" "+way+""+videoUri)
+        isMerge=intent.getStringExtra("MERGE")
+        collaborationNickname=intent.getStringExtra("COLLABORATION_NICKNAME")
+        collaborationEmail=intent.getStringExtra("COLLABO_EMAIL")
+        Log.e("애프터싱액티비티", "mr_idx" + mr_idx)
+        Log.e("애프터싱액티비티","mr_idx,duet_idx,file_path,user_path,with,way"+
+                mr_idx+" "+duet_idx+" "+" "+file_path+" "+user_path+" "+with+" "+way)
 
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
         applicationContext?.let{
@@ -106,27 +112,67 @@ class AfterSingActivity : AppCompatActivity() {
             asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
             asyncDialog!!.setMessage("업로드중...")
             asyncDialog!!.show()
-//            if(with.equals("솔로")) {
-//                uploadAudio()
-//            }else if(with.equals("듀엣")){
-//                uploadMergeAudio()
-//            }
 
-            uploadAudio()
+            if(with.equals("솔로")) {
+                uploadAudio()
+            }else if(with.equals("듀엣")){
+                uploadMergeAudio()
+            }
+
+            //uploadAudio()
 
         }
 
     }
 
     private fun uploadMergeAudio() {
-        TODO("Not yet implemented")
+        val email= LoginActivity.user_info.loginUserEmail
+        val nickname= LoginActivity.user_info.loginUserNickname
+        val kinds="녹음"
+        mr_idx?.let {
+            duet_idx?.let { it1 ->
+                circle_profile?.let { it2 ->
+                    retrofitService.requestUploadMergeAudio(it,
+                        duet_idx!!,
+                        it2,file_path,email,nickname,collaborationNickname!!,collaborationEmail!!,kinds).enqueue(object : Callback<String> {
+                        // 통신에 성공한 경우
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            if (response.isSuccessful) {
+                                // 응답을 잘 받은 경우
+                                asyncDialog!!.dismiss()
+                                Log.e("AfterSingActivity", " 통신 성공:"+ response.body().toString())
+                                // 업로드 성공 다이얼로그
+                                val builder = AlertDialog.Builder(this@AfterSingActivity)
+                                builder.setTitle("SingTogether")
+                                builder.setMessage("업로드를 성공했습니다!")
+                                builder.setPositiveButton("확인") { dialogInterface, i ->
+                                    simpleExoPlayer?.release()
+                                    finish() }
+                                builder.show()
+
+                            } else {
+                                // 통신은 성공했지만 응답에 문제가 있는 경우
+                                Log.e("AfterRecordActivity", " 응답 문제" + response.code())
+                                Log.e("AfterRecordActivity", " 응답 문제" + response.errorBody().toString())
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.e("AfterRecordActivity", " 통신 실패" + t.message)
+                        }
+
+
+                    })
+                }
+            }
+        }
     }
 
     private fun uploadAudio() {
         val nickname= LoginActivity.user_info.loginUserNickname
         val email= LoginActivity.user_info.loginUserEmail
         val kinds="녹음"
-        idx?.let {
+        mr_idx?.let {
             circle_profile?.let { it1 ->
                 retrofitService.requestUploadAudio(it, it1,file_path,user_path,nickname,email,kinds,with!!).enqueue(object : Callback<String> {
                     // 통신에 성공한 경우

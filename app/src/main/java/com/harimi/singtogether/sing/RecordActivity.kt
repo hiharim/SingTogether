@@ -276,6 +276,9 @@ class RecordActivity: AppCompatActivity()  {
                             intent.putExtra("WITH", with)
                             intent.putExtra("WAY", way)
                             intent.putExtra("CIRCLE_PROFILE", circle_profile)
+                            intent.putExtra("MERGE", "N")
+                            intent.putExtra("COLLABORATION_NICKNAME", "NULL")
+                            intent.putExtra("COLLABO_EMAIL", "NULL")
                             startActivity(intent)
                             finish()
 

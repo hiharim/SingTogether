@@ -9,7 +9,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.harimi.singtogether.Data.LyricsData
 import com.harimi.singtogether.R
+import com.harimi.singtogether.sing.MergeAudioActivity
 import com.harimi.singtogether.sing.RecordActivity
+import com.harimi.singtogether.sing.Video2Activity
 import kotlin.time.seconds
 
 
@@ -74,6 +76,9 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
 
         var mTime=mSeconds.toFloat()
         time= RecordActivity.time_info.pTime
+        //time= MergeAudioActivity.time_info.pTime
+        //time= Video2Activity.time_info.pTime
+
 
         var now_Time=time.toFloat()
         Log.e("가사어댑터", "mTime : " + mTime)

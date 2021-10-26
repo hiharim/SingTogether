@@ -45,7 +45,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private lateinit var binding: ActivityMergeBinding
     private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
-    private var idx : Int? = null
+    private var duet_idx : Int? = null
+    private var mr_idx : Int? = null
     private var title : String? = null
     private var singer : String? = null
     private var with : String? = null
@@ -80,7 +81,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         binding= ActivityMergeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        idx=intent.getIntExtra("RECORD_IDX", 0)
+        duet_idx=intent.getIntExtra("RECORD_DUET_IDX", 0)
+        mr_idx=intent.getIntExtra("RECORD_MR_IDX", 0)
         title=intent.getStringExtra("RECORD_TITLE")
         singer=intent.getStringExtra("RECORD_SINGER")
         lyrics=intent.getStringExtra("RECORD_LYRICS")
@@ -239,7 +241,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         builder.setMessage("믹싱을 성공했습니다!")
                         builder.setPositiveButton("확인") { dialogInterface, i ->
                             val intent= Intent(applicationContext, AfterRecordActivity::class.java)
-                            intent.putExtra("MR_IDX", idx)
+                            intent.putExtra("DUET_IDX", duet_idx)
+                            intent.putExtra("MR_IDX", mr_idx)
                             intent.putExtra("FILE_PATH", output_path)
                             intent.putExtra("USER_PATH", mergeVideoFilePath)
                             intent.putExtra("WITH", with)
@@ -249,7 +252,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             intent.putExtra("COLLABO_EMAIL", collaborationEmail)
                             Log.e(
                                 "머지액티비티", "idx,file_path,mergeVideoFilePath,with,way" +
-                                        idx + " " + file_path + " " + mergeVideoFilePath + " " + with + " " + way
+                                        duet_idx + " " + file_path + " " + mergeVideoFilePath + " " + with + " " + way
                             )
                             startActivity(intent)
                             finish()

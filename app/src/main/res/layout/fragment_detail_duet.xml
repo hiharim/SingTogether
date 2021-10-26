@@ -219,6 +219,20 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
+<!--        <View style="@style/Divider"/>-->
+
+        <TextView
+            android:id="@+id/fragment_detail_duet_tv_complete"
+            android:layout_gravity="center_horizontal"
+            android:text="0개의 듀엣 완성 포스팅 보기"
+            android:paddingLeft="95dp"
+            android:paddingRight="95dp"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:background="@drawable/round_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:orientation="vertical"
