@@ -2,9 +2,11 @@ package com.harimi.singtogether.sing
 
 import android.content.DialogInterface
 import android.content.Intent
+
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -52,7 +54,6 @@ class DetailDuetFragment : Fragment() {
     private var duet_idx : Int? = null // duet 테이블 idx
     private var mr_idx : Int? = null // mr 테이블 idx
     private lateinit var apiService: APIService
-
 
     private var idx : Int? = null // duet 테이블 idx
     private var thumbnail: String? = null
@@ -131,77 +132,83 @@ class DetailDuetFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.tvUploadUserNickName.text=nickname
-        binding.tvSongTitle.text=title
-        binding.tvSinger.text=singer
-        binding.tvHits.text=cnt_play
-        binding.tvReviewNumber.text=cnt_reply
-        binding.tvUploadDate.text=date
-        Glide.with(this).load("http://3.35.236.251/" + profile).into(binding.ivUploadUserProfile)
-        Log.e("디테일프래그", "duet_path" + duet_path)
+        // 듀엣 완성 포스팅 text
+        val count=cnt_duet+"개"
+        binding.fragmentDetailDuetTvComplete.text=count+"의 듀엣 완성 포스팅 보기"
 
-        if(kinds.equals("녹음")){
-            Glide.with(this).load(thumbnail).into(binding.imageViewThumb)
-            binding.imageViewThumb.visibility=View.VISIBLE
-        }
 
-        binding.fragmentDetailDuetRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.fragmentDetailDuetRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        detailDuetReviewAdapter = DetailDuetReviewAdapter(detailDuetReviewList, requireContext())
-        binding.fragmentDetailDuetRecyclerView.adapter = detailDuetReviewAdapter
+            binding.tvUploadUserNickName.text=nickname
+            binding.tvSongTitle.text=title
+            binding.tvSinger.text=singer
+            binding.tvHits.text=cnt_play
+            binding.tvReviewNumber.text=cnt_reply
+            binding.tvUploadDate.text=date
+            Glide.with(this).load("http://3.35.236.251/" + profile).into(binding.ivUploadUserProfile)
+            Log.e("디테일프래그", "duet_path" + duet_path)
 
-        detailDuetReviewLoad(binding.fragmentDetailDuetRecyclerView)
-
-        // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
-        context?.let{
-            simpleExoPlayer= SimpleExoPlayer.Builder(it).build()
-        }
-        binding.pv.player = simpleExoPlayer
-        val factory: DataSource.Factory = DefaultDataSourceFactory(
-            requireContext(),
-            "ExoPlayer"
-        )
-        var mediaItem = MediaItem.fromUri(Uri.parse(duet_path))
-        val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
-            .createMediaSource(mediaItem)
-        simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
-        simpleExoPlayer!!.prepare()
-        simpleExoPlayer!!.play()
-
-        initRetrofit()
-        val login_user= LoginActivity.user_info.loginUserEmail
-        if(email.equals(login_user)){
-            binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
-            // 게시물 삭제
-            binding.fragmentDetailDuetBtnDelete.setOnClickListener {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("삭제하기")
-                builder.setMessage("삭제 하시겠습니까? ")
-                builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
-                    deleteSong()
-                }
-                builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
-
-                }
-                builder.show()
+            if(kinds.equals("녹음")){
+                Glide.with(this).load(thumbnail).into(binding.imageViewThumb)
+                binding.imageViewThumb.visibility=View.VISIBLE
             }
-        }
 
-        // 듀엣 완성 포스팅 보기
-        binding.fragmentDetailDuetTvComplete.setOnClickListener {
-            val intent= Intent(context, CompleteDuetActivity::class.java)
-            intent.putExtra("duet_idx",duet_idx)
-            startActivity(intent)
-        }
+            binding.fragmentDetailDuetRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            binding.fragmentDetailDuetRecyclerView.addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+            detailDuetReviewAdapter = DetailDuetReviewAdapter(detailDuetReviewList, requireContext())
+            binding.fragmentDetailDuetRecyclerView.adapter = detailDuetReviewAdapter
 
-        //프로필 액티비티로 넘어가기
-        binding.cardView.setOnClickListener{
-            if (LoginActivity.user_info.loginUserEmail.equals(email)){
+            detailDuetReviewLoad(binding.fragmentDetailDuetRecyclerView)
+
+            // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
+            context?.let{
+                simpleExoPlayer= SimpleExoPlayer.Builder(it).build()
+            }
+            binding.pv.player = simpleExoPlayer
+            val factory: DataSource.Factory = DefaultDataSourceFactory(
+                requireContext(),
+                "ExoPlayer"
+            )
+            var mediaItem = MediaItem.fromUri(Uri.parse(duet_path))
+            val progressiveMediaSource = ProgressiveMediaSource.Factory(factory)
+                .createMediaSource(mediaItem)
+            simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
+            simpleExoPlayer!!.prepare()
+            simpleExoPlayer!!.play()
+
+            initRetrofit()
+            val login_user= LoginActivity.user_info.loginUserEmail
+            if(email.equals(login_user)) {
+                binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
+                // 게시물 삭제
+                binding.fragmentDetailDuetBtnDelete.setOnClickListener {
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("삭제하기")
+                    builder.setMessage("삭제 하시겠습니까? ")
+                    builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                        deleteSong()
+                    }
+                    builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+
+                    }
+                    builder.show()
+                }
+            }
+
+            // 듀엣 완성 포스팅 보기
+            binding.fragmentDetailDuetTvComplete.setOnClickListener {
+                val intent= Intent(context, CompleteDuetActivity::class.java)
+                intent.putExtra("duet_idx",duet_idx)
+                intent.putExtra("cnt_duet",count)
+                startActivity(intent)
+            }
+
+            //프로필 액티비티로 넘어가기
+            binding.cardView.setOnClickListener{
+                if (LoginActivity.user_info.loginUserEmail.equals(email)){
 //                val activity =it!!.context as AppCompatActivity
 //                val MyPageFragment = MyPageFragment()
 //                var bundle =Bundle()
@@ -209,110 +216,111 @@ class DetailDuetFragment : Fragment() {
 //                    .beginTransaction()
 //                    .replace(R.id.activity_main_frame,MyPageFragment)
 //                    .commit()
-                Toast.makeText(requireContext(), "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }else{
-                retrofit= RetrofitClient.getInstance()
-                retrofitService=retrofit.create(RetrofitService::class.java)
-                retrofitService.requestLookAtUserProfile(
-                    email!!,
-                    LoginActivity.user_info.loginUserEmail
-                )
-                    .enqueue(object : Callback<String> {
-                        override fun onResponse(call: Call<String>, response: Response<String>) {
-                            if (response.isSuccessful) {
-                                val body = response.body().toString()
-                                Log.d(TAG, body)
-                                var jsonObject = JSONObject(response.body().toString())
-                                var result = jsonObject.getBoolean("result")
-                                if (result) {
+                    Toast.makeText(requireContext(), "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }else{
+                    retrofit= RetrofitClient.getInstance()
+                    retrofitService=retrofit.create(RetrofitService::class.java)
+                    retrofitService.requestLookAtUserProfile(
+                        email!!,
+                        LoginActivity.user_info.loginUserEmail
+                    )
+                        .enqueue(object : Callback<String> {
+                            override fun onResponse(call: Call<String>, response: Response<String>) {
+                                if (response.isSuccessful) {
+                                    val body = response.body().toString()
+                                    Log.d(TAG, body)
+                                    var jsonObject = JSONObject(response.body().toString())
+                                    var result = jsonObject.getBoolean("result")
+                                    if (result) {
 //                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
-                                    var followingUserNumber =
-                                        jsonObject.getString("followingUserNumber")
-                                    var followUserNumber = jsonObject.getString("followUserNumber")
-                                    var isFollow = jsonObject.getBoolean("isFollow")
+                                        var followingUserNumber =
+                                            jsonObject.getString("followingUserNumber")
+                                        var followUserNumber = jsonObject.getString("followUserNumber")
+                                        var isFollow = jsonObject.getBoolean("isFollow")
 
-                                    val intent = Intent(
-                                        context,
-                                        LookAtUserProfileActivity::class.java
-                                    )
-                                    intent.putExtra("otherUserEmail", email)
-                                    Log.d(TAG, email)
-                                    intent.putExtra("nickname", nickname)
-                                    intent.putExtra("profile", profile)
-                                    intent.putExtra("followingUserNumber", followingUserNumber)
-                                    intent.putExtra("followUserNumber", followUserNumber)
-                                    intent.putExtra("isFollow", isFollow)
-                                    startActivity(intent)
+                                        val intent = Intent(
+                                            context,
+                                            LookAtUserProfileActivity::class.java
+                                        )
+                                        intent.putExtra("otherUserEmail", email)
+                                        Log.d(TAG, email)
+                                        intent.putExtra("nickname", nickname)
+                                        intent.putExtra("profile", profile)
+                                        intent.putExtra("followingUserNumber", followingUserNumber)
+                                        intent.putExtra("followUserNumber", followUserNumber)
+                                        intent.putExtra("isFollow", isFollow)
+                                        startActivity(intent)
+                                    }
                                 }
                             }
-                        }
 
-                        override fun onFailure(call: Call<String>, t: Throwable) {
-                        }
-                    })
+                            override fun onFailure(call: Call<String>, t: Throwable) {
+                            }
+                        })
 
 
+                }
             }
-        }
 
 
-        ///댓글달기
-        binding.ivUploadReview.setOnClickListener {
-            var uploadReview = binding.etWriteReview.text.toString()
-            if (uploadReview.equals("")){
+            ///댓글달기
+            binding.ivUploadReview.setOnClickListener {
+                var uploadReview = binding.etWriteReview.text.toString()
+                if (uploadReview.equals("")){
 
-                Toast.makeText(requireContext(), "댓글을 입력해주세요", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }else{
-                var uploadDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
+                    Toast.makeText(requireContext(), "댓글을 입력해주세요", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }else{
+                    var uploadDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
 
-                retrofit= RetrofitClient.getInstance()
-                retrofitService=retrofit.create(RetrofitService::class.java)
-                retrofitService.requestWriteDetailDuetReview(
-                    duet_idx.toString()!!,
-                    LoginActivity.user_info.loginUserEmail,
-                    LoginActivity.user_info.loginUserProfile,
-                    LoginActivity.user_info.loginUserNickname,
-                    uploadReview,
-                    uploadDate
-                )
-                    .enqueue(object : Callback<String> {
-                        override fun onResponse(call: Call<String>, response: Response<String>) {
-                            if (response.isSuccessful) {
-                                val body = response.body().toString()
-                                Log.d(TAG, body)
-                                var jsonObject = JSONObject(response.body().toString())
-                                var result = jsonObject.getBoolean("result")
-                                if (result) {
-                                    binding.etWriteReview.setText("")
-                                    var getIdx = jsonObject.getString("idx")
-                                    val detailDuetReviewData = DetailDuetReviewData(
-                                        getIdx,
-                                        LoginActivity.user_info.loginUserEmail,
-                                        LoginActivity.user_info.loginUserNickname,
-                                        LoginActivity.user_info.loginUserProfile,
-                                        uploadReview,
-                                        uploadDate,
-                                        duet_idx.toString()!!
-                                    )
-                                    detailDuetReviewList.add(detailDuetReviewData)
-                                    detailDuetReviewAdapter.notifyDataSetChanged()
-                                    binding.fragmentDetailDuetRecyclerView.scrollToPosition(
-                                        detailDuetReviewList.size - 1
-                                    )
+                    retrofit= RetrofitClient.getInstance()
+                    retrofitService=retrofit.create(RetrofitService::class.java)
+                    retrofitService.requestWriteDetailDuetReview(
+                        duet_idx.toString()!!,
+                        LoginActivity.user_info.loginUserEmail,
+                        LoginActivity.user_info.loginUserProfile,
+                        LoginActivity.user_info.loginUserNickname,
+                        uploadReview,
+                        uploadDate
+                    )
+                        .enqueue(object : Callback<String> {
+                            override fun onResponse(call: Call<String>, response: Response<String>) {
+                                if (response.isSuccessful) {
+                                    val body = response.body().toString()
+                                    Log.d(TAG, body)
+                                    var jsonObject = JSONObject(response.body().toString())
+                                    var result = jsonObject.getBoolean("result")
+                                    if (result) {
+                                        binding.etWriteReview.setText("")
+                                        var getIdx = jsonObject.getString("idx")
+                                        val detailDuetReviewData = DetailDuetReviewData(
+                                            getIdx,
+                                            LoginActivity.user_info.loginUserEmail,
+                                            LoginActivity.user_info.loginUserNickname,
+                                            LoginActivity.user_info.loginUserProfile,
+                                            uploadReview,
+                                            uploadDate,
+                                            duet_idx.toString()!!
+                                        )
+                                        detailDuetReviewList.add(detailDuetReviewData)
+                                        detailDuetReviewAdapter.notifyDataSetChanged()
+                                        binding.fragmentDetailDuetRecyclerView.scrollToPosition(
+                                            detailDuetReviewList.size - 1
+                                        )
+                                    }
                                 }
                             }
-                        }
 
-                        override fun onFailure(call: Call<String>, t: Throwable) {
-                        }
-                    })
+                            override fun onFailure(call: Call<String>, t: Throwable) {
+                            }
+                        })
+                }
             }
+
+
+            return binding.root
         }
-
-
-        return binding.root
     }
 
 

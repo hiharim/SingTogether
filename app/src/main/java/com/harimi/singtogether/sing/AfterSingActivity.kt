@@ -113,13 +113,11 @@ class AfterSingActivity : AppCompatActivity() {
             asyncDialog!!.setMessage("업로드중...")
             asyncDialog!!.show()
 
-            if(with.equals("솔로")) {
-                uploadAudio()
-            }else if(with.equals("듀엣")){
+            if(isMerge.equals("Y")) {
                 uploadMergeAudio()
+            }else if(isMerge.equals("N")){
+                uploadAudio()
             }
-
-            //uploadAudio()
 
         }
 

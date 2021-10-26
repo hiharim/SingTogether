@@ -25,6 +25,7 @@ class CompleteDuetActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
     private var duet_idx : Int? = null // duet 테이블 idx
+    private var count_duet : String? = null
     private val homePostList: ArrayList<HomeData> = ArrayList()
     private lateinit var homeAdapter: HomeAdapter
 
@@ -36,16 +37,13 @@ class CompleteDuetActivity : AppCompatActivity() {
         initRetrofit()
 
         duet_idx=intent.getIntExtra("duet_idx",0)
-
+        count_duet=intent.getStringExtra("cnt_duet")
+        binding.activityCompleteDuetTvCnt.text=count_duet+"의 완성된 포스팅이 있습니다."
 
         // 뒤로가기
         binding.activityCompleteDuetIbBack.setOnClickListener {
             finish()
         }
-
-        // 몇개 있는지 알려주는 텍스트뷰
-        // intent 로 값 받아서 setText 해준다
-        binding.activityCompleteDuetTvCnt.text="";
 
         loadCompleteDuet()
         // 리사이클러뷰 설정
@@ -59,7 +57,7 @@ class CompleteDuetActivity : AppCompatActivity() {
 
     private fun loadCompleteDuet() {
         duet_idx?.let {
-            retrofitService.deleteMySong(it).enqueue(object : Callback<String> {
+            retrofitService.loadCompleteDuet(it).enqueue(object : Callback<String> {
                 // 통신에 성공한 경우
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
