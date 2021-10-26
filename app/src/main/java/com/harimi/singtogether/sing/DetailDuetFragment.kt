@@ -6,14 +6,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,17 +23,10 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
-import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.*
-import com.harimi.singtogether.Data.DuetData
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.Data.DetailDuetReviewData
-import com.harimi.singtogether.R
-import com.harimi.singtogether.SingFragment
+import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.DetailDuetReviewAdapter
-import com.harimi.singtogether.adapter.PostFragmentReviewAdapter
-import com.harimi.singtogether.broadcast.SearchLiveStreaming
 import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
 import org.json.JSONArray
 import org.json.JSONObject
@@ -44,6 +36,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -57,6 +51,10 @@ class DetailDuetFragment : Fragment() {
 
     private var duet_idx : Int? = null // duet 테이블 idx
     private var mr_idx : Int? = null // mr 테이블 idx
+    private lateinit var apiService: APIService
+
+
+    private var idx : Int? = null // duet 테이블 idx
     private var thumbnail: String? = null
     private var title : String? = null
     private var singer : String? = null
@@ -103,13 +101,17 @@ class DetailDuetFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView (
+    override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
         Log.e("디테일프래그","duet_idx"+duet_idx)
 
+        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService::class.java)
+
+
+        sendNotification("dVwJ9XCuTQKECJ895CNQzd:APA91bEK3GHIE1WAeAaa59og103_lIrz50-XeQ3vP6f1pN3VEbV_sAPtLJsqnFiDvezraWvD49pkeKH_HZOQi_T3tdZV3fXffgObS1cFQ6gVMZEU4ANy0axNk2aquni3o-II5eHuaugz","hi","hi")
         //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
             // DuetActivity 로 이동
@@ -135,8 +137,8 @@ class DetailDuetFragment : Fragment() {
         binding.tvHits.text=cnt_play
         binding.tvReviewNumber.text=cnt_reply
         binding.tvUploadDate.text=date
-        Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.ivUploadUserProfile)
-        Log.e("디테일프래그","duet_path"+duet_path)
+        Glide.with(this).load("http://3.35.236.251/" + profile).into(binding.ivUploadUserProfile)
+        Log.e("디테일프래그", "duet_path" + duet_path)
 
         if(kinds.equals("녹음")){
             Glide.with(this).load(thumbnail).into(binding.imageViewThumb)
@@ -200,19 +202,21 @@ class DetailDuetFragment : Fragment() {
         //프로필 액티비티로 넘어가기
         binding.cardView.setOnClickListener{
             if (LoginActivity.user_info.loginUserEmail.equals(email)){
-                val activity =it!!.context as AppCompatActivity
-                val MyPageFragment = MyPageFragment()
-                var bundle =Bundle()
-                activity.supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.activity_main_frame,MyPageFragment)
-                    .commit()
+//                val activity =it!!.context as AppCompatActivity
+//                val MyPageFragment = MyPageFragment()
+//                var bundle =Bundle()
+//                activity.supportFragmentManager
+//                    .beginTransaction()
+//                    .replace(R.id.activity_main_frame,MyPageFragment)
+//                    .commit()
+                Toast.makeText(requireContext(), "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }else{
                 retrofit= RetrofitClient.getInstance()
                 retrofitService=retrofit.create(RetrofitService::class.java)
                 retrofitService.requestLookAtUserProfile(
-                   email!!,
-                   LoginActivity.user_info.loginUserEmail
+                    email!!,
+                    LoginActivity.user_info.loginUserEmail
                 )
                     .enqueue(object : Callback<String> {
                         override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -223,18 +227,22 @@ class DetailDuetFragment : Fragment() {
                                 var result = jsonObject.getBoolean("result")
                                 if (result) {
 //                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
-                                    var followingUserNumber = jsonObject.getString("followingUserNumber")
+                                    var followingUserNumber =
+                                        jsonObject.getString("followingUserNumber")
                                     var followUserNumber = jsonObject.getString("followUserNumber")
                                     var isFollow = jsonObject.getBoolean("isFollow")
 
-                                    val intent= Intent(context, LookAtUserProfileActivity::class.java)
-                                    intent.putExtra("otherUserEmail",email)
+                                    val intent = Intent(
+                                        context,
+                                        LookAtUserProfileActivity::class.java
+                                    )
+                                    intent.putExtra("otherUserEmail", email)
                                     Log.d(TAG, email)
-                                    intent.putExtra("nickname",nickname)
-                                    intent.putExtra("profile",profile)
-                                    intent.putExtra("followingUserNumber",followingUserNumber)
-                                    intent.putExtra("followUserNumber",followUserNumber)
-                                    intent.putExtra("isFollow",isFollow)
+                                    intent.putExtra("nickname", nickname)
+                                    intent.putExtra("profile", profile)
+                                    intent.putExtra("followingUserNumber", followingUserNumber)
+                                    intent.putExtra("followUserNumber", followUserNumber)
+                                    intent.putExtra("isFollow", isFollow)
                                     startActivity(intent)
                                 }
                             }
@@ -307,7 +315,33 @@ class DetailDuetFragment : Fragment() {
         return binding.root
     }
 
-    fun detailDuetReviewLoad(recyclerview : RecyclerView) {
+
+
+    private fun sendNotification(usertoken:String,title: String,message: String){
+            var data=Data(title,message)
+            var sender:NotificationSender= NotificationSender(data,usertoken)
+
+            apiService.sendNotifcation(sender)!!.enqueue(object : Callback<MyResponse?> {
+
+                override fun onResponse(call: Call<MyResponse?>, response: Response<MyResponse?>) {
+                    if (response.code() === 200) {
+
+                        if (response.body()!!.success !== 1) {
+
+                            Toast.makeText(requireContext(), "Failed ", Toast.LENGTH_LONG).show()
+
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<MyResponse?>, t: Throwable?) {
+
+                }
+            })
+    }
+
+
+    fun detailDuetReviewLoad(recyclerview: RecyclerView) {
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
         retrofitService.requestGetDetailDuetReview(duet_idx.toString())
