@@ -187,6 +187,14 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("DeleteFollow.php")
+    fun requestDeleteFollow (
+        @Field("followingUser") followingUser :String,
+        @Field("follower") follower :String,
+
+        ) : Call<String>
+
+    @FormUrlEncoded
     @POST("WritePostReview.php")
     fun requestWritePostReview (
         @Field("postIdx") postIdx :String,

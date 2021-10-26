@@ -60,6 +60,46 @@ class MyPageFragment : Fragment() {
 
         val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
 
+
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+        retrofitService.requestLookAtMyFollow(
+            LoginActivity.user_info.loginUserEmail
+        )
+            .enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+                        Log.d(TAG, body)
+                        var jsonObject = JSONObject(response.body().toString())
+                        var result = jsonObject.getBoolean("result")
+                        if (result) {
+                            var followingUserNumber = jsonObject.getString("followingUserNumber")
+                            var followUserNumber = jsonObject.getString("followUserNumber")
+
+                            binding.tvMyFollow.setText(followUserNumber)
+                            binding.tvMyFollowing.setText(followingUserNumber)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                }
+            })
+
+
+        binding.tvMyFollowing.setOnClickListener {
+            val intent= Intent(context, MyFollowingActivity::class.java)
+            intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
+            startActivity(intent)
+        }
+
+        binding.tvMyFollow.setOnClickListener {
+            val intent= Intent(context, MyFollowerActivity::class.java)
+            intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
+            startActivity(intent)
+        }
+
         // 3개의 Fragment Add
         pagerAdapter.addFragment(MyPostFragment())
         pagerAdapter.addFragment(MySongFragment())
@@ -100,35 +140,7 @@ class MyPageFragment : Fragment() {
         return binding.root
     }
 
-    private fun initView(){
 
-        retrofit= RetrofitClient.getInstance()
-        retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestLookAtMyFollow(
-            LoginActivity.user_info.loginUserEmail
-        )
-            .enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.isSuccessful) {
-                        val body = response.body().toString()
-                        Log.d(TAG, body)
-                        var jsonObject = JSONObject(response.body().toString())
-                        var result = jsonObject.getBoolean("result")
-                        if (result) {
-//                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
-                            var followingUserNumber = jsonObject.getString("followingUserNumber")
-                            var followUserNumber = jsonObject.getString("followUserNumber")
-
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                }
-            })
-
-
-    }
     companion object {
 
         fun newInstance(param1: String, param2: String) =

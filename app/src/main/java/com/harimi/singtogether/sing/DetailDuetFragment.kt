@@ -193,13 +193,15 @@ class DetailDuetFragment : Fragment() {
         //프로필 액티비티로 넘어가기
         binding.cardView.setOnClickListener{
             if (LoginActivity.user_info.loginUserEmail.equals(email)){
-                val activity =it!!.context as AppCompatActivity
-                val MyPageFragment = MyPageFragment()
-                var bundle =Bundle()
-                activity.supportFragmentManager
-                    .beginTransaction()
-                    .replace(R.id.activity_main_frame,MyPageFragment)
-                    .commit()
+//                val activity =it!!.context as AppCompatActivity
+//                val MyPageFragment = MyPageFragment()
+//                var bundle =Bundle()
+//                activity.supportFragmentManager
+//                    .beginTransaction()
+//                    .replace(R.id.activity_main_frame,MyPageFragment)
+//                    .commit()
+                Toast.makeText(requireContext(),"회원님의 프로필 입니다. 마이페이지에서 확인해주세요" ,Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
             }else{
                 retrofit= RetrofitClient.getInstance()
                 retrofitService=retrofit.create(RetrofitService::class.java)
@@ -299,6 +301,8 @@ class DetailDuetFragment : Fragment() {
 
         return binding.root
     }
+
+
 
     fun detailDuetReviewLoad(recyclerview : RecyclerView) {
         retrofit= RetrofitClient.getInstance()

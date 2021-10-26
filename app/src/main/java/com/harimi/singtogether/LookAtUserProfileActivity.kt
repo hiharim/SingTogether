@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -28,22 +29,60 @@ class LookAtUserProfileActivity : AppCompatActivity() {
     private lateinit var tv_followNumber : TextView
     private lateinit var btn_follow : Button
     private lateinit var btn_followCancel : Button
+    private lateinit var ib_back : ImageButton
+
     private lateinit var tabLayout_lookAtUserProfile : TabLayout
     private lateinit var viewPager_lookAtUserProfile : ViewPager2
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
     private lateinit var otherUserEmail : String
-    private lateinit var otherUserInformation : String
     private lateinit var followingUserNumber : String
     private lateinit var followUserNumber : String
     private lateinit var nickname : String
     private lateinit var profile : String
     private var isFollow : Boolean ?= false
 
+    private lateinit var getFollowNumber : String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_look_at_user_profile)
 
+        initView()
+
+
+        val pagerAdapter = MyPagePagerAdapter(this ,otherUserEmail)
+        // 3개의 Fragment Add
+        pagerAdapter.addFragment(MySongFragment())
+        pagerAdapter.addFragment(MyBroadcastFragment())
+        pagerAdapter.addFragment(MyPostFragment())
+
+        viewPager_lookAtUserProfile.adapter=pagerAdapter
+        viewPager_lookAtUserProfile.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.e("ViewPagerFragment", "Page ${position+1}")
+            }
+        })
+        TabLayoutMediator(tabLayout_lookAtUserProfile,viewPager_lookAtUserProfile){
+                tab,position->
+            when(position){
+                0 ->{
+                    tab.text="포스팅"
+                }
+                1 ->{
+                    tab.text="듀엣초대"
+                }
+                2 ->{
+                    tab.text="방송"
+                }
+
+            }
+        }.attach()
+    }
+
+
+    private fun initView(){
         iv_profileImage =findViewById(R.id.iv_profileImage)
         tv_nickname =findViewById(R.id.tv_nickname)
         btn_follow =findViewById(R.id.btn_follow)
@@ -52,7 +91,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         tabLayout_lookAtUserProfile =findViewById(R.id.tabLayout_lookAtUserProfile)
         viewPager_lookAtUserProfile =findViewById(R.id.viewPager_lookAtUserProfile)
         btn_followCancel =findViewById(R.id.btn_followCancel)
-
+        ib_back =findViewById(R.id.ib_back)
 
         var intent = intent
         otherUserEmail = intent.getStringExtra("otherUserEmail")
@@ -62,6 +101,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         followUserNumber = intent.getStringExtra("followUserNumber")
         isFollow = intent.getBooleanExtra("isFollow",false)
 
+        getFollowNumber = followUserNumber.toString()
         Log.d(TAG, otherUserEmail)
         // 사용자 프로필
         if (iv_profileImage.equals("null")){
@@ -100,6 +140,8 @@ class LookAtUserProfileActivity : AppCompatActivity() {
                                 isFollow = true
                                 btn_follow.visibility = View.GONE
                                 btn_followCancel.visibility = View.VISIBLE
+                                val getFollowNum = getFollowNumber.toInt() + 1
+                                tv_followNumber.setText(getFollowNum.toString())
                             }
                         }
                     }
@@ -109,34 +151,36 @@ class LookAtUserProfileActivity : AppCompatActivity() {
                 })
         }
 
+        btn_followCancel.setOnClickListener {
+            retrofit= RetrofitClient.getInstance()
+            retrofitService=retrofit.create(RetrofitService::class.java)
+            retrofitService.requestDeleteFollow(
+                LoginActivity.user_info.loginUserEmail,
+                otherUserEmail
+            )
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful) {
+                            val body = response.body().toString()
+                            Log.d(TAG, body)
+                            var jsonObject = JSONObject(response.body().toString())
+                            var result = jsonObject.getBoolean("result")
+                            if (result) {
+                                isFollow = false
+                                btn_follow.visibility = View.VISIBLE
+                                btn_followCancel.visibility = View.GONE
+                                tv_followNumber.setText(getFollowNumber.toString())
+                            }
+                        }
+                    }
 
-        val pagerAdapter = MyPagePagerAdapter(this ,otherUserEmail)
-        // 3개의 Fragment Add
-        pagerAdapter.addFragment(MySongFragment())
-        pagerAdapter.addFragment(MyBroadcastFragment())
-        pagerAdapter.addFragment(MyPostFragment())
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                    }
+                })
+        }
 
-        viewPager_lookAtUserProfile.adapter=pagerAdapter
-        viewPager_lookAtUserProfile.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-            override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
-                Log.e("ViewPagerFragment", "Page ${position+1}")
-            }
-        })
-        TabLayoutMediator(tabLayout_lookAtUserProfile,viewPager_lookAtUserProfile){
-                tab,position->
-            when(position){
-                0 ->{
-                    tab.text="포스팅"
-                }
-                1 ->{
-                    tab.text="듀엣초대"
-                }
-                2 ->{
-                    tab.text="방송"
-                }
-
-            }
-        }.attach()
+        ib_back.setOnClickListener {
+            finish()
+        }
     }
 }
