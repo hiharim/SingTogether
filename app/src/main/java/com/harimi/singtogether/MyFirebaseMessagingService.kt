@@ -31,6 +31,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val manager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.notify(0, builder.build())
+
 //        val title = remoteMessage.notification!!.title
 //        val body = remoteMessage.notification!!.body
 //        val extradata = remoteMessage.data

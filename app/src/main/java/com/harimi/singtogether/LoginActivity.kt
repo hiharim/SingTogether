@@ -1,11 +1,9 @@
 package com.harimi.singtogether
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -13,20 +11,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.messaging.FirebaseMessaging
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.databinding.ActivityLoginBinding
-import com.kakao.sdk.auth.AuthApiClient
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.KakaoSdk
-import com.kakao.sdk.common.model.KakaoSdkError
-import com.kakao.sdk.common.util.Utility
 import com.kakao.sdk.user.UserApiClient
 import org.json.JSONObject
-
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -66,9 +61,10 @@ class LoginActivity : AppCompatActivity() {
 
             // Get new FCM registration token
             val token = task.result
-            // Log and toast
-            Log.d(TAG, token)
 
+            // Log and toast
+
+            Log.d(TAG, token)
             Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
         })
 
@@ -83,9 +79,15 @@ class LoginActivity : AppCompatActivity() {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
                             kakaoUserInfo()
                             if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-                                UserApiClient.instance.loginWithKakaoTalk(context, callback = callback)
+                                UserApiClient.instance.loginWithKakaoTalk(
+                                    context,
+                                    callback = callback
+                                )
                             } else {
-                                UserApiClient.instance.loginWithKakaoAccount(context, callback = callback)
+                                UserApiClient.instance.loginWithKakaoAccount(
+                                    context,
+                                    callback = callback
+                                )
                             }
             }
         }
@@ -124,10 +126,12 @@ class LoginActivity : AppCompatActivity() {
                     Log.e(TAG, "토큰 정보 보기 실패", error)
                 }
                 else if (tokenInfo != null) {
-                    Log.i(TAG, "토큰 정보 보기 성공" +
-                            "\n회원번호: ${tokenInfo.id}" +
-                            "\n만료시간: ${tokenInfo.expiresIn} 초"+
-                            "\n카카오토큰: ${tokenInfo.appId}")
+                    Log.i(
+                        TAG, "토큰 정보 보기 성공" +
+                                "\n회원번호: ${tokenInfo.id}" +
+                                "\n만료시간: ${tokenInfo.expiresIn} 초" +
+                                "\n카카오토큰: ${tokenInfo.appId}"
+                    )
                     user_token=tokenInfo.appId.toString()
 
 
@@ -147,11 +151,11 @@ class LoginActivity : AppCompatActivity() {
 
 
             val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra("EMAIL",user_email)
-            intent.putExtra("NICKNAME",user_nickname)
-            intent.putExtra("PROFILE",user_profile)
-            intent.putExtra("SOCIAL",user_social)
-            intent.putExtra("TOKEN",user_token)
+            intent.putExtra("EMAIL", user_email)
+            intent.putExtra("NICKNAME", user_nickname)
+            intent.putExtra("PROFILE", user_profile)
+            intent.putExtra("SOCIAL", user_social)
+            intent.putExtra("TOKEN", user_token)
             startActivity(intent)
             finish()
         }
@@ -164,11 +168,11 @@ class LoginActivity : AppCompatActivity() {
                 Log.e(TAG, "사용자 정보 요청 실패", error)
             } else if (user != null) {
                 Log.i(
-                        TAG, "사용자 정보 요청 성공" +
-                        "\n회원번호: ${user.id}" +
-                        "\n이메일: ${user.kakaoAccount?.email}" +
-                        "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
-                        "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
+                    TAG, "사용자 정보 요청 성공" +
+                            "\n회원번호: ${user.id}" +
+                            "\n이메일: ${user.kakaoAccount?.email}" +
+                            "\n닉네임: ${user.kakaoAccount?.profile?.nickname}" +
+                            "\n프로필사진: ${user.kakaoAccount?.profile?.thumbnailImageUrl}"
                 )
                 user_email= user.kakaoAccount?.email
                 user_nickname=user.kakaoAccount?.profile?.nickname
@@ -187,7 +191,7 @@ class LoginActivity : AppCompatActivity() {
                 .requestIdToken(getString(R.string.firebase_client))
                 .requestEmail()
                 .build()
-            googleSignInClient = GoogleSignIn.getClient(applicationContext,gso)
+            googleSignInClient = GoogleSignIn.getClient(applicationContext, gso)
             val signInIntent = googleSignInClient.signInIntent
             startActivityForResult(signInIntent, GOOGLE_REQUEST_CODE)
 
@@ -274,8 +278,8 @@ class LoginActivity : AppCompatActivity() {
 
                             user_info.loginUserEmail = email.toString()
                             user_info.loginUserNickname = nickname.toString()
-                            user_info.loginUserProfile =profile.toString()
-                            user_info.loginUserSocial =social.toString()
+                            user_info.loginUserProfile = profile.toString()
+                            user_info.loginUserSocial = social.toString()
                             saveDate(email)
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             startActivity(intent)
@@ -285,11 +289,11 @@ class LoginActivity : AppCompatActivity() {
                             return
                         } else {
                             val intent = Intent(applicationContext, ProfileActivity::class.java)
-                            intent.putExtra("EMAIL",user_email)
-                            intent.putExtra("NICKNAME",user_nickname)
-                            intent.putExtra("PROFILE",user_profile)
-                            intent.putExtra("SOCIAL",user_social)
-                            intent.putExtra("TOKEN",user_token)
+                            intent.putExtra("EMAIL", user_email)
+                            intent.putExtra("NICKNAME", user_nickname)
+                            intent.putExtra("PROFILE", user_profile)
+                            intent.putExtra("SOCIAL", user_social)
+                            intent.putExtra("TOKEN", user_token)
                             startActivity(intent)
                             finish()
                         }
@@ -334,40 +338,42 @@ class LoginActivity : AppCompatActivity() {
                                 Log.d(TAG, "shared " + result.toString())
 
 
-                        if (result) {
-                            val email = jsonObject.getString("email")
-                            val nickname = jsonObject.getString("nickname")
-                            val profile = jsonObject.getString("profile")
-                            val social = jsonObject.getString("social")
+                                if (result) {
+                                    val email = jsonObject.getString("email")
+                                    val nickname = jsonObject.getString("nickname")
+                                    val profile = jsonObject.getString("profile")
+                                    val social = jsonObject.getString("social")
 
-                            user_info.loginUserEmail = email.toString()
-                            user_info.loginUserNickname = nickname.toString()
-                            user_info.loginUserProfile =profile.toString()
-                            user_info.loginUserSocial =social.toString()
+                                    user_info.loginUserEmail = email.toString()
+                                    user_info.loginUserNickname = nickname.toString()
+                                    user_info.loginUserProfile = profile.toString()
+                                    user_info.loginUserSocial = social.toString()
 
-                            val intent = Intent(applicationContext, MainActivity::class.java)
-                            startActivity(intent)
-                            finish()
-                            return
+                                    val intent =
+                                        Intent(applicationContext, MainActivity::class.java)
+                                    startActivity(intent)
+                                    finish()
+                                    return
 
-                        } else {
-                            auth = FirebaseAuth.getInstance()
-                            gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                } else {
+                                    auth = FirebaseAuth.getInstance()
+                                    gso =
+                                        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                                }
+
+
+                            } else {
+                                Log.e("onResponse", "실패 : " + response.errorBody())
+                            }
                         }
 
-
-                    } else {
-                        Log.e("onResponse", "실패 : " + response.errorBody())
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                    Log.d(
-                        "실패:", "Failed API call with call: " + call +
-                                " + exception: " + t
-                    )
-                }
-            })
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                            Log.d(
+                                "실패:", "Failed API call with call: " + call +
+                                        " + exception: " + t
+                            )
+                        }
+                    })
     }
 
     class user_info{
@@ -380,7 +386,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun saveDate( loginEmail :String ){
+    fun saveDate(loginEmail: String){
         val pref =getSharedPreferences("userEmail", MODE_PRIVATE)
         val edit = pref.edit() // 수정모드
         edit.putString("email", loginEmail) // 값 넣기

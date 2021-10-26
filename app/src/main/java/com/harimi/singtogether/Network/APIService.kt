@@ -12,7 +12,7 @@ interface APIService {
 
     @Headers(
         "Content-Type:application/json",
-        "Authorization:key=AAAAj8HbRjI:APA91bGkaIIO-_CkXhLxjnNZx4POyQ3qpn1RBy0JHLlXk02s-hd_OOn8cSB3BA2YTETVwUqL-rQT8vTQ4ramULMUFqSo4udWSOQz6f7Hl-Kbwc5zplenGAYPg7cVYGgrTSeGhg1pMb0w" // Your server key refer to video for finding your server key
+        "Authorization:key=AAAAT7Xhvu8:APA91bGNcnNu6G-wq2yEv02RycxwjqIj9IyTn7X_hL0GPiHm-3x8ivyenPHAXkQsEHtVrj5SNJzrUaLcjiRGjxtAyeGZ_6k4-ZnM2UwX_Vdt5JgJ1XGbTnLZAOwPMVrsgVR_bnnjsmr8" // Your server key refer to video for finding your server key
     )
     @POST("fcm/send")
     open fun sendNotifcation(@Body body: NotificationSender?): Call<MyResponse?>?
