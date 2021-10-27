@@ -47,6 +47,7 @@ class LoginActivity : AppCompatActivity() {
     val TAG = "googleLogin"
     private lateinit var googleSignInClient: GoogleSignInClient
 
+    private var myToken :String ?= ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -58,15 +59,13 @@ class LoginActivity : AppCompatActivity() {
                 Log.w(TAG, "Fetching FCM registration token failed", task.exception)
                 return@OnCompleteListener
             }
-
             // Get new FCM registration token
-            val token = task.result
-
+            myToken = task.result
             // Log and toast
-
-            Log.d(TAG, token)
-            Toast.makeText(baseContext, token, Toast.LENGTH_SHORT).show()
+            Log.d(TAG, myToken)
         })
+
+
 
         // 구글 버튼 클릭시
         binding.activityLoginBtnLoginGoogle.setOnClickListener {
@@ -148,14 +147,14 @@ class LoginActivity : AppCompatActivity() {
             user_info.loginUserNickname = user_nickname.toString()
             user_info.loginUserProfile =user_profile.toString()
             user_info.loginUserSocial =user_social.toString()
-
+            user_info.loginUserSocial =myToken.toString()
 
             val intent = Intent(this, ProfileActivity::class.java)
             intent.putExtra("EMAIL", user_email)
             intent.putExtra("NICKNAME", user_nickname)
             intent.putExtra("PROFILE", user_profile)
             intent.putExtra("SOCIAL", user_social)
-            intent.putExtra("TOKEN", user_token)
+            intent.putExtra("TOKEN", myToken)
             startActivity(intent)
             finish()
         }
@@ -221,7 +220,7 @@ class LoginActivity : AppCompatActivity() {
                 user_info.loginUserNickname = user_nickname.toString()
                 user_info.loginUserProfile =user_profile.toString()
                 user_info.loginUserSocial =user_social.toString()
-
+                user_info.loginUserFCMToken =myToken.toString()
                 firebaseAuthWithGoogle(account.idToken!!)
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
@@ -253,10 +252,8 @@ class LoginActivity : AppCompatActivity() {
 
     ///구글 로그인이 성공할 시
     private fun loginSuccess(){
-
         retrofit = RetrofitClient.getInstance()
         retrofitService = retrofit.create(RetrofitService::class.java)
-
         retrofitService.requestAutoLogin(user_email.toString())
             .enqueue(object : Callback<String> {
                 override fun onResponse(
@@ -275,11 +272,13 @@ class LoginActivity : AppCompatActivity() {
                             val nickname = jsonObject.getString("nickname")
                             val profile = jsonObject.getString("profile")
                             val social = jsonObject.getString("social")
-
+                            val token = jsonObject.getString("token")
                             user_info.loginUserEmail = email.toString()
                             user_info.loginUserNickname = nickname.toString()
                             user_info.loginUserProfile = profile.toString()
                             user_info.loginUserSocial = social.toString()
+                            user_info.loginUserFCMToken = token.toString()
+
                             saveDate(email)
                             val intent = Intent(applicationContext, MainActivity::class.java)
                             startActivity(intent)
@@ -293,7 +292,7 @@ class LoginActivity : AppCompatActivity() {
                             intent.putExtra("NICKNAME", user_nickname)
                             intent.putExtra("PROFILE", user_profile)
                             intent.putExtra("SOCIAL", user_social)
-                            intent.putExtra("TOKEN", user_token)
+                            intent.putExtra("TOKEN", myToken)
                             startActivity(intent)
                             finish()
                         }
@@ -348,7 +347,7 @@ class LoginActivity : AppCompatActivity() {
                                     user_info.loginUserNickname = nickname.toString()
                                     user_info.loginUserProfile = profile.toString()
                                     user_info.loginUserSocial = social.toString()
-
+                                    user_info.loginUserFCMToken = myToken.toString()
                                     val intent =
                                         Intent(applicationContext, MainActivity::class.java)
                                     startActivity(intent)
@@ -382,7 +381,7 @@ class LoginActivity : AppCompatActivity() {
             var loginUserProfile = ""
             var loginUserNickname= ""
             var loginUserSocial= ""
-
+            var loginUserFCMToken= ""
         }
     }
 

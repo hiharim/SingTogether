@@ -141,6 +141,7 @@ interface RetrofitService {
         @Part("roomTitle")  roomTitle :String,
         @Part("thumbnail")  thumbnail :String,
         @Part("time")  time :String,
+        @Part("uploaderToken")  uploaderToken :String,
         @Part file : MultipartBody.Part
     ) : Call<String>
 
@@ -204,7 +205,8 @@ interface RetrofitService {
         @Field("uploadUserProfile") uploadUserProfile :String,
         @Field("uploadUserNickname") uploadUserNickname :String,
         @Field("review") review :String,
-        @Field("uploadDate") uploadDate :String
+        @Field("uploadDate") uploadDate :String,
+        @Field("PostedUserEmail") PostedUserEmail :String
     ) : Call<String>
 
     @FormUrlEncoded
@@ -391,7 +393,8 @@ interface RetrofitService {
     fun requestClickLike(
         @Field("ReplayIdx") roomIdx :String,
         @Field("userEmail") userEmail :String,
-        @Field("clickDate") clickDate :String
+        @Field("clickDate") clickDate :String,
+        @Field("PostedUserEmail") PostedUserEmail :String
     ):Call<String>
 
     @FormUrlEncoded

@@ -6,6 +6,8 @@
 
 
     <string name="firebase_client">342353886959-gqoap6tqliap67f89puv87rr4ufheorp.apps.googleusercontent.com</string>
+    <string name="default_notification_channel_id">channel</string>
+    <string name="fcm_message">알림이 왔습니다</string>
 
     <style name="Divider">
         <item name="android:layout_width">match_parent</item>

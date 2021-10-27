@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.harimi.singtogether">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +14,7 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
@@ -38,25 +39,36 @@
 
         <activity android:name=".sing.CompleteDuetActivity"></activity>
         <activity android:name=".sing.MergeAudioActivity" />
-        <activity android:name=".MyPostFragment" />
+        <activity android:name=".MyPostFragment"
+            tools:ignore="Instantiatable" />
         <activity android:name=".sing.SearchSongActivity" />
         <activity android:name=".ProfileEditActivity" />
         <activity android:name=".MyFollowingActivity" />
         <activity android:name=".MyFollowerActivity" />
         <activity android:name=".LookAtUserProfileActivity" />
-        <activity android:name=".ProfileEditActivity" />
+        <activity android:name=".ProfileEditActivity"
+            tools:ignore="DuplicateActivity" />
 
         <service
             android:name=".broadcast.MyService"
             android:foregroundServiceType="mediaProjection" />
 
+        <service android:name=".Network.FirebaseService"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+
+        </service>
         <activity android:name=".broadcast.DetailReplayActivity" />
         <activity android:name=".broadcast.SearchLiveStreaming" />
         <activity android:name=".broadcast.LiveStreamingViewActivity" />
         <activity android:name=".sing.MergeActivity" />
         <activity android:name=".sing.DuetActivity" />
         <activity android:name=".sing.Video3Activity" />
-        <activity android:name=".broadcast.LiveStreamingViewActivity" />
+        <activity android:name=".broadcast.LiveStreamingViewActivity"
+            tools:ignore="DuplicateActivity" />
         <activity android:name=".broadcast.LiveThumbnailCaptureActivity" />
         <activity android:name=".sing.AfterRecordActivity" />
         <activity android:name=".sing.VideoActivity" />
@@ -99,14 +111,7 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <service android:name=".MyFirebaseMessagingService"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
 
-        </service>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.harimi.singtogether.fileprovider"

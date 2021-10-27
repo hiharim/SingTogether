@@ -591,6 +591,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         mVirtualDisplay!!.release()
         destroyMediaProjection()
     }
+
     private fun destroyMediaProjection() {
         Log.v(TAG, "destroyMediaProjection")
         if (mMediaProjection != null) {
@@ -601,6 +602,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         Log.i(TAG, "MediaProjection Stopped")
     }
 
+    ////MediaRecord 설정해주기
     private fun initRecorder() {
         Log.v(TAG, "initRecorder")
         try {
@@ -626,6 +628,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         }
     }
 
+    ///다시보기 업로드하기
     private fun uploadVideo() {
         Log.d(TAG, "업로드")
         mediaRecorder!!.stop()
@@ -638,7 +641,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         var email= LoginActivity.user_info.loginUserEmail
         var nickname= LoginActivity.user_info.loginUserNickname
         var profile =LoginActivity.user_info.loginUserProfile
-        Log.e(TAG, "profile  " +profile.toString())
+        var uploaderToken =LoginActivity.user_info.loginUserFCMToken
+        Log.e(TAG, "uploaderToken  " +uploaderToken.toString())
 
 
         videoFile = File(videoUri)
@@ -648,7 +652,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         )
         var body : MultipartBody.Part=
             MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
-        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,activity_streaming_tv_time.text.toString(), body).enqueue(object : Callback<String> {
+        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,activity_streaming_tv_time.text.toString(),uploaderToken, body).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {

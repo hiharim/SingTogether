@@ -21,13 +21,16 @@ import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.messaging.FirebaseMessaging
+import com.harimi.singtogether.*
 import com.harimi.singtogether.Data.DetailReplayReviewData
-import com.harimi.singtogether.LoginActivity
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.R
+import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.DetailReplayReviewAdapter
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -49,7 +52,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private var thumbnail : String? = null
     private var uploadUserProfile : String? = null
     private var uploadUserNickName : String? = null
-    private var uploadDate : String? = null
+    private var getUploadDate : String? = null
     private var replayTitle : String? = null
     private var replayLikeNumber : String? = null
     private var replayHits : String? = null
@@ -58,7 +61,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private var replayPostLikeIdx : String? = null
     private var replayVideo : String? = null
     private var liked : Boolean? = null
-
+    private var uploadUserFCMToken :String ? =null
     private var getLikeNumber :String ? =null
 
     //실제 비디오를 플레이하는 객체의 참조 변수
@@ -88,6 +91,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private lateinit var rv_detailReplayReview : RecyclerView
     private lateinit var detailReplayReviewAdapter: DetailReplayReviewAdapter
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +108,7 @@ class DetailReplayActivity : AppCompatActivity() {
         uploadUserNickName = getintent.getStringExtra("uploadUserNickName")
         thumbnail = getintent.getStringExtra("thumbnail")
         uploadUserProfile = getintent.getStringExtra("uploadUserProfile")
-        uploadDate = getintent.getStringExtra("uploadDate")
+        getUploadDate = getintent.getStringExtra("uploadDate")
         replayTitle = getintent.getStringExtra("replayTitle")
         replayLikeNumber = getintent.getStringExtra("replayLikeNumber")
         replayHits = getintent.getStringExtra("replayHits")
@@ -113,6 +117,8 @@ class DetailReplayActivity : AppCompatActivity() {
         replayPostLikeIdx = getintent.getStringExtra("replayPostLikeIdx")
         liked = getintent.getBooleanExtra("liked", false)
         replayVideo = getintent.getStringExtra("replayVideo")
+        uploadUserFCMToken = getintent.getStringExtra("uploadUserFCMToken")
+
 
         getLikeNumber =replayLikeNumber
 
@@ -137,6 +143,10 @@ class DetailReplayActivity : AppCompatActivity() {
         exoplayerControlView = findViewById(R.id.exoplayerControlView)
         iv_editMenu = findViewById(R.id.iv_editMenu)
 
+
+
+
+        ////내 아이디와 게시물 작성자가 맞으면 수정할수있게 보여주기
         if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
             iv_editMenu.visibility =View.VISIBLE
         }else{
@@ -169,6 +179,12 @@ class DetailReplayActivity : AppCompatActivity() {
         ///뒤로가기
         fragment_detail_replay_iv_back.setOnClickListener {
             finish()
+
+        val fragmentBroadcast = BraodcastFragment()
+        var bundle =Bundle()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.activity_main_frame,fragmentBroadcast)
+        transaction.commit()
         }
 
         /////수정, 삭제
@@ -249,7 +265,8 @@ class DetailReplayActivity : AppCompatActivity() {
                     LoginActivity.user_info.loginUserProfile,
                     LoginActivity.user_info.loginUserNickname,
                     uploadReview,
-                    uploadDate
+                    uploadDate,
+                    uploadUserEmail!!
                 )
                     .enqueue(object : Callback<String> {
                         override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -276,6 +293,18 @@ class DetailReplayActivity : AppCompatActivity() {
                                         detailReplayReviewDataList.size - 1
                                     )
                                 }
+
+                                var isLiked = jsonObject.getBoolean("isLiked")
+                                Log.d(TAG, body)
+                                ////FCM 보내기
+                                PushNotification(
+                                    NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 댓글을 남겼습니다.",
+                                        replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+                                        replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
+                                    uploadUserFCMToken.toString()
+                                ).also {
+                                    sendNotification(it)
+                                }
                             }
                         }
 
@@ -293,7 +322,8 @@ class DetailReplayActivity : AppCompatActivity() {
             retrofitService.requestClickLike(
                 replayIdx!!,
                 LoginActivity.user_info.loginUserEmail,
-                uploadDate
+                uploadDate,
+                uploadUserEmail!!
             )
                 .enqueue(object : Callback<String> {
                     override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -314,6 +344,18 @@ class DetailReplayActivity : AppCompatActivity() {
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                 iv_clickLike.visibility = View.VISIBLE
                                 iv_normalLike.visibility = View.GONE
+                            }
+
+                            var isLiked = jsonObject.getBoolean("isLiked")
+                            Log.d(TAG, body)
+                            ////FCM 보내기
+                            PushNotification(
+                                NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 좋아요를 누르셨습니다.",
+                                    replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+                                    replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
+                                uploadUserFCMToken.toString()
+                            ).also {
+                                sendNotification(it)
                             }
                         }
                     }
@@ -360,6 +402,22 @@ class DetailReplayActivity : AppCompatActivity() {
         }
     }
 
+    ////fcm send 메세지 && 코루틴 launch
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful) {
+                Log.d(TAG, "Response: 성공")
+            } else {
+                Log.e(TAG, response.errorBody().toString())
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, e.toString())
+        }
+    }
+
+
+    //데이터 셋 해주기
     fun setData(){
 
         var getReplayHits =  replayHits
@@ -369,7 +427,7 @@ class DetailReplayActivity : AppCompatActivity() {
         fragment_detail_replay_tv_title.text =replayTitle
         tv_hits.text = getReplayHitsInt.toString()
         fragment_detail_replay_tv_like.text= replayLikeNumber
-        fragment_detail_replay_tv_date.text = uploadDate
+        fragment_detail_replay_tv_date.text = getUploadDate
         tv_UploadUserNickName.text =uploadUserNickName
 //        tv_reviewNumber.text = replayReviewNumber
 
@@ -385,6 +443,7 @@ class DetailReplayActivity : AppCompatActivity() {
         detailReplayReviewLoad()
     }
 
+    //데이터 로드
     fun detailReplayReviewLoad(){
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
@@ -456,6 +515,17 @@ class DetailReplayActivity : AppCompatActivity() {
         //자동 실행되도록..
         player!!.setPlayWhenReady(true);
         exoplayerControlView!!.hide()
+    }
+
+    override fun onBackPressed() {
+    finish()
+
+//        val fragmentBroadcast = BraodcastFragment()
+//        var bundle =Bundle()
+//        val transaction = supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.activity_main_frame,fragmentBroadcast)
+//        transaction.commit()
+
     }
 
     //화면에 안보일 때..

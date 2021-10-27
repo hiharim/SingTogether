@@ -155,6 +155,7 @@ class SearchLiveStreaming : AppCompatActivity() {
                                 val replayVideo = replayObject.getString("replayVideo")
                                 val replayReviewNumber = replayObject.getString("replayReviewNumber")
                                 val time = replayObject.getString("time")
+                                val uploadUserFCMToken = replayObject.getString("uploadUserFCMToken")
 
 
 
@@ -175,7 +176,7 @@ class SearchLiveStreaming : AppCompatActivity() {
                                     }
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken)
                                 replayDataList.add(0, replayData)
                                 liveFragmentAdapter.notifyDataSetChanged()
                             }
