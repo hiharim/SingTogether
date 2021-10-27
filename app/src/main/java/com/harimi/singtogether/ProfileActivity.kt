@@ -41,7 +41,7 @@ import java.util.*
 
 // 회원가입할때 프로필,닉네임 설정하는 액티비티
 class ProfileActivity : AppCompatActivity() {
-
+    private val TAG = "ProfileActivity_"
     private lateinit var binding: ActivityProfileBinding
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
@@ -73,9 +73,9 @@ class ProfileActivity : AppCompatActivity() {
         nickname= intent.getStringExtra("NICKNAME").toString()
 //        profile=intent.getStringExtra("PROFILE").toString()
         social=intent.getStringExtra("SOCIAL").toString()
+        token=intent.getStringExtra("TOKEN").toString()
 
         ////이거 없애거나 수정해줘야됨
-        token="null"
         profile="null"
 
 
@@ -122,6 +122,7 @@ class ProfileActivity : AppCompatActivity() {
                                         LoginActivity.user_info.loginUserEmail =email
                                         LoginActivity.user_info.loginUserProfile =profile
                                         LoginActivity.user_info.loginUserNickname=nickname
+                                        LoginActivity.user_info.loginUserFCMToken=token
                                         saveDate(email)
                                         val intent = Intent(context, MainActivity::class.java)
                                         startActivity(intent)

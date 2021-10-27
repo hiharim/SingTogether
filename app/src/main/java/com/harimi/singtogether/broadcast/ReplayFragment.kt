@@ -135,6 +135,7 @@ class ReplayFragment : Fragment() {
                                 var uploadDate = postObject.getString("uploadDate")
                                 var replayVideo = postObject.getString("replayVideo")
                                 var time = postObject.getString("time")
+                                var uploadUserFCMToken = postObject.getString("uploadUserFCMToken")
 
 
 
@@ -155,7 +156,7 @@ class ReplayFragment : Fragment() {
                                     }
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken)
                                 replayDataList.add(0, replayData)
                                 replayAdapter.notifyDataSetChanged()
                             }

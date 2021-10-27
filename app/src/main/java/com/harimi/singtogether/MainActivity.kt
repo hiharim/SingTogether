@@ -1,6 +1,7 @@
 package com.harimi.singtogether
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -10,7 +11,7 @@ import com.ismaeldivita.chipnavigation.ChipNavigationBar
 
 
 class MainActivity : AppCompatActivity() {
-
+    private val TAG = "MainActivity_"
     private lateinit var binding: ActivityMainBinding
     private val fragmentHome : HomeFragment = HomeFragment() // 홈
     private val fragmentSing : SingFragment = SingFragment() // 부르기
@@ -22,6 +23,8 @@ class MainActivity : AppCompatActivity() {
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
+        Log.d(TAG,LoginActivity.user_info.loginUserFCMToken)
         if(savedInstanceState == null) {
             binding.chipNavigationBar.setItemSelected(R.id.home,true)
             changeFragment(fragmentHome)

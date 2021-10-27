@@ -107,6 +107,11 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
                             intent.putExtra("replayPostLikeIdx", ReplayPostList.get(position).replayPostLikeIdx)
                             intent.putExtra("liked", ReplayPostList.get(position).liked)
                             intent.putExtra("replayVideo", ReplayPostList.get(position).replayVideo)
+                            intent.putExtra("uploadUserFCMToken", ReplayPostList.get(position).uploadUserFCMToken)
+
+
+
+
                             context.startActivity(intent, null)
                         }
                     }

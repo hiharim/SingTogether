@@ -36,11 +36,10 @@ import retrofit2.Retrofit
  * 마이페이지 화면
  * */
 
-const val TOPIC = "/topics/myTopic2"
 class MyPageFragment : Fragment() {
     private var TAG :String = "MyPageFragment"
 
-    private var token :String ?= ""
+
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,21 +53,6 @@ class MyPageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-
-            // Get new FCM registration token
-             token = task.result
-
-            // Log and toast
-
-            Log.d(TAG, token)
-            Toast.makeText(requireContext(), token, Toast.LENGTH_SHORT).show()
-        })
 
 
 
@@ -119,19 +103,11 @@ class MyPageFragment : Fragment() {
 
 
         binding.tvMyFollowing.setOnClickListener {
-//            val intent= Intent(context, MyFollowingActivity::class.java)
-//            intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
-//            startActivity(intent)
+            val intent= Intent(context, MyFollowingActivity::class.java)
+            intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
+            startActivity(intent)
 
-//            FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
-            PushNotification(
-                NotificationData("hi", "hi"),
-//            token.toString()
-                token.toString()
-            ).also {
 
-                sendNotification(it)
-            }
         }
 
         binding.tvMyFollow.setOnClickListener {
@@ -180,18 +156,6 @@ class MyPageFragment : Fragment() {
         return binding.root
     }
 
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = RetrofitInstance.api.postNotification(notification)
-            if(response.isSuccessful) {
-//                Log.d(TAG, "Response: ${Gson().toJson(response)}")
-            } else {
-                Log.e(TAG, response.errorBody().toString())
-            }
-        } catch(e: Exception) {
-            Log.e(TAG, e.toString())
-        }
-    }
 
     companion object {
 

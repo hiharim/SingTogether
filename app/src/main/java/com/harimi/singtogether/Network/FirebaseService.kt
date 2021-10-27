@@ -7,32 +7,21 @@ import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.harimi.singtogether.MainActivity
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.DetailReplayActivity
 import com.harimi.singtogether.broadcast.MyService.Companion.CHANNEL_ID
 
 import kotlin.random.Random
 class FirebaseService : FirebaseMessagingService() {
-
-//    companion object {
-//        var sharedPref: SharedPreferences? = null
-//
-//        var token: String?
-//            get() {
-//                return sharedPref?.getString("token", "")
-//            }
-//            set(value) {
-//                sharedPref?.edit()?.putString("token", value)?.apply()
-//            }
-//    }
-
+    private val TAG = "FirebaseService_"
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
 //        token = newToken
@@ -41,16 +30,46 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        val intent = Intent(this, MainActivity::class.java)
+        Log.d(TAG , message.data["uploadUserEmail"].toString())
+        Log.d(TAG , message.data["uploadUserProfile"].toString())
+        Log.d(TAG , message.data["uploadUserNickName"].toString())
+
+
+        if (LoginActivity.user_info.loginUserEmail.equals("")){
+            LoginActivity.user_info.loginUserNickname = message.data["uploadUserNickName"].toString()
+            LoginActivity.user_info.loginUserProfile = message.data["uploadUserProfile"].toString()
+            LoginActivity.user_info.loginUserFCMToken = message.data["uploadUserFCMToken"].toString()
+            LoginActivity.user_info.loginUserEmail = message.data["uploadUserEmail"].toString()
+        }
+
+
+        val intent = Intent(this, DetailReplayActivity::class.java)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
-
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
+        intent.putExtra("idx", message.data["replayIdx"].toString())
+        intent.putExtra("uploadUserEmail", message.data["uploadUserEmail"].toString())
+        intent.putExtra("uploadUserNickName", message.data["uploadUserNickName"].toString())
+        intent.putExtra("uploadUserProfile", message.data["uploadUserProfile"].toString())
+        intent.putExtra("thumbnail", message.data["thumbnail"].toString())
+        intent.putExtra("uploadDate", message.data["uploadDate"].toString())
+        intent.putExtra("replayTitle", message.data["replayTitle"].toString())
+        intent.putExtra("replayLikeNumber", message.data["replayLikeNumber"].toString())
+        intent.putExtra("replayHits", message.data["replayHits"].toString())
+        intent.putExtra("replayReviewNumber", message.data["replayReviewNumber"].toString())
+        intent.putExtra("replayPostLikeIdx", message.data["replayPostLikeIdx"].toString())
+        intent.putExtra("liked", message.data["liked"].toString())
+        intent.putExtra("replayVideo", message.data["replayVideo"].toString())
+        intent.putExtra("uploadUserFCMToken", message.data["uploadUserFCMToken"].toString())
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+
+
+
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(message.data["title"])
             .setContentText(message.data["message"])
