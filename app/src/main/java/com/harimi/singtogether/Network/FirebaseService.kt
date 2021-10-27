@@ -17,11 +17,12 @@ import com.google.firebase.messaging.RemoteMessage
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.R
 import com.harimi.singtogether.broadcast.DetailReplayActivity
-import com.harimi.singtogether.broadcast.MyService.Companion.CHANNEL_ID
 
 import kotlin.random.Random
 class FirebaseService : FirebaseMessagingService() {
     private val TAG = "FirebaseService_"
+    private val CHANNEL_ID = "FirebaseService_"
+
     override fun onNewToken(newToken: String) {
         super.onNewToken(newToken)
 //        token = newToken
@@ -46,6 +47,7 @@ class FirebaseService : FirebaseMessagingService() {
         val intent = Intent(this, DetailReplayActivity::class.java)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notificationID = Random.nextInt()
+
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(notificationManager)
         }
@@ -67,14 +69,13 @@ class FirebaseService : FirebaseMessagingService() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
 
-
-
-
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(message.data["title"])
             .setContentText(message.data["message"])
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setAutoCancel(true)
+            .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+            .setOnlyAlertOnce(true)
             .setContentIntent(pendingIntent)
             .build()
 

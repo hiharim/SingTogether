@@ -297,14 +297,19 @@ class DetailReplayActivity : AppCompatActivity() {
                                 var isLiked = jsonObject.getBoolean("isLiked")
                                 Log.d(TAG, body)
                                 ////FCM 보내기
-                                PushNotification(
-                                    NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 댓글을 남겼습니다.",
-                                        replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
-                                        replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
-                                    uploadUserFCMToken.toString()
-                                ).also {
-                                    sendNotification(it)
+                                if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
+
+                                }else{
+                                    PushNotification(
+                                        NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 댓글을 남겼습니다.",
+                                            replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+                                            replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
+                                        uploadUserFCMToken.toString()
+                                    ).also {
+                                        sendNotification(it)
+                                    }
                                 }
+
                             }
                         }
 
@@ -349,13 +354,17 @@ class DetailReplayActivity : AppCompatActivity() {
                             var isLiked = jsonObject.getBoolean("isLiked")
                             Log.d(TAG, body)
                             ////FCM 보내기
-                            PushNotification(
-                                NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 좋아요를 누르셨습니다.",
-                                    replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
-                                    replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
-                                uploadUserFCMToken.toString()
-                            ).also {
-                                sendNotification(it)
+                            if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
+
+                            }else{
+                                PushNotification(
+                                    NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 좋아요를 누르셨습니다.",
+                                        replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+                                        replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
+                                    uploadUserFCMToken.toString()
+                                ).also {
+                                    sendNotification(it)
+                                }
                             }
                         }
                     }

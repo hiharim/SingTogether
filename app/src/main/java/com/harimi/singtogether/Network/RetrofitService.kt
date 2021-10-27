@@ -195,6 +195,11 @@ interface RetrofitService {
     ) : Call<String>
 
 
+    @FormUrlEncoded
+    @POST("GetMyFollowingUser.php")
+    fun requestGetMyFollowingUser (
+        @Field("userEmail") userEmail: String
+    ) : Call<String>
 
 
     @FormUrlEncoded
