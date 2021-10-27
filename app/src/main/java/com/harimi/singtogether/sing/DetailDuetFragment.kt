@@ -56,7 +56,6 @@ class DetailDuetFragment : Fragment() {
 
     private var duet_idx : Int? = null // duet 테이블 idx
     private var mr_idx : Int? = null // mr 테이블 idx
-    private lateinit var apiService: APIService
 
     private var idx : Int? = null // duet 테이블 idx
     private var thumbnail: String? = null
