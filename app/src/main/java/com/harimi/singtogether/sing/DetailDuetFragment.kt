@@ -27,6 +27,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.gms.common.api.Api
 import com.harimi.singtogether.*
 import com.harimi.singtogether.Data.DetailDuetReviewData
 import com.harimi.singtogether.Network.*
@@ -55,7 +56,7 @@ class DetailDuetFragment : Fragment() {
 
     private var duet_idx : Int? = null // duet 테이블 idx
     private var mr_idx : Int? = null // mr 테이블 idx
-    private lateinit var apiService: APIService
+
 
     private var idx : Int? = null // duet 테이블 idx
     private var thumbnail: String? = null
@@ -111,11 +112,7 @@ class DetailDuetFragment : Fragment() {
         val binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
         Log.e("디테일프래그","duet_idx"+duet_idx)
 
-        apiService = Client.getClient("https://fcm.googleapis.com/").create(APIService::class.java)
-
-
-//        sendNotification("dVwJ9XCuTQKECJ895CNQzd:APA91bEK3GHIE1WAeAaa59og103_lIrz50-XeQ3vP6f1pN3VEbV_sAPtLJsqnFiDvezraWvD49pkeKH_HZOQi_T3tdZV3fXffgObS1cFQ6gVMZEU4ANy0axNk2aquni3o-II5eHuaugz","hi","hi")
-        //듀엣참여 버튼 클릭
+     //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
             // DuetActivity 로 이동
             val intent= Intent(context,DuetActivity::class.java)
@@ -326,29 +323,6 @@ class DetailDuetFragment : Fragment() {
 
 
 
-
-    private fun sendNotification(usertoken:String,title: String,message: String){
-            var data=Data(title,message)
-            var sender:NotificationSender= NotificationSender(data,usertoken)
-
-            apiService.sendNotifcation(sender)!!.enqueue(object : Callback<MyResponse?> {
-
-                override fun onResponse(call: Call<MyResponse?>, response: Response<MyResponse?>) {
-                    if (response.code() === 200) {
-
-                        if (response.body()!!.success !== 1) {
-
-                            Toast.makeText(requireContext(), "Failed ", Toast.LENGTH_LONG).show()
-
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<MyResponse?>, t: Throwable?) {
-
-                }
-            })
-    }
 
 
     fun detailDuetReviewLoad(recyclerview: RecyclerView) {

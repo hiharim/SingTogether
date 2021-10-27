@@ -11,7 +11,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.google.android.gms.common.api.Api
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.gson.Gson
 
 import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.MyPagePagerAdapter
@@ -19,6 +23,9 @@ import com.harimi.singtogether.databinding.FragmentMyPageBinding
 import com.harimi.singtogether.sing.DuetFragment
 import com.harimi.singtogether.sing.MRFragment
 import com.harimi.singtogether.sing.SingPagerAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,10 +35,12 @@ import retrofit2.Retrofit
 /**
  * 마이페이지 화면
  * */
+
+const val TOPIC = "/topics/myTopic2"
 class MyPageFragment : Fragment() {
     private var TAG :String = "MyPageFragment"
-    private lateinit var apiService: APIService
 
+    private var token :String ?= ""
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,8 +55,20 @@ class MyPageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
 
-        apiService = Client.getClient("https://fcm.googleapis.com").create(APIService::class.java)
+            // Get new FCM registration token
+             token = task.result
+
+            // Log and toast
+
+            Log.d(TAG, token)
+            Toast.makeText(requireContext(), token, Toast.LENGTH_SHORT).show()
+        })
 
 
 
@@ -98,9 +119,19 @@ class MyPageFragment : Fragment() {
 
 
         binding.tvMyFollowing.setOnClickListener {
-            val intent= Intent(context, MyFollowingActivity::class.java)
-            intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
-            startActivity(intent)
+//            val intent= Intent(context, MyFollowingActivity::class.java)
+//            intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
+//            startActivity(intent)
+
+//            FirebaseMessaging.getInstance().subscribeToTopic(TOPIC)
+            PushNotification(
+                NotificationData("hi", "hi"),
+//            token.toString()
+                token.toString()
+            ).also {
+
+                sendNotification(it)
+            }
         }
 
         binding.tvMyFollow.setOnClickListener {
@@ -148,29 +179,19 @@ class MyPageFragment : Fragment() {
         // 3. 프래그먼트 레이아웃 뷰 반환
         return binding.root
     }
-    private fun sendNotification(usertoken:String,title: String,message: String){
-        var data= Data(title,message)
-        var sender: NotificationSender = NotificationSender(data,usertoken)
 
-        apiService.sendNotifcation(sender)!!.enqueue(object : Callback<MyResponse?> {
-
-            override fun onResponse(call: Call<MyResponse?>, response: Response<MyResponse?>) {
-                if (response.code() === 200) {
-
-                    if (response.body()!!.success !== 1) {
-                        Toast.makeText(requireContext(), "Failed ", Toast.LENGTH_LONG).show()
-                    }else{
-                        Toast.makeText(requireContext(), "success ", Toast.LENGTH_LONG).show()
-                    }
-                }
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful) {
+//                Log.d(TAG, "Response: ${Gson().toJson(response)}")
+            } else {
+                Log.e(TAG, response.errorBody().toString())
             }
-
-            override fun onFailure(call: Call<MyResponse?>, t: Throwable?) {
-
-            }
-        })
+        } catch(e: Exception) {
+            Log.e(TAG, e.toString())
+        }
     }
-
 
     companion object {
 
