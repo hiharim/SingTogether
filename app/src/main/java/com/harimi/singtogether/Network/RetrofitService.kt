@@ -9,6 +9,14 @@ import retrofit2.http.*
 // POST 방식으로 데이터를 주고 받을 때 넘기는 변수는 Field라고 해야한다.
 interface RetrofitService {
 
+
+    @FormUrlEncoded
+    @POST("clickSongPostLike.php")
+    fun requestSongPostLike (
+        @Field("songPost_idx") songPost_idx: Int,
+        @Field("email") email: String,
+    ) : Call<String>
+
     @FormUrlEncoded
     @POST("loadCompleteDuet.php")
     fun loadCompleteDuet(

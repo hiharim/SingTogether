@@ -79,7 +79,6 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
         //time= MergeAudioActivity.time_info.pTime
         //time= Video2Activity.time_info.pTime
 
-
         var now_Time=time.toFloat()
         Log.e("가사어댑터", "mTime : " + mTime)
         Log.e("가사어댑터", "now_Time : " + now_Time)
@@ -89,13 +88,6 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
         }else{
             holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
         }
-
-
-//        var minus_one=(mTime-0.01).toFloat()
-//        if(now_Time==minus_one){
-//
-//        }
-
 
     }
 

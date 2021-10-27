@@ -2,11 +2,9 @@ package com.harimi.singtogether.sing
 
 import android.content.DialogInterface
 import android.content.Intent
-
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -102,7 +101,7 @@ class DetailDuetFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreateView(
+    override fun onCreateView (
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
@@ -321,11 +320,8 @@ class DetailDuetFragment : Fragment() {
 
             return binding.root
         }
-    }
 
-
-
-    private fun sendNotification(usertoken:String,title: String,message: String){
+    private fun sendNotification(usertoken:String,title: String,message: String) {
             var data=Data(title,message)
             var sender:NotificationSender= NotificationSender(data,usertoken)
 

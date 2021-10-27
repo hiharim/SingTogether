@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,7 +21,10 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.harimi.singtogether.Data.DuetData
+import com.harimi.singtogether.Data.MySongData
 import com.harimi.singtogether.Data.PostReviewData
+import com.harimi.singtogether.Network.OnSingleClickListener
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.PostFragmentReviewAdapter
@@ -46,9 +50,11 @@ class PostFragment : Fragment() {
     var TAG :String = "PostFragment "
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
+    private lateinit var binding: FragmentPostBinding
 
-    private var idx : Int? = null // duet 테이블 idx
+    private var idx : Int? = null
     private var mr_idx : Int? = null // mr 테이블 idx
+    private var total_like : String? = null
     private var title : String? = null
     private var singer : String? = null
     private var cnt_play : String? = null
@@ -97,7 +103,7 @@ class PostFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val binding= FragmentPostBinding.inflate(inflater,container,false)
+        binding= FragmentPostBinding.inflate(inflater,container,false)
 
         binding.tvUploadUserNickName.text=nickname
         binding.tvUploadCollaboNickName.text=collaboration_nickname
@@ -203,8 +209,53 @@ class PostFragment : Fragment() {
             }
         }
 
+        binding.fragmentPostTvLike.text=cnt_like
+        // 좋아요 클릭
+        binding.fragmentPostIvLike.setOnClickListener {
+            clickLike()
+        }
+
+
         return binding.root
     }
+
+    fun clickLike() {
+        val userEmail=LoginActivity.user_info.loginUserEmail
+        idx?.let {
+            userEmail.let { it1 ->
+                retrofitService.requestSongPostLike(it, it1).enqueue(object : Callback<String> {
+                    // 통신에 성공한 경우
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful) {
+                            val jsonObject = JSONObject(response.body().toString())
+                            total_like =jsonObject.getString("cnt_like")
+                            val isLike = jsonObject.getString("isLike")
+                            Log.e(TAG,"clickLike() total_like: $total_like")
+                            Log.e(TAG,"clickLike() isLike: $isLike")
+
+                            binding.fragmentPostTvLike.text=total_like
+                            if(isLike.equals("true")){
+                                binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.like)
+                            }else{
+                                binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.non_like)
+                            }
+
+                        } else {
+                            // 통신은 성공했지만 응답에 문제가 있는 경우
+                            Log.e(TAG, "clickLike() 응답 문제" + response.code())
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.e(TAG, "clickLike() 통신 실패" + t.message)
+                    }
+
+
+                })
+            }
+        }
+    }
+
     fun postReviewLoad(recyclerview : RecyclerView){
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
@@ -252,6 +303,11 @@ class PostFragment : Fragment() {
 
                 }
             })
+    }
+
+    fun View.setOnSingleClickListener(onSingleClick: (View) -> Unit) {
+        val singleClickListener = OnSingleClickListener { onSingleClick(it) }
+        setOnClickListener(singleClickListener)
     }
     override fun onPause() {
         super.onPause()

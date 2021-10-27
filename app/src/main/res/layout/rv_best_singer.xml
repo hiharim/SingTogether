@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/round_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+
+    <ImageView
+        android:id="@+id/rv_best_singer_iv_thumbnail"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/rv_best_singer_tv_title"
+        android:text="제목"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:textColor="@color/white"
+        android:layout_marginStart="5dp"
+        android:layout_above="@+id/rv_best_singer_tv_singer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_best_singer_tv_singer"
+        android:text="가수"
+        android:layout_marginBottom="15dp"
+        android:textSize="11sp"
+        android:textColor="@color/white"
+        android:layout_marginStart="5dp"
+        android:layout_above="@+id/rv_best_singer_tv_nickname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_best_singer_tv_nickname"
+        android:text="닉네임"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_alignBottom="@+id/rv_best_singer_iv_thumbnail"
+        android:layout_toRightOf="@+id/rv_best_singer_iv_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/rv_best_singer_iv_profile"
+        android:layout_marginStart="5dp"
+        android:layout_alignBottom="@+id/rv_best_singer_iv_thumbnail"
+        android:layout_alignParentStart="true"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/white_face" />
+
+    <TextView
+        android:id="@+id/and"
+        android:text="&amp;"
+        android:layout_toEndOf="@+id/rv_best_singer_tv_nickname"
+        android:layout_alignBottom="@+id/rv_best_singer_iv_thumbnail"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/rv_best_singer_iv_collabo_profile"
+        android:layout_alignBottom="@+id/rv_best_singer_iv_thumbnail"
+        android:layout_toRightOf="@+id/and"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        app:srcCompat="@drawable/white_face" />
+
+    <TextView
+        android:id="@+id/rv_best_singer_tv_collabo_nickname"
+        android:text="닉네임"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        android:layout_alignBottom="@+id/rv_best_singer_iv_thumbnail"
+        android:layout_toRightOf="@+id/rv_best_singer_iv_collabo_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

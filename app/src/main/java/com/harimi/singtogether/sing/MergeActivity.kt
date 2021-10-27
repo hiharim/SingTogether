@@ -233,7 +233,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         asyncDialog!!.dismiss()
                         val jsonObject = JSONObject(response.body().toString())
                         //call_extract_path= "http://3.35.236.251/"+jsonObject.getString("extract_path")
-                        output_path= "http://3.35.236.251/"+jsonObject.getString("output_path");
+                        output_path= "http://3.35.236.251/"+jsonObject.getString("output_path")
 
                         // 믹싱 성공 다이얼로그
                         val builder = AlertDialog.Builder(this@MergeActivity)

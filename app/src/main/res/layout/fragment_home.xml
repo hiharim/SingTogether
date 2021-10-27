@@ -8,56 +8,143 @@
     android:id="@+id/home_layout"
     tools:context=".HomeFragment">
 
-    <Toolbar
-        android:id="@+id/toolbar_home"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:contentInsetLeft="0dp"
-        android:contentInsetStart="0dp"
-        app:contentInsetLeft="0dp"
-        app:contentInsetStart="0dp"
-        android:contentInsetRight="0dp"
-        android:contentInsetEnd="0dp"
-        app:contentInsetRight="0dp"
-        app:contentInsetEnd="0dp"
-        app:showAsAction="always">
+    <!--    수정 후-->
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <Toolbar
+            android:id="@+id/toolbar_home"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="?attr/actionBarSize"
+            android:contentInsetLeft="0dp"
+            android:contentInsetStart="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp"
+            android:contentInsetRight="0dp"
+            android:contentInsetEnd="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetEnd="0dp"
+            app:showAsAction="always">
 
-            <TextView
-                android:id="@+id/home_text"
-                android:layout_width="0px"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:text="노래 듣기"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="20dp"
-                android:textStyle="bold"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent"/>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <ImageButton
-                android:id="@+id/fragment_home_iv_search"
-                android:layout_width="0px"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:padding="15dp"
-                android:background="@drawable/ic_baseline_search_24"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                <ImageButton
+                    android:id="@+id/fragment_home_iv_logo"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/singtogether_logo_purple"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </Toolbar>
+<!--                <ImageButton-->
+<!--                    android:id="@+id/fragment_home_iv_best"-->
+<!--                    android:layout_width="0px"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginEnd="10dp"-->
+<!--                    android:padding="15dp"-->
+<!--                    android:background="@drawable/best_singer"-->
+<!--                    app:layout_constraintRight_toLeftOf="@+id/fragment_home_iv_search"-->
+<!--                    app:layout_constraintTop_toTopOf="parent"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+                <ImageButton
+                    android:id="@+id/fragment_home_iv_search"
+                    android:layout_width="0px"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:padding="15dp"
+                    android:background="@drawable/ic_baseline_search_24"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </Toolbar>
+
+
+        <TextView
+            android:id="@+id/tv_today_best_singer"
+            android:layout_below="@+id/toolbar_home"
+            android:textSize="24sp"
+            android:text="오늘의 가왕"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/fragment_home_tv_solo"
+        android:text="베스트 솔로가왕"
+        android:layout_below="@+id/tv_today_best_singer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/fragment_home_tv_duet"
+        android:text="베스트 듀엣가왕"
+        android:layout_below="@+id/tv_today_best_singer"
+        android:layout_toRightOf="@+id/fragment_home_tv_solo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_home_recyclerView"
-        android:layout_below="@+id/toolbar_home"
-        android:layout_margin="10dp"
+        android:id="@+id/fragment_home_rv_best"
+        android:layout_below="@+id/fragment_home_tv_solo"
+        tools:itemCount="2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
+
+
+<!--    *******수정 전******-->
+<!--    <Toolbar-->
+<!--        android:id="@+id/toolbar_home"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="?attr/actionBarSize"-->
+<!--        android:contentInsetLeft="0dp"-->
+<!--        android:contentInsetStart="0dp"-->
+<!--        app:contentInsetLeft="0dp"-->
+<!--        app:contentInsetStart="0dp"-->
+<!--        android:contentInsetRight="0dp"-->
+<!--        android:contentInsetEnd="0dp"-->
+<!--        app:contentInsetRight="0dp"-->
+<!--        app:contentInsetEnd="0dp"-->
+<!--        app:showAsAction="always">-->
+
+<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/home_text"-->
+<!--                android:layout_width="0px"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:gravity="center"-->
+<!--                android:text="노래 듣기"-->
+<!--                android:textAlignment="center"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textSize="20dp"-->
+<!--                android:textStyle="bold"-->
+<!--                app:layout_constraintRight_toRightOf="parent"-->
+<!--                app:layout_constraintLeft_toLeftOf="parent"/>-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/fragment_home_iv_search"-->
+<!--                android:layout_width="0px"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginEnd="10dp"-->
+<!--                android:padding="15dp"-->
+<!--                android:background="@drawable/ic_baseline_search_24"-->
+<!--                app:layout_constraintRight_toRightOf="parent"-->
+<!--                app:layout_constraintTop_toTopOf="parent"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"/>-->
+
+<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
+<!--    </Toolbar>-->
+
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/fragment_home_recyclerView"-->
+<!--        android:layout_below="@+id/toolbar_home"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"/>-->
 
 </RelativeLayout>
