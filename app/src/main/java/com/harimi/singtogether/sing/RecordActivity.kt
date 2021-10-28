@@ -163,13 +163,21 @@ class RecordActivity: AppCompatActivity()  {
 
                                 for(j in nextList) {
                                     var nTime = j.toFloat()
+                                    var nMunusTime=j.toFloat()-0.01.toFloat()
                                     var nextTime = t_down.format(nTime)
+                                    var nextMinusTime=t_down.format(nMunusTime)
                                     Log.e("레코드액티비티", "nextTime  : $nextTime ")
                                     Log.e("레코드액티비티", "j : $j")
-                                    if (mTime.toString() == nextTime.toString() && i==j) {
+
+//                                    if (mTime.toString() == nextTime.toString() && i==j) {
+//                                        lyricsList.removeAt(0)
+//                                        lyricsAdapter.notifyItemRemoved(0)
+//                                        }
+                                    if (mTime.toString() == nextTime.toString() && second==nextMinusTime) {
                                         lyricsList.removeAt(0)
                                         lyricsAdapter.notifyItemRemoved(0)
-                                        }
+                                    }
+
                                     }
                                 }
 
