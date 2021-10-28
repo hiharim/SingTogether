@@ -41,7 +41,7 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
         val curData = lyricsList[position]
         holder.seconds.text=curData.seconds
         holder.line.text=curData.line
-        Log.e("가사어댑터", "position : " + position)
+        //Log.e("가사어댑터", "position : " + position)
 
 //        val mTime=time.substring(3).toInt()
 //        Log.e("가사어댑터", "mTime : " + mTime)
@@ -80,8 +80,8 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
         //time= Video2Activity.time_info.pTime
 
         var now_Time=time.toFloat()
-        Log.e("가사어댑터", "mTime : " + mTime)
-        Log.e("가사어댑터", "now_Time : " + now_Time)
+//        Log.e("가사어댑터", "mTime : " + mTime)
+//        Log.e("가사어댑터", "now_Time : " + now_Time)
 
         if(mTime<=now_Time) {
             holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크

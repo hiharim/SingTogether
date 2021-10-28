@@ -4,11 +4,29 @@ import com.harimi.singtogether.Data.UserData
 import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
+import java.time.LocalDate
 
 // 서버에서 호출할 메서드를 선언하는 인터페이스
 // POST 방식으로 데이터를 주고 받을 때 넘기는 변수는 Field라고 해야한다.
 interface RetrofitService {
 
+    @FormUrlEncoded
+    @POST("loadPopPost.php")
+    fun requestPopPost(
+        @Field("email") email: String,
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("loadNewPost.php")
+    fun requestNewPost(
+        @Field("email") email: String,
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("loadBestSinger.php")
+    fun requestBestSinger(
+        @Field("today_date") today_date: String,
+    ) : Call<String>
 
     @FormUrlEncoded
     @POST("clickSongPostLike.php")
@@ -345,11 +363,10 @@ interface RetrofitService {
     @POST("loadHomePost.php")
     fun requestGetHomePost (
     ) : Call<String>
+
     @POST("loadHomePost2.php")
     fun requestGetHomePost2 (
     ) : Call<String>
-
-
 
     @POST("loadLiveStreamingPost.php")
     fun requestGetLiveStreamingPost (

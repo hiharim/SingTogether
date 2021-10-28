@@ -38,10 +38,9 @@ import retrofit2.Retrofit
 
 class MyPageFragment : Fragment() {
     private var TAG :String = "MyPageFragment"
-
-
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -53,8 +52,6 @@ class MyPageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
 
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)

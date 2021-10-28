@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class HomeData(
 
-    // 14개
     @SerializedName("idx")
     val idx : Int,
     @SerializedName("thumbnail")
@@ -40,17 +39,9 @@ data class HomeData(
     @SerializedName("kinds")
     val kinds : String,
     @SerializedName("mr_idx")
-    val mr_idx : Int
+    val mr_idx : Int,
+    @SerializedName("token")
+    val token : String
 
-//    val idx:String ,
-//    val thumbnail :String ,
-//    val songTitle: String ,
-//    val singer:String,
-//    val hits:String ,
-//    val likeNumber: String ,
-//    val uploadUserProfile : String ,
-//    val uploadUserNickName:String ,
-//    val uploadDate:String ,
-//    val uploadUserEmail:String
 
     )

@@ -69,6 +69,7 @@ class PostFragment : Fragment() {
     private var collaboration_profile : String? = null
     private var date : String? = null
     private var kinds : String? = null
+    private var token : String? = null
     private var thumbnail : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
@@ -95,6 +96,7 @@ class PostFragment : Fragment() {
             collaboration_profile=it.getString("collaboration_profile")
             date=it.getString("date")
             kinds=it.getString("kinds")
+            token=it.getString("token")
             thumbnail=it.getString("thumbnail")
 
         }

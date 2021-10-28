@@ -201,6 +201,12 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:id="@+id/rv_fragment_home_tv_token"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
         android:id="@+id/rv_fragment_home_tv_date"
         android:visibility="gone"
         android:layout_width="wrap_content"

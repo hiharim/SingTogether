@@ -83,6 +83,7 @@ class CompleteDuetActivity : AppCompatActivity() {
                             val collaboration_profile = iObject.getString("col_profile")
                             val collabo_email = iObject.getString("collabo_email")
                             val kinds = iObject.getString("kinds")
+                            val token = iObject.getString("token")
 
                             val homeData = HomeData(
                                 idx,
@@ -102,7 +103,8 @@ class CompleteDuetActivity : AppCompatActivity() {
                                 collaboration_profile,
                                 date,
                                 kinds,
-                                mr_idx
+                                mr_idx,
+                                token
                             )
                             homePostList.add(0, homeData)
                             homeAdapter.notifyDataSetChanged()

@@ -90,7 +90,7 @@ dependencies {
     //라운드 이미지
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     // ffmpeg
-    implementation  'com.arthenica:mobile-ffmpeg-min-gpl:4.4'
+//    implementation  'com.arthenica:mobile-ffmpeg-min-gpl:4.4'
 
     ////webRTC
     implementation 'org.webrtc:google-webrtc:1.0.30039'
@@ -102,6 +102,10 @@ dependencies {
 
     //스와이프
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
+    //뷰페이저
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
+    implementation 'me.relex:circleindicator:2.1.4'
 
 }
 

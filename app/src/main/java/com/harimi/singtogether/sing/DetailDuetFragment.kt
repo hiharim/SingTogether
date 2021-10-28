@@ -73,6 +73,7 @@ class DetailDuetFragment : Fragment() {
     private var date : String? = null
     private var kinds : String? = null
     private var lyrics : String? = null
+    private var token : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
 
@@ -100,7 +101,9 @@ class DetailDuetFragment : Fragment() {
             date=it.getString("date")
             kinds=it.getString("kinds")
             lyrics=it.getString("lyrics")
+            token=it.getString("token")
         }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

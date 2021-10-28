@@ -35,6 +35,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         val duet_date=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_date)
         val kinds=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_kinds)
         val lyrics=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_lyrics)
+        val token=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_token)
 
     }
 
@@ -61,6 +62,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
         holder.duet_date.text=curData.date
         holder.kinds.text=curData.kinds
         holder.lyrics.text=curData.lyrics
+        holder.token.text=curData.token
 
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
@@ -88,6 +90,7 @@ class DuetAdapter(val duetList : ArrayList<DuetData>) : RecyclerView.Adapter<Due
             bundle.putString("date",curData.date)
             bundle.putString("kinds",curData.kinds)
             bundle.putString("lyrics",curData.lyrics)
+            bundle.putString("token",curData.token)
             detailDuetFragment.arguments=bundle
 
 

@@ -2,6 +2,7 @@ package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.icu.text.DecimalFormat
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -32,6 +33,8 @@ import retrofit2.Retrofit
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 /**
  * 녹음하는 액티비티
@@ -63,6 +66,7 @@ class RecordActivity: AppCompatActivity()  {
     private lateinit var lyricsAdapter: LyricsAdapter
 
     private val timeList:ArrayList<String> = ArrayList()
+    private val nextList:ArrayList<String> = ArrayList()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,8 +107,16 @@ class RecordActivity: AppCompatActivity()  {
                 val times=array[i].substring(1,5)
                 Log.e("레코드액티비티","times"+times)
                 timeList.add(times)
+
+                val next=array[i].substring(1,5)
+                //Log.e("레코드액티비티","next"+next)
+                nextList.add(next)
+
             }
         }
+        nextList.removeAt(0)
+        Log.e("레코드액티비티","next"+nextList)
+
         binding.activityRecordRv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityRecordRv.setHasFixedSize(true)
 
@@ -138,7 +150,41 @@ class RecordActivity: AppCompatActivity()  {
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityRecordRv.adapter=lyricsAdapter
 
+                            var count=0
+                            for(i in timeList) {
+                                var minus_one=i.toFloat()-0.01.toFloat()
+                                val t_down = DecimalFormat("0.00")
+                                var second = t_down.format(minus_one)
+                                var mTime=t_down.format(time_info.pTime.toFloat())
 
+                                Log.e("레코드액티비티", "1초 뺀 시간 second : $second")
+                                Log.e("레코드액티비티", "현재 플레이시간 mTime : $mTime")
+                                Log.e("레코드액티비티", "전 i : $i")
+
+
+                                for(j in nextList) {
+                                    var nTime = j.toFloat()
+                                    var nextTime = t_down.format(nTime)
+                                    Log.e("레코드액티비티", "nextTime  : $nextTime ")
+                                    Log.e("레코드액티비티", "j : $j")
+                                    if (mTime.toString() == nextTime.toString() && mTime.toString() < second.toString()) {
+                                        lyricsList.removeAt(0)
+                                        lyricsAdapter.notifyItemRemoved(0)
+
+                                    }
+
+//                                    if(nextTime==mTime.toString() && mTime>=second){
+//                                        count=1
+//                                         if (count==1 && nextTime== mTime.toString()) {
+//                                        lyricsList.removeAt(0)
+//                                        lyricsAdapter.notifyItemRemoved(0)
+//                                        count = 0
+//                                        Log.e("레코드액티비티", "(3) count : $count")
+//                                        }
+//                                    }
+
+                                    }
+                                }
 
 
 //                            var count=-1
@@ -164,24 +210,6 @@ class RecordActivity: AppCompatActivity()  {
 //                                }
 //                            }
 
-//                            var count=-1
-//                            for(i in timeList) {
-//                                if(i==time_info.pTime){
-//                                    count++
-//                                    if(count==1) {
-//                                        lyricsList.removeAt(0)
-//                                        lyricsAdapter.notifyItemRemoved(0)
-//                                        count=-1
-//                                    }
-//                                }
-//
-////                                var minus_one=(i.toFloat()-0.01).toFloat()
-////                                Log.e("레코드액티비티","포문 안 i :"+i)
-////                                if(time_info.pTime.toFloat()==minus_one){
-////                                    //lyricsList.removeAt(0)
-////                                    //lyricsAdapter.notifyItemRemoved(0)
-////                                }
-//                            }
 
 
 

@@ -15,8 +15,6 @@ import android.view.View
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.arthenica.mobileffmpeg.FFmpeg
-import com.arthenica.mobileffmpeg.FFmpegExecution
 import com.harimi.singtogether.Data.LyricsData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient

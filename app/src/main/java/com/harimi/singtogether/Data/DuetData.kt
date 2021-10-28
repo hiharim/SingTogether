@@ -38,5 +38,7 @@ data class DuetData(
     @SerializedName("kinds")
     val kinds: String,
     @SerializedName("lyrics")
-    val lyrics: String
+    val lyrics: String,
+    @SerializedName("token")
+    val token: String
 )
