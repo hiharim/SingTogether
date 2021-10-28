@@ -2,16 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:layout_margin="10dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/pop_layout"
-    tools:context=".PopFragment">
+    tools:context=".simple.SimpleFollowingFragment">
 
-    <View style="@style/Divider"/>
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_pop_recyclerView"
-        android:layout_margin="10dp"
+        android:id="@+id/fragment_simple_following_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

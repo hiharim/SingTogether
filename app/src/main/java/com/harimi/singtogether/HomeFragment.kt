@@ -1,6 +1,7 @@
 package com.harimi.singtogether
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -11,15 +12,22 @@ import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
 import com.harimi.singtogether.Data.BestData
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.BestAdapter
 import com.harimi.singtogether.adapter.HomeAdapter
+import com.harimi.singtogether.adapter.TotalPagerAdapter
 import com.harimi.singtogether.databinding.FragmentHomeBinding
 import com.harimi.singtogether.databinding.FragmentPostBinding
+import com.harimi.singtogether.simple.SimpleFollowingFragment
+import com.harimi.singtogether.simple.SimpleNewFragment
+import com.harimi.singtogether.simple.SimplePagerAdapter
+import com.harimi.singtogether.simple.SimplePopFragment
 import com.harimi.singtogether.sing.SearchSongActivity
+import com.harimi.singtogether.sing.SingPagerAdapter
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
@@ -49,14 +57,7 @@ class HomeFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         binding= FragmentHomeBinding.inflate(inflater,container,false)
-
-        // 홈 리사이클러뷰 설정
-        binding.fragmentHomeRecyclerView.layoutManager=LinearLayoutManager(context)
-        binding.fragmentHomeRecyclerView.setHasFixedSize(true)
-        binding.fragmentHomeRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        homeAdapter= HomeAdapter(homePostList)
-        binding.fragmentHomeRecyclerView.adapter= homeAdapter
-        homeAdapter.notifyDataSetChanged()
+        binding.homeLayout.setBackgroundColor(Color.parseColor("#f4f5f9"))
 
         // 오늘의 가왕 리사이클러뷰 설정
         binding.fragmentHomeRvBest.layoutManager=LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
@@ -64,6 +65,56 @@ class HomeFragment : Fragment() {
         bestAdapter= BestAdapter(bestList)
         binding.fragmentHomeRvBest.adapter=bestAdapter
         bestAdapter.notifyDataSetChanged()
+
+        // 뷰페이저 설정
+//        val pagerAdapter = TotalPagerAdapter(requireActivity())
+//        binding.homeViewPager.adapter=pagerAdapter
+
+        // 3개의 Fragment Add
+//        pagerAdapter.addFragment(PopFragment())
+//        pagerAdapter.addFragment(NewFragment())
+//        pagerAdapter.addFragment(FollowingFragment())
+//
+//        // viewPager 와 pagerAdapter 연결
+//        binding.homeViewPager.adapter=pagerAdapter
+//        binding.homeViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+//            override fun onPageSelected(position: Int) {
+//                super.onPageSelected(position)
+//                Log.e("ViewPagerFragment", "Page ${position+1}")
+//                if(position==0){
+//                    binding.fragmentHomeTvTabName.text="인기순"
+//                }else if(position==1){
+//                    binding.fragmentHomeTvTabName.text="최신순"
+//                }else{
+//                    binding.fragmentHomeTvTabName.text="팔로잉"
+//                }
+//            }
+//        })
+//        binding.indicator.setViewPager(binding.homeViewPager)
+
+        val pagerAdapter = SimplePagerAdapter(requireActivity())
+        binding.homeViewPager.adapter=pagerAdapter
+        pagerAdapter.addFragment(SimplePopFragment())
+        pagerAdapter.addFragment(SimpleNewFragment())
+        pagerAdapter.addFragment(SimpleFollowingFragment())
+
+        // viewPager 와 pagerAdapter 연결
+        binding.homeViewPager.adapter=pagerAdapter
+        binding.homeViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+                Log.e("ViewPagerFragment", "Page ${position+1}")
+                if(position==0){
+                    binding.fragmentHomeTvTabName.text="인기순"
+                }else if(position==1){
+                    binding.fragmentHomeTvTabName.text="최신순"
+                }else{
+                    binding.fragmentHomeTvTabName.text="팔로잉"
+                }
+            }
+        })
+        binding.indicator.setViewPager(binding.homeViewPager)
+
 
         // 검색버튼 클릭
         binding.fragmentHomeIvSearch.setOnClickListener {
@@ -88,9 +139,9 @@ class HomeFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
-        homePostList.clear()
+        //homePostList.clear()
         bestList.clear()
-        loadHomePost()
+        //loadHomePost()
         loadBestSinger()
     }
 
@@ -189,8 +240,6 @@ class HomeFragment : Fragment() {
             override fun onFailure(call: Call<String>, t: Throwable) {
                 Log.e("DuetFragment", "loadDuet 통신 실패" + t.message)
             }
-
-
         })
     }
 

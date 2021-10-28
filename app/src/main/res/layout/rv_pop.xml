@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_margin="10dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_rank"
+        android:src="@drawable/ic_baseline_shield_24"
+        android:layout_margin="10dp"
+        android:layout_alignParentEnd="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"/>
+
+    <TextView
+        android:id="@+id/rv_pop_tv_rank"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="13dp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:text="1"
+        android:textColor="@color/white"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/rv_fragment_home_iv_thumbnail"
+        android:layout_width="87dp"
+        android:layout_height="94dp"
+        android:scaleType="fitXY"
+        android:background="#000000"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        tools:srcCompat="@tools:sample/avatars" />
+
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_title"
+        android:text="노래제목"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="17sp"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/rv_fragment_home_iv_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_singer"
+        android:text="가수"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/rv_fragment_home_tv_title"
+        android:layout_toRightOf="@+id/rv_fragment_home_iv_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:src="@drawable/ic_baseline_play_arrow_24"
+        android:layout_toRightOf="@+id/rv_fragment_home_iv_thumbnail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_count_play"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:layout_toRightOf="@+id/iv_play"
+        android:text="5"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_idx"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:layout_toRightOf="@+id/iv_play"
+        android:text="5"
+        android:visibility="gone"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_song_path"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:layout_toRightOf="@+id/iv_play"
+        android:text="5"
+        android:visibility="gone"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/iv_comment"
+        android:layout_toRightOf="@+id/rv_fragment_home_tv_count_play"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:src="@drawable/ic_baseline_sms_24"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_count_reply"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:layout_toRightOf="@+id/iv_comment"
+        android:text="5"
+        android:layout_marginLeft="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <ImageView
+        android:id="@+id/home_like"
+        android:layout_toRightOf="@+id/rv_fragment_home_tv_count_reply"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:src="@drawable/non_like"
+        android:layout_marginLeft="8dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_like"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:layout_toRightOf="@+id/home_like"
+        android:text="0"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_marginLeft="20dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/rv_fragment_home_iv_thumbnail"
+        android:layout_below="@+id/iv_play"
+        app:cardCornerRadius="45dp">
+
+        <ImageView
+            android:id="@+id/rv_fragment_home_iv_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_nickname"
+        android:layout_toRightOf="@+id/cardView"
+        android:layout_below="@+id/iv_comment"
+        android:text="닉네임"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="2dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/and"
+        android:layout_toRightOf="@+id/rv_fragment_home_tv_nickname"
+        android:layout_below="@+id/iv_comment"
+        android:text="&amp;"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/collaboCardView"
+        android:layout_marginLeft="20dp"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="10dp"
+        android:layout_toRightOf="@+id/rv_fragment_home_tv_nickname"
+        android:layout_below="@+id/iv_play"
+        app:cardCornerRadius="45dp">
+
+        <ImageView
+            android:id="@+id/rv_fragment_home_iv_collabo_profile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@mipmap/ic_launcher" />
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_collabo_nickname"
+        android:layout_toRightOf="@+id/collaboCardView"
+        android:layout_below="@+id/iv_comment"
+        android:text="닉네임"
+        android:layout_marginTop="13dp"
+        android:layout_marginLeft="2dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_path"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_kinds"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_mr_idx"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_token"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_date"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_email"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_collabo_email"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+</RelativeLayout>

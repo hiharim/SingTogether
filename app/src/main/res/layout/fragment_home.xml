@@ -113,25 +113,40 @@
         android:textColor="@color/black"
         android:layout_marginBottom="10dp"
         android:textStyle="bold"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/fragment_home_tv_total"
         android:layout_marginTop="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginEnd="17dp"
         android:layout_below="@+id/fragment_home_rv_best"
         android:layout_alignParentRight="true"
         android:text="전체보기"
+        android:textSize="13sp"
+        android:layout_marginBottom="5dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <me.relex.circleindicator.CircleIndicator3
+        android:id="@+id/indicator"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"
+        app:ci_drawable="@drawable/shape_circle_purple"
+        android:layout_below="@+id/fragment_home_tv_total"
+        app:ci_height="6dp"
+        app:ci_width="6dp"
+        app:ci_margin="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/home_viewPager"
         android:layout_below="@+id/tv_listen"
-        android:layout_margin="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/round_tv"
         android:layoutDirection="ltr"
         android:layout_width="match_parent"
@@ -142,17 +157,14 @@
         android:text="인기순"
         android:textColor="@color/black"
         android:layout_below="@+id/tv_listen"
-        android:layout_margin="20dp"
-        android:textSize="17sp"
+        android:layout_marginTop="33dp"
+        android:layout_marginStart="25dp"
+        android:textSize="14sp"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <me.relex.circleindicator.CircleIndicator3
-        android:id="@+id/indicator"
-        android:layout_below="@+id/home_viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="40dp" />
+
 
 
     <!--    *******수정 전******-->
@@ -201,12 +213,12 @@
 <!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
 <!--    </Toolbar>-->
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/fragment_home_recyclerView"
-        android:visibility="gone"
-        android:layout_below="@+id/toolbar_home"
-        android:layout_margin="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/fragment_home_recyclerView"-->
+<!--        android:visibility="gone"-->
+<!--        android:layout_below="@+id/toolbar_home"-->
+<!--        android:layout_margin="10dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"/>-->
 
 </RelativeLayout>

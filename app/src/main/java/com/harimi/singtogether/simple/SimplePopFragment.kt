@@ -1,6 +1,5 @@
-package com.harimi.singtogether
+package com.harimi.singtogether.simple
 
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.HomeAdapter
-import com.harimi.singtogether.databinding.FragmentPopBinding
+import com.harimi.singtogether.databinding.FragmentSimpleFollowingBinding
+import com.harimi.singtogether.databinding.FragmentSimplePopBinding
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
@@ -24,21 +25,20 @@ import retrofit2.Retrofit
 
 
 /**
-    인기순으로 songPost 게시물 보여주는 화면
+    5개만보여주기
  */
-class PopFragment : Fragment() {
+class SimplePopFragment : Fragment() {
 
-    private var TAG :String = "POP FRAGMENT"
+    private var TAG :String = "SimplePopFragment"
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
-    private lateinit var binding: FragmentPopBinding
+    private lateinit var binding: FragmentSimplePopBinding
     private val homePostList: ArrayList<HomeData> = ArrayList()
-    private lateinit var homeAdapter: HomeAdapter
+    private lateinit var simpleAdapter: SimpleAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-
 
         }
     }
@@ -47,23 +47,31 @@ class PopFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding= FragmentPopBinding.inflate(inflater,container,false)
-        binding.popLayout.setBackgroundColor(Color.parseColor("#f4f5f9"))
+        binding=  FragmentSimplePopBinding.inflate(inflater,container,false)
         // 서버 연결
         initRetrofit()
+
         //리사이클러뷰 설정
-        binding.fragmentPopRecyclerView.layoutManager= LinearLayoutManager(context)
-        binding.fragmentPopRecyclerView.setHasFixedSize(true)
-        binding.fragmentPopRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        homeAdapter= HomeAdapter(homePostList)
-        binding.fragmentPopRecyclerView.adapter= homeAdapter
-        homeAdapter.notifyDataSetChanged()
+        binding.fragmentSimplePopRv.layoutManager= LinearLayoutManager(context)
+        binding.fragmentSimplePopRv.setHasFixedSize(true)
+        binding.fragmentSimplePopRv.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
+        simpleAdapter= SimpleAdapter(homePostList)
+        binding.fragmentSimplePopRv.adapter= simpleAdapter
+        simpleAdapter.notifyDataSetChanged()
+
 
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onResume() {
+        super.onResume()
+        homePostList.clear()
+        loadHomePost()
+    }
+
     private fun loadHomePost() {
-        retrofitService.requestGetHomePost2().enqueue(object : Callback<String> {
+        retrofitService.requestHomePostLimit().enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
@@ -94,7 +102,7 @@ class PopFragment : Fragment() {
                         val token=iObject.getString("token")
                         val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token)
                         homePostList.add(0,homeData)
-                        homeAdapter.notifyDataSetChanged()
+                        simpleAdapter.notifyDataSetChanged()
                     }
 
                 } else {
@@ -111,17 +119,10 @@ class PopFragment : Fragment() {
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onResume() {
-        super.onResume()
-        homePostList.clear()
-        loadHomePost()
-    }
     companion object {
-
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            PopFragment().apply {
+            SimplePopFragment().apply {
                 arguments = Bundle().apply {
 
                 }
@@ -132,4 +133,5 @@ class PopFragment : Fragment() {
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
     }
+
 }

@@ -103,10 +103,6 @@ class PostFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-
-    }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -175,8 +171,6 @@ class PostFragment : Fragment() {
             goToLookAtProfileActivity(collabo_email!!,collaboration_nickname!!,collaboration_profile!!)
             Log.d(TAG, collabo_email)
         }
-        /////
-
 
         binding.ivUploadReview.setOnClickListener {
             var uploadReview = binding.etWriteReview.text.toString()
@@ -376,10 +370,6 @@ class PostFragment : Fragment() {
             })
     }
 
-    fun View.setOnSingleClickListener(onSingleClick: (View) -> Unit) {
-        val singleClickListener = OnSingleClickListener { onSingleClick(it) }
-        setOnClickListener(singleClickListener)
-    }
     override fun onPause() {
         super.onPause()
         simpleExoPlayer?.release()

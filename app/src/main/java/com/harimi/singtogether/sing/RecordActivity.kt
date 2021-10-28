@@ -161,31 +161,17 @@ class RecordActivity: AppCompatActivity()  {
                                 Log.e("레코드액티비티", "현재 플레이시간 mTime : $mTime")
                                 Log.e("레코드액티비티", "전 i : $i")
 
-
                                 for(j in nextList) {
                                     var nTime = j.toFloat()
                                     var nextTime = t_down.format(nTime)
                                     Log.e("레코드액티비티", "nextTime  : $nextTime ")
                                     Log.e("레코드액티비티", "j : $j")
-                                    if (mTime.toString() == nextTime.toString() && mTime.toString() < second.toString()) {
+                                    if (mTime.toString() == nextTime.toString() && i==j) {
                                         lyricsList.removeAt(0)
                                         lyricsAdapter.notifyItemRemoved(0)
-
-                                    }
-
-//                                    if(nextTime==mTime.toString() && mTime>=second){
-//                                        count=1
-//                                         if (count==1 && nextTime== mTime.toString()) {
-//                                        lyricsList.removeAt(0)
-//                                        lyricsAdapter.notifyItemRemoved(0)
-//                                        count = 0
-//                                        Log.e("레코드액티비티", "(3) count : $count")
-//                                        }
-//                                    }
-
+                                        }
                                     }
                                 }
-
 
 //                            var count=-1
 //                            for (i in timeList) {
@@ -209,9 +195,6 @@ class RecordActivity: AppCompatActivity()  {
 //                                    Log.e("레코드액티비티", "에러 e :" + e)
 //                                }
 //                            }
-
-
-
 
 
                         }

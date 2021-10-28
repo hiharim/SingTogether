@@ -136,8 +136,29 @@ class DetailDuetFragment : Fragment() {
 
         // 듀엣 완성 포스팅 text
         val count=cnt_duet+"개"
-        binding.fragmentDetailDuetTvComplete.text=count+"의 듀엣 완성 포스팅 보기"
 
+        if(cnt_duet.equals("0")){
+            binding.fragmentDetailDuetTvComplete.text="듀엣 완성 포스팅 보기"
+        }else{
+            binding.fragmentDetailDuetTvComplete.text=count+"의 듀엣 완성 포스팅 보기"
+        }
+
+        // 듀엣 완성 포스팅 보기
+        binding.fragmentDetailDuetTvComplete.setOnClickListener {
+            if(cnt_duet.equals("0")){
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setMessage("현재 포스팅 중인 듀엣 완성곡이 없습니다. 듀엣 참여하시고 포스팅 해보세요!")
+                builder.setPositiveButton("닫기") { dialogInterface: DialogInterface, i: Int ->
+
+                }
+                builder.show()
+            }else{
+                val intent= Intent(context, CompleteDuetActivity::class.java)
+                intent.putExtra("duet_idx",duet_idx)
+                intent.putExtra("cnt_duet",count)
+                startActivity(intent)
+            }
+        }
 
             binding.tvUploadUserNickName.text=nickname
             binding.tvSongTitle.text=title
@@ -197,14 +218,6 @@ class DetailDuetFragment : Fragment() {
                     }
                     builder.show()
                 }
-            }
-
-            // 듀엣 완성 포스팅 보기
-            binding.fragmentDetailDuetTvComplete.setOnClickListener {
-                val intent= Intent(context, CompleteDuetActivity::class.java)
-                intent.putExtra("duet_idx",duet_idx)
-                intent.putExtra("cnt_duet",count)
-                startActivity(intent)
             }
 
             //프로필 액티비티로 넘어가기

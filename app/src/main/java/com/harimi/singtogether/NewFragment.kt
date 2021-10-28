@@ -1,5 +1,6 @@
 package com.harimi.singtogether
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -40,8 +41,7 @@ class NewFragment : Fragment() {
         arguments?.let {
             myEmail=it.getString("email")
 
-            // 서버 연결
-            initRetrofit()
+
         }
     }
 
@@ -50,6 +50,9 @@ class NewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding= FragmentNewBinding.inflate(inflater,container,false)
+        binding.newLayout.setBackgroundColor(Color.parseColor("#f4f5f9"))
+        // 서버 연결
+        initRetrofit()
 
         //리사이클러뷰 설정
         binding.fragmentNewRecyclerView.layoutManager= LinearLayoutManager(context)
@@ -69,6 +72,7 @@ class NewFragment : Fragment() {
         homePostList.clear()
         loadHomePost()
     }
+
     private fun loadHomePost() {
         retrofitService.requestGetHomePost2().enqueue(object : Callback<String> {
             // 통신에 성공한 경우

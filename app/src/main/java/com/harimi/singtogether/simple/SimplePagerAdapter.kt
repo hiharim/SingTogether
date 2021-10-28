@@ -1,17 +1,14 @@
-package com.harimi.singtogether.adapter
+package com.harimi.singtogether.simple
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.harimi.singtogether.*
-import com.harimi.singtogether.broadcast.LiveFragment
-import com.harimi.singtogether.broadcast.ReplayFragment
+import com.harimi.singtogether.FollowingFragment
+import com.harimi.singtogether.HomeFragment
+import com.harimi.singtogether.NewFragment
+import com.harimi.singtogether.PopFragment
 
-/**
- * 전체보기 뷰페이저 어댑터
- * */
-class TotalPagerAdapter(fragmentActivity: FragmentActivity ): FragmentStateAdapter(fragmentActivity) {
+class SimplePagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 
     var fragments : ArrayList<Fragment> = ArrayList()
 
@@ -21,9 +18,9 @@ class TotalPagerAdapter(fragmentActivity: FragmentActivity ): FragmentStateAdapt
 
     override fun createFragment(position: Int): Fragment {
         return when(position){
-            0 ->  PopFragment()
-            1 -> NewFragment()
-            2 -> FollowingFragment()
+            0 ->  SimplePopFragment()
+            1 -> SimpleNewFragment()
+            2 -> SimpleFollowingFragment()
             else -> HomeFragment()
         }
     }

@@ -1,5 +1,6 @@
 package com.harimi.singtogether
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -22,8 +23,6 @@ class TotalFragment : Fragment() {
 
     private lateinit var binding: FragmentTotalBinding
     private var TAG :String = "TotalFragment"
-    private lateinit var retrofitService: RetrofitService
-    private lateinit var retrofit : Retrofit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +37,12 @@ class TotalFragment : Fragment() {
     ): View? {
         binding= FragmentTotalBinding.inflate(inflater,container,false)
 
-        val pagerAdapter = TotalPagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
+        val pagerAdapter = TotalPagerAdapter(requireActivity())
 
         // 3개의 Fragment Add
-        pagerAdapter.addFragment(MyPostFragment())
-        pagerAdapter.addFragment(MySongFragment())
-        pagerAdapter.addFragment(MyBroadcastFragment())
+        pagerAdapter.addFragment(PopFragment())
+        pagerAdapter.addFragment(NewFragment())
+        pagerAdapter.addFragment(FollowingFragment())
 
         // viewPager 와 pagerAdapter 연결
         binding.fragmentTotalViewPager.adapter=pagerAdapter
@@ -53,6 +52,7 @@ class TotalFragment : Fragment() {
                 Log.e("ViewPagerFragment", "Page ${position+1}")
             }
         })
+
 
         // TabLayout 과 viewPager 연결
         TabLayoutMediator(binding.fragmentTotalTabLayout,binding.fragmentTotalViewPager){
@@ -66,6 +66,7 @@ class TotalFragment : Fragment() {
                 }
                 2 ->{
                     tab.text="팔로잉"
+
                 }
             }
         }.attach()
