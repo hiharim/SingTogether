@@ -143,7 +143,6 @@ class DetailDuetFragment : Fragment() {
             binding.tvSongTitle.text=title
             binding.tvSinger.text=singer
             binding.tvHits.text=cnt_play
-            binding.tvReviewNumber.text=cnt_reply
             binding.tvUploadDate.text=date
             Glide.with(this).load("http://3.35.236.251/" + profile).into(binding.ivUploadUserProfile)
             Log.e("디테일프래그", "duet_path" + duet_path)
