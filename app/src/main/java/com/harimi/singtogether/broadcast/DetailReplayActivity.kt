@@ -144,6 +144,10 @@ class DetailReplayActivity : AppCompatActivity() {
         iv_editMenu = findViewById(R.id.iv_editMenu)
 
 
+        ////프로필 화면으로 가기
+        iv_uploadUserProfile.setOnClickListener {
+
+        }
 
 
         ////내 아이디와 게시물 작성자가 맞으면 수정할수있게 보여주기
