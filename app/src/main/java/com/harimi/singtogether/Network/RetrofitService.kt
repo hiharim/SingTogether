@@ -201,6 +201,12 @@ interface RetrofitService {
         @Field("userEmail") userEmail: String
     ) : Call<String>
 
+    @FormUrlEncoded
+    @POST("GetMyFollowUser.php")
+    fun requestGetMyFollowUser (
+        @Field("userEmail") userEmail: String
+    ) : Call<String>
+
 
     @FormUrlEncoded
     @POST("WriteReview.php")
@@ -320,6 +326,12 @@ interface RetrofitService {
         @Field("idx") idx :String,
         @Field("replayIdx") replayIdx :String
     ) : Call<String>
+//    @FormUrlEncoded
+//    @POST("DeleteFollowingUser.php")
+//    fun requestDeleteFollowingUser (
+//        @Field("myEmail") myEmail :String,
+//        @Field("followingUserEmail") followingUserEmail :String
+//    ) : Call<String>
 
     @FormUrlEncoded
     @POST("deletePostReview.php")

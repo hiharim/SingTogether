@@ -15,6 +15,7 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.LiveFragmentAdapter
 import com.harimi.singtogether.adapter.MyFollowingAdapter
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -53,32 +54,27 @@ class MyFollowingActivity : AppCompatActivity() {
                         val body = response.body().toString()
                         Log.d(TAG, body)
                         myFollowingDataList.clear()
+                        val jsonObject = JSONObject(body)
+                        val getfollowingList = jsonObject.getString("getfollowingList")
 
-//                        val jsonArray = JSONArray(body)
-//                        for (i in 0 until jsonArray.length()) {
-//                            val jsonObject = jsonArray.getJSONObject(i)
-//
-//                            val idx = jsonObject.getString("idx")
-//                            val uploadUserEmail = jsonObject.getString("uploadUserEmail")
-//                            val uploadUserProfile = jsonObject.getString("uploadUserProfile")
-//                            val uploadUserNickname = jsonObject.getString("uploadUserNickname")
-//                            val review = jsonObject.getString("review")
-//                            val uploadDate = jsonObject.getString("uploadDate")
-//                            val detailDuetIdx = jsonObject.getString("detailDuetIdx")
-//
-//
-//                            val myFollowingData = MyFollowingData(
-//                                idx,
-//                                uploadUserEmail,
-//                                uploadUserNickname,
-//                                uploadUserProfile,
-//                                review,
-//                                uploadDate,
-//                                detailDuetIdx
-//                            )
-//                            myFollowingDataList.add(myFollowingData)
-//                            myFollowingAdapter.notifyDataSetChanged()
-//                        }
+                        val getfollowingArray = JSONArray(getfollowingList)
+                        for (i in 0 until getfollowingArray.length()) {
+                            val getfollowingObject = getfollowingArray.getJSONObject(i)
+
+                            val email = getfollowingObject.getString("email")
+                            val profile = getfollowingObject.getString("profile")
+                            val token = getfollowingObject.getString("token")
+                            val nickname = getfollowingObject.getString("nickname")
+
+                            val myFollowingData = MyFollowingData(
+                                email,
+                                profile,
+                                nickname,
+                                token
+                            )
+                            myFollowingDataList.add(myFollowingData)
+                            myFollowingAdapter.notifyDataSetChanged()
+                        }
                     }
                 }
 

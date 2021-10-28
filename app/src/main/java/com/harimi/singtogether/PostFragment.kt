@@ -1,5 +1,6 @@
 package com.harimi.singtogether
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -100,6 +101,11 @@ class PostFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -155,6 +161,20 @@ class PostFragment : Fragment() {
         simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
         simpleExoPlayer!!.prepare()
         simpleExoPlayer!!.play()
+
+
+        ////프로필 액티비티로 넘어가기
+        binding.cardView.setOnClickListener{
+            goToLookAtProfileActivity(email!!,nickname!!,profile!!)
+            Log.d(TAG, email)
+        }
+
+        binding.collaboCardView.setOnClickListener {
+            goToLookAtProfileActivity(collabo_email!!,collaboration_nickname!!,collaboration_profile!!)
+            Log.d(TAG, collabo_email)
+        }
+        /////
+
 
         binding.ivUploadReview.setOnClickListener {
             var uploadReview = binding.etWriteReview.text.toString()
@@ -217,6 +237,55 @@ class PostFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    fun goToLookAtProfileActivity(getEmail : String,getNickname : String,getProfile : String){
+        if (LoginActivity.user_info.loginUserEmail.equals(getEmail)){
+            Toast.makeText(requireContext(), "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
+            return
+        }else{
+            retrofit= RetrofitClient.getInstance()
+            retrofitService=retrofit.create(RetrofitService::class.java)
+            retrofitService.requestLookAtUserProfile(
+                getEmail,
+                LoginActivity.user_info.loginUserEmail
+            )
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+                        if (response.isSuccessful) {
+                            val body = response.body().toString()
+                            Log.d(TAG, body)
+                            var jsonObject = JSONObject(response.body().toString())
+                            var result = jsonObject.getBoolean("result")
+                            if (result) {
+//                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
+                                var followingUserNumber =
+                                    jsonObject.getString("followingUserNumber")
+                                var followUserNumber = jsonObject.getString("followUserNumber")
+                                var isFollow = jsonObject.getBoolean("isFollow")
+
+                                val intent = Intent(
+                                    context,
+                                    LookAtUserProfileActivity::class.java
+                                )
+                                intent.putExtra("otherUserEmail", getEmail)
+                                Log.d(TAG, getEmail)
+                                intent.putExtra("nickname", getNickname)
+                                intent.putExtra("profile", getProfile)
+                                intent.putExtra("followingUserNumber", followingUserNumber)
+                                intent.putExtra("followUserNumber", followUserNumber)
+                                intent.putExtra("isFollow", isFollow)
+                                startActivity(intent)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                    }
+                })
+
+
+        }
     }
 
     fun clickLike() {

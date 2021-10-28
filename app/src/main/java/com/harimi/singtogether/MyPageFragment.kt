@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -37,9 +39,11 @@ import retrofit2.Retrofit
  * */
 
 class MyPageFragment : Fragment() {
-    private var TAG :String = "MyPageFragment"
+    private var TAG :String = "MyPageFragment_"
 
 
+    private lateinit var tv_myFollowing:TextView
+    private lateinit var tv_myFollow:TextView
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,13 +53,33 @@ class MyPageFragment : Fragment() {
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        Log.e(TAG, "onResume")
+
+        setFollowAndFollowing(tv_myFollow,tv_myFollowing)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.e(TAG, "onStart")
+
+    }
+
+
+
+    override fun onStop() {
+        super.onStop()
+        Log.e(TAG, "onStop")
+
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
-
+        Log.e(TAG, "onCreateView")
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
         val nickname=LoginActivity.user_info.loginUserNickname
@@ -65,6 +89,8 @@ class MyPageFragment : Fragment() {
         // 사용자 닉네임
         binding.fragmentMyPageTvNickname.text=nickname
 
+        tv_myFollow = binding.tvMyFollow.findViewById(R.id.tv_myFollow)
+        tv_myFollowing = binding.tvMyFollowing.findViewById(R.id.tv_myFollowing)
         // 사용자 프로필
         if (profile.equals("null")){
 
@@ -75,32 +101,7 @@ class MyPageFragment : Fragment() {
         val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
 
 
-        retrofit= RetrofitClient.getInstance()
-        retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestLookAtMyFollow(
-            LoginActivity.user_info.loginUserEmail
-        )
-            .enqueue(object : Callback<String> {
-                override fun onResponse(call: Call<String>, response: Response<String>) {
-                    if (response.isSuccessful) {
-                        val body = response.body().toString()
-                        Log.d(TAG, body)
-                        var jsonObject = JSONObject(response.body().toString())
-                        var result = jsonObject.getBoolean("result")
-                        if (result) {
-                            var followingUserNumber = jsonObject.getString("followingUserNumber")
-                            var followUserNumber = jsonObject.getString("followUserNumber")
-
-                            binding.tvMyFollow.setText(followUserNumber)
-                            binding.tvMyFollowing.setText(followingUserNumber)
-                        }
-                    }
-                }
-
-                override fun onFailure(call: Call<String>, t: Throwable) {
-                }
-            })
-
+        setFollowAndFollowing(binding.tvMyFollow, binding.tvMyFollowing)
 
         binding.tvMyFollowing.setOnClickListener {
             val intent= Intent(context, MyFollowingActivity::class.java)
@@ -156,6 +157,35 @@ class MyPageFragment : Fragment() {
         return binding.root
     }
 
+    private fun setFollowAndFollowing(follow:TextView, following:TextView){
+
+        retrofit= RetrofitClient.getInstance()
+        retrofitService=retrofit.create(RetrofitService::class.java)
+        retrofitService.requestLookAtMyFollow(
+            LoginActivity.user_info.loginUserEmail
+        )
+            .enqueue(object : Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+                        Log.d(TAG, body)
+                        var jsonObject = JSONObject(response.body().toString())
+                        var result = jsonObject.getBoolean("result")
+                        if (result) {
+                            var followingUserNumber = jsonObject.getString("followingUserNumber")
+                            var followUserNumber = jsonObject.getString("followUserNumber")
+
+                            follow.setText(followUserNumber)
+                            following.setText(followingUserNumber)
+                        }
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                }
+            })
+
+    }
 
     companion object {
 

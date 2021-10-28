@@ -1,3 +1,3 @@
 package com.harimi.singtogether.Data
 
-class MyFollowingData (val idx:String , val uploadUserProfile : String ,val uploadUserNickName:String)
+class MyFollowingData ( val email : String,val uploadUserProfile : String ,val uploadUserNickName:String,val userToken : String)
