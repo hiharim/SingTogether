@@ -9,7 +9,7 @@ import com.harimi.singtogether.*
 /**
  * 전체보기 뷰페이저 어댑터
  * */
-class TotalPagerAdapter(fragmentActivity: FragmentActivity, private val email :String ): FragmentStateAdapter(fragmentActivity) {
+class TotalPagerAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
 
     var fragments : ArrayList<Fragment> = ArrayList()
 
@@ -21,21 +21,18 @@ class TotalPagerAdapter(fragmentActivity: FragmentActivity, private val email :S
         if(position==0){
             val popFragment = PopFragment()
             val bundle = Bundle()
-            bundle.putString("email",email)
             popFragment.arguments=bundle
             return popFragment
 
         }else if(position==1){
             val newFragment = NewFragment()
             val bundle = Bundle()
-            bundle.putString("email",email)
             newFragment.arguments=bundle
             return newFragment
 
         }else{
             val followingFragment = FollowingFragment()
             val bundle = Bundle()
-            bundle.putString("email",email)
             followingFragment.arguments=bundle
             return followingFragment
         }

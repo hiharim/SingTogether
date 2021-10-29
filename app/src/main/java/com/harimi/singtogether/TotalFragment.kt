@@ -38,12 +38,12 @@ class TotalFragment : Fragment() {
     ): View? {
         binding= FragmentTotalBinding.inflate(inflater,container,false)
 
-        val pagerAdapter = TotalPagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
+        val pagerAdapter = TotalPagerAdapter(requireActivity())
 
         // 3개의 Fragment Add
-        pagerAdapter.addFragment(MyPostFragment())
-        pagerAdapter.addFragment(MySongFragment())
-        pagerAdapter.addFragment(MyBroadcastFragment())
+        pagerAdapter.addFragment(PopFragment())
+        pagerAdapter.addFragment(NewFragment())
+        pagerAdapter.addFragment(FollowingFragment())
 
         // viewPager 와 pagerAdapter 연결
         binding.fragmentTotalViewPager.adapter=pagerAdapter

@@ -38,8 +38,6 @@ class PopFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            myEmail=it.getString("email")
-
             // 서버 연결
             initRetrofit()
         }
