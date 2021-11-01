@@ -9,6 +9,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
@@ -27,6 +29,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
         val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
+        val iv_like=v.findViewById<ImageView>(R.id.home_like)
+        val iv_like_red=v.findViewById<ImageView>(R.id.home_like_red)
         val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
         val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
@@ -38,8 +42,10 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val and=v.findViewById<TextView>(R.id.and)
         val kinds=v.findViewById<TextView>(R.id.rv_fragment_home_tv_kinds)
         val token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_token)
+        val col_token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_col_token)
         val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
+        val isLike=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isLike)
         val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
     }
 
@@ -65,11 +71,21 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         holder.date.text=curData.date
         holder.kinds.text=curData.kinds
         holder.token.text=curData.token
+        holder.col_token.text=curData.col_token
+        holder.isLike.text=curData.isLike
         holder.mr_idx.text= curData.mr_idx.toString()
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
+
+        if(holder.isLike.text!=null){
+            holder.iv_like.visibility=View.GONE
+            holder.iv_like_red.visibility=View.VISIBLE
+        }else{
+            holder.iv_like.visibility=View.VISIBLE
+            holder.iv_like_red.visibility=View.GONE
+        }
 
         if(holder.email.text.equals(holder.collabo_email.text)){
             holder.collabo_profile.visibility=View.GONE
@@ -100,6 +116,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             bundle.putString("date",curData.date)
             bundle.putString("kinds",curData.kinds)
             bundle.putString("token",curData.token)
+            bundle.putString("col_token",curData.col_token)
+            bundle.putString("isLike",curData.isLike)
             bundle.putString("thumbnail",curData.thumbnail)
             postFragment.arguments=bundle
 

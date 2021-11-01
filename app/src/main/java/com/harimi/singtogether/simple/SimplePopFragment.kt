@@ -11,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.HomeData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
@@ -71,7 +72,8 @@ class SimplePopFragment : Fragment() {
     }
 
     private fun loadHomePost() {
-        retrofitService.requestHomePostLimit().enqueue(object : Callback<String> {
+        val userEmail= LoginActivity.user_info.loginUserEmail
+        retrofitService.requestHomePostLimit(userEmail).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
@@ -100,7 +102,9 @@ class SimplePopFragment : Fragment() {
                         val collabo_email=iObject.getString("collabo_email")
                         val kinds=iObject.getString("kinds")
                         val token=iObject.getString("token")
-                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token)
+                        val col_token=iObject.getString("col_token")
+                        val isLike=iObject.getString("isLike")
+                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
                         homePostList.add(0,homeData)
                         simpleAdapter.notifyDataSetChanged()
                     }

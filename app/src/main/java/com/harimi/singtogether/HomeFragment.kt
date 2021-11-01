@@ -118,18 +118,17 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        Log.d("리플레이: ", "onResume")
-        //homePostList.clear()
+        Log.d(TAG, "onResume")
         bestList.clear()
-        //loadHomePost()
         loadBestSinger()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadBestSinger() {
+        val userEmail=LoginActivity.user_info.loginUserEmail
         val current: LocalDate = LocalDate.now()
         val today_date=current.toString() // 오늘 날짜
-        retrofitService.requestBestSinger(today_date).enqueue(object : Callback<String> {
+        retrofitService.requestBestSinger(today_date,userEmail).enqueue(object : Callback<String> {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     // 응답을 잘 받은 경우
@@ -157,7 +156,9 @@ class HomeFragment : Fragment() {
                         val collabo_email=iObject.getString("collabo_email")
                         val kinds=iObject.getString("kinds")
                         val token=iObject.getString("token")
-                        val bestData = BestData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token)
+                        val col_token=iObject.getString("col_token")
+                        val isLike=iObject.getString("isLike")
+                        val bestData = BestData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
                         bestList.add(0,bestData)
                         bestAdapter.notifyDataSetChanged()
                     }
@@ -175,53 +176,6 @@ class HomeFragment : Fragment() {
         })
     }
 
-
-    private fun loadHomePost() {
-        retrofitService.requestGetHomePost2().enqueue(object : Callback<String> {
-            // 통신에 성공한 경우
-            override fun onResponse(call: Call<String>, response: Response<String>) {
-                if (response.isSuccessful) {
-                    // 응답을 잘 받은 경우
-                    Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
-
-                    val jsonArray= JSONArray(response.body().toString())
-                    for(i in 0..jsonArray.length() -1){
-                        val iObject=jsonArray.getJSONObject(i)
-                        val idx=iObject.getInt("idx")
-                        val thumbnail=iObject.getString("thumbnail")
-                        val cnt_play=iObject.getString("cnt_play")
-                        val cnt_reply=iObject.getString("cnt_reply")
-                        val cnt_like=iObject.getString("cnt_like")
-                        val nickname=iObject.getString("nickname")
-                        val email=iObject.getString("email")
-                        val song_path=iObject.getString("song_path")
-                        val date=iObject.getString("date")
-                        val collaboration=iObject.getString("collaboration")
-                        val mr_idx=iObject.getInt("mr_idx")
-                        val title=iObject.getString("title")
-                        val singer=iObject.getString("singer")
-                        val lyrics=iObject.getString("lyrics")
-                        val profile=iObject.getString("profile")
-                        val collaboration_profile=iObject.getString("col_profile")
-                        val collabo_email=iObject.getString("collabo_email")
-                        val kinds=iObject.getString("kinds")
-                        val token=iObject.getString("token")
-                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token)
-                        homePostList.add(0,homeData)
-                        homeAdapter.notifyDataSetChanged()
-                    }
-
-                } else {
-                    // 통신은 성공했지만 응답에 문제가 있는 경우
-                    Log.e("DuetFragment", "loadDuet 응답 문제" + response.code())
-                }
-            }
-
-            override fun onFailure(call: Call<String>, t: Throwable) {
-                Log.e("DuetFragment", "loadDuet 통신 실패" + t.message)
-            }
-        })
-    }
 
 
     companion object {

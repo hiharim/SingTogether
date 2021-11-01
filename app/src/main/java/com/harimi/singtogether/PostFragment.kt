@@ -70,7 +70,9 @@ class PostFragment : Fragment() {
     private var collaboration_profile : String? = null
     private var date : String? = null
     private var kinds : String? = null
-    private var token : String? = null
+    private var token : String? = null // 게시물 올린 사용자 토큰
+    private var col_token : String? = null // 콜라보한 사용자 토큰
+    private var isLike : String? = null
     private var thumbnail : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
@@ -98,6 +100,8 @@ class PostFragment : Fragment() {
             date=it.getString("date")
             kinds=it.getString("kinds")
             token=it.getString("token")
+            col_token=it.getString("col_token")
+            isLike=it.getString("isLike")
             thumbnail=it.getString("thumbnail")
 
         }
@@ -131,19 +135,6 @@ class PostFragment : Fragment() {
             binding.imageViewThumb.visibility=View.VISIBLE
         }
 
-        binding.fragmentPostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        binding.fragmentPostRecyclerView.addItemDecoration(
-            DividerItemDecoration(
-                requireContext(),
-                DividerItemDecoration.VERTICAL
-            )
-        )
-        postReviewAdapter = PostFragmentReviewAdapter(postReviewDataList, requireContext())
-        binding.fragmentPostRecyclerView.adapter = postReviewAdapter
-
-
-        postReviewLoad(binding.fragmentPostRecyclerView)
-
         // 빌드 시 context 가 필요하기 때문에 context 를 null 체크 해준 뒤 빌드
         context?.let{
             simpleExoPlayer= SimpleExoPlayer.Builder(it).build()
@@ -159,6 +150,19 @@ class PostFragment : Fragment() {
         simpleExoPlayer!!.setMediaSource(progressiveMediaSource)
         simpleExoPlayer!!.prepare()
         simpleExoPlayer!!.play()
+
+        binding.fragmentPostRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.fragmentPostRecyclerView.addItemDecoration(
+            DividerItemDecoration(
+                requireContext(),
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        postReviewAdapter = PostFragmentReviewAdapter(postReviewDataList, requireContext())
+        binding.fragmentPostRecyclerView.adapter = postReviewAdapter
+
+
+        postReviewLoad(binding.fragmentPostRecyclerView)
 
 
         ////프로필 액티비티로 넘어가기
@@ -225,7 +229,14 @@ class PostFragment : Fragment() {
             }
         }
 
+
         binding.fragmentPostTvLike.text=cnt_like
+        if(isLike!=null){
+            binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.like)
+        }else{
+            binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.non_like)
+        }
+
         // 좋아요 클릭
         binding.fragmentPostIvLike.setOnClickListener {
             clickLike()

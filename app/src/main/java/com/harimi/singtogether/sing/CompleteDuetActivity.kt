@@ -84,6 +84,8 @@ class CompleteDuetActivity : AppCompatActivity() {
                             val collabo_email = iObject.getString("collabo_email")
                             val kinds = iObject.getString("kinds")
                             val token = iObject.getString("token")
+                            val col_token=iObject.getString("col_token")
+                            val isLike=iObject.getString("isLike")
 
                             val homeData = HomeData(
                                 idx,
@@ -104,7 +106,9 @@ class CompleteDuetActivity : AppCompatActivity() {
                                 date,
                                 kinds,
                                 mr_idx,
-                                token
+                                token,
+                                col_token,
+                                isLike
                             )
                             homePostList.add(0, homeData)
                             homeAdapter.notifyDataSetChanged()

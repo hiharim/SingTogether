@@ -102,6 +102,16 @@
         android:layout_width="20dp"
         android:layout_height="20dp"/>
 
+    <ImageView
+        android:id="@+id/home_like_red"
+        android:visibility="gone"
+        android:layout_toRightOf="@+id/rv_fragment_home_tv_count_reply"
+        android:layout_below="@+id/rv_fragment_home_tv_singer"
+        android:src="@drawable/like"
+        android:layout_marginLeft="8dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"/>
+
     <TextView
         android:id="@+id/rv_fragment_home_tv_like"
         android:layout_below="@+id/rv_fragment_home_tv_singer"
@@ -207,6 +217,12 @@
         android:layout_height="wrap_content"/>
 
     <TextView
+        android:id="@+id/rv_fragment_home_tv_col_token"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
         android:id="@+id/rv_fragment_home_tv_date"
         android:visibility="gone"
         android:layout_width="wrap_content"
@@ -220,6 +236,12 @@
         android:layout_height="wrap_content"/>
     <TextView
         android:id="@+id/rv_fragment_home_tv_collabo_email"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_fragment_home_tv_isLike"
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

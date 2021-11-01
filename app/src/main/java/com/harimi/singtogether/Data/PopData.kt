@@ -44,4 +44,8 @@ data class PopData(
     val token : String,
     @SerializedName("rank")
     val rank : Int,
+    @SerializedName("col_token")
+    val col_token : String,
+    @SerializedName("isLike")
+    val isLike : String
 )

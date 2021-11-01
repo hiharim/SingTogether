@@ -10,23 +10,29 @@ import java.time.LocalDate
 // POST 방식으로 데이터를 주고 받을 때 넘기는 변수는 Field라고 해야한다.
 interface RetrofitService {
 
+    @FormUrlEncoded
     @POST("loadHomePostLimit.php")
     fun requestHomePostLimit(
+        @Field("email") email: String,
     ) : Call<String>
 
     @FormUrlEncoded
     @POST("loadPopPost.php")
     fun requestPopPost(
+        @Field("email") email: String,
     ) : Call<String>
+
 
     @FormUrlEncoded
     @POST("loadNewPost.php")
     fun requestNewPost(
+        @Field("email") email: String,
     ) : Call<String>
 
     @FormUrlEncoded
     @POST("loadBestSinger.php")
     fun requestBestSinger(
+        @Field("email") email: String,
         @Field("today_date") today_date: String,
     ) : Call<String>
 
