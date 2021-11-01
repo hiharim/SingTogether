@@ -2,6 +2,7 @@ package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.graphics.Color
 import android.icu.text.DecimalFormat
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
@@ -99,8 +100,18 @@ class RecordActivity: AppCompatActivity()  {
             for (i in array.indices) {
                 println(array[i])
                 val seconds=array[i]
-                //7
-                val line= array[i].substring(6)
+//                val line= array[i].substring(6)
+//                val lyricsData=LyricsData(seconds, line)
+//                lyricsList.add(lyricsData)
+//
+//                val times=array[i].substring(1,5)
+//                Log.e("레코드액티비티","times"+times)
+//                timeList.add(times)
+//
+//                val next=array[i].substring(1,5)
+//                nextList.add(next)
+
+                val line= array[i].substring(9)
                 val lyricsData=LyricsData(seconds, line)
                 lyricsList.add(lyricsData)
 
@@ -109,7 +120,6 @@ class RecordActivity: AppCompatActivity()  {
                 timeList.add(times)
 
                 val next=array[i].substring(1,5)
-                //Log.e("레코드액티비티","next"+next)
                 nextList.add(next)
 
             }
@@ -119,6 +129,7 @@ class RecordActivity: AppCompatActivity()  {
 
         binding.activityRecordRv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityRecordRv.setHasFixedSize(true)
+        //binding.activityRecordRv.setBackgroundColor(Color.parseColor("#81000000"))
 
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(song_path)

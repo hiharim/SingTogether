@@ -24,7 +24,6 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
     // 리스트 아이템에 있는 뷰 참조
     inner class LyricsViewHolder(v: View) : RecyclerView.ViewHolder(v){
         val seconds=v.findViewById<TextView>(R.id.rv_lyrics_tv_seconds)
-        val next_seconds=v.findViewById<TextView>(R.id.rv_lyrics_tv_next_seconds)
         val line=v.findViewById<TextView>(R.id.rv_lyrics_tv_line)
 
     }
@@ -41,52 +40,27 @@ class LyricsAdapter(val lyricsList: ArrayList<LyricsData>): RecyclerView.Adapter
         val curData = lyricsList[position]
         holder.seconds.text=curData.seconds
         holder.line.text=curData.line
-        //Log.e("가사어댑터", "position : " + position)
-
-//        val mTime=time.substring(3).toInt()
-//        Log.e("가사어댑터", "mTime : " + mTime)
         val mSeconds=holder.seconds.text.substring(1,5)
-        //Log.e("가사어댑터", "mSeconds : " + mSeconds)
-
-//        for ((index,value) in lyricsList.withIndex()) {
-//            Log.e("가사어댑터", "index : " + "$index")
-//
-//            val a=index+1
-//            Log.e("가사어댑터", "index+1 : " + a)
-//            if(lyricsList.size==a){
-//                break
-//            }else{
-//                    val b=lyricsList.get(a)
-//                    Log.e("가사어댑터", "lyricsList.size-index : " + b)
-//                    val c=b.seconds.substring(4,6).toInt()
-//                    Log.e("가사어댑터", "c : " + c)
-//                    if (mSeconds <= mTime  && mTime < c){
-//                        holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
-//                    }
-//                    else if(mTime<mSeconds && mTime>c){
-//                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
-//
-//                    }else{
-//                        holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
-//                    }
-//
-//            }
-//        }
-
 
         var mTime=mSeconds.toFloat()
         time= RecordActivity.time_info.pTime
-        //time= MergeAudioActivity.time_info.pTime
-        //time= Video2Activity.time_info.pTime
-
         var now_Time=time.toFloat()
-//        Log.e("가사어댑터", "mTime : " + mTime)
-//        Log.e("가사어댑터", "now_Time : " + now_Time)
+
 
         if(mTime<=now_Time) {
-            holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
+            //holder.line.setTextColor(Color.parseColor("#fc9d9a")) // 핑크
+            holder.line.setTextColor(Color.parseColor("#fe4365")) // 보라색
         }else{
-            holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
+            //holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
+
+            if(holder.seconds.text.contains("ww")){
+                holder.line.setTextColor(Color.parseColor("#ffe4e1")) // 연핑크
+            }else if(holder.seconds.text.contains("mm")){
+                holder.line.setTextColor(Color.parseColor("#add8e6")) // 파랑
+            }else if(holder.seconds.text.contains("gg")){
+                holder.line.setTextColor(Color.parseColor("#a3a1a1")) //그레이
+            }
+
         }
 
     }
