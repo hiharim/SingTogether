@@ -66,31 +66,6 @@ class HomeFragment : Fragment() {
         binding.fragmentHomeRvBest.adapter=bestAdapter
         bestAdapter.notifyDataSetChanged()
 
-        // 뷰페이저 설정
-//        val pagerAdapter = TotalPagerAdapter(requireActivity())
-//        binding.homeViewPager.adapter=pagerAdapter
-
-        // 3개의 Fragment Add
-//        pagerAdapter.addFragment(PopFragment())
-//        pagerAdapter.addFragment(NewFragment())
-//        pagerAdapter.addFragment(FollowingFragment())
-//
-//        // viewPager 와 pagerAdapter 연결
-//        binding.homeViewPager.adapter=pagerAdapter
-//        binding.homeViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
-//            override fun onPageSelected(position: Int) {
-//                super.onPageSelected(position)
-//                Log.e("ViewPagerFragment", "Page ${position+1}")
-//                if(position==0){
-//                    binding.fragmentHomeTvTabName.text="인기순"
-//                }else if(position==1){
-//                    binding.fragmentHomeTvTabName.text="최신순"
-//                }else{
-//                    binding.fragmentHomeTvTabName.text="팔로잉"
-//                }
-//            }
-//        })
-//        binding.indicator.setViewPager(binding.homeViewPager)
 
         val pagerAdapter = SimplePagerAdapter(requireActivity())
         binding.homeViewPager.adapter=pagerAdapter
@@ -130,6 +105,11 @@ class HomeFragment : Fragment() {
                 .replace(R.id.activity_main_frame,totalFragment).
                 addToBackStack(null)
                 .commit()
+        }
+
+        // 명예의전당 클릭
+        binding.fragmentHomeIvBest.setOnClickListener {
+
         }
 
         return binding.root

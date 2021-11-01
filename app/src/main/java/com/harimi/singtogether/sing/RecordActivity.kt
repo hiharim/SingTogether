@@ -161,7 +161,7 @@ class RecordActivity: AppCompatActivity()  {
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityRecordRv.adapter=lyricsAdapter
 
-                            var count=0
+
                             for(i in timeList) {
                                 var minus_one=i.toFloat()-0.01.toFloat()
                                 val t_down = DecimalFormat("0.00")
@@ -180,10 +180,6 @@ class RecordActivity: AppCompatActivity()  {
                                     Log.e("레코드액티비티", "nextTime  : $nextTime ")
                                     Log.e("레코드액티비티", "j : $j")
 
-//                                    if (mTime.toString() == nextTime.toString() && i==j) {
-//                                        lyricsList.removeAt(0)
-//                                        lyricsAdapter.notifyItemRemoved(0)
-//                                        }
                                     if (mTime.toString() == nextTime.toString() && second==nextMinusTime) {
                                         lyricsList.removeAt(0)
                                         lyricsAdapter.notifyItemRemoved(0)
@@ -192,28 +188,6 @@ class RecordActivity: AppCompatActivity()  {
                                     }
                                 }
 
-//                            var count=-1
-//                            for (i in timeList) {
-//                                try {
-//                                    val handler=Handler()
-//                                    handler.postDelayed({
-//                                        Log.e("레코드액티비티", "(1) count:" + count)
-//                                        if (i.equals(time_info.pTime)) {
-//                                            count++
-//                                            Log.e("레코드액티비티", "(2) count:" + count)
-//                                        }
-//                                        if(count==1) {
-//                                            lyricsList.removeAt(0)
-//                                            lyricsAdapter.notifyItemRemoved(0)
-//                                            count = -1
-//                                            Log.e("레코드액티비티", "(3) count:" + count)
-//                                        }
-//                                    },1000)
-//
-//                                }catch (e :Exception){
-//                                    Log.e("레코드액티비티", "에러 e :" + e)
-//                                }
-//                            }
 
 
                         }
