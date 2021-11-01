@@ -104,7 +104,7 @@
 
     <ImageView
         android:id="@+id/home_like_red"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:layout_toRightOf="@+id/rv_fragment_home_tv_count_reply"
         android:layout_below="@+id/rv_fragment_home_tv_singer"
         android:src="@drawable/like"

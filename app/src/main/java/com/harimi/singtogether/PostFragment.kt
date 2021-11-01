@@ -72,7 +72,7 @@ class PostFragment : Fragment() {
     private var kinds : String? = null
     private var token : String? = null // 게시물 올린 사용자 토큰
     private var col_token : String? = null // 콜라보한 사용자 토큰
-    private var isLike : String? = null
+    private var isLiked : String? = null
     private var thumbnail : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
@@ -101,7 +101,7 @@ class PostFragment : Fragment() {
             kinds=it.getString("kinds")
             token=it.getString("token")
             col_token=it.getString("col_token")
-            isLike=it.getString("isLike")
+            isLiked=it.getString("isLike")
             thumbnail=it.getString("thumbnail")
 
         }
@@ -231,7 +231,9 @@ class PostFragment : Fragment() {
 
 
         binding.fragmentPostTvLike.text=cnt_like
-        if(isLike!=null){
+        // 사용자가 좋아요 눌렀는지 안눌렀는지 확인
+        val user_email=LoginActivity.user_info.loginUserEmail
+        if(isLiked.equals(user_email)){
             binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.like)
         }else{
             binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.non_like)

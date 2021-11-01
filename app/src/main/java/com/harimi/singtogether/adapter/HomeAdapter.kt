@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
@@ -79,12 +80,13 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
-        if(holder.isLike.text!=null){
-            holder.iv_like.visibility=View.GONE
+        val userEmail=LoginActivity.user_info.loginUserEmail
+        if(holder.isLike.text.equals(userEmail)) {
+            holder.iv_like.visibility=View.INVISIBLE
             holder.iv_like_red.visibility=View.VISIBLE
         }else{
             holder.iv_like.visibility=View.VISIBLE
-            holder.iv_like_red.visibility=View.GONE
+            holder.iv_like_red.visibility=View.INVISIBLE
         }
 
         if(holder.email.text.equals(holder.collabo_email.text)){
