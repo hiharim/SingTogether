@@ -2,6 +2,7 @@ package com.harimi.singtogether.adapter
 
 import android.content.Context
 import android.os.Build
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -13,6 +14,7 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,6 +23,7 @@ import com.harimi.singtogether.Data.FollowingPostData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
@@ -90,6 +93,38 @@ class FollowingPostAdapter ( val followingPostDataList: ArrayList<FollowingPostD
             holder.collabo_nickname.visibility=View.GONE
             holder.and.visibility=View.GONE
             holder.collaboCardView.visibility=View.GONE
+        }
+
+
+        holder.itemView.setOnClickListener{
+            val activity =it!!.context as AppCompatActivity
+            val postFragment = PostFragment()
+            var bundle = Bundle()
+            bundle.putInt("idx",followingPostDataList.get(position).idx)
+            bundle.putInt("mr_idx",followingPostDataList.get(position).mr_idx)
+            bundle.putString("title",followingPostDataList.get(position).title)
+            bundle.putString("singer",followingPostDataList.get(position).singer)
+            bundle.putString("cnt_play",followingPostDataList.get(position).cnt_play)
+            bundle.putString("cnt_reply",followingPostDataList.get(position).cnt_reply)
+            bundle.putString("cnt_like",followingPostDataList.get(position).cnt_like)
+            bundle.putString("nickname",followingPostDataList.get(position).nickname)
+            bundle.putString("email",followingPostDataList.get(position).email)
+            bundle.putString("collaboration_nickname",followingPostDataList.get(position).collaboration_nickname)
+            bundle.putString("song_path",followingPostDataList.get(position).song_path)
+            bundle.putString("profile",followingPostDataList.get(position).profile)
+            bundle.putString("collaboration_profile",followingPostDataList.get(position).collaboration_profile)
+            bundle.putString("collabo_email",followingPostDataList.get(position).collabo_email)
+            bundle.putString("date",followingPostDataList.get(position).date)
+            bundle.putString("kinds",followingPostDataList.get(position).kinds)
+            bundle.putString("token",followingPostDataList.get(position).token)
+            bundle.putString("thumbnail",followingPostDataList.get(position).thumbnail)
+            bundle.putString("thumbnail",followingPostDataList.get(position).col_token)
+            postFragment.arguments=bundle
+
+            activity.supportFragmentManager.beginTransaction()
+                .replace(R.id.activity_main_frame,postFragment)
+                .addToBackStack(null)
+                .commit()
         }
 
 

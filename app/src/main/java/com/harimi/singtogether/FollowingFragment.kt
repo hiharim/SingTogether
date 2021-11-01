@@ -77,34 +77,39 @@ class FollowingFragment : Fragment() {
                     // 응답을 잘 받은 경우
                     Log.e(TAG, " 통신 성공: "+response.body().toString())
 
-//
-//                        val jsonArray= JSONArray(response.body().toString())
-//                        for (i in 0 until jsonArray.length()) {
-//                            val iObject=jsonArray.getJSONObject(i)
-//                            val idx=iObject.getInt("idx")
-//                            val thumbnail=iObject.getString("thumbnail")
-//                            val cnt_play=iObject.getString("cnt_play")
-//                            val cnt_reply=iObject.getString("cnt_reply")
-//                            val cnt_like=iObject.getString("cnt_like")
-//                            val nickname=iObject.getString("nickname")
-//                            val email=iObject.getString("email")
-//                            val song_path=iObject.getString("song_path")
-//                            val date=iObject.getString("date")
-//                            val collaboration=iObject.getString("collaboration")
-//                            val mr_idx=iObject.getInt("mr_idx")
-//                            val title=iObject.getString("title")
-//                            val singer=iObject.getString("singer")
-//                            val lyrics=iObject.getString("lyrics")
-//                            val profile=iObject.getString("profile")
-//                            val collaboration_profile=iObject.getString("col_profile")
-//                            val collabo_email=iObject.getString("collabo_email")
-//                            val kinds=iObject.getString("kinds")
-//                            val token=iObject.getString("token")
-//
-//                            val followingPostData = FollowingPostData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token)
-//                            followingPostDataList.add(0,followingPostData)
-//                            followingPostAdapter.notifyDataSetChanged()
-//                        }
+
+                        val jsonObject = JSONObject(response.body().toString())
+                        val outputData=jsonObject.getString("outputData")
+
+                        val outputDataArray= JSONArray(outputData)
+                        for (i in 0 until outputDataArray.length()) {
+                            val outputDataObject=outputDataArray.getJSONObject(i)
+                            val idx=outputDataObject.getInt("idx")
+                            val thumbnail=outputDataObject.getString("thumbnail")
+                            val cnt_play=outputDataObject.getString("cnt_play")
+                            val cnt_reply=outputDataObject.getString("cnt_reply")
+                            val cnt_like=outputDataObject.getString("cnt_like")
+                            val nickname=outputDataObject.getString("nickname")
+                            val email=outputDataObject.getString("email")
+                            val song_path=outputDataObject.getString("song_path")
+                            val date=outputDataObject.getString("date")
+                            val collaboration=outputDataObject.getString("collaboration")
+                            val mr_idx=outputDataObject.getInt("mr_idx")
+                            val title=outputDataObject.getString("title")
+                            val singer=outputDataObject.getString("singer")
+                            val lyrics=outputDataObject.getString("lyrics")
+                            val profile=outputDataObject.getString("profile")
+                            val collaboration_profile=outputDataObject.getString("col_profile")
+                            val collabo_email=outputDataObject.getString("collabo_email")
+                            val kinds=outputDataObject.getString("kinds")
+                            val token=outputDataObject.getString("token")
+                            val col_token=outputDataObject.getString("col_token")
+
+
+                            val followingPostData = FollowingPostData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token)
+                            followingPostDataList.add(0,followingPostData)
+                            followingPostAdapter.notifyDataSetChanged()
+                        }
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우
