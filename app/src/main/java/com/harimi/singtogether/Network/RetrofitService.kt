@@ -17,6 +17,12 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("loadMyPost.php")
+    fun requestLoadMyPost(
+        @Field("email") email: String,
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("loadPopPost.php")
     fun requestPopPost(
         @Field("email") email: String,

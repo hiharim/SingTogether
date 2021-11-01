@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +34,7 @@ class FollowingFragment : Fragment() {
     private val followingPostDataList: ArrayList<FollowingPostData> = ArrayList()
     private lateinit var followingPostAdapter: FollowingPostAdapter
     private lateinit var fragment_following_recyclerView:RecyclerView
+    private lateinit var tv_noFollowingPost:TextView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -56,7 +58,9 @@ class FollowingFragment : Fragment() {
     }
 
     private fun initView(FollowingView : View){
+        tv_noFollowingPost=FollowingView.findViewById(R.id.tv_noFollowingPost)
         fragment_following_recyclerView =FollowingView.findViewById(R.id.fragment_following_recyclerView)
+
         fragment_following_recyclerView.layoutManager = LinearLayoutManager(activity)
         fragment_following_recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
         followingPostAdapter = FollowingPostAdapter(followingPostDataList,requireContext())
@@ -80,36 +84,48 @@ class FollowingFragment : Fragment() {
 
                         val jsonObject = JSONObject(response.body().toString())
                         val outputData=jsonObject.getString("outputData")
+                        val result=jsonObject.getBoolean("result")
 
-                        val outputDataArray= JSONArray(outputData)
-                        for (i in 0 until outputDataArray.length()) {
-                            val outputDataObject=outputDataArray.getJSONObject(i)
-                            val idx=outputDataObject.getInt("idx")
-                            val thumbnail=outputDataObject.getString("thumbnail")
-                            val cnt_play=outputDataObject.getString("cnt_play")
-                            val cnt_reply=outputDataObject.getString("cnt_reply")
-                            val cnt_like=outputDataObject.getString("cnt_like")
-                            val nickname=outputDataObject.getString("nickname")
-                            val email=outputDataObject.getString("email")
-                            val song_path=outputDataObject.getString("song_path")
-                            val date=outputDataObject.getString("date")
-                            val collaboration=outputDataObject.getString("collaboration")
-                            val mr_idx=outputDataObject.getInt("mr_idx")
-                            val title=outputDataObject.getString("title")
-                            val singer=outputDataObject.getString("singer")
-                            val lyrics=outputDataObject.getString("lyrics")
-                            val profile=outputDataObject.getString("profile")
-                            val collaboration_profile=outputDataObject.getString("col_profile")
-                            val collabo_email=outputDataObject.getString("collabo_email")
-                            val kinds=outputDataObject.getString("kinds")
-                            val token=outputDataObject.getString("token")
-                            val col_token=outputDataObject.getString("col_token")
+                            if (result){
+                                tv_noFollowingPost.visibility =View.GONE
+                                fragment_following_recyclerView.visibility =View.VISIBLE
+
+                                val outputDataArray= JSONArray(outputData)
+                                for (i in 0 until outputDataArray.length()) {
+                                    val outputDataObject=outputDataArray.getJSONObject(i)
+                                    val idx=outputDataObject.getInt("idx")
+                                    val thumbnail=outputDataObject.getString("thumbnail")
+                                    val cnt_play=outputDataObject.getString("cnt_play")
+                                    val cnt_reply=outputDataObject.getString("cnt_reply")
+                                    val cnt_like=outputDataObject.getString("cnt_like")
+                                    val nickname=outputDataObject.getString("nickname")
+                                    val email=outputDataObject.getString("email")
+                                    val song_path=outputDataObject.getString("song_path")
+                                    val date=outputDataObject.getString("date")
+                                    val collaboration=outputDataObject.getString("collaboration")
+                                    val mr_idx=outputDataObject.getInt("mr_idx")
+                                    val title=outputDataObject.getString("title")
+                                    val singer=outputDataObject.getString("singer")
+                                    val lyrics=outputDataObject.getString("lyrics")
+                                    val profile=outputDataObject.getString("profile")
+                                    val collaboration_profile=outputDataObject.getString("col_profile")
+                                    val collabo_email=outputDataObject.getString("collabo_email")
+                                    val kinds=outputDataObject.getString("kinds")
+                                    val token=outputDataObject.getString("token")
+                                    val col_token=outputDataObject.getString("col_token")
 
 
-                            val followingPostData = FollowingPostData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token)
-                            followingPostDataList.add(0,followingPostData)
-                            followingPostAdapter.notifyDataSetChanged()
-                        }
+                                    val followingPostData = FollowingPostData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token)
+                                    followingPostDataList.add(0,followingPostData)
+                                    followingPostAdapter.notifyDataSetChanged()
+                                }
+                            }else{
+                                tv_noFollowingPost.visibility =View.VISIBLE
+                                fragment_following_recyclerView.visibility =View.GONE
+
+                            }
+
+
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우

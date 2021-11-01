@@ -8,7 +8,7 @@
 
 
     <TextView
-        android:id="@+id/tv_noMyBroadcast"
+        android:id="@+id/tv_noMyPost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -20,7 +20,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_weight="1"
-        android:id="@+id/fragment_my_broadcast_recyclerView"
+        android:id="@+id/fragment_post_recyclerView"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
