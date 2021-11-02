@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.hardware.Camera
+import android.icu.text.DecimalFormat
 import android.media.CamcorderProfile
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -73,6 +74,8 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     private val lyricsList : ArrayList<LyricsData> = ArrayList()
     private lateinit var lyricsAdapter: LyricsAdapter
     var time :String?=null
+    private val timeList:ArrayList<String> = ArrayList()
+    private val nextList:ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,22 +98,26 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         // 가수
         binding.activityRecordTvSinger.text=singer
         // 가사
-        var result=lyrics?.replace(" ★", "\n")
-        //binding.activityRecordTvLyrics.text= result.toString()
         val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
         if (array != null) {
             for (i in array.indices) {
                 println(array[i])
                 val seconds=array[i]
-                //7
-                val line= array[i].substring(6)
-                //val next_seconds=array[i].substring(7,12)
-                val lyricsData=LyricsData(seconds,line)
+                val line= array[i].substring(9)
+                val lyricsData=LyricsData(seconds, line)
                 lyricsList.add(lyricsData)
+
+                val times=array[i].substring(1,5)
+                Log.e("레코드액티비티","times"+times)
+                timeList.add(times)
+
+                val next=array[i].substring(1,5)
+                nextList.add(next)
+
             }
         }
+        nextList.removeAt(0)
 
-        Log.e("비디오2", "lyricsList : " + lyricsList.toString())
         //리사이클러뷰 설정
         binding.activityVideo2Rv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityVideo2Rv.setHasFixedSize(true)
@@ -150,7 +157,31 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityVideo2Rv.adapter=lyricsAdapter
-                            //lyricsAdapter.notifyDataSetChanged()
+                            for(i in timeList) {
+                                var minus_one=i.toFloat()-0.01.toFloat()
+                                val t_down = DecimalFormat("0.00")
+                                var second = t_down.format(minus_one)
+                                var mTime=t_down.format(RecordActivity.time_info.pTime.toFloat())
+
+                                Log.e("레코드액티비티", "1초 뺀 시간 second : $second")
+                                Log.e("레코드액티비티", "현재 플레이시간 mTime : $mTime")
+                                Log.e("레코드액티비티", "전 i : $i")
+
+                                for(j in nextList) {
+                                    var nTime = j.toFloat()
+                                    var nMunusTime=j.toFloat()-0.01.toFloat()
+                                    var nextTime = t_down.format(nTime)
+                                    var nextMinusTime=t_down.format(nMunusTime)
+                                    Log.e("레코드액티비티", "nextTime  : $nextTime ")
+                                    Log.e("레코드액티비티", "j : $j")
+
+                                    if (mTime.toString() == nextTime.toString() && second==nextMinusTime) {
+                                        lyricsList.removeAt(0)
+                                        lyricsAdapter.notifyItemRemoved(0)
+                                    }
+
+                                }
+                            }
                         }
 
                         SystemClock.sleep(1000)

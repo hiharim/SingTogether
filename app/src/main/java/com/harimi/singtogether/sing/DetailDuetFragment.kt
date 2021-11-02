@@ -33,6 +33,9 @@ import com.harimi.singtogether.Data.DetailDuetReviewData
 import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.DetailDuetReviewAdapter
 import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -164,6 +167,11 @@ class DetailDuetFragment : Fragment() {
             binding.tvSongTitle.text=title
             binding.tvSinger.text=singer
             binding.tvHits.text=cnt_play
+            //조회수 처리
+//            var plus_cnt_play= cnt_play!!.toInt()
+//            plus_cnt_play++
+//            binding.tvHits.text= plus_cnt_play.toString()
+
             binding.tvUploadDate.text=date
             Glide.with(this).load("http://3.35.236.251/" + profile).into(binding.ivUploadUserProfile)
             Log.e("디테일프래그", "duet_path" + duet_path)
@@ -323,6 +331,22 @@ class DetailDuetFragment : Fragment() {
                                             detailDuetReviewList.size - 1
                                         )
                                     }
+
+                                    ////FCM 보내기
+//                                    if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)) {
+//
+//                                    }else {
+//                                        PushNotification(
+//                                            NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 댓글을 남겼습니다.",
+//                                                replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,
+//                                                getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+//                                                replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
+//                                            uploadUserFCMToken.toString()
+//                                        ).also {
+//                                            sendNotification(it)
+//                                        }
+//                                    }
+
                                 }
                             }
 
@@ -334,11 +358,22 @@ class DetailDuetFragment : Fragment() {
 
 
             return binding.root
+    }
+
+
+    ////fcm send 메세지 && 코루틴 launch
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful) {
+                Log.d(TAG, "Response: 성공")
+            } else {
+                Log.e(TAG, response.errorBody().toString())
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, e.toString())
         }
-
-
-
-
+    }
 
     fun detailDuetReviewLoad(recyclerview: RecyclerView) {
         retrofit= RetrofitClient.getInstance()

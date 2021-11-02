@@ -301,7 +301,7 @@ class DetailReplayActivity : AppCompatActivity() {
                                 var isLiked = jsonObject.getBoolean("isLiked")
                                 Log.d(TAG, body)
                                 ////FCM 보내기
-                                if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
+                                if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)) {
 
                                 }else{
                                     PushNotification(

@@ -25,13 +25,14 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.Data.MySongData
 import com.harimi.singtogether.Data.PostReviewData
-import com.harimi.singtogether.Network.OnSingleClickListener
-import com.harimi.singtogether.Network.RetrofitClient
-import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.PostFragmentReviewAdapter
 import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
 import com.harimi.singtogether.databinding.FragmentPostBinding
 import de.hdodenhof.circleimageview.CircleImageView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -247,6 +248,21 @@ class PostFragment : Fragment() {
 
         return binding.root
     }
+
+    ////fcm send 메세지 && 코루틴 launch
+    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postNotification(notification)
+            if(response.isSuccessful) {
+                Log.d(TAG, "Response: 성공")
+            } else {
+                Log.e(TAG, response.errorBody().toString())
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, e.toString())
+        }
+    }
+
 
     fun goToLookAtProfileActivity(getEmail : String,getNickname : String,getProfile : String){
         if (LoginActivity.user_info.loginUserEmail.equals(getEmail)){

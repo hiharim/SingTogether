@@ -11,6 +11,18 @@ import java.time.LocalDate
 interface RetrofitService {
 
     @FormUrlEncoded
+    @POST("updateDuetHits.php")
+    fun requestUpdateDuetHits (
+        @Field("idx") idx :String
+    ) : Call<String>
+
+    @FormUrlEncoded
+    @POST("updateSongPostHits.php")
+    fun requestUpdateSongPostHits (
+        @Field("idx") idx :Int
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("loadHomePostLimit.php")
     fun requestHomePostLimit(
         @Field("email") email: String,

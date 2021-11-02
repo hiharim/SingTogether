@@ -15,6 +15,7 @@ import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.FragmentDuetBinding
+import com.harimi.singtogether.databinding.FragmentPopBinding
 import org.json.JSONArray
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,6 +32,7 @@ class DuetFragment : Fragment() {
     private lateinit var retrofitService: RetrofitService
     private val duetList : ArrayList<DuetData> = ArrayList()
     private lateinit var duetAdapter: DuetAdapter
+    private lateinit var binding: FragmentDuetBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,15 +47,11 @@ class DuetFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding=FragmentDuetBinding.inflate(inflater,container,false)
+        binding=FragmentDuetBinding.inflate(inflater,container,false)
         binding.duetBack.setBackgroundColor(Color.parseColor("#f4f5f9"))
 
-        binding.fragmentDuetRecyclerView.layoutManager=LinearLayoutManager(context)
-        binding.fragmentDuetRecyclerView.setHasFixedSize(true)
-        duetAdapter= DuetAdapter(duetList)
-        binding.fragmentDuetRecyclerView.adapter=duetAdapter
 
-        duetAdapter.notifyDataSetChanged()
+        initView(binding.root)
         //loadDuet()
         return binding.root
     }
@@ -77,7 +75,13 @@ class DuetFragment : Fragment() {
 //        loadDuet()
 //    }
 
-
+    fun initView(v: View){
+        binding.fragmentDuetRecyclerView.layoutManager=LinearLayoutManager(context)
+        binding.fragmentDuetRecyclerView.setHasFixedSize(true)
+        duetAdapter= DuetAdapter(duetList)
+        binding.fragmentDuetRecyclerView.adapter=duetAdapter
+        loadDuet()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -85,6 +89,7 @@ class DuetFragment : Fragment() {
         duetList.clear()
         loadDuet()
     }
+
     private fun loadDuet() {
         retrofitService.requestDuet().enqueue(object : Callback<String> {
             // 통신에 성공한 경우

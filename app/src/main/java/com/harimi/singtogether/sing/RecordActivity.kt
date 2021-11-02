@@ -92,9 +92,6 @@ class RecordActivity: AppCompatActivity()  {
         binding.activityRecordTvSinger.text=singer
 
         // 가사
-       // var splitArray= lyrics?.split(" ★")
-//        var result=lyrics?.replace(" ★","\n")
-//        binding.activityRecordTvLyrics.text= result.toString()
         val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
         if (array != null) {
             for (i in array.indices) {
@@ -160,7 +157,6 @@ class RecordActivity: AppCompatActivity()  {
                             //time=binding.activityRecordTvIngTime.text.toString()
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityRecordRv.adapter=lyricsAdapter
-
 
                             for(i in timeList) {
                                 var minus_one=i.toFloat()-0.01.toFloat()

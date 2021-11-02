@@ -12,9 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.HomeData
+import com.harimi.singtogether.Data.PopData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.HomeAdapter
+import com.harimi.singtogether.adapter.PopAdapter
 import com.harimi.singtogether.databinding.FragmentPopBinding
 import org.json.JSONArray
 import retrofit2.Call
@@ -33,7 +35,9 @@ class PopFragment : Fragment() {
     private lateinit var retrofitService: RetrofitService
     private lateinit var binding: FragmentPopBinding
     private val homePostList: ArrayList<HomeData> = ArrayList()
+    private val popPostList: ArrayList<PopData> = ArrayList()
     private lateinit var homeAdapter: HomeAdapter
+    private lateinit var popAdapter: PopAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,9 +59,9 @@ class PopFragment : Fragment() {
         binding.fragmentPopRecyclerView.layoutManager= LinearLayoutManager(context)
         binding.fragmentPopRecyclerView.setHasFixedSize(true)
         binding.fragmentPopRecyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        homeAdapter= HomeAdapter(homePostList)
-        binding.fragmentPopRecyclerView.adapter= homeAdapter
-        homeAdapter.notifyDataSetChanged()
+        popAdapter= PopAdapter(popPostList)
+        binding.fragmentPopRecyclerView.adapter= popAdapter
+        popAdapter.notifyDataSetChanged()
 
         return binding.root
     }
@@ -96,9 +100,11 @@ class PopFragment : Fragment() {
                         val token=iObject.getString("token")
                         val col_token=iObject.getString("col_token")
                         val isLike=iObject.getString("isLike")
-                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
-                        homePostList.add(0,homeData)
-                        homeAdapter.notifyDataSetChanged()
+                        val rank=iObject.getInt("ranking")
+                        val popData=PopData(idx,thumbnail,title,singer,lyrics,cnt_play,cnt_reply,cnt_like,nickname,email,profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,rank,col_token,isLike)
+                        popPostList.add(0,popData)
+                        popAdapter.notifyDataSetChanged()
+                        
                     }
 
                 } else {

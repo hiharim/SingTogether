@@ -2,6 +2,7 @@ package com.harimi.singtogether.adapter
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +17,22 @@ import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.MainActivity
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 import com.harimi.singtogether.sing.DetailDuetFragment
 import de.hdodenhof.circleimageview.CircleImageView
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter<HomeAdapter.HomeViewHolder>() {
+
+    private lateinit var retrofit : Retrofit
+    private lateinit var retrofitService: RetrofitService
 
     inner class HomeViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_idx)
@@ -96,39 +107,95 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             holder.collaboCardView.visibility=View.GONE
         }
 
-        holder.itemView.setOnClickListener { v->
-            // PostFragment 로 이동
-            val activity =v!!.context as AppCompatActivity
-            val postFragment = PostFragment()
-            var bundle =Bundle()
-            bundle.putInt("idx",curData.idx)
-            bundle.putInt("mr_idx",curData.mr_idx)
-            bundle.putString("title",curData.title)
-            bundle.putString("singer",curData.singer)
-            bundle.putString("cnt_play",curData.cnt_play)
-            bundle.putString("cnt_reply",curData.cnt_reply)
-            bundle.putString("cnt_like",curData.cnt_like)
-            bundle.putString("nickname",curData.nickname)
-            bundle.putString("email",curData.email)
-            bundle.putString("collaboration_nickname",curData.collaboration_nickname)
-            bundle.putString("song_path",curData.song_path)
-            bundle.putString("profile",curData.profile)
-            bundle.putString("collaboration_profile",curData.collaboration_profile)
-            bundle.putString("collabo_email",curData.collabo_email)
-            bundle.putString("date",curData.date)
-            bundle.putString("kinds",curData.kinds)
-            bundle.putString("token",curData.token)
-            bundle.putString("col_token",curData.col_token)
-            bundle.putString("isLike",curData.isLike)
-            bundle.putString("thumbnail",curData.thumbnail)
-            postFragment.arguments=bundle
+        val context: Context = holder.itemView.getContext()
+        holder.itemView.setOnClickListener {
+            retrofit = RetrofitClient.getInstance()
+            retrofitService = retrofit.create(RetrofitService::class.java)
+            retrofitService.requestUpdateSongPostHits(curData.idx).enqueue(object :
+                Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
 
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.activity_main_frame,postFragment)
-                .addToBackStack(null)
-                .commit()
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+                        val jsonObject = JSONObject(
+                            response.body().toString()
+                        )
+                        val result = jsonObject.getBoolean("result")
+                        if (result) {
+                            val activity =context as AppCompatActivity
+                            val postFragment = PostFragment()
+                            var bundle =Bundle()
+                            bundle.putInt("idx",curData.idx)
+                            bundle.putInt("mr_idx",curData.mr_idx)
+                            bundle.putString("title",curData.title)
+                            bundle.putString("singer",curData.singer)
+                            bundle.putString("cnt_play",curData.cnt_play)
+                            bundle.putString("cnt_reply",curData.cnt_reply)
+                            bundle.putString("cnt_like",curData.cnt_like)
+                            bundle.putString("nickname",curData.nickname)
+                            bundle.putString("email",curData.email)
+                            bundle.putString("collaboration_nickname",curData.collaboration_nickname)
+                            bundle.putString("song_path",curData.song_path)
+                            bundle.putString("profile",curData.profile)
+                            bundle.putString("collaboration_profile",curData.collaboration_profile)
+                            bundle.putString("collabo_email",curData.collabo_email)
+                            bundle.putString("date",curData.date)
+                            bundle.putString("kinds",curData.kinds)
+                            bundle.putString("token",curData.token)
+                            bundle.putString("col_token",curData.col_token)
+                            bundle.putString("isLike",curData.isLike)
+                            bundle.putString("thumbnail",curData.thumbnail)
+                            postFragment.arguments=bundle
 
+                            activity.supportFragmentManager.beginTransaction()
+                                .replace(R.id.activity_main_frame,postFragment)
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                    }else{
+                        // 통신은 성공했지만 응답에 문제가 있는 경우
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                }
+            })
         }
+
+
+//        holder.itemView.setOnClickListener { v->
+//            // PostFragment 로 이동
+//            val activity =v!!.context as AppCompatActivity
+//            val postFragment = PostFragment()
+//            var bundle =Bundle()
+//            bundle.putInt("idx",curData.idx)
+//            bundle.putInt("mr_idx",curData.mr_idx)
+//            bundle.putString("title",curData.title)
+//            bundle.putString("singer",curData.singer)
+//            bundle.putString("cnt_play",curData.cnt_play)
+//            bundle.putString("cnt_reply",curData.cnt_reply)
+//            bundle.putString("cnt_like",curData.cnt_like)
+//            bundle.putString("nickname",curData.nickname)
+//            bundle.putString("email",curData.email)
+//            bundle.putString("collaboration_nickname",curData.collaboration_nickname)
+//            bundle.putString("song_path",curData.song_path)
+//            bundle.putString("profile",curData.profile)
+//            bundle.putString("collaboration_profile",curData.collaboration_profile)
+//            bundle.putString("collabo_email",curData.collabo_email)
+//            bundle.putString("date",curData.date)
+//            bundle.putString("kinds",curData.kinds)
+//            bundle.putString("token",curData.token)
+//            bundle.putString("col_token",curData.col_token)
+//            bundle.putString("isLike",curData.isLike)
+//            bundle.putString("thumbnail",curData.thumbnail)
+//            postFragment.arguments=bundle
+//
+//            activity.supportFragmentManager.beginTransaction()
+//                .replace(R.id.activity_main_frame,postFragment)
+//                .addToBackStack(null)
+//                .commit()
+//
+//        }
 
     }
 

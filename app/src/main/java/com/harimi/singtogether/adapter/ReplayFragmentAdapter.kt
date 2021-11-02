@@ -81,7 +81,8 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
 
             retrofit = RetrofitClient.getInstance()
             retrofitService = retrofit.create(RetrofitService::class.java)
-            retrofitService.requestUpdateReplayHIts(ReplayPostList.get(position).idx).enqueue(object : Callback<String> {
+            retrofitService.requestUpdateReplayHIts(ReplayPostList.get(position).idx).enqueue(object :
+                Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
 
                     if (response.isSuccessful) {

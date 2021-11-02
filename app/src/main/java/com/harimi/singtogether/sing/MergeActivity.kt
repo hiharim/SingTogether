@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.hardware.Camera
+import android.icu.text.DecimalFormat
 import android.media.CamcorderProfile
 import android.media.MediaPlayer
 import android.media.MediaRecorder
@@ -73,6 +74,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private lateinit var collaborationEmail : String // 병합하고자하는 유저의 이메일
     private val lyricsList : ArrayList<LyricsData> = ArrayList()
     private lateinit var lyricsAdapter: LyricsAdapter
+    private val timeList:ArrayList<String> = ArrayList()
+    private val nextList:ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,19 +103,25 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         // 가수
         binding.activityRecordTvSinger.text=singer
         // 가사
-        Log.e("MergeActivity", "가사 : " + lyrics)
         val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
         if (array != null) {
             for (i in array.indices) {
                 println(array[i])
                 val seconds=array[i]
-                //7
-                val line= array[i].substring(6)
-                val lyricsData= LyricsData(seconds, line)
+                val line= array[i].substring(9)
+                val lyricsData=LyricsData(seconds, line)
                 lyricsList.add(lyricsData)
+
+                val times=array[i].substring(1,5)
+                Log.e("레코드액티비티","times"+times)
+                timeList.add(times)
+
+                val next=array[i].substring(1,5)
+                nextList.add(next)
 
             }
         }
+        nextList.removeAt(0)
         //리사이클러뷰 설정
         binding.activityMergeRv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityMergeRv.setHasFixedSize(true)
@@ -151,6 +160,31 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             RecordActivity.time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityMergeRv.adapter=lyricsAdapter
+                            for(i in timeList) {
+                                var minus_one=i.toFloat()-0.01.toFloat()
+                                val t_down = DecimalFormat("0.00")
+                                var second = t_down.format(minus_one)
+                                var mTime=t_down.format(RecordActivity.time_info.pTime.toFloat())
+
+                                Log.e("레코드액티비티", "1초 뺀 시간 second : $second")
+                                Log.e("레코드액티비티", "현재 플레이시간 mTime : $mTime")
+                                Log.e("레코드액티비티", "전 i : $i")
+
+                                for(j in nextList) {
+                                    var nTime = j.toFloat()
+                                    var nMunusTime=j.toFloat()-0.01.toFloat()
+                                    var nextTime = t_down.format(nTime)
+                                    var nextMinusTime=t_down.format(nMunusTime)
+                                    Log.e("레코드액티비티", "nextTime  : $nextTime ")
+                                    Log.e("레코드액티비티", "j : $j")
+
+                                    if (mTime.toString() == nextTime.toString() && second==nextMinusTime) {
+                                        lyricsList.removeAt(0)
+                                        lyricsAdapter.notifyItemRemoved(0)
+                                    }
+
+                                }
+                            }
                         }
                         SystemClock.sleep(200)
                     }
@@ -283,56 +317,6 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     fun fail(){
         Log.e("비디오2", " 통신 실패" +404)
     }
-
-    // 비디오+비디오
-//    fun Merge() {
-//        val c = arrayOf(
-//            "-i",
-//            mergeVideoFilePath,
-//            "-i",
-//            duet_path,
-//            "-filter_complex",
-//            "[0:v]pad=iw*2:ih[int];[int][1:v]overlay=W/2:0[vid]",
-//            "-map",
-//            "[vid]",
-//            "-c:v",
-//            "libx264",
-//            "-shortest",
-//            "-y",
-//            "-crf",
-//            "23",
-//            "-preset",
-//            "veryfast",
-//            finishVideoFilePath
-//        )
-//        Log.e("Merge()", "mergeVideoFilePath" + mergeVideoFilePath)
-//        Log.e("Merge()", "duet_path" + duet_path)
-//        MergeAudio(c)
-//    }
-//
-//    private fun MergeAudio(co: Array<String>) {
-//        FFmpeg.executeAsync(co) { executionId, returnCode ->
-//            Log.e("hello병합", "return  $returnCode")
-//            Log.e("hello병합", "executionID  $executionId")
-//            Log.e("hello병합", "FFMPEG  " + FFmpegExecution(executionId, co))
-//        }
-//        file_path=finishVideoFilePath
-//        //file_path=mergeVideoFilePath
-//    }
-
-    // 비디오.mp4 + 비디오.mp4 = output 확장자 .mp4
-//        public void Merge(View view) {
-//        String[] c = {"-i", Environment.getExternalStorageDirectory().getPath()
-//                + "/Download/hi_1.mp4"
-//                , "-i", Environment.getExternalStorageDirectory().getPath()
-//                + "/Download/Mp4.mp4"
-//                , "-filter_complex", "[0:v]pad=iw*2:ih[int];[int][1:v]overlay=W/2:0[vid]", "-map","[vid]", "-c:v","libx264", "-shortest","-y",
-//                "-crf","23", "-preset", "veryfast",
-//                Environment.getExternalStorageDirectory().getPath()
-//                        + "/Download/video merge.mp4"};
-//            Log.e("새로운비디오", "return  " + Environment.getExternalStorageDirectory().getPath()+ "/Download/video merge.mp4");
-//        MergeVideo(c);
-//    }
 
     fun initVideoRecorder() {
         mCamera = Camera.open()

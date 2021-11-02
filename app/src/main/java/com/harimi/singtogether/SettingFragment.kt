@@ -70,10 +70,10 @@ class SettingFragment : Fragment() {
                 edit.apply() // 적용하기
 
                 if (LoginActivity.user_info.loginUserSocial.equals("google")){
-                    FirebaseAuth.getInstance().signOut(); //로그아웃
+                    FirebaseAuth.getInstance().signOut(); //구글로그아웃
                     googleSignInClient.signOut()
                 }else{
-
+                    //카카오로그아웃
                 }
 
                 val intent = Intent(context, LoginActivity::class.java)
