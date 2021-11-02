@@ -48,11 +48,12 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
 
     private var myToken :String ?= ""
+    private lateinit var mAuth : FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val context: Context = this;
+        val context: Context = this
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -64,7 +65,6 @@ class LoginActivity : AppCompatActivity() {
             // Log and toast
             Log.d(TAG, myToken)
         })
-
 
 
         // 구글 버튼 클릭시
@@ -90,27 +90,7 @@ class LoginActivity : AppCompatActivity() {
                             }
             }
         }
-        // 카카오 토큰존재여부 확인하기
-//        if (AuthApiClient.instance.hasToken()) {
-//            UserApiClient.instance.accessTokenInfo { _, error ->
-//                if (error != null) {
-//                    if (error is KakaoSdkError && error.isInvalidTokenError() == true) {
-//                        //로그인 필요
-//                    }
-//                    else {
-//                        //기타 에러
-//                    }
-//                }
-//                else {
-//                    //토큰 유효성 체크 성공(필요 시 토큰 갱신됨)
-//                    Log.e(TAG, "카카오 사용자 토큰", )
-//                }
-//            }
-//        }
-//        else {
-//            //로그인 필요
-//        }
-//    }
+
 
     // 카카오 로그인 공통 callback 구성
     val callback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
@@ -183,7 +163,6 @@ class LoginActivity : AppCompatActivity() {
 
     //구글 로그인 클릭했을 때
     private fun signIn() {
-
 //        구글 빌드
             auth = FirebaseAuth.getInstance()
             val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

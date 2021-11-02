@@ -72,6 +72,8 @@ class SettingFragment : Fragment() {
                 if (LoginActivity.user_info.loginUserSocial.equals("google")){
                     FirebaseAuth.getInstance().signOut(); //로그아웃
                     googleSignInClient.signOut()
+                }else{
+
                 }
 
                 val intent = Intent(context, LoginActivity::class.java)

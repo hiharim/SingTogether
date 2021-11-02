@@ -17,8 +17,6 @@
         android:scaleType="fitXY"
         tools:srcCompat="@tools:sample/avatars" />
 
-
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="0dp"
@@ -34,6 +32,12 @@
             android:textSize="16sp"
             android:textColor="@color/black"
             android:text="노래제목" />
+        <TextView
+            android:id="@+id/rv_my_song_tv_singer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:text="가수" />
 
         <TextView
             android:id="@+id/rv_my_song_tv_nickname"
