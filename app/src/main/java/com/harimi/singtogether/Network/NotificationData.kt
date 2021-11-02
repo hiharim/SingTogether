@@ -16,6 +16,7 @@ data class NotificationData (
     val replayPostLikeIdx: String,
     val liked: Boolean,
     val replayVideo: String,
-    val uploadUserFCMToken: String
+    val uploadUserFCMToken: String,
+    val category : String
 
 )

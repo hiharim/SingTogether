@@ -227,6 +227,14 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("loadGloryPost.php")
+    fun requestLoadGloryPost (
+        @Field("year") year :String,
+        @Field("email") email :String
+    ) : Call<String>
+
+
+    @FormUrlEncoded
     @POST("getMainPostReview.php")
     fun requestGetMainPostReview (
         @Field("postIdx") postIdx: String

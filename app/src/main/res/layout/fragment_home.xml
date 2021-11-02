@@ -99,6 +99,7 @@
         android:layout_below="@+id/fragment_home_tv_solo"
         tools:itemCount="2"
         android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
         android:layout_width="wrap_content"

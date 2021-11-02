@@ -93,10 +93,10 @@ class MyPostFragment : Fragment() {
             }
     }
     fun loadMyPost(){
-        val userEmail=LoginActivity.user_info.loginUserEmail
+//        val userEmail=LoginActivity.user_info.loginUserEmail
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestLoadMyPost(userEmail)
+        retrofitService.requestLoadMyPost(myEmail!!)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {

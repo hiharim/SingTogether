@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".GloryActivity">
+
+    <Toolbar
+        android:id="@+id/toolbar_profile"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:fitsSystemWindows="true"
+        android:contentInsetLeft="0dp"
+        android:contentInsetStart="0dp"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        android:contentInsetRight="0dp"
+        android:contentInsetEnd="0dp"
+        app:contentInsetRight="0dp"
+        app:contentInsetEnd="0dp"
+        app:showAsAction="always">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/singing_text"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="명예의전당"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"/>
+            <ImageButton
+                android:id="@+id/ib_back"
+                android:layout_width="35dp"
+                android:layout_height="39dp"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/back"
+                android:padding="15dp"
+                android:backgroundTint="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </Toolbar>
+
+
+    <LinearLayout
+        android:id="@+id/layoutLinear"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:background="#EFEDED"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/iv_backArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="132dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_year"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/back_arrow" />
+
+            <ImageView
+                android:id="@+id/iv_forwardArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="132dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_year"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/forword_arrow" />
+
+            <TextView
+                android:id="@+id/tv_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2020"
+                android:textColor="#000000"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+
+            android:id="@+id/tv_duetText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="2020"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/purple"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="년도 싱투게더 베스트 듀엣"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/purple"
+            />
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_bestDuet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/tv_soloText"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="2020"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/purple"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="년도 싱투게더 베스트 솔로"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/purple"
+            />
+    </LinearLayout>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_bestSolo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+
+
+    <View
+        android:layout_below="@+id/viewPager_lookAtUserProfile"
+        style="@style/Divider"/>
+<!--    <TextView-->
+<!--        android:id="@+id/tv_text"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_below="@+id/layoutLinear"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="2020년도 싱투게더 베스트 듀엣"-->
+<!--        android:textStyle="bold"-->
+<!--        android:textSize="20dp"-->
+<!--        android:gravity="center"-->
+<!--        android:textColor="@color/purple"-->
+<!--        />-->
+<!--    <LinearLayout-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:id="@+id/layoutBestSolo"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_weight="1"-->
+<!--        android:layout_height="match_parent"-->
+<!--        android:orientation="vertical">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/rv_fragment_home_iv_thumbnail"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:scaleType="fitXY"-->
+<!--            android:background="#dedcee"-->
+<!--            android:layout_marginLeft="10dp"-->
+<!--            android:layout_marginTop="5dp"-->
+<!--            tools:srcCompat="@tools:sample/avatars" />-->
+
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content">-->
+
+
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_title"-->
+<!--                android:text="노래제목"-->
+<!--                android:layout_marginTop="6dp"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="14sp"-->
+<!--                android:layout_marginLeft="20dp"-->
+
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:text="가수"-->
+<!--                android:textSize="10sp"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_title"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/iv_play"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:src="@drawable/ic_baseline_play_arrow_24"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_count_play"-->
+<!--                android:visibility="invisible"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:layout_toRightOf="@+id/iv_play"-->
+<!--                android:text="5"-->
+<!--                android:layout_marginRight="15dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_idx"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:layout_toRightOf="@+id/iv_play"-->
+<!--                android:text="5"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_marginRight="15dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_song_path"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:layout_toRightOf="@+id/iv_play"-->
+<!--                android:text="5"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_marginRight="15dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/iv_comment"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_toRightOf="@+id/rv_fragment_home_tv_count_play"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:src="@drawable/ic_baseline_sms_24"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_count_reply"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:layout_toRightOf="@+id/iv_comment"-->
+<!--                android:text="5"-->
+<!--                android:layout_marginLeft="3dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <ImageView-->
+<!--                android:id="@+id/home_like"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_toRightOf="@+id/rv_fragment_home_tv_count_reply"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:src="@drawable/non_like"-->
+<!--                android:layout_marginLeft="8dp"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_like"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_singer"-->
+<!--                android:layout_toRightOf="@+id/home_like"-->
+<!--                android:text="0"-->
+<!--                android:layout_marginLeft="5dp"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/cardView"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_width="18dp"-->
+<!--                android:layout_height="18dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_below="@+id/iv_play"-->
+<!--                app:cardCornerRadius="45dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/rv_fragment_home_iv_profile"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="18dp"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@mipmap/ic_launcher" />-->
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_nickname"-->
+<!--                android:layout_toRightOf="@+id/cardView"-->
+<!--                android:layout_below="@+id/iv_comment"-->
+<!--                android:text="닉네임"-->
+<!--                android:textSize="11sp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginLeft="2dp"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/and"-->
+<!--                android:layout_toRightOf="@+id/rv_fragment_home_tv_nickname"-->
+<!--                android:layout_below="@+id/iv_comment"-->
+<!--                android:text="&amp;"-->
+<!--                android:textSize="11sp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginLeft="5dp"-->
+<!--                android:layout_marginRight="5dp"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <androidx.cardview.widget.CardView-->
+<!--                android:id="@+id/collaboCardView"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_width="18dp"-->
+<!--                android:layout_height="18dp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_toRightOf="@+id/rv_fragment_home_tv_nickname"-->
+<!--                android:layout_below="@+id/iv_play"-->
+<!--                app:cardCornerRadius="45dp">-->
+
+<!--                <ImageView-->
+<!--                    android:id="@+id/rv_fragment_home_iv_collabo_profile"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:scaleType="fitXY"-->
+<!--                    android:src="@mipmap/ic_launcher" />-->
+<!--            </androidx.cardview.widget.CardView>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_collabo_nickname"-->
+<!--                android:layout_toRightOf="@+id/collaboCardView"-->
+<!--                android:layout_below="@+id/iv_comment"-->
+<!--                android:text="닉네임"-->
+<!--                android:textSize="11sp"-->
+<!--                android:layout_marginTop="5dp"-->
+<!--                android:layout_marginLeft="2dp"-->
+<!--                android:textColor="@color/black"-->
+<!--                android:textStyle="bold"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_path"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_kinds"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_mr_idx"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_token"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_date"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+
+
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_email"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+<!--            <TextView-->
+<!--                android:id="@+id/rv_fragment_home_tv_collabo_email"-->
+<!--                android:visibility="gone"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"/>-->
+<!--        </RelativeLayout>-->
+<!--    </LinearLayout>-->
+
+
+</LinearLayout>

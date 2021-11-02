@@ -109,7 +109,8 @@ class HomeFragment : Fragment() {
 
         // 명예의전당 클릭
         binding.fragmentHomeIvBest.setOnClickListener {
-
+            val intent= Intent(context, GloryActivity::class.java)
+            startActivity(intent)
         }
 
         return binding.root
