@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.BestDuetData
@@ -16,25 +17,26 @@ import com.harimi.singtogether.adapter.BestSoloAdapter.BestSoloViewHolder
 class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context: Context) : RecyclerView.Adapter<BestSoloViewHolder>() {
 
     inner class BestSoloViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val idx = v.findViewById<TextView>(R.id.rv_best_singer_tv_idx)
-        val mr_idx = v.findViewById<TextView>(R.id.rv_best_singer_tv_mr_idx)
-        val thumbnail = v.findViewById<ImageView>(R.id.rv_best_singer_iv_thumbnail)
-        val title = v.findViewById<TextView>(R.id.rv_best_singer_tv_title)
-        val singer = v.findViewById<TextView>(R.id.rv_best_singer_tv_singer)
-        val profile = v.findViewById<ImageView>(R.id.rv_best_singer_iv_profile)
-        val and = v.findViewById<TextView>(R.id.best_and)
-        val collabo_profile = v.findViewById<ImageView>(R.id.rv_best_singer_iv_collabo_profile)
-        val collabo_nickname = v.findViewById<TextView>(R.id.rv_best_singer_tv_collabo_nickname)
-        val nickname = v.findViewById<TextView>(R.id.rv_best_singer_tv_nickname)
-        val date = v.findViewById<TextView>(R.id.rv_best_singer_tv_date)
-        val email = v.findViewById<TextView>(R.id.rv_best_singer_tv_email)
-        val kinds = v.findViewById<TextView>(R.id.rv_best_singer_tv_kinds)
-        val token = v.findViewById<TextView>(R.id.rv_best_singer_tv_token)
-        val cnt_play = v.findViewById<TextView>(R.id.rv_best_singer_tv_count_play)
-        val cnt_reply = v.findViewById<TextView>(R.id.rv_best_singer_tv_count_reply)
-        val cnt_like = v.findViewById<TextView>(R.id.rv_best_singer_tv_like)
-        val song_path = v.findViewById<TextView>(R.id.rv_best_singer_tv_song_path)
-        val collabo_email = v.findViewById<TextView>(R.id.rv_best_singer_tv_collabo_email)
+        val idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_idx)
+        val mr_idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_mr_idx)
+        val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
+        val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
+        val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
+        val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
+        val and=v.findViewById<TextView>(R.id.and)
+        val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
+        val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
+        val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
+        val date=v.findViewById<TextView>(R.id.rv_fragment_home_tv_date)
+        val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
+        val kinds=v.findViewById<TextView>(R.id.rv_fragment_home_tv_kinds)
+        val token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_token)
+        val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_play)
+        val cnt_reply=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_reply)
+        val cnt_like=v.findViewById<TextView>(R.id.rv_fragment_home_tv_like)
+        val song_path=v.findViewById<TextView>(R.id.rv_fragment_home_tv_song_path)
+        val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
+        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
 
     }
 

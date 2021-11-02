@@ -19,39 +19,42 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <TextView
                     android:id="@+id/rv_fragment_home_tv_title"
                     android:text="노래제목"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="10dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:textSize="14sp"
+                    android:textSize="17sp"
                     android:layout_marginLeft="20dp"
 
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
+
+
+
                 <TextView
                     android:id="@+id/rv_fragment_home_tv_singer"
                     android:text="가수"
-                    android:textSize="10sp"
                     android:layout_marginLeft="20dp"
                     android:layout_below="@+id/rv_fragment_home_tv_title"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <ImageView
                     android:id="@+id/iv_play"
-                    android:visibility="gone"
                     android:layout_marginLeft="20dp"
                     android:layout_below="@+id/rv_fragment_home_tv_singer"
                     android:src="@drawable/ic_baseline_play_arrow_24"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <TextView
                     android:id="@+id/rv_fragment_home_tv_count_play"
-                    android:visibility="invisible"
                     android:layout_below="@+id/rv_fragment_home_tv_singer"
                     android:layout_toRightOf="@+id/iv_play"
                     android:text="5"
@@ -81,7 +84,6 @@
 
                 <ImageView
                     android:id="@+id/iv_comment"
-                    android:visibility="gone"
                     android:layout_toRightOf="@+id/rv_fragment_home_tv_count_play"
                     android:layout_below="@+id/rv_fragment_home_tv_singer"
                     android:src="@drawable/ic_baseline_sms_24"
@@ -90,7 +92,6 @@
 
                 <TextView
                     android:id="@+id/rv_fragment_home_tv_count_reply"
-                    android:visibility="gone"
                     android:layout_below="@+id/rv_fragment_home_tv_singer"
                     android:layout_toRightOf="@+id/iv_comment"
                     android:text="5"
@@ -100,7 +101,6 @@
 
                 <ImageView
                     android:id="@+id/home_like"
-                    android:visibility="gone"
                     android:layout_toRightOf="@+id/rv_fragment_home_tv_count_reply"
                     android:layout_below="@+id/rv_fragment_home_tv_singer"
                     android:src="@drawable/non_like"
@@ -110,7 +110,6 @@
 
                 <TextView
                     android:id="@+id/rv_fragment_home_tv_like"
-                    android:visibility="gone"
                     android:layout_below="@+id/rv_fragment_home_tv_singer"
                     android:layout_toRightOf="@+id/home_like"
                     android:text="0"
@@ -121,16 +120,16 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardView"
                     android:layout_marginLeft="20dp"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="10dp"
                     android:layout_below="@+id/iv_play"
                     app:cardCornerRadius="45dp">
 
                     <ImageView
                         android:id="@+id/rv_fragment_home_iv_profile"
                         android:layout_width="match_parent"
-                        android:layout_height="18dp"
+                        android:layout_height="match_parent"
                         android:scaleType="fitXY"
                         android:src="@mipmap/ic_launcher" />
                 </androidx.cardview.widget.CardView>
@@ -140,8 +139,7 @@
                     android:layout_toRightOf="@+id/cardView"
                     android:layout_below="@+id/iv_comment"
                     android:text="닉네임"
-                    android:textSize="11sp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="13dp"
                     android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -152,8 +150,7 @@
                     android:layout_toRightOf="@+id/rv_fragment_home_tv_nickname"
                     android:layout_below="@+id/iv_comment"
                     android:text="&amp;"
-                    android:textSize="11sp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="13dp"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
                     android:textColor="@color/black"
@@ -164,9 +161,9 @@
                 <androidx.cardview.widget.CardView
                     android:id="@+id/collaboCardView"
                     android:layout_marginLeft="20dp"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/rv_fragment_home_tv_nickname"
                     android:layout_below="@+id/iv_play"
                     app:cardCornerRadius="45dp">
@@ -184,8 +181,7 @@
                     android:layout_toRightOf="@+id/collaboCardView"
                     android:layout_below="@+id/iv_comment"
                     android:text="닉네임"
-                    android:textSize="11sp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="13dp"
                     android:layout_marginLeft="2dp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
@@ -232,5 +228,6 @@
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
             </RelativeLayout>
 </LinearLayout>

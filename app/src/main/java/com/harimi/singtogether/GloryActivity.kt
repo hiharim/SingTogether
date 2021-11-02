@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,9 +34,9 @@ class GloryActivity : AppCompatActivity() {
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
 
-    private lateinit var iv_backArrow : ImageButton
+    private lateinit var iv_backArrow : ImageView
     private lateinit var tv_year : TextView
-    private lateinit var iv_forwardArrow : ImageButton
+    private lateinit var iv_forwardArrow : ImageView
     private lateinit var rv_bestDuet : RecyclerView
     private lateinit var rv_bestSolo : RecyclerView
     private lateinit var tv_duetText : TextView
@@ -76,7 +77,7 @@ class GloryActivity : AppCompatActivity() {
         getYear = year.toString()
         Log.d(TAG, getYear)
 
-
+        loadGloryPost()
 
     }
 
@@ -113,13 +114,14 @@ class GloryActivity : AppCompatActivity() {
                             val title=duetDataObject.getString("title")
                             val singer=duetDataObject.getString("singer")
                             val lyrics=duetDataObject.getString("lyrics")
-                            val profile=duetDataObject.getString("circle_profile")
+                            val profile=duetDataObject.getString("profile")
                             val collaboration_profile=duetDataObject.getString("col_profile")
                             val collabo_email=duetDataObject.getString("collabo_email")
                             val kinds=duetDataObject.getString("kinds")
                             val token=duetDataObject.getString("token")
                             val col_token=duetDataObject.getString("col_token")
                             val isLike=duetDataObject.getString("isLike")
+
                             val bestDuetData = BestDuetData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
                             bestDuetList.add(0,bestDuetData)
                             bestDuetAdapter.notifyDataSetChanged()
@@ -142,13 +144,14 @@ class GloryActivity : AppCompatActivity() {
                             val title=SoloDataObject.getString("title")
                             val singer=SoloDataObject.getString("singer")
                             val lyrics=SoloDataObject.getString("lyrics")
-                            val profile=SoloDataObject.getString("circle_profile")
+                            val profile=SoloDataObject.getString("profile")
                             val collaboration_profile=SoloDataObject.getString("col_profile")
                             val collabo_email=SoloDataObject.getString("collabo_email")
                             val kinds=SoloDataObject.getString("kinds")
                             val token=SoloDataObject.getString("token")
                             val col_token=SoloDataObject.getString("col_token")
                             val isLike=SoloDataObject.getString("isLike")
+
                             val bestSoloData = BestSoloData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
                             bestSoloList.add(0,bestSoloData)
                             bestSoloAdapter.notifyDataSetChanged()
