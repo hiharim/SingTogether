@@ -64,6 +64,7 @@ class PopFragment : Fragment() {
 
     private fun loadHomePost() {
         val userEmail=LoginActivity.user_info.loginUserEmail
+        Log.e(TAG, "userEmail:$userEmail")
         retrofitService.requestPopPost(userEmail).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
