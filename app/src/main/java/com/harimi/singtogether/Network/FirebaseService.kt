@@ -31,55 +31,58 @@ class FirebaseService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
-        Log.d(TAG , message.data["uploadUserEmail"].toString())
-        Log.d(TAG , message.data["uploadUserProfile"].toString())
-        Log.d(TAG , message.data["uploadUserNickName"].toString())
+//        Log.d(TAG , message.data["uploadUserEmail"].toString())
+//        Log.d(TAG , message.data["uploadUserProfile"].toString())
+//        Log.d(TAG , message.data["uploadUserNickName"].toString())
 
 
-        if (LoginActivity.user_info.loginUserEmail.equals("")){
-            LoginActivity.user_info.loginUserNickname = message.data["uploadUserNickName"].toString()
-            LoginActivity.user_info.loginUserProfile = message.data["uploadUserProfile"].toString()
-            LoginActivity.user_info.loginUserFCMToken = message.data["uploadUserFCMToken"].toString()
-            LoginActivity.user_info.loginUserEmail = message.data["uploadUserEmail"].toString()
+        if (message.data["category"].toString().equals("리플레이")){
+            if (LoginActivity.user_info.loginUserEmail.equals("")){
+                LoginActivity.user_info.loginUserNickname = message.data["uploadUserNickName"].toString()
+                LoginActivity.user_info.loginUserProfile = message.data["uploadUserProfile"].toString()
+                LoginActivity.user_info.loginUserFCMToken = message.data["uploadUserFCMToken"].toString()
+                LoginActivity.user_info.loginUserEmail = message.data["uploadUserEmail"].toString()
+            }
+
+
+            val intent = Intent(this, DetailReplayActivity::class.java)
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationID = Random.nextInt()
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(notificationManager)
+            }
+            intent.putExtra("idx", message.data["replayIdx"].toString())
+            intent.putExtra("uploadUserEmail", message.data["uploadUserEmail"].toString())
+            intent.putExtra("uploadUserNickName", message.data["uploadUserNickName"].toString())
+            intent.putExtra("uploadUserProfile", message.data["uploadUserProfile"].toString())
+            intent.putExtra("thumbnail", message.data["thumbnail"].toString())
+            intent.putExtra("uploadDate", message.data["uploadDate"].toString())
+            intent.putExtra("replayTitle", message.data["replayTitle"].toString())
+            intent.putExtra("replayLikeNumber", message.data["replayLikeNumber"].toString())
+            intent.putExtra("replayHits", message.data["replayHits"].toString())
+            intent.putExtra("replayReviewNumber", message.data["replayReviewNumber"].toString())
+            intent.putExtra("replayPostLikeIdx", message.data["replayPostLikeIdx"].toString())
+            intent.putExtra("liked", message.data["liked"].toString())
+            intent.putExtra("replayVideo", message.data["replayVideo"].toString())
+            intent.putExtra("uploadUserFCMToken", message.data["uploadUserFCMToken"].toString())
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+
+            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(message.data["title"])
+                .setContentText(message.data["message"])
+                .setSmallIcon(R.drawable.singtogether_logo_purple)
+                .setAutoCancel(true)
+                .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+                .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent)
+                .build()
+
+            notificationManager.notify(notificationID, notification)
         }
 
-
-        val intent = Intent(this, DetailReplayActivity::class.java)
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notificationID = Random.nextInt()
-
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            createNotificationChannel(notificationManager)
-        }
-        intent.putExtra("idx", message.data["replayIdx"].toString())
-        intent.putExtra("uploadUserEmail", message.data["uploadUserEmail"].toString())
-        intent.putExtra("uploadUserNickName", message.data["uploadUserNickName"].toString())
-        intent.putExtra("uploadUserProfile", message.data["uploadUserProfile"].toString())
-        intent.putExtra("thumbnail", message.data["thumbnail"].toString())
-        intent.putExtra("uploadDate", message.data["uploadDate"].toString())
-        intent.putExtra("replayTitle", message.data["replayTitle"].toString())
-        intent.putExtra("replayLikeNumber", message.data["replayLikeNumber"].toString())
-        intent.putExtra("replayHits", message.data["replayHits"].toString())
-        intent.putExtra("replayReviewNumber", message.data["replayReviewNumber"].toString())
-        intent.putExtra("replayPostLikeIdx", message.data["replayPostLikeIdx"].toString())
-        intent.putExtra("liked", message.data["liked"].toString())
-        intent.putExtra("replayVideo", message.data["replayVideo"].toString())
-        intent.putExtra("uploadUserFCMToken", message.data["uploadUserFCMToken"].toString())
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
-
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentTitle(message.data["title"])
-            .setContentText(message.data["message"])
-            .setSmallIcon(R.drawable.singtogether_logo_purple)
-            .setAutoCancel(true)
-            .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
-            .setOnlyAlertOnce(true)
-            .setContentIntent(pendingIntent)
-            .build()
-
-        notificationManager.notify(notificationID, notification)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
