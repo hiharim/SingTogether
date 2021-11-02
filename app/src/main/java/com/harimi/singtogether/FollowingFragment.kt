@@ -86,7 +86,7 @@ class FollowingFragment : Fragment() {
                         val outputData=jsonObject.getString("outputData")
                         val result=jsonObject.getBoolean("result")
 
-                            if (result){
+                            if (result && !outputData.equals("")){
                                 tv_noFollowingPost.visibility =View.GONE
                                 fragment_following_recyclerView.visibility =View.VISIBLE
 
