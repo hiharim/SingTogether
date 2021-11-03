@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
             // Get new FCM registration token
             myToken = task.result
             // Log and toast
-            Log.d(TAG, myToken)
+            Log.d(TAG +"토큰:", myToken)
         })
 
 

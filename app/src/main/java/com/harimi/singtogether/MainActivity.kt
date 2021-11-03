@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.harimi.singtogether.databinding.ActivityMainBinding
+import com.harimi.singtogether.sing.DetailDuetFragment
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
 
 
@@ -17,6 +18,7 @@ class MainActivity : AppCompatActivity() {
     private val fragmentSing : SingFragment = SingFragment() // 부르기
     private val fragmentBroadcast : BraodcastFragment=BraodcastFragment() // 방송
     private val fragmentMyPage : MyPageFragment = MyPageFragment() // 마이페이지
+    private val fragmentDetailDuet : DetailDuetFragment = DetailDuetFragment() // 디테일 듀엣프래그먼트
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +38,15 @@ class MainActivity : AppCompatActivity() {
                 R.id.sing-> changeFragment(fragmentSing)
                 R.id.live -> changeFragment(fragmentBroadcast)
                 R.id.setting -> changeFragment(fragmentMyPage)
+            }
+        }
+
+        val fcm=intent.getStringExtra("Notification")
+        if(fcm !=null) {
+            if(fcm.equals("DetailDuetFragment")) {
+                val bundleData=intent.getBundleExtra("bundle")
+                fragmentDetailDuet.arguments = bundleData
+                changeFragment(fragmentDetailDuet)
             }
         }
 

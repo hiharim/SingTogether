@@ -1,43 +1,47 @@
-package com.harimi.singtogether.Data
+package com.harimi.singtogether.Network
 
 import com.google.gson.annotations.SerializedName
 
-data class DuetData(
 
+data class DuetNotificationData(
+    val app_title: String,
+    val message: String,
     @SerializedName("duet_idx")
-    val duet_idx : Int,
+    val duet_idx: Int,
     @SerializedName("mr_idx")
-    val mr_idx : Int,
+    val mr_idx: Int,
     @SerializedName("thumbnail")
-    val thumbnail : String,
+    val thumbnail: String,
     @SerializedName("title")
-    val title : String,
+    val title: String,
     @SerializedName("singer")
-    val singer : String,
+    val singer: String,
     @SerializedName("cnt_play")
-    val cnt_play : String,
+    val cnt_play: String,
     @SerializedName("cnt_reply")
-    val cnt_reply : String,
+    val cnt_reply: String,
     @SerializedName("cnt_duet")
-    val cnt_duet : String,
+    val cnt_duet: String,
     @SerializedName("email")
-    val email : String,
+    val email: String,
     @SerializedName("nickname")
-    val nickname : String,
+    val nickname: String,
     @SerializedName("profile")
-    val profile : String,
+    val profile: String,
     @SerializedName("duet_path")
-    val duet_path : String,
+    val duet_path: String,
     @SerializedName("date")
-    val date : String,
+    val date: String,
     @SerializedName("mr_path")
-    val mr_path : String,
+    val mr_path: String,
     @SerializedName("extract_path")
-    val extract_path : String,
+    val extract_path: String,
     @SerializedName("kinds")
     val kinds: String,
     @SerializedName("lyrics")
     val lyrics: String,
     @SerializedName("token")
-    val token: String
+    val token: String,
+    @SerializedName("category")
+    val category: String
 )

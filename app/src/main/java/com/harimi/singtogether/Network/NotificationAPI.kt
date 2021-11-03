@@ -17,4 +17,16 @@ interface NotificationAPI {
     suspend fun postNotification(
         @Body notification: PushNotification
     ): Response<ResponseBody>
+
+    @Headers("Authorization: key=$SERVER_KEY", "Content-Type:$CONTENT_TYPE")
+    @POST("fcm/send")
+    suspend fun postDuetNotification(
+        @Body notification: PushDuetNotification
+    ): Response<ResponseBody>
+
+    @Headers("Authorization: key=$SERVER_KEY", "Content-Type:$CONTENT_TYPE")
+    @POST("fcm/send")
+    suspend fun postSongPostNotification(
+        @Body notification: PushSongPostNotification
+    ): Response<ResponseBody>
 }

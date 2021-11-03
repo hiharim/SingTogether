@@ -307,7 +307,10 @@ class DetailDuetFragment : Fragment() {
                         uploadDate
                     )
                         .enqueue(object : Callback<String> {
-                            override fun onResponse(call: Call<String>, response: Response<String>) {
+                            override fun onResponse(
+                                call: Call<String>,
+                                response: Response<String>
+                            ) {
                                 if (response.isSuccessful) {
                                     val body = response.body().toString()
                                     Log.d(TAG, body)
@@ -333,19 +336,38 @@ class DetailDuetFragment : Fragment() {
                                     }
 
                                     ////FCM 보내기
-//                                    if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)) {
-//
-//                                    }else {
-//                                        PushNotification(
-//                                            NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 댓글을 남겼습니다.",
-//                                                replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,
-//                                                getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
-//                                                replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!),
-//                                            uploadUserFCMToken.toString()
-//                                        ).also {
-//                                            sendNotification(it)
-//                                        }
-//                                    }
+                                    if (LoginActivity.user_info.loginUserEmail.equals(email)) {
+
+                                    } else {
+                                        PushDuetNotification(
+                                            DuetNotificationData(
+                                                "SingTogether",
+                                                nickname + "님의 듀엣초대 게시물에 " + LoginActivity.user_info.loginUserNickname + " 님이 댓글을 남겼습니다.",
+                                                duet_idx!!,
+                                                mr_idx!!,
+                                                thumbnail!!,
+                                                title!!,
+                                                singer!!,
+                                                cnt_play!!,
+                                                cnt_reply!!,
+                                                cnt_duet!!,
+                                                email!!,
+                                                nickname!!,
+                                                profile!!,
+                                                duet_path!!,
+                                                date!!,
+                                                mr_path!!,
+                                                extract_path!!,
+                                                kinds!!,
+                                                lyrics!!,
+                                                token!!,
+                                                "듀엣"
+                                            ),
+                                            token.toString()
+                                        ).also {
+                                            sendNotification(it)
+                                        }
+                                    }
 
                                 }
                             }
@@ -362,9 +384,9 @@ class DetailDuetFragment : Fragment() {
 
 
     ////fcm send 메세지 && 코루틴 launch
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
+    private fun sendNotification(notification: PushDuetNotification) = CoroutineScope(Dispatchers.IO).launch {
         try {
-            val response = RetrofitInstance.api.postNotification(notification)
+            val response = RetrofitInstance.api.postDuetNotification(notification)
             if(response.isSuccessful) {
                 Log.d(TAG, "Response: 성공")
             } else {
