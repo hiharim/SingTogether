@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val fragmentBroadcast : BraodcastFragment=BraodcastFragment() // 방송
     private val fragmentMyPage : MyPageFragment = MyPageFragment() // 마이페이지
     private val fragmentDetailDuet : DetailDuetFragment = DetailDuetFragment() // 디테일 듀엣프래그먼트
-
+    private val postFragment : PostFragment = PostFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +49,15 @@ class MainActivity : AppCompatActivity() {
                 val bundleData=intent.getBundleExtra("bundle")
                 fragmentDetailDuet.arguments = bundleData
                 changeFragment(fragmentDetailDuet)
+            }
+        }
+
+        val GloryPost=intent.getStringExtra("GloryPost")
+        if(GloryPost !=null) {
+            if(GloryPost.equals("GloryPost")) {
+                val bundleData=intent.getBundleExtra("bundle")
+                postFragment.arguments = bundleData
+                changeFragment(postFragment)
             }
         }
 

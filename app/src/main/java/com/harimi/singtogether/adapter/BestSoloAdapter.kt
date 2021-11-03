@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.BestDuetData
 import com.harimi.singtogether.Data.BestSoloData
+import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.BestSoloAdapter.BestSoloViewHolder
@@ -84,33 +85,31 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
 //            holder.collaboCardView.visibility = View.GONE
         }
         holder.itemView.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
 
-            val activity =it!!.context as AppCompatActivity
-            val postFragment = PostFragment()
-            var bundle = Bundle()
-            bundle.putInt("idx",curData.idx)
-            bundle.putInt("mr_idx",curData.mr_idx)
-            bundle.putString("title",curData.title)
-            bundle.putString("singer",curData.singer)
-            bundle.putString("cnt_play",curData.cnt_play)
-            bundle.putString("cnt_reply",curData.cnt_reply)
-            bundle.putString("cnt_like",curData.cnt_like)
-            bundle.putString("nickname",curData.nickname)
-            bundle.putString("email",curData.email)
-            bundle.putString("collaboration_nickname",curData.collaboration_nickname)
-            bundle.putString("song_path",curData.song_path)
-            bundle.putString("profile",curData.profile)
-            bundle.putString("collaboration_profile",curData.collaboration_profile)
-            bundle.putString("collabo_email",curData.collabo_email)
-            bundle.putString("date",curData.date)
-            bundle.putString("kinds",curData.kinds)
-            bundle.putString("token",curData.token)
-            bundle.putString("thumbnail",curData.thumbnail)
-            postFragment.arguments=bundle
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.layoutGlory,postFragment)
-                .addToBackStack(null)
-                .commit()
+            intent.putExtra("GloryPost","GloryPost")
+            val bundle = Bundle()
+            bundle.putInt("idx", curData.idx)
+            bundle.putInt("mr_idx", curData.mr_idx)
+            bundle.putString("title", curData.title)
+            bundle.putString("singer", curData.singer)
+            bundle.putString("cnt_play", curData.cnt_play)
+            bundle.putString("cnt_reply", curData.cnt_reply)
+            bundle.putString("cnt_like", curData.cnt_like)
+            bundle.putString("nickname", curData.nickname)
+            bundle.putString("email", curData.email)
+            bundle.putString("collaboration_nickname", curData.collaboration_nickname)
+            bundle.putString("song_path", curData.song_path)
+            bundle.putString("profile", curData.profile)
+            bundle.putString("collaboration_profile", curData.collaboration_profile)
+            bundle.putString("collabo_email", curData.collabo_email)
+            bundle.putString("date", curData.date)
+            bundle.putString("kinds", curData.kinds)
+            bundle.putString("token", curData.token)
+            bundle.putString("thumbnail", curData.thumbnail)
+            intent.putExtra("bundle",bundle)
+            context.startActivity(intent)
+
 
 
         }

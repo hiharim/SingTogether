@@ -1,24 +1,21 @@
 package com.harimi.singtogether
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DividerItemDecoration
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.harimi.singtogether.Data.BestData
 import com.harimi.singtogether.Data.BestDuetData
 import com.harimi.singtogether.Data.BestSoloData
-import com.harimi.singtogether.Data.DetailReplayReviewData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
-import com.harimi.singtogether.adapter.BestAdapter
 import com.harimi.singtogether.adapter.BestDuetAdapter
 import com.harimi.singtogether.adapter.BestSoloAdapter
-import com.harimi.singtogether.adapter.ReplayFragmentAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -28,6 +25,7 @@ import retrofit2.Retrofit
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class GloryActivity : AppCompatActivity() {
     private var TAG :String = "GloryActivity_"
@@ -43,7 +41,9 @@ class GloryActivity : AppCompatActivity() {
     private lateinit var tv_soloText : TextView
 
     private lateinit var getYear : String
+    private lateinit var getMinYear : String
 
+    private  var choiceGetYear : String ?= ""
     private val bestDuetList: ArrayList<BestDuetData> = ArrayList()
     private lateinit var bestDuetAdapter: BestDuetAdapter
 
@@ -63,12 +63,12 @@ class GloryActivity : AppCompatActivity() {
 
         rv_bestDuet.layoutManager = LinearLayoutManager(this)
 //        rv_bestDuet.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        bestDuetAdapter = BestDuetAdapter(bestDuetList,this)
+        bestDuetAdapter = BestDuetAdapter(bestDuetList, this)
         rv_bestDuet.adapter = bestDuetAdapter
 
         rv_bestSolo.layoutManager = LinearLayoutManager(this)
 //        rv_bestSolo.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-        bestSoloAdapter = BestSoloAdapter(bestSoloList,this)
+        bestSoloAdapter = BestSoloAdapter(bestSoloList, this)
         rv_bestSolo.adapter = bestSoloAdapter
 
         var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
@@ -77,14 +77,56 @@ class GloryActivity : AppCompatActivity() {
         getYear = year.toString()
         Log.d(TAG, getYear)
 
-        loadGloryPost()
 
+
+        loadGloryPost(getYear)
+
+        tv_year.setOnClickListener {
+            ////dialog에 들어갈 리스트 셋해주기 , 동적사이즈와 value
+            var list_one = ArrayList<String>()
+            var plusInt : Int = 0
+
+                for (i in getMinYear.toInt() .. getYear.toInt()){
+                    var plusYear = getMinYear.toInt()+plusInt
+                    list_one.add(plusYear.toString())
+                    Log.d(TAG,  plusYear.toString())
+                    plusInt ++
+                }
+                var items = Array(list_one.size, {item->""})
+                for (i in 0 until list_one.size) {
+                    items[i] = list_one.get(i)
+                }
+
+            val dialog = AlertDialog.Builder(this)
+                dialog.setTitle("년도 선택")
+                dialog.setSingleChoiceItems(items, -1) { dialog, which ->
+                    choiceGetYear = items[which]
+            }
+
+            dialog.setPositiveButton("선택"){dialog, which ->
+
+                Log.d(TAG,  getYear)
+                bestDuetList.clear()
+                bestSoloList.clear()
+                bestDuetAdapter.notifyDataSetChanged()
+                bestSoloAdapter.notifyDataSetChanged()
+                loadGloryPost(choiceGetYear!!)
+
+                tv_year.setText(choiceGetYear)
+                tv_duetText.setText(choiceGetYear+"년도 싱투게더 베스트 듀엣")
+                tv_soloText.setText(choiceGetYear+"년도 싱투게더 베스트 솔로")
+            }
+            dialog.setNeutralButton("취소") {dialog, which ->
+                dialog.dismiss()
+            }
+            dialog.show()
+        }
     }
 
-    private fun loadGloryPost(){
+    private fun loadGloryPost(choiceYear : String){
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestLoadGloryPost(getYear,LoginActivity.user_info.loginUserEmail)
+        retrofitService.requestLoadGloryPost(choiceYear, LoginActivity.user_info.loginUserEmail)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
@@ -94,66 +136,112 @@ class GloryActivity : AppCompatActivity() {
                         bestSoloList.clear()
 
                         val jsonObject = JSONObject(body)
-                        val duetDataList=jsonObject.getString("DuetDataList")
-                        val SoloDataList=jsonObject.getString("SoloDataList")
+                        val duetDataList = jsonObject.getString("DuetDataList")
+                        val SoloDataList = jsonObject.getString("SoloDataList")
+                        getMinYear = jsonObject.getString("getMinYear")
 
-                        val duetDataArray= JSONArray(duetDataList)
-                        for(i in 0..duetDataArray.length() -1){
-                            val duetDataObject=duetDataArray.getJSONObject(i)
-                            val idx=duetDataObject.getInt("idx")
-                            val thumbnail=duetDataObject.getString("thumbnail")
-                            val cnt_play=duetDataObject.getString("cnt_play")
-                            val cnt_reply=duetDataObject.getString("cnt_reply")
-                            val cnt_like=duetDataObject.getString("cnt_like")
-                            val nickname=duetDataObject.getString("nickname")
-                            val email=duetDataObject.getString("email")
-                            val song_path=duetDataObject.getString("song_path")
-                            val date=duetDataObject.getString("date")
-                            val collaboration=duetDataObject.getString("collaboration")
-                            val mr_idx=duetDataObject.getInt("mr_idx")
-                            val title=duetDataObject.getString("title")
-                            val singer=duetDataObject.getString("singer")
-                            val lyrics=duetDataObject.getString("lyrics")
-                            val profile=duetDataObject.getString("profile")
-                            val collaboration_profile=duetDataObject.getString("col_profile")
-                            val collabo_email=duetDataObject.getString("collabo_email")
-                            val kinds=duetDataObject.getString("kinds")
-                            val token=duetDataObject.getString("token")
-                            val col_token=duetDataObject.getString("col_token")
-                            val isLike=duetDataObject.getString("isLike")
 
-                            val bestDuetData = BestDuetData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
-                            bestDuetList.add(0,bestDuetData)
+                        val duetDataArray = JSONArray(duetDataList)
+                        for (i in 0..duetDataArray.length() - 1) {
+                            val duetDataObject = duetDataArray.getJSONObject(i)
+                            val idx = duetDataObject.getInt("idx")
+                            val thumbnail = duetDataObject.getString("thumbnail")
+                            val cnt_play = duetDataObject.getString("cnt_play")
+                            val cnt_reply = duetDataObject.getString("cnt_reply")
+                            val cnt_like = duetDataObject.getString("cnt_like")
+                            val nickname = duetDataObject.getString("nickname")
+                            val email = duetDataObject.getString("email")
+                            val song_path = duetDataObject.getString("song_path")
+                            val date = duetDataObject.getString("date")
+                            val collaboration = duetDataObject.getString("collaboration")
+                            val mr_idx = duetDataObject.getInt("mr_idx")
+                            val title = duetDataObject.getString("title")
+                            val singer = duetDataObject.getString("singer")
+                            val lyrics = duetDataObject.getString("lyrics")
+                            val profile = duetDataObject.getString("profile")
+                            val collaboration_profile = duetDataObject.getString("col_profile")
+                            val collabo_email = duetDataObject.getString("collabo_email")
+                            val kinds = duetDataObject.getString("kinds")
+                            val token = duetDataObject.getString("token")
+                            val col_token = duetDataObject.getString("col_token")
+                            val isLike = duetDataObject.getString("isLike")
+
+                            val bestDuetData = BestDuetData(
+                                idx,
+                                thumbnail,
+                                title,
+                                singer,
+                                lyrics,
+                                cnt_play,
+                                cnt_reply,
+                                cnt_like,
+                                nickname,
+                                email,
+                                profile,
+                                song_path,
+                                collaboration,
+                                collabo_email,
+                                collaboration_profile,
+                                date,
+                                kinds,
+                                mr_idx,
+                                token,
+                                col_token,
+                                isLike
+                            )
+                            bestDuetList.add(0, bestDuetData)
                             bestDuetAdapter.notifyDataSetChanged()
                         }
 
-                        val SoloDataArray= JSONArray(SoloDataList)
-                        for(i in 0..SoloDataArray.length() -1){
-                            val SoloDataObject=SoloDataArray.getJSONObject(i)
-                            val idx=SoloDataObject.getInt("idx")
-                            val thumbnail=SoloDataObject.getString("thumbnail")
-                            val cnt_play=SoloDataObject.getString("cnt_play")
-                            val cnt_reply=SoloDataObject.getString("cnt_reply")
-                            val cnt_like=SoloDataObject.getString("cnt_like")
-                            val nickname=SoloDataObject.getString("nickname")
-                            val email=SoloDataObject.getString("email")
-                            val song_path=SoloDataObject.getString("song_path")
-                            val date=SoloDataObject.getString("date")
-                            val collaboration=SoloDataObject.getString("collaboration")
-                            val mr_idx=SoloDataObject.getInt("mr_idx")
-                            val title=SoloDataObject.getString("title")
-                            val singer=SoloDataObject.getString("singer")
-                            val lyrics=SoloDataObject.getString("lyrics")
-                            val profile=SoloDataObject.getString("profile")
-                            val collaboration_profile=SoloDataObject.getString("col_profile")
-                            val collabo_email=SoloDataObject.getString("collabo_email")
-                            val kinds=SoloDataObject.getString("kinds")
-                            val token=SoloDataObject.getString("token")
-                            val col_token=SoloDataObject.getString("col_token")
-                            val isLike=SoloDataObject.getString("isLike")
+                        val SoloDataArray = JSONArray(SoloDataList)
+                        for (i in 0..SoloDataArray.length() - 1) {
+                            val SoloDataObject = SoloDataArray.getJSONObject(i)
+                            val idx = SoloDataObject.getInt("idx")
+                            val thumbnail = SoloDataObject.getString("thumbnail")
+                            val cnt_play = SoloDataObject.getString("cnt_play")
+                            val cnt_reply = SoloDataObject.getString("cnt_reply")
+                            val cnt_like = SoloDataObject.getString("cnt_like")
+                            val nickname = SoloDataObject.getString("nickname")
+                            val email = SoloDataObject.getString("email")
+                            val song_path = SoloDataObject.getString("song_path")
+                            val date = SoloDataObject.getString("date")
+                            val collaboration = SoloDataObject.getString("collaboration")
+                            val mr_idx = SoloDataObject.getInt("mr_idx")
+                            val title = SoloDataObject.getString("title")
+                            val singer = SoloDataObject.getString("singer")
+                            val lyrics = SoloDataObject.getString("lyrics")
+                            val profile = SoloDataObject.getString("profile")
+                            val collaboration_profile = SoloDataObject.getString("col_profile")
+                            val collabo_email = SoloDataObject.getString("collabo_email")
+                            val kinds = SoloDataObject.getString("kinds")
+                            val token = SoloDataObject.getString("token")
+                            val col_token = SoloDataObject.getString("col_token")
+                            val isLike = SoloDataObject.getString("isLike")
 
-                            val bestSoloData = BestSoloData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
-                            bestSoloList.add(0,bestSoloData)
+                            val bestSoloData = BestSoloData(
+                                idx,
+                                thumbnail,
+                                title,
+                                singer,
+                                lyrics,
+                                cnt_play,
+                                cnt_reply,
+                                cnt_like,
+                                nickname,
+                                email,
+                                profile,
+                                song_path,
+                                collaboration,
+                                collabo_email,
+                                collaboration_profile,
+                                date,
+                                kinds,
+                                mr_idx,
+                                token,
+                                col_token,
+                                isLike
+                            )
+                            bestSoloList.add(0, bestSoloData)
                             bestSoloAdapter.notifyDataSetChanged()
                         }
                     }
