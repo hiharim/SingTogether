@@ -2,11 +2,13 @@ package com.harimi.singtogether
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.harimi.singtogether.databinding.ActivityMainBinding
 import com.ismaeldivita.chipnavigation.ChipNavigationBar
+
 
 
 
@@ -18,11 +20,11 @@ class MainActivity : AppCompatActivity() {
     private val fragmentBroadcast : BraodcastFragment=BraodcastFragment() // 방송
     private val fragmentMyPage : MyPageFragment = MyPageFragment() // 마이페이지
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         Log.d(TAG,LoginActivity.user_info.loginUserFCMToken)
         if(savedInstanceState == null) {

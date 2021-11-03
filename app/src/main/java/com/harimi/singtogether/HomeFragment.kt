@@ -103,7 +103,7 @@ class HomeFragment : Fragment() {
             requireActivity().supportFragmentManager
                 .beginTransaction()
                 .replace(R.id.activity_main_frame,totalFragment).
-                addToBackStack(null)
+                 addToBackStack(null)
                 .commit()
         }
 

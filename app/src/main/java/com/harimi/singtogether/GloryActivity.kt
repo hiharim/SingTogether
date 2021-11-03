@@ -62,12 +62,12 @@ class GloryActivity : AppCompatActivity() {
         tv_soloText = findViewById(R.id.tv_soloText)
 
         rv_bestDuet.layoutManager = LinearLayoutManager(this)
-        rv_bestDuet.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+//        rv_bestDuet.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         bestDuetAdapter = BestDuetAdapter(bestDuetList,this)
         rv_bestDuet.adapter = bestDuetAdapter
 
         rv_bestSolo.layoutManager = LinearLayoutManager(this)
-        rv_bestSolo.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
+//        rv_bestSolo.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         bestSoloAdapter = BestSoloAdapter(bestSoloList,this)
         rv_bestSolo.adapter = bestSoloAdapter
 
