@@ -84,9 +84,60 @@ class FirebaseService : FirebaseMessagingService() {
 
             notificationManager.notify(notificationID, notification)
 
-        }else if(message.data["category"].toString().equals("송포스트")){
+        }else if(message.data["category"].toString().equals("송포스트")) {
+            if (LoginActivity.user_info.loginUserEmail.equals("")){
+                LoginActivity.user_info.loginUserNickname = message.data["uploadUserNickName"].toString()
+                LoginActivity.user_info.loginUserProfile = message.data["uploadUserProfile"].toString()
+                LoginActivity.user_info.loginUserFCMToken = message.data["uploadUserFCMToken"].toString()
+                LoginActivity.user_info.loginUserEmail = message.data["uploadUserEmail"].toString()
+            }
 
-        }else if(message.data["category"].toString().equals("듀엣")){
+            val intent = Intent(this, MainActivity::class.java)
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationID = Random.nextInt()
+
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                createNotificationChannel(notificationManager)
+            }
+            intent.putExtra("Notification","PostFragment")
+            val bundle = Bundle()
+            bundle.putInt("idx", message.data["idx"]!!.toInt())
+            bundle.putInt("mr_idx", message.data["mr_idx"]!!.toInt())
+            bundle.putString("thumbnail",message.data["thumbnail"].toString())
+            bundle.putString("title", message.data["title"].toString())
+            bundle.putString("singer", message.data["singer"].toString())
+            bundle.putString("cnt_play",  message.data["cnt_play"].toString())
+            bundle.putString("cnt_reply", message.data["cnt_reply"].toString())
+            bundle.putString("cnt_like", message.data["cnt_like"].toString())
+            bundle.putString("email", message.data["email"].toString())
+            bundle.putString("nickname",  message.data["nickname"].toString())
+            bundle.putString("collabo_email", message.data["collabo_email"].toString())
+            bundle.putString("collaboration_nickname", message.data["collaboration_nickname"].toString())
+            bundle.putString("song_path", message.data["song_path"].toString())
+            bundle.putString("profile", message.data["profile"].toString())
+            bundle.putString("collaboration_profile", message.data["collaboration_profile"].toString())
+            bundle.putString("date", message.data["date"].toString())
+            bundle.putString("kinds", message.data["kinds"].toString())
+            bundle.putString("token", message.data["token"].toString())
+            bundle.putString("col_token", message.data["col_token"].toString())
+            bundle.putString("isLiked",  message.data["isLiked"].toString())
+            intent.putExtra("bundle",bundle)
+
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
+            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setContentTitle(message.data["title"])
+                .setContentText(message.data["message"])
+                .setSmallIcon(R.drawable.singtogether_logo_purple)
+                .setAutoCancel(true)
+                .setVibrate(longArrayOf(1000, 1000, 1000, 1000, 1000))
+                .setOnlyAlertOnce(true)
+                .setContentIntent(pendingIntent)
+                .build()
+
+            notificationManager.notify(notificationID, notification)
+
+        }else if(message.data["category"].toString().equals("듀엣")) {
             if (LoginActivity.user_info.loginUserEmail.equals("")){
                 LoginActivity.user_info.loginUserNickname = message.data["uploadUserNickName"].toString()
                 LoginActivity.user_info.loginUserProfile = message.data["uploadUserProfile"].toString()
@@ -125,7 +176,6 @@ class FirebaseService : FirebaseMessagingService() {
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             val pendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_ONE_SHOT)
-
             val notification = NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle(message.data["title"])
                 .setContentText(message.data["message"])

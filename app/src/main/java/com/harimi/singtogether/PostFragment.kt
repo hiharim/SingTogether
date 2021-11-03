@@ -221,6 +221,40 @@ class PostFragment : Fragment() {
                                         postReviewDataList.size - 1
                                     )
                                 }
+                                //FCM 보내기
+                                if (LoginActivity.user_info.loginUserEmail.equals(email)) {
+                                } else {
+                                    PushSongPostNotification(
+                                        SongPostNotificationData(
+                                            "SingTogether",
+                                            nickname + "님의 포스팅에 " + LoginActivity.user_info.loginUserNickname + " 님이 댓글을 남겼습니다.",
+                                            idx!!,
+                                            thumbnail!!,
+                                            title!!,
+                                            singer!!,
+                                            cnt_play!!,
+                                            cnt_reply!!,
+                                            cnt_like!!,
+                                            nickname!!,
+                                            email!!,
+                                            profile!!,
+                                            song_path!!,
+                                            collaboration_nickname!!,
+                                            collabo_email!!,
+                                            collaboration_profile!!,
+                                            date!!,
+                                            kinds!!,
+                                            mr_idx!!,
+                                            token!!,
+                                            col_token!!,
+                                            isLiked!!,
+                                            "송포스트"
+                                        ),
+                                        token.toString()
+                                    ).also {
+                                        sendNotification(it)
+                                    }
+                                }
                             }
                         }
 
@@ -248,21 +282,6 @@ class PostFragment : Fragment() {
 
         return binding.root
     }
-
-    ////fcm send 메세지 && 코루틴 launch
-    private fun sendNotification(notification: PushNotification) = CoroutineScope(Dispatchers.IO).launch {
-        try {
-            val response = RetrofitInstance.api.postNotification(notification)
-            if(response.isSuccessful) {
-                Log.d(TAG, "Response: 성공")
-            } else {
-                Log.e(TAG, response.errorBody().toString())
-            }
-        } catch(e: Exception) {
-            Log.e(TAG, e.toString())
-        }
-    }
-
 
     fun goToLookAtProfileActivity(getEmail : String,getNickname : String,getProfile : String){
         if (LoginActivity.user_info.loginUserEmail.equals(getEmail)){
@@ -313,6 +332,20 @@ class PostFragment : Fragment() {
         }
     }
 
+    ////fcm send 메세지 && 코루틴 launch
+    private fun sendNotification(notification: PushSongPostNotification) = CoroutineScope(Dispatchers.IO).launch {
+        try {
+            val response = RetrofitInstance.api.postSongPostNotification(notification)
+            if(response.isSuccessful) {
+                Log.d(TAG, "Response: 성공")
+            } else {
+                Log.e(TAG, response.errorBody().toString())
+            }
+        } catch(e: Exception) {
+            Log.e(TAG, e.toString())
+        }
+    }
+
     fun clickLike() {
         val userEmail=LoginActivity.user_info.loginUserEmail
         idx?.let {
@@ -328,10 +361,44 @@ class PostFragment : Fragment() {
                             Log.e(TAG,"clickLike() isLike: $isLike")
 
                             binding.fragmentPostTvLike.text=total_like
-                            if(isLike.equals("true")){
+                            if(isLike.equals("true")) {
                                 binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.like)
                             }else{
                                 binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.non_like)
+                            }
+                            //FCM 보내기
+                            if (LoginActivity.user_info.loginUserEmail.equals(email)) {
+                            } else if(isLike.equals("true")){
+                                PushSongPostNotification(
+                                    SongPostNotificationData(
+                                        "SingTogether",
+                                        nickname + "님의 포스팅에 " + LoginActivity.user_info.loginUserNickname + " 님이 좋아요를 누르셨습니다.",
+                                        idx!!,
+                                        thumbnail!!,
+                                        title!!,
+                                        singer!!,
+                                        cnt_play!!,
+                                        cnt_reply!!,
+                                        total_like!!,
+                                        nickname!!,
+                                        email!!,
+                                        profile!!,
+                                        song_path!!,
+                                        collaboration_nickname!!,
+                                        collabo_email!!,
+                                        collaboration_profile!!,
+                                        date!!,
+                                        kinds!!,
+                                        mr_idx!!,
+                                        token!!,
+                                        col_token!!,
+                                        isLiked!!,
+                                        "송포스트"
+                                    ),
+                                    token.toString()
+                                ).also {
+                                    sendNotification(it)
+                                }
                             }
 
                         } else {

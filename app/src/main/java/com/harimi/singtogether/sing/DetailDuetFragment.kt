@@ -335,7 +335,7 @@ class DetailDuetFragment : Fragment() {
                                         )
                                     }
 
-                                    ////FCM 보내기
+                                    //FCM 보내기
                                     if (LoginActivity.user_info.loginUserEmail.equals(email)) {
 
                                     } else {

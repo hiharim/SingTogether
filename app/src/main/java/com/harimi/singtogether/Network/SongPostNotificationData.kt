@@ -3,6 +3,8 @@ package com.harimi.singtogether.Network
 import com.google.gson.annotations.SerializedName
 
 data class SongPostNotificationData (
+    val app_title: String,
+    val message: String,
     @SerializedName("idx")
     val idx : Int,
     @SerializedName("thumbnail")
@@ -11,8 +13,8 @@ data class SongPostNotificationData (
     val title : String,
     @SerializedName("singer")
     val singer : String,
-    @SerializedName("lyrics")
-    val lyrics : String,
+//    @SerializedName("lyrics")
+//    val lyrics : String,
     @SerializedName("cnt_play")
     val cnt_play : String,
     @SerializedName("cnt_reply")
@@ -44,6 +46,8 @@ data class SongPostNotificationData (
     @SerializedName("col_token")
     val col_token : String,
     @SerializedName("isLike")
-    val isLike : String
+    val isLike : String,
+    @SerializedName("category")
+    val category: String
 
 )

@@ -21,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private val fragmentBroadcast : BraodcastFragment=BraodcastFragment() // 방송
     private val fragmentMyPage : MyPageFragment = MyPageFragment() // 마이페이지
     private val fragmentDetailDuet : DetailDuetFragment = DetailDuetFragment() // 디테일 듀엣프래그먼트
+    private val fragmentPost : PostFragment = PostFragment() // 포스트 프래그먼트
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,13 +49,28 @@ class MainActivity : AppCompatActivity() {
             if(fcm.equals("DetailDuetFragment")) {
                 val bundleData=intent.getBundleExtra("bundle")
                 fragmentDetailDuet.arguments = bundleData
-                changeFragment(fragmentDetailDuet)
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_main_frame,fragmentDetailDuet)
+                    .addToBackStack(null)
+                    .commit()
+
+            }else if(fcm.equals("PostFragment")){
+                val bundleData=intent.getBundleExtra("bundle")
+                fragmentPost.arguments = bundleData
+                supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_main_frame,fragmentPost)
+                    .addToBackStack(null)
+                    .commit()
+
+
             }
         }
 
     }
 
-    private fun changeFragment(fragment :Fragment){
+    private fun changeFragment(fragment :Fragment) {
         supportFragmentManager
             .beginTransaction()
             .replace(R.id.activity_main_frame,fragment)
