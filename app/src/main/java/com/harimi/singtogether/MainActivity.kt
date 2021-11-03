@@ -68,6 +68,15 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        val GloryPost=intent.getStringExtra("GloryPost")
+        if(GloryPost !=null) {
+            if(GloryPost.equals("GloryPost")) {
+                val bundleData=intent.getBundleExtra("bundle")
+                postFragment.arguments = bundleData
+                changeFragment(postFragment)
+            }
+        }
+
     }
 
     private fun changeFragment(fragment :Fragment) {

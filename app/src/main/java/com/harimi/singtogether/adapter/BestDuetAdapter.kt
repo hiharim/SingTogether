@@ -2,6 +2,7 @@ package com.harimi.singtogether.adapter
 
 import android.R.attr.fragment
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -87,10 +88,10 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
 
 
         holder.itemView.setOnClickListener {
+            val intent = Intent(context, MainActivity::class.java)
 
-            val activity =it!!.context as AppCompatActivity
-            val postFragment = PostFragment()
-            var bundle = Bundle()
+            intent.putExtra("GloryPost","GloryPost")
+            val bundle = Bundle()
             bundle.putInt("idx", curData.idx)
             bundle.putInt("mr_idx", curData.mr_idx)
             bundle.putString("title", curData.title)
@@ -109,12 +110,10 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
             bundle.putString("kinds", curData.kinds)
             bundle.putString("token", curData.token)
             bundle.putString("thumbnail", curData.thumbnail)
+            intent.putExtra("bundle",bundle)
+            context.startActivity(intent)
 
-            postFragment.arguments=bundle
-            activity.supportFragmentManager.beginTransaction()
-                .replace(R.id.layoutGlory, postFragment)
-                .addToBackStack(null)
-                .commit()
+
         }
 
     }
