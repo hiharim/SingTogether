@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class BestSoloData (
 
+
         @SerializedName("idx")
         val idx : Int,
         @SerializedName("thumbnail")
@@ -46,4 +47,5 @@ data class BestSoloData (
         val col_token : String,
         @SerializedName("isLike")
         val isLike : String
-        )
+
+)
