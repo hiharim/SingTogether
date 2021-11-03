@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.LyricsData
+import com.harimi.singtogether.EarPhoneDialog
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
@@ -131,6 +132,9 @@ class RecordActivity: AppCompatActivity()  {
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(song_path)
         mediaPlayer.prepare()
+
+        val dialog = EarPhoneDialog(this)
+        dialog.myDig()
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생

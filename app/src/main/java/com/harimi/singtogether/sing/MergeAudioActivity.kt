@@ -14,6 +14,7 @@ import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.LyricsData
+import com.harimi.singtogether.EarPhoneDialog
 import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
@@ -64,6 +65,8 @@ class MergeAudioActivity : AppCompatActivity() {
         "${externalCacheDir?.absolutePath}/merge_recording.m4a"
     }
     var asyncDialog : ProgressDialog?=null
+    private val timeList: java.util.ArrayList<String> = java.util.ArrayList()
+    private val nextList: java.util.ArrayList<String> = java.util.ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,24 +93,35 @@ class MergeAudioActivity : AppCompatActivity() {
         binding.activityRecordTvTitle.text=title
         // 가수
         binding.activityRecordTvSinger.text=singer
-          val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
+        // 가사
+        val array = lyrics?.split(" ★".toRegex())?.toTypedArray()
         if (array != null) {
             for (i in array.indices) {
                 println(array[i])
                 val seconds=array[i]
-                //7
-                val line= array[i].substring(6)
+                val line= array[i].substring(9)
                 val lyricsData=LyricsData(seconds, line)
                 lyricsList.add(lyricsData)
 
+                val times=array[i].substring(1,5)
+                Log.e("레코드액티비티","times"+times)
+                timeList.add(times)
+
+                val next=array[i].substring(1,5)
+                nextList.add(next)
             }
         }
+        nextList.removeAt(0)
+
         binding.activityRecordRv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityRecordRv.setHasFixedSize(true)
 
         mediaPlayer = MediaPlayer()
         mediaPlayer.setDataSource(duet_path)
         mediaPlayer.prepare()
+
+        val dialog = EarPhoneDialog(this)
+        dialog.myDig()
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생

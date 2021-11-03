@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.broadcast.LiveStreamingViewActivity
+import com.kakao.sdk.user.UserApiClient
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -30,7 +31,7 @@ import retrofit2.Retrofit
     마이페이지 프래그먼트
  */
 class SettingFragment : Fragment() {
-    private var TAG = "SETTING_ACTIVITY"
+    private var TAG = "SETTING_FRAGMENT"
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
@@ -72,8 +73,16 @@ class SettingFragment : Fragment() {
                 if (LoginActivity.user_info.loginUserSocial.equals("google")){
                     FirebaseAuth.getInstance().signOut(); //구글로그아웃
                     googleSignInClient.signOut()
-                }else{
-                    //카카오로그아웃
+                }else if(LoginActivity.user_info.loginUserSocial.equals("kakao")){
+                    //카카오 로그아웃
+                    UserApiClient.instance.logout { error ->
+                        if (error != null) {
+                            Log.e(TAG, "로그아웃 실패. SDK에서 토큰 삭제됨", error)
+                        }
+                        else {
+                            Log.i(TAG, "로그아웃 성공. SDK에서 토큰 삭제됨")
+                        }
+                    }
                 }
 
                 val intent = Intent(context, LoginActivity::class.java)

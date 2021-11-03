@@ -36,19 +36,16 @@ class LoginActivity : AppCompatActivity() {
     private var user_profile: String? = null // 프로필
     private var user_social: String? = null // 소셜 구분
     private var user_token: String? = null // 토큰
-
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
-
     private lateinit var gso: GoogleSignInOptions.Builder
-
     var auth: FirebaseAuth? = null
     val GOOGLE_REQUEST_CODE = 99
     val TAG = "googleLogin"
     private lateinit var googleSignInClient: GoogleSignInClient
-
     private var myToken :String ?= ""
     private lateinit var mAuth : FirebaseAuth
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityLoginBinding.inflate(layoutInflater)
@@ -113,34 +110,34 @@ class LoginActivity : AppCompatActivity() {
                     )
                     user_token=tokenInfo.appId.toString()
 
-
-
                 }
+
             }
-
-
             saveDate(user_email.toString())
+           // user_social="kakao"
+            loginSuccess()
+
 
             // 프로필액티비티로 이동
 
-            user_info.loginUserEmail = user_email.toString()
-            user_info.loginUserNickname = user_nickname.toString()
-            user_info.loginUserProfile =user_profile.toString()
-            user_info.loginUserSocial =user_social.toString()
-            user_info.loginUserSocial =myToken.toString()
-
-            val intent = Intent(this, ProfileActivity::class.java)
-            intent.putExtra("EMAIL", user_email)
-            intent.putExtra("NICKNAME", user_nickname)
-            intent.putExtra("PROFILE", user_profile)
-            intent.putExtra("SOCIAL", user_social)
-            intent.putExtra("TOKEN", myToken)
-            startActivity(intent)
-            finish()
+//            user_info.loginUserEmail = user_email.toString()
+//            user_info.loginUserNickname = user_nickname.toString()
+//            user_info.loginUserProfile =user_profile.toString()
+//            user_info.loginUserSocial =user_social.toString()
+//            user_info.loginUserFCMToken =myToken.toString()
+//
+//            val intent = Intent(this, ProfileActivity::class.java)
+//            intent.putExtra("EMAIL", user_email)
+//            intent.putExtra("NICKNAME", user_nickname)
+//            intent.putExtra("PROFILE", user_profile)
+//            intent.putExtra("SOCIAL", user_social)
+//            intent.putExtra("TOKEN", myToken)
+//            startActivity(intent)
+//            finish()
         }
     }
 
-    private fun kakaoUserInfo(){
+    private fun kakaoUserInfo() {
         // 카카오 사용자 정보 요청 (기본)
         UserApiClient.instance.me { user, error ->
             if (error != null) {
@@ -230,9 +227,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     ///구글 로그인이 성공할 시
-    private fun loginSuccess(){
+    private fun loginSuccess() {
         retrofit = RetrofitClient.getInstance()
         retrofitService = retrofit.create(RetrofitService::class.java)
+        Log.d(TAG, "loginSuccess : $user_email")
         retrofitService.requestAutoLogin(user_email.toString())
             .enqueue(object : Callback<String> {
                 override fun onResponse(
@@ -244,7 +242,6 @@ class LoginActivity : AppCompatActivity() {
                         val jsonObject = JSONObject(response.body().toString())
                         val result = jsonObject.getBoolean("result")
                         Log.d(TAG, "shared " + result.toString())
-
 
                         if (result) {
                             val email = jsonObject.getString("email")
