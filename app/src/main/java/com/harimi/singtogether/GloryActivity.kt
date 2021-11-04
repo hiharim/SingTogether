@@ -1,8 +1,10 @@
 package com.harimi.singtogether
 
 import android.content.DialogInterface
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -39,11 +41,15 @@ class GloryActivity : AppCompatActivity() {
     private lateinit var rv_bestSolo : RecyclerView
     private lateinit var tv_duetText : TextView
     private lateinit var tv_soloText : TextView
+    private lateinit var ib_back : ImageButton
 
+
+    private lateinit var currentYear : String
     private lateinit var getYear : String
     private lateinit var getMinYear : String
-
     private  var choiceGetYear : String ?= ""
+
+
     private val bestDuetList: ArrayList<BestDuetData> = ArrayList()
     private lateinit var bestDuetAdapter: BestDuetAdapter
 
@@ -53,6 +59,13 @@ class GloryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_glory)
 
+        initView()
+
+    }
+
+
+    private fun initView(){
+
         iv_backArrow = findViewById(R.id.iv_backArrow)
         tv_year = findViewById(R.id.tv_year)
         iv_forwardArrow = findViewById(R.id.iv_forwardArrow)
@@ -60,6 +73,7 @@ class GloryActivity : AppCompatActivity() {
         rv_bestSolo = findViewById(R.id.rv_bestSolo)
         tv_duetText = findViewById(R.id.tv_duetText)
         tv_soloText = findViewById(R.id.tv_soloText)
+        ib_back = findViewById(R.id.ib_back)
 
         rv_bestDuet.layoutManager = LinearLayoutManager(this)
 //        rv_bestDuet.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
@@ -74,55 +88,141 @@ class GloryActivity : AppCompatActivity() {
         var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
         var timeArr = nowYear.split("-")
         var year = timeArr[0].toInt() -1
+        ////최대 년도 비교군 .
         getYear = year.toString()
-        Log.d(TAG, getYear)
+        currentYear = getYear.toString()
+        Log.d(TAG,  getYear)
+        Log.d(TAG,  currentYear)
+        //처음 액티비티볼때 forwardArrow  색깔 변경해주기
+        iv_forwardArrow.setColorFilter(R.color.color_88000000);
+
+        //뒤로가기 화살표 눌렀을때
+        iv_backArrow.setOnClickListener {
+            if (currentYear.equals(getMinYear)){
+                Toast.makeText(this,"뒤의 게시물이 없습니다.",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            var getCurrentYear : Int = currentYear.toInt()-1
+            currentYear = getCurrentYear.toString()
+            Log.d(TAG, "iv_backArrow: "+ currentYear)
+            if (currentYear.equals(getMinYear)){
+                iv_backArrow.setColorFilter(Color.parseColor("#88000000"))
+                iv_forwardArrow.setColorFilter(Color.parseColor("#000000"))
+            }else{
+                iv_backArrow.setColorFilter(Color.parseColor("#000000"))
+                iv_forwardArrow.setColorFilter(Color.parseColor("#000000"))
+            }
+
+            bestDuetList.clear()
+            bestSoloList.clear()
+            bestDuetAdapter.notifyDataSetChanged()
+            bestSoloAdapter.notifyDataSetChanged()
+            loadGloryPost(getCurrentYear.toString())
+
+            tv_year.setText(getCurrentYear.toString())
+            tv_duetText.setText(getCurrentYear.toString()+"년도 싱투게더 베스트 듀엣")
+            tv_soloText.setText(getCurrentYear.toString()+"년도 싱투게더 베스트 솔로")
+        }
+
+        //앞으로가기 화살표 눌렀을 때
+        iv_forwardArrow.setOnClickListener {
+            if (currentYear.equals(getYear)){
+                Toast.makeText(this,"앞의 게시물이 없습니다.",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            var getCurrentYear : Int = currentYear.toInt()+1
+            currentYear = getCurrentYear.toString()
+            Log.d(TAG, "iv_backArrow: "+ currentYear)
+            if (currentYear.equals(getYear)){
+                iv_backArrow.setColorFilter(Color.parseColor("#88000000"))
+                iv_backArrow.setColorFilter(Color.parseColor("#000000"))
+            }else{
+                iv_forwardArrow.setColorFilter(Color.parseColor("#000000"))
+                iv_backArrow.setColorFilter(Color.parseColor("#000000"))
+            }
+
+            bestDuetList.clear()
+            bestSoloList.clear()
+            bestDuetAdapter.notifyDataSetChanged()
+            bestSoloAdapter.notifyDataSetChanged()
+            loadGloryPost(getCurrentYear.toString())
+
+            tv_year.setText(getCurrentYear.toString())
+            tv_duetText.setText(getCurrentYear.toString()+"년도 싱투게더 베스트 듀엣")
+            tv_soloText.setText(getCurrentYear.toString()+"년도 싱투게더 베스트 솔로")
+        }
 
 
 
+        //작년의 명예의전당 게시물들 올려주기
         loadGloryPost(getYear)
 
+
+        ib_back.setOnClickListener {
+            finish()
+        }
+
         tv_year.setOnClickListener {
-            ////dialog에 들어갈 리스트 셋해주기 , 동적사이즈와 value
-            var list_one = ArrayList<String>()
-            var plusInt : Int = 0
-
-                for (i in getMinYear.toInt() .. getYear.toInt()){
-                    var plusYear = getMinYear.toInt()+plusInt
-                    list_one.add(plusYear.toString())
-                    Log.d(TAG,  plusYear.toString())
-                    plusInt ++
-                }
-                var items = Array(list_one.size, {item->""})
-                for (i in 0 until list_one.size) {
-                    items[i] = list_one.get(i)
-                }
-
-            val dialog = AlertDialog.Builder(this)
-                dialog.setTitle("년도 선택")
-                dialog.setSingleChoiceItems(items, -1) { dialog, which ->
-                    choiceGetYear = items[which]
-            }
-
-            dialog.setPositiveButton("선택"){dialog, which ->
-
-                Log.d(TAG,  getYear)
-                bestDuetList.clear()
-                bestSoloList.clear()
-                bestDuetAdapter.notifyDataSetChanged()
-                bestSoloAdapter.notifyDataSetChanged()
-                loadGloryPost(choiceGetYear!!)
-
-                tv_year.setText(choiceGetYear)
-                tv_duetText.setText(choiceGetYear+"년도 싱투게더 베스트 듀엣")
-                tv_soloText.setText(choiceGetYear+"년도 싱투게더 베스트 솔로")
-            }
-            dialog.setNeutralButton("취소") {dialog, which ->
-                dialog.dismiss()
-            }
-            dialog.show()
+            alertDialog()
         }
     }
+    private fun alertDialog(){
+        ////dialog에 들어갈 리스트 셋해주기 , 동적사이즈와 value
+        var list_one = ArrayList<String>()
+        var plusInt : Int = 0
+        for (i in getMinYear.toInt() .. getYear.toInt()){
+            var plusYear = getMinYear.toInt()+plusInt
+            list_one.add(plusYear.toString())
+//            Log.d(TAG,  plusYear.toString())
+            plusInt ++
+        }
+        var items = Array(list_one.size, {item->""})
 
+        for (i in 0 until list_one.size) {
+            items[i] = list_one.get(i)
+        }
+
+        val dialog = AlertDialog.Builder(this)
+        dialog.setTitle("년도 선택")
+        dialog.setCancelable(false)
+        dialog.setSingleChoiceItems(items, -1) { dialog, which ->
+            choiceGetYear = items[which]
+        }
+
+        dialog.setPositiveButton("선택"){dialog, which ->
+            Log.d(TAG,  getYear)
+            Log.d(TAG,  choiceGetYear)
+
+            if (choiceGetYear.equals(getMinYear)){
+                iv_backArrow.setColorFilter(Color.parseColor("#88000000"))
+                iv_forwardArrow.setColorFilter(Color.parseColor("#000000"));
+            }else if(choiceGetYear.equals(getYear)){
+                iv_forwardArrow.setColorFilter(Color.parseColor("#88000000"));
+                iv_backArrow.setColorFilter(Color.parseColor("#000000"));
+            }else{
+                iv_forwardArrow.setColorFilter(Color.parseColor("#000000"))
+                iv_backArrow.setColorFilter(Color.parseColor("#000000"))
+            }
+            currentYear = choiceGetYear.toString()
+
+
+            bestDuetList.clear()
+            bestSoloList.clear()
+            bestDuetAdapter.notifyDataSetChanged()
+            bestSoloAdapter.notifyDataSetChanged()
+            loadGloryPost(choiceGetYear!!)
+            tv_year.setText(choiceGetYear)
+            tv_duetText.setText(choiceGetYear+"년도 싱투게더 베스트 듀엣")
+            tv_soloText.setText(choiceGetYear+"년도 싱투게더 베스트 솔로")
+        }
+        dialog.setNeutralButton("취소") {dialog, which ->
+
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
     private fun loadGloryPost(choiceYear : String){
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
