@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <ImageView
         android:id="@+id/rv_fragment_duet_iv_thumbnail"
         android:layout_width="87dp"
@@ -131,7 +132,26 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:src="@mipmap/ic_launcher" />
+
+<!--        <ImageView-->
+<!--            android:id="@+id/badge"-->
+<!--            android:layout_marginLeft="25dp"-->
+<!--            android:layout_marginTop="15dp"-->
+<!--            android:layout_width="20dp"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:src="@drawable/badge" />-->
+
     </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/badge"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignRight="@+id/cardView"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginTop="100dp"
+        android:layout_below="@+id/rv_best_singer_tv_count_play"
+        android:src="@drawable/badge" />
 
     <TextView
         android:id="@+id/rv_fragment_duet_tv_nickname"
@@ -139,13 +159,15 @@
         android:layout_below="@+id/iv_comment"
         android:text="닉네임"
         android:layout_marginTop="13dp"
-        android:layout_marginLeft="2dp"
+        android:layout_marginLeft="7dp"
         android:textColor="@color/black"
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+
     <LinearLayout
+        android:id="@+id/linear"
         android:background="@drawable/duet_shape"
         android:padding="10dp"
         android:gravity="center_horizontal"
@@ -215,6 +237,9 @@
             android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
     </LinearLayout>
+
+
 
 </RelativeLayout>

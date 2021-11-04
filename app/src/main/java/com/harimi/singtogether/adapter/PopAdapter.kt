@@ -98,6 +98,7 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             bundle.putString("date",curData.date)
             bundle.putString("kinds",curData.kinds)
             bundle.putString("token",curData.token)
+            bundle.putString("col_token",curData.col_token)
             bundle.putString("thumbnail",curData.thumbnail)
             postFragment.arguments=bundle
 

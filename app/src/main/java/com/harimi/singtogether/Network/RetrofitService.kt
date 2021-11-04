@@ -59,6 +59,7 @@ interface RetrofitService {
     fun requestSongPostLike (
         @Field("songPost_idx") songPost_idx: Int,
         @Field("email") email: String,
+        @Field("songPost_email") songPost_email: String,
     ) : Call<String>
 
     @FormUrlEncoded

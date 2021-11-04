@@ -114,6 +114,9 @@ class PostFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         binding= FragmentPostBinding.inflate(inflater,container,false)
 
+//        if(col_token==null){
+//            col_token=token
+//        }
         binding.tvUploadUserNickName.text=nickname
         binding.tvUploadCollaboNickName.text=collaboration_nickname
         binding.tvSongTitle.text=title
@@ -203,6 +206,7 @@ class PostFragment : Fragment() {
                                 Log.d(TAG, body)
                                 var jsonObject = JSONObject(response.body().toString())
                                 var result = jsonObject.getBoolean("result")
+                                Log.e(TAG,"댓글달기 col_token: $col_token")
                                 if (result) {
                                     binding.etWriteReview.setText("")
                                     var getIdx = jsonObject.getString("idx")
@@ -350,7 +354,7 @@ class PostFragment : Fragment() {
         val userEmail=LoginActivity.user_info.loginUserEmail
         idx?.let {
             userEmail.let { it1 ->
-                retrofitService.requestSongPostLike(it, it1).enqueue(object : Callback<String> {
+                retrofitService.requestSongPostLike(it, it1,email!!).enqueue(object : Callback<String> {
                     // 통신에 성공한 경우
                     override fun onResponse(call: Call<String>, response: Response<String>) {
                         if (response.isSuccessful) {
@@ -359,7 +363,7 @@ class PostFragment : Fragment() {
                             val isLike = jsonObject.getString("isLike")
                             Log.e(TAG,"clickLike() total_like: $total_like")
                             Log.e(TAG,"clickLike() isLike: $isLike")
-
+                            Log.e(TAG,"clickLike() col_token: $col_token")
                             binding.fragmentPostTvLike.text=total_like
                             if(isLike.equals("true")) {
                                 binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.like)
