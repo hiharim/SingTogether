@@ -11,8 +11,10 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.PopData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import de.hdodenhof.circleimageview.CircleImageView
 
 class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAdapter.PopViewHolder>() {
 
@@ -22,8 +24,10 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
         val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
-        val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
-        val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
+        val profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_profile)
+        val iv_like=v.findViewById<ImageView>(R.id.home_like)
+        val iv_like_red=v.findViewById<ImageView>(R.id.home_like_red)
+        val collabo_profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_collabo_profile)
         val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
         val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_play)
@@ -37,7 +41,10 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         val rank=v.findViewById<TextView>(R.id.rv_pop_tv_rank)
         val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
-        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+        val col_token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_col_token)
+        val isLike=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isLike)
+        val badge=v.findViewById<ImageView>(R.id.badge_home)
+        val badge_collabo=v.findViewById<ImageView>(R.id.badge_colloabo_home)
     }
 
 
@@ -64,16 +71,27 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         holder.token.text=curData.token
         holder.mr_idx.text= curData.mr_idx.toString()
         holder.rank.text= curData.rank.toString()
+        holder.isLike.text=curData.isLike
+        holder.col_token.text=curData.col_token
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
+        val userEmail= LoginActivity.user_info.loginUserEmail
+        if(holder.isLike.text.equals(userEmail)) {
+            holder.iv_like.visibility=View.INVISIBLE
+            holder.iv_like_red.visibility=View.VISIBLE
+        }else{
+            holder.iv_like.visibility=View.VISIBLE
+            holder.iv_like_red.visibility=View.INVISIBLE
+        }
+
         if(holder.email.text.equals(holder.collabo_email.text)){
             holder.collabo_profile.visibility= View.GONE
             holder.collabo_nickname.visibility= View.GONE
             holder.and.visibility= View.GONE
-            holder.collaboCardView.visibility= View.GONE
+            //holder.collaboCardView.visibility= View.GONE
         }
 
         holder.itemView.setOnClickListener { v->
@@ -99,6 +117,7 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             bundle.putString("kinds",curData.kinds)
             bundle.putString("token",curData.token)
             bundle.putString("col_token",curData.col_token)
+            bundle.putString("isLike",curData.isLike)
             bundle.putString("thumbnail",curData.thumbnail)
             postFragment.arguments=bundle
 

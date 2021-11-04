@@ -124,7 +124,7 @@ class PopFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onResume() {
         super.onResume()
-        homePostList.clear()
+        popPostList.clear()
         loadHomePost()
     }
     companion object {

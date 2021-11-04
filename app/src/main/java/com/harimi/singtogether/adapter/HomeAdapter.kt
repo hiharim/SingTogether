@@ -40,10 +40,12 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
         val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
-        val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
+        //val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
+        val profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_profile)
         val iv_like=v.findViewById<ImageView>(R.id.home_like)
         val iv_like_red=v.findViewById<ImageView>(R.id.home_like_red)
-        val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
+        //val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
+        val collabo_profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_collabo_profile)
         val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
         val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_play)
@@ -58,7 +60,9 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
         val isLike=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isLike)
-        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+        //val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+        val badge=v.findViewById<ImageView>(R.id.badge_home)
+        val badge_collabo=v.findViewById<ImageView>(R.id.badge_colloabo_home)
     }
 
 
@@ -104,7 +108,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             holder.collabo_profile.visibility=View.GONE
             holder.collabo_nickname.visibility=View.GONE
             holder.and.visibility=View.GONE
-            holder.collaboCardView.visibility=View.GONE
+           // holder.collaboCardView.visibility=View.GONE
         }
 
         val context: Context = holder.itemView.getContext()

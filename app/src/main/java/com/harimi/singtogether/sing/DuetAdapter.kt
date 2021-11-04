@@ -15,6 +15,7 @@ import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
+import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -33,7 +34,8 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
         val badge=v.findViewById<ImageView>(R.id.badge)
         val title=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_singer)
-        val profile=v.findViewById<ImageView>(R.id.rv_fragment_duet_iv_profile)
+        //val profile=v.findViewById<ImageView>(R.id.rv_fragment_duet_iv_profile)
+        val profile=v.findViewById<CircleImageView>(R.id.rv_fragment_duet_iv_profile)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_nickname)
         val email=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_email)
         val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_count_play)
