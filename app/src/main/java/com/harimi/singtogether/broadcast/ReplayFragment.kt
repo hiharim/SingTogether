@@ -65,6 +65,7 @@ class ReplayFragment : Fragment() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
         replayDataList.clear()
+        replayAdapter.notifyDataSetChanged()
         replayPostLoad()
     }
 
@@ -141,8 +142,8 @@ class ReplayFragment : Fragment() {
 
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)
-                                    for (j in 0 until badgeArray.length()) {
-                                        var badgeObject = badgeArray.getJSONObject(j)
+                                    for (i in 0 until badgeArray.length()) {
+                                        var badgeObject = badgeArray.getJSONObject(i)
                                         var email = badgeObject.getString("email")
                                         if (email.equals(uploadUserEmail)){
                                             isBadge= true
@@ -163,13 +164,15 @@ class ReplayFragment : Fragment() {
                                         replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
                                         if (replayPostIdx.equals(idx)){
                                             like= true
-                                            Log.d(TAG, like.toString())
+                                            Log.d(TAG,"liked1: "+ like.toString())
                                             break
                                         }else{
                                             like= false
-                                            Log.d(TAG, like.toString())
+                                            Log.d(TAG,"liked2: "+ like.toString())
                                         }
                                     }
+                                }else{
+                                    like= false
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
                                     replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken,isBadge!!)
