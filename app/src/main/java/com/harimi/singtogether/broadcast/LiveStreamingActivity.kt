@@ -178,15 +178,15 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     fun initView(){
 
         //바텀 네비게이션 안보이게 하기
-        decorView = window.decorView
-        uiOption = window.decorView.systemUiVisibility
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) uiOption =
-            uiOption or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) uiOption =
-            uiOption or View.SYSTEM_UI_FLAG_FULLSCREEN
-        uiOption =
-            uiOption or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-        decorView!!.setSystemUiVisibility(uiOption)
+//        decorView = window.decorView
+//        uiOption = window.decorView.systemUiVisibility
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) uiOption =
+//            uiOption or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) uiOption =
+//            uiOption or View.SYSTEM_UI_FLAG_FULLSCREEN
+//        uiOption =
+//            uiOption or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+//        decorView!!.setSystemUiVisibility(uiOption)
 
 
         /////화면 크기설정

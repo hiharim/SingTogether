@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
@@ -25,6 +26,7 @@ import com.harimi.singtogether.databinding.FragmentMyPageBinding
 import com.harimi.singtogether.sing.DuetFragment
 import com.harimi.singtogether.sing.MRFragment
 import com.harimi.singtogether.sing.SingPagerAdapter
+import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +42,11 @@ import retrofit2.Retrofit
 
 class MyPageFragment : Fragment() {
     private var TAG :String = "MyPageFragment_"
+
+
+    private lateinit var fragment_my_page_iv_profile:CircleImageView
+    private lateinit var fragment_my_page_tv_nickname:TextView
+    private lateinit var iv_badge:ImageView
 
 
     private lateinit var tv_myFollowing:TextView
@@ -60,6 +67,7 @@ class MyPageFragment : Fragment() {
         Log.e(TAG, "onResume")
 
         setFollowAndFollowing(tv_myFollow,tv_myFollowing)
+        setMyProfile(fragment_my_page_tv_nickname,fragment_my_page_iv_profile,iv_badge)
     }
 
     override fun onStart() {
@@ -84,32 +92,14 @@ class MyPageFragment : Fragment() {
         Log.e(TAG, "onCreateView")
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
-        val nickname=LoginActivity.user_info.loginUserNickname
-        val profile =LoginActivity.user_info.loginUserProfile
-
-        // 2. 바인딩으로 TextView 등에 접근
-        // 사용자 닉네임
-        binding.fragmentMyPageTvNickname.text=nickname
 
         tv_myFollow = binding.tvMyFollow.findViewById(R.id.tv_myFollow)
         tv_myFollowing = binding.tvMyFollowing.findViewById(R.id.tv_myFollowing)
-        // 사용자 프로필
-        if (profile.equals("null")){
+        fragment_my_page_iv_profile = binding.fragmentMyPageIvProfile.findViewById(R.id.fragment_my_page_iv_profile)
+        fragment_my_page_tv_nickname = binding.fragmentMyPageTvNickname.findViewById(R.id.fragment_my_page_tv_nickname)
+        iv_badge = binding.ivBadge.findViewById(R.id.iv_badge)
 
-        }else{
-            Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.fragmentMyPageIvProfile)
-        }
-
-        val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
-
-
-        if (LoginActivity.user_info.loginUserGetBadge ==true){
-            binding.ivBadge.visibility =View.VISIBLE
-        }else{
-            binding.ivBadge.visibility =View.GONE
-        }
-
-
+        setMyProfile(fragment_my_page_tv_nickname,fragment_my_page_iv_profile,iv_badge)
         setFollowAndFollowing(binding.tvMyFollow, binding.tvMyFollowing)
 
         binding.tvMyFollowing.setOnClickListener {
@@ -125,7 +115,7 @@ class MyPageFragment : Fragment() {
             intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
             startActivity(intent)
         }
-
+        val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
         // 3개의 Fragment Add
         pagerAdapter.addFragment(MyPostFragment())
         pagerAdapter.addFragment(MySongFragment())
@@ -169,6 +159,70 @@ class MyPageFragment : Fragment() {
 
         // 3. 프래그먼트 레이아웃 뷰 반환
         return binding.root
+    }
+    private fun setMyProfile(nickName: TextView, profileImage: CircleImageView, badge:ImageView){
+
+        retrofit = RetrofitClient.getInstance()
+        retrofitService = retrofit.create(RetrofitService::class.java)
+
+        retrofitService.requestAutoLogin(LoginActivity.user_info.loginUserEmail)
+            .enqueue(object : Callback<String> {
+                override fun onResponse(
+                    call: Call<String>,
+                    response: Response<String>
+                ) {
+                    if (response.isSuccessful) {
+                        Log.d(TAG, "shared " + response.body() + response.message())
+                        val jsonObject = JSONObject(response.body().toString())
+                        val result = jsonObject.getBoolean("result")
+                        Log.d(TAG, "shared " + result.toString())
+
+                        if (result) {
+                            val email = jsonObject.getString("email")
+                            val nickname = jsonObject.getString("nickname")
+                            val profile = jsonObject.getString("profile")
+                            val social = jsonObject.getString("social")
+                            val token = jsonObject.getString("token")
+                            val isBadge = jsonObject.getBoolean("isBadge")
+
+                            LoginActivity.user_info.loginUserGetBadge = isBadge
+                            LoginActivity.user_info.loginUserEmail = email.toString()
+                            LoginActivity.user_info.loginUserNickname = nickname.toString()
+                            LoginActivity.user_info.loginUserProfile = profile.toString()
+                            LoginActivity.user_info.loginUserSocial = social.toString()
+                            LoginActivity.user_info.loginUserFCMToken = token.toString()
+
+                            // 사용자 닉네임
+                            nickName.text=nickname
+
+
+                            // 사용자 프로필
+                            if (profile.equals("null")){
+
+                            }else{
+                                Glide.with(requireActivity()).load("http://3.35.236.251/"+profile).into(profileImage)
+                            }
+
+                            if (LoginActivity.user_info.loginUserGetBadge ==true){
+                                badge.visibility =View.VISIBLE
+                            }else{
+                                badge.visibility =View.GONE
+                            }
+                        }
+
+                    } else {
+                        Log.e("onResponse", "실패 : " + response.errorBody())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.d(
+                        "실패:", "Failed API call with call: " + call +
+                                " + exception: " + t
+                    )
+                }
+
+            })
     }
 
     private fun setFollowAndFollowing(follow:TextView, following:TextView){
