@@ -42,6 +42,7 @@ class ReplayFragment : Fragment() {
     private lateinit var  tv_noReplay: TextView
     private lateinit var replayAdapter: ReplayFragmentAdapter
     private var like :Boolean ?= false
+    private var isBadge :Boolean ?= false
     private var replayPostLikeIdx :String ?= "null"
     private lateinit var swipeRefresh: SwipeRefreshLayout
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -114,6 +115,7 @@ class ReplayFragment : Fragment() {
                         val replayPostList = replayObject.getString("replayPostList")
                         val postArray = JSONArray(replayPostList)
                         val userLikeList = replayObject.getString("userLikeList")
+                        val badgeList = replayObject.getString("badgeList")
 
                         for (i in 0 until postArray.length()) {
                             if (postArray.length() ==0 || postArray.equals("null")){
@@ -137,12 +139,26 @@ class ReplayFragment : Fragment() {
                                 var time = postObject.getString("time")
                                 var uploadUserFCMToken = postObject.getString("uploadUserFCMToken")
 
-
+                                if (!badgeList.equals("")) {
+                                    val badgeArray = JSONArray(badgeList)
+                                    for (j in 0 until badgeArray.length()) {
+                                        var badgeObject = badgeArray.getJSONObject(j)
+                                        var email = badgeObject.getString("email")
+                                        if (email.equals(uploadUserEmail)){
+                                            isBadge= true
+                                            Log.d(TAG, isBadge.toString())
+                                            break
+                                        }else{
+                                            isBadge= false
+                                            Log.d(TAG, isBadge.toString())
+                                        }
+                                    }
+                                }
 
                                 if (!userLikeList.equals("")){
                                 val likeArray = JSONArray(userLikeList)
-                                    for (i in 0 until likeArray.length()) {
-                                        var likeObject = likeArray.getJSONObject(i)
+                                    for (l in 0 until likeArray.length()) {
+                                        var likeObject = likeArray.getJSONObject(l)
                                         var replayPostIdx = likeObject.getString("replayPostIdx")
                                         replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
                                         if (replayPostIdx.equals(idx)){
@@ -156,8 +172,9 @@ class ReplayFragment : Fragment() {
                                     }
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken)
-                                replayDataList.add(0, replayData)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken,isBadge!!)
+
+                                    replayDataList.add(0, replayData)
                                 replayAdapter.notifyDataSetChanged()
                             }
                         }

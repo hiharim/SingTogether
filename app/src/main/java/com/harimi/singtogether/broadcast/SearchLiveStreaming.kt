@@ -37,6 +37,7 @@ class SearchLiveStreaming : AppCompatActivity() {
     private lateinit var iv_finishActivity : ImageView
     private lateinit var iv_search : ImageButton
     private var like :Boolean ?= false
+    private var isBadge :Boolean ?= false
     private var replayPostLikeIdx :String ?= "null"
     private lateinit var rv_searchLiveRecyclerView : RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
@@ -86,6 +87,11 @@ class SearchLiveStreaming : AppCompatActivity() {
                 Toast.makeText(applicationContext,"검색어를 입력해주세요",Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
+
+            liveStreamingPostList.clear()
+            replayDataList.clear()
+            replayFragmentAdapter.notifyDataSetChanged()
+            liveFragmentAdapter.notifyDataSetChanged()
             liveStreamingPostLoad(searchInput)
         }
     }
@@ -111,7 +117,7 @@ class SearchLiveStreaming : AppCompatActivity() {
                     val liveStreamingList = jsonObject.getString("liveStreamingList")
                     val replayPostList = jsonObject.getString("replayPostList")
                     val userLikeList = jsonObject.getString("userLikeList")
-
+                    val badgeList = jsonObject.getString("badgeList")
                     if (liveStreamingList.equals("") && replayPostList.equals("")){
                         tv_notify.visibility = View.VISIBLE
                         rv_searchLiveRecyclerView.visibility = View.GONE
@@ -157,12 +163,26 @@ class SearchLiveStreaming : AppCompatActivity() {
                                 val time = replayObject.getString("time")
                                 val uploadUserFCMToken = replayObject.getString("uploadUserFCMToken")
 
-
+                                if (!badgeList.equals("")) {
+                                    val badgeArray = JSONArray(badgeList)
+                                    for (j in 0 until badgeArray.length()) {
+                                        var badgeObject = badgeArray.getJSONObject(j)
+                                        var email = badgeObject.getString("email")
+                                        if (email.equals(uploadUserEmail)){
+                                            isBadge= true
+                                            Log.d(TAG, isBadge.toString())
+                                            break
+                                        }else{
+                                            isBadge= false
+                                            Log.d(TAG, isBadge.toString())
+                                        }
+                                    }
+                                }
 
                                 if (!userLikeList.equals("")){
                                     val likeArray = JSONArray(userLikeList)
-                                    for (i in 0 until likeArray.length()) {
-                                        var likeObject = likeArray.getJSONObject(i)
+                                    for (l in 0 until likeArray.length()) {
+                                        var likeObject = likeArray.getJSONObject(l)
                                         var replayPostIdx = likeObject.getString("replayPostIdx")
                                         replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
                                         if (replayPostIdx.equals(idx)){
@@ -176,7 +196,7 @@ class SearchLiveStreaming : AppCompatActivity() {
                                     }
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken,isBadge!!)
                                 replayDataList.add(0, replayData)
                                 liveFragmentAdapter.notifyDataSetChanged()
                             }

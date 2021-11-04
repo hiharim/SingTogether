@@ -216,6 +216,18 @@
                         app:layout_constraintStart_toEndOf="@+id/iv_uploadUserProfile"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0" />
+
+                    <ImageView
+                        android:id="@+id/iv_badge"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="28dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/iv_uploadUserProfile"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="1.0"
+                        app:srcCompat="@drawable/badge" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>

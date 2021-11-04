@@ -38,16 +38,16 @@
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"/>
 
-<!--            <ImageButton-->
-<!--                android:id="@+id/fragment_my_page_iv_setting"-->
-<!--                android:layout_width="0px"-->
-<!--                android:layout_height="30dp"-->
-<!--                android:padding="15dp"-->
-<!--                android:layout_marginRight="12dp"-->
-<!--                app:layout_constraintRight_toRightOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                android:background="@drawable/ic_baseline_settings_24" />-->
+            <ImageButton
+                android:id="@+id/fragment_my_page_iv_setting"
+                android:layout_width="0px"
+                android:layout_height="30dp"
+                android:padding="15dp"
+                android:layout_marginRight="12dp"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:background="@drawable/ic_baseline_settings_24" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>>
     </Toolbar>
@@ -107,7 +107,7 @@
                 android:layout_below="@+id/cardView"
                 android:layout_centerHorizontal="true"
                 android:layout_marginStart="57dp"
-                android:layout_marginTop="90dp"
+                android:layout_marginTop="100dp"
                 android:layout_marginEnd="298dp"
                 android:layout_marginBottom="12dp"
                 android:text="닉네임"
@@ -182,7 +182,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <Button
-                android:id="@+id/fragment_my_page_iv_setting"
+                android:id="@+id/profileEdit"
                 android:layout_width="166dp"
                 android:layout_height="45dp"
                 android:layout_marginStart="212dp"
@@ -198,6 +198,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/iv_badge"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginStart="60dp"
+                android:src="@drawable/badge"
+                app:layout_constraintBottom_toBottomOf="@+id/fragment_my_page_iv_profile"
+                app:layout_constraintStart_toStartOf="@+id/fragment_my_page_iv_profile"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="1.0" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 

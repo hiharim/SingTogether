@@ -63,6 +63,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private var liked : Boolean? = null
     private var uploadUserFCMToken :String ? =null
     private var getLikeNumber :String ? =null
+    private var isBadge : Boolean? = null
 
     //실제 비디오를 플레이하는 객체의 참조 변수
     var player: ExoPlayer? = null
@@ -85,6 +86,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private lateinit var iv_uploadReview : ImageView
     private lateinit var exoplayerReplay : PlayerControlView
     private lateinit var iv_editMenu : ImageView
+    private lateinit var iv_badge : ImageView
 
 
     private val detailReplayReviewDataList: ArrayList<DetailReplayReviewData> = ArrayList()
@@ -118,6 +120,7 @@ class DetailReplayActivity : AppCompatActivity() {
         liked = getintent.getBooleanExtra("liked", false)
         replayVideo = getintent.getStringExtra("replayVideo")
         uploadUserFCMToken = getintent.getStringExtra("uploadUserFCMToken")
+        isBadge = getintent.getBooleanExtra("isBadge",false)
 
 
         getLikeNumber =replayLikeNumber
@@ -142,11 +145,12 @@ class DetailReplayActivity : AppCompatActivity() {
         exoPlayerView = findViewById(R.id.exoPlayerView)
         exoplayerControlView = findViewById(R.id.exoplayerControlView)
         iv_editMenu = findViewById(R.id.iv_editMenu)
+        iv_badge = findViewById(R.id.iv_badge)
 
-
-        ////프로필 화면으로 가기
-        iv_uploadUserProfile.setOnClickListener {
-
+        if (isBadge ==true){
+            iv_badge.visibility =View.VISIBLE
+        }else{
+            iv_badge.visibility =View.GONE
         }
 
 
@@ -189,6 +193,68 @@ class DetailReplayActivity : AppCompatActivity() {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.activity_main_frame,fragmentBroadcast)
         transaction.commit()
+        }
+
+
+        ///프로필 화면 가기
+        iv_uploadUserProfile.setOnClickListener{
+            if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
+//                val activity =it!!.context as AppCompatActivity
+//                val MyPageFragment = MyPageFragment()
+//                var bundle =Bundle()
+//                activity.supportFragmentManager
+//                    .beginTransaction()
+//                    .replace(R.id.activity_main_frame,MyPageFragment)
+//                    .commit()
+                Toast.makeText(this, "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }else{
+                retrofit= RetrofitClient.getInstance()
+                retrofitService=retrofit.create(RetrofitService::class.java)
+                retrofitService.requestLookAtUserProfile(
+                    uploadUserEmail!!,
+                    LoginActivity.user_info.loginUserEmail
+                )
+                    .enqueue(object : Callback<String> {
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+                            if (response.isSuccessful) {
+                                val body = response.body().toString()
+                                Log.d(TAG, body)
+                                var jsonObject = JSONObject(response.body().toString())
+                                var result = jsonObject.getBoolean("result")
+                                if (result) {
+//                                    var otherUserInformation = jsonObject.getString("otherUserInformation")
+                                    var followingUserNumber =
+                                        jsonObject.getString("followingUserNumber")
+                                    var followUserNumber = jsonObject.getString("followUserNumber")
+                                    var isFollow = jsonObject.getBoolean("isFollow")
+                                    var isBadge = jsonObject.getBoolean("isBadge")
+
+
+
+                                    val intent = Intent(
+                                        this@DetailReplayActivity,
+                                        LookAtUserProfileActivity::class.java
+                                    )
+                                    intent.putExtra("otherUserEmail", uploadUserEmail)
+                                    Log.d(TAG, uploadUserEmail)
+                                    intent.putExtra("nickname", uploadUserNickName)
+                                    intent.putExtra("profile", uploadUserProfile)
+                                    intent.putExtra("followingUserNumber", followingUserNumber)
+                                    intent.putExtra("followUserNumber", followUserNumber)
+                                    intent.putExtra("isFollow", isFollow)
+                                    intent.putExtra("isBadge", isBadge)
+                                    startActivity(intent)
+                                }
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                        }
+                    })
+
+
+            }
         }
 
         /////수정, 삭제

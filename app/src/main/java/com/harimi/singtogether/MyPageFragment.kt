@@ -103,6 +103,13 @@ class MyPageFragment : Fragment() {
         val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
 
 
+        if (LoginActivity.user_info.loginUserGetBadge ==true){
+            binding.ivBadge.visibility =View.VISIBLE
+        }else{
+            binding.ivBadge.visibility =View.GONE
+        }
+
+
         setFollowAndFollowing(binding.tvMyFollow, binding.tvMyFollowing)
 
         binding.tvMyFollowing.setOnClickListener {
@@ -153,6 +160,11 @@ class MyPageFragment : Fragment() {
         binding.fragmentMyPageIvSetting.setOnClickListener{
             val settingFragment = SettingFragment()
             requireActivity().supportFragmentManager.beginTransaction().replace(R.id.activity_main_frame,settingFragment).addToBackStack(null).commit()
+        }
+
+        binding.profileEdit.setOnClickListener {
+            val intent = Intent(context, ProfileEditActivity::class.java)
+            startActivity(intent)
         }
 
         // 3. 프래그먼트 레이아웃 뷰 반환

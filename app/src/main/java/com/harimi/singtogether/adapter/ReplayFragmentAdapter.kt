@@ -62,6 +62,12 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
                 .into(holder.iv_thumbnail)
         }
 
+        if (ReplayPostList.get(position).isBadge ==true){
+            holder.iv_badge.visibility =View.VISIBLE
+        }else{
+            holder.iv_badge.visibility =View.GONE
+        }
+
         holder.tv_iv_uploadUserNickName.setText(ReplayPostList.get(position).uploadUserNickName)
         holder.tv_replayTitle.setText(ReplayPostList.get(position).replayTitle)
         holder.tv_replayHits.setText(ReplayPostList.get(position).replayHits)
@@ -77,6 +83,9 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
             holder.iv_clickLike.visibility = View.GONE
             holder.iv_normalLike.visibility = View.VISIBLE
         }
+
+
+
         holder.itemView.setOnClickListener {
 
             retrofit = RetrofitClient.getInstance()
@@ -109,9 +118,7 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
                             intent.putExtra("liked", ReplayPostList.get(position).liked)
                             intent.putExtra("replayVideo", ReplayPostList.get(position).replayVideo)
                             intent.putExtra("uploadUserFCMToken", ReplayPostList.get(position).uploadUserFCMToken)
-
-
-
+                            intent.putExtra("isBadge", ReplayPostList.get(position).isBadge)
 
                             context.startActivity(intent, null)
                         }
@@ -143,7 +150,7 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
         val iv_clickLike = itemView.findViewById<ImageView>(R.id.iv_clickLike) // 좋아요
         val iv_normalLike = itemView.findViewById<ImageView>(R.id.iv_normalLike) // 좋아요
         val time = itemView.findViewById<TextView>(R.id.time) // 좋아요
-
+        val iv_badge = itemView.findViewById<ImageView>(R.id.iv_badge)
 
 
     }
