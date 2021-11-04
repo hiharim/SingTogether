@@ -129,12 +129,34 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         mediaPlayer.prepare()
 
         initVideoRecorder()
+
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
+
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
             mediaPlayer.start()
+            binding.activityRecordBtnStart.visibility= View.GONE
+            binding.activityRecordBtnPause.visibility= View.VISIBLE
+
+            // 재생중이면 일시정지
+//            if(mediaPlayer.isPlaying) {
+//                binding.activityRecordBtnStart.visibility= View.VISIBLE
+//                binding.activityRecordBtnPause.visibility= View.GONE
+//                binding.activityRecordBtnPause.setOnClickListener {
+//                    mediaPlayer.pause()
+//                }
+//            }else{
+//                // 노래 재생
+//                //mediaPlayer.start()
+//                binding.activityRecordBtnStart.visibility= View.GONE
+//                binding.activityRecordBtnPause.visibility= View.VISIBLE
+//                binding.activityRecordBtnStart.setOnClickListener {
+//                    mediaPlayer.start()
+//                }
+
+
 
             startVideoRecorder()
 
@@ -199,7 +221,9 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                         mRecorder!!.stop()
                         mRecorder!!.release()
                         mRecorder = null
-                        mCamera!!.lock()
+                        //mCamera!!.lock()
+                        mCamera!!.release()
+                        mCamera=null
 
                         try{
                             Thread(Runnable {
@@ -240,9 +264,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
             })
 
-            binding.activityRecordBtnStart.visibility= View.GONE
-            binding.activityRecordBtnPause.visibility= View.VISIBLE
-
         }
 
 
@@ -266,10 +287,10 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         mSurfaceHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mCamera!!.lock()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        mCamera!!.lock()
+//    }
 
     fun startVideoRecorder() {
         if (isRecording) {

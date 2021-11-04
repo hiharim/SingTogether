@@ -124,6 +124,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginRight="19dp"
         android:text="03:00" />
+
     <ImageButton
         android:id="@+id/activity_record_btn_start"
         android:src="@drawable/ic_baseline_mic_24"

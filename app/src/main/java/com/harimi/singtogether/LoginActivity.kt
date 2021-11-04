@@ -113,8 +113,9 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             }
-            saveDate(user_email.toString())
-           // user_social="kakao"
+//            Log.w(TAG, "콜백 user_email : $user_email" )
+//            saveDate(user_email.toString())
+
             loginSuccess()
 
 
@@ -154,6 +155,8 @@ class LoginActivity : AppCompatActivity() {
                 user_nickname=user.kakaoAccount?.profile?.nickname
                 user_profile=user.kakaoAccount?.profile?.thumbnailImageUrl
                 user_social="kakao"
+                Log.w(TAG, "kakaoUserInfo() user_email : $user_email" )
+                saveDate(user_email.toString())
             }
         }
     }
