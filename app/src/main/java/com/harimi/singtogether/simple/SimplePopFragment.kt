@@ -19,6 +19,7 @@ import com.harimi.singtogether.adapter.HomeAdapter
 import com.harimi.singtogether.databinding.FragmentSimpleFollowingBinding
 import com.harimi.singtogether.databinding.FragmentSimplePopBinding
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,6 +37,8 @@ class SimplePopFragment : Fragment() {
     private lateinit var binding: FragmentSimplePopBinding
     private val homePostList: ArrayList<HomeData> = ArrayList()
     private lateinit var simpleAdapter: SimpleAdapter
+    private var isBadge :Boolean ?= false
+    private var isBadgeCollabo :Boolean ?= false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,41 +76,111 @@ class SimplePopFragment : Fragment() {
 
     private fun loadHomePost() {
         val userEmail= LoginActivity.user_info.loginUserEmail
-        retrofitService.requestHomePostLimit(userEmail).enqueue(object : Callback<String> {
+        retrofitService.requestPopPostLimit(userEmail).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
-                    // 응답을 잘 받은 경우
-                    Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
 
-                    val jsonArray= JSONArray(response.body().toString())
-                    for(i in 0..jsonArray.length() -1){
-                        val iObject=jsonArray.getJSONObject(i)
-                        val idx=iObject.getInt("idx")
-                        val thumbnail=iObject.getString("thumbnail")
-                        val cnt_play=iObject.getString("cnt_play")
-                        val cnt_reply=iObject.getString("cnt_reply")
-                        val cnt_like=iObject.getString("cnt_like")
-                        val nickname=iObject.getString("nickname")
-                        val email=iObject.getString("email")
-                        val song_path=iObject.getString("song_path")
-                        val date=iObject.getString("date")
-                        val collaboration=iObject.getString("collaboration")
-                        val mr_idx=iObject.getInt("mr_idx")
-                        val title=iObject.getString("title")
-                        val singer=iObject.getString("singer")
-                        val lyrics=iObject.getString("lyrics")
-                        val profile=iObject.getString("profile")
-                        val collaboration_profile=iObject.getString("col_profile")
-                        val collabo_email=iObject.getString("collabo_email")
-                        val kinds=iObject.getString("kinds")
-                        val token=iObject.getString("token")
-                        val col_token=iObject.getString("col_token")
-                        val isLike=iObject.getString("isLike")
-                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
-                        homePostList.add(0,homeData)
-                        simpleAdapter.notifyDataSetChanged()
+                    Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
+                    val body = response.body().toString()
+                    val replayObject = JSONObject (body)
+                    val badgeList = replayObject.getString("badgeList")
+                    val homeList = replayObject.getString("homeList")
+                    val postArray = JSONArray(homeList)
+
+                    for (i in 0 until postArray.length()) {
+                        if (postArray.length() ==0 || postArray.equals("null")){
+                        }else {
+                            val iObject=postArray.getJSONObject(i)
+                            val idx=iObject.getInt("idx")
+                            val thumbnail=iObject.getString("thumbnail")
+                            val cnt_play=iObject.getString("cnt_play")
+                            val cnt_reply=iObject.getString("cnt_reply")
+                            val cnt_like=iObject.getString("cnt_like")
+                            val nickname=iObject.getString("nickname")
+                            val email=iObject.getString("email")
+                            val song_path=iObject.getString("song_path")
+                            val date=iObject.getString("date")
+                            val collaboration=iObject.getString("collaboration")
+                            val mr_idx=iObject.getInt("mr_idx")
+                            val title=iObject.getString("title")
+                            val singer=iObject.getString("singer")
+                            val lyrics=iObject.getString("lyrics")
+                            val profile=iObject.getString("profile")
+                            val collaboration_profile=iObject.getString("col_profile")
+                            val collabo_email=iObject.getString("collabo_email")
+                            val kinds=iObject.getString("kinds")
+                            val token=iObject.getString("token")
+                            val col_token=iObject.getString("col_token")
+                            val isLike=iObject.getString("isLike")
+
+                            if (!badgeList.equals("")) {
+                                val badgeArray = JSONArray(badgeList)
+                                for (i in 0 until badgeArray.length()) {
+                                    var badgeObject = badgeArray.getJSONObject(i)
+                                    var badge_email = badgeObject.getString("email")
+                                    if (badge_email.equals(email) && badge_email.equals(collabo_email)) {
+                                        //둘다밷지
+                                        isBadge = true
+                                        isBadgeCollabo=true
+                                        Log.d(TAG, isBadge.toString())
+                                         break
+                                    } else if(badge_email.equals(collabo_email)) {
+                                        //콜라보만 밷지
+                                        isBadgeCollabo = true
+                                        isBadge=false
+                                        break
+
+                                    }else if(badge_email.equals(email)){
+                                        //업로드한사람만 밷지
+                                        isBadge = true
+                                        isBadgeCollabo=false
+                                        break
+                                    }else{
+                                        isBadge= false
+                                        isBadgeCollabo=false
+                                        Log.d(TAG, isBadge.toString())
+                                    }
+                                }
+                            }
+
+
+                            val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                            homePostList.add(0,homeData)
+                            simpleAdapter.notifyDataSetChanged()
+                        }
                     }
+
+                    // 응답을 잘 받은 경우
+//                    Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
+//                    val jsonArray= JSONArray(response.body().toString())
+//                    for(i in 0..jsonArray.length() -1){
+//                        val iObject=jsonArray.getJSONObject(i)
+//                        val idx=iObject.getInt("idx")
+//                        val thumbnail=iObject.getString("thumbnail")
+//                        val cnt_play=iObject.getString("cnt_play")
+//                        val cnt_reply=iObject.getString("cnt_reply")
+//                        val cnt_like=iObject.getString("cnt_like")
+//                        val nickname=iObject.getString("nickname")
+//                        val email=iObject.getString("email")
+//                        val song_path=iObject.getString("song_path")
+//                        val date=iObject.getString("date")
+//                        val collaboration=iObject.getString("collaboration")
+//                        val mr_idx=iObject.getInt("mr_idx")
+//                        val title=iObject.getString("title")
+//                        val singer=iObject.getString("singer")
+//                        val lyrics=iObject.getString("lyrics")
+//                        val profile=iObject.getString("profile")
+//                        val collaboration_profile=iObject.getString("col_profile")
+//                        val collabo_email=iObject.getString("collabo_email")
+//                        val kinds=iObject.getString("kinds")
+//                        val token=iObject.getString("token")
+//                        val col_token=iObject.getString("col_token")
+//                        val isLike=iObject.getString("isLike")
+//                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
+//                        homePostList.add(0,homeData)
+//                        simpleAdapter.notifyDataSetChanged()
+//                    }
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우

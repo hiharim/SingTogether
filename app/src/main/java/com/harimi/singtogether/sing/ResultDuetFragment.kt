@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.Data.MySongData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
@@ -60,8 +61,9 @@ class ResultDuetFragment : Fragment() {
 
     private fun loadDuet() {
         val which="duet"
+        val userEmail= LoginActivity.user_info.loginUserEmail
         searchInput?.let {
-            retrofitService.loadSearchResult(it,which).enqueue(object : Callback<String> {
+            retrofitService.loadSearchResult(it,which,userEmail).enqueue(object : Callback<String> {
                 // 통신에 성공한 경우
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {

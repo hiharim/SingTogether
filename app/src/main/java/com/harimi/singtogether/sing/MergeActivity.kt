@@ -173,7 +173,6 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                                 Log.e("레코드액티비티", "1초 뺀 시간 second : $second")
                                 Log.e("레코드액티비티", "현재 플레이시간 mTime : $mTime")
                                 Log.e("레코드액티비티", "전 i : $i")
-
                                 for(j in nextList) {
                                     var nTime = j.toFloat()
                                     var nMunusTime=j.toFloat()-0.01.toFloat()
@@ -188,9 +187,10 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                                     }
 
                                 }
+
                             }
                         }
-                        SystemClock.sleep(200)
+                        SystemClock.sleep(1000)
                     }
 
                     // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
@@ -198,11 +198,13 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         mediaPlayer.stop() // 음악 정지
                         mediaPlayer.release()
 
+                        isRecording = false
                         mRecorder!!.stop()
                         mRecorder!!.release()
                         mRecorder = null
-                        mCamera!!.lock()
-                        isRecording = false
+                        //mCamera!!.lock()
+                        mCamera!!.release()
+                        mCamera=null
                         try{
                             Thread(Runnable {
                                 // ==== [UI 동작 실시] ====
@@ -330,11 +332,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         mSurfaceHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mCamera!!.lock()
 
-    }
 
     // 녹화
     fun startVideoRecorder() {

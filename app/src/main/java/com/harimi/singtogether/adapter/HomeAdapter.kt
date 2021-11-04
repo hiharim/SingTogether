@@ -40,11 +40,9 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
         val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
-        //val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
         val profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_profile)
         val iv_like=v.findViewById<ImageView>(R.id.home_like)
         val iv_like_red=v.findViewById<ImageView>(R.id.home_like_red)
-        //val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
         val collabo_profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_collabo_profile)
         val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
@@ -60,7 +58,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
         val isLike=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isLike)
-        //val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+        val isBadge=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadge)
+        val isBadgeCollabo=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadgeCollabo)
         val badge=v.findViewById<ImageView>(R.id.badge_home)
         val badge_collabo=v.findViewById<ImageView>(R.id.badge_colloabo_home)
     }
@@ -73,23 +72,52 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
 
     override fun onBindViewHolder(holder: HomeAdapter.HomeViewHolder, position: Int) {
         val curData = homePostList[position]
-        holder.idx.text= curData.idx.toString()
-        holder.title.text=curData.title
-        holder.singer.text=curData.singer
-        holder.cnt_play.text=curData.cnt_play
-        holder.cnt_reply.text=curData.cnt_reply
-        holder.cnt_like.text=curData.cnt_like
-        holder.nickname.text=curData.nickname
-        holder.email.text=curData.email
-        holder.song_path.text=curData.song_path
-        holder.collabo_nickname.text=curData.collaboration_nickname
-        holder.collabo_email.text=curData.collabo_email
-        holder.date.text=curData.date
-        holder.kinds.text=curData.kinds
-        holder.token.text=curData.token
-        holder.col_token.text=curData.col_token
-        holder.isLike.text=curData.isLike
-        holder.mr_idx.text= curData.mr_idx.toString()
+        holder.idx.text = curData.idx.toString()
+        holder.title.text = curData.title
+        holder.singer.text = curData.singer
+        holder.cnt_play.text = curData.cnt_play
+        holder.cnt_reply.text = curData.cnt_reply
+        holder.cnt_like.text = curData.cnt_like
+        holder.nickname.text = curData.nickname
+        holder.email.text = curData.email
+        holder.song_path.text = curData.song_path
+        holder.collabo_nickname.text = curData.collaboration_nickname
+        holder.collabo_email.text = curData.collabo_email
+        holder.date.text = curData.date
+        holder.kinds.text = curData.kinds
+        holder.token.text = curData.token
+        holder.col_token.text = curData.col_token
+        holder.isLike.text = curData.isLike
+        holder.mr_idx.text = curData.mr_idx.toString()
+        holder.isBadge.text = curData.isBadge.toString()
+        holder.isBadgeCollabo.text = curData.isBadgeCollabo.toString()
+
+        if(holder.email.text.equals(holder.collabo_email.text)) {
+            holder.collabo_profile.visibility=View.GONE
+            holder.collabo_nickname.visibility=View.GONE
+            holder.and.visibility=View.GONE
+            holder.badge_collabo.visibility=View.GONE
+        }
+
+        if (holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("false")) {
+            holder.badge.visibility = View.VISIBLE
+            holder.badge_collabo.visibility=View.GONE
+
+        }else if(holder.email.text.equals(holder.collabo_email.text) && holder.isBadge.text.equals("true")){
+            holder.badge.visibility = View.VISIBLE
+            holder.badge_collabo.visibility=View.GONE
+
+        }else if(holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("true")) {
+            holder.badge.visibility = View.VISIBLE
+            holder.badge_collabo.visibility = View.VISIBLE
+        }else if(holder.isBadgeCollabo.text.equals("true") && holder.isBadge.text.equals("false")) {
+            holder.badge_collabo.visibility = View.VISIBLE
+            holder.badge.visibility =View.GONE
+
+        }else{
+            holder.badge.visibility=View.GONE
+            holder.badge_collabo.visibility=View.GONE
+        }
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
@@ -104,12 +132,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             holder.iv_like_red.visibility=View.INVISIBLE
         }
 
-        if(holder.email.text.equals(holder.collabo_email.text)){
-            holder.collabo_profile.visibility=View.GONE
-            holder.collabo_nickname.visibility=View.GONE
-            holder.and.visibility=View.GONE
-           // holder.collaboCardView.visibility=View.GONE
-        }
+
 
         val context: Context = holder.itemView.getContext()
         holder.itemView.setOnClickListener {

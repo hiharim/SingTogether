@@ -1,21 +1,35 @@
 package com.harimi.singtogether.adapter
 
+import android.content.Context
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.BestData
+import com.harimi.singtogether.Network.RetrofitClient
+import com.harimi.singtogether.Network.RetrofitService
+import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 /***
  * 오늘의 가왕 어댑터
  */
 
 class BestAdapter(val bestList: ArrayList<BestData> ) : RecyclerView.Adapter<BestAdapter.BestViewHolder>(){
+
+    private lateinit var retrofit : Retrofit
+    private lateinit var retrofitService: RetrofitService
 
     inner class BestViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val idx=v.findViewById<TextView>(R.id.rv_best_singer_tv_idx)
@@ -37,7 +51,10 @@ class BestAdapter(val bestList: ArrayList<BestData> ) : RecyclerView.Adapter<Bes
         val cnt_like=v.findViewById<TextView>(R.id.rv_best_singer_tv_like)
         val song_path=v.findViewById<TextView>(R.id.rv_best_singer_tv_song_path)
         val collabo_email=v.findViewById<TextView>(R.id.rv_best_singer_tv_collabo_email)
-
+        val col_token=v.findViewById<TextView>(R.id.rv_fragment_best_singer_tv_col_token)
+        val badge=v.findViewById<ImageView>(R.id.badge)
+        val badge_collabo=v.findViewById<ImageView>(R.id.badge_collabo)
+        val isLike=v.findViewById<TextView>(R.id.rv_fragment_best_singer_tv_isLike)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BestAdapter.BestViewHolder {
@@ -62,6 +79,8 @@ class BestAdapter(val bestList: ArrayList<BestData> ) : RecyclerView.Adapter<Bes
         holder.date.text=curData.date
         holder.kinds.text=curData.kinds
         holder.token.text=curData.token
+        holder.col_token.text=curData.col_token
+        holder.isLike.text=curData.isLike
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile)
@@ -75,7 +94,60 @@ class BestAdapter(val bestList: ArrayList<BestData> ) : RecyclerView.Adapter<Bes
             holder.and.visibility=View.GONE
         }
 
+        val context: Context = holder.itemView.getContext()
+        holder.itemView.setOnClickListener {
+            retrofit = RetrofitClient.getInstance()
+            retrofitService = retrofit.create(RetrofitService::class.java)
+            retrofitService.requestUpdateSongPostHits(curData.idx).enqueue(object :
+                Callback<String> {
+                override fun onResponse(call: Call<String>, response: Response<String>) {
 
+                    if (response.isSuccessful) {
+                        val body = response.body().toString()
+                        val jsonObject = JSONObject(
+                            response.body().toString()
+                        )
+                        val result = jsonObject.getBoolean("result")
+                        if (result) {
+                            val activity =context as AppCompatActivity
+                            val postFragment = PostFragment()
+                            var bundle = Bundle()
+                            bundle.putInt("idx",curData.idx)
+                            bundle.putInt("mr_idx",curData.mr_idx)
+                            bundle.putString("title",curData.title)
+                            bundle.putString("singer",curData.singer)
+                            bundle.putString("cnt_play",curData.cnt_play)
+                            bundle.putString("cnt_reply",curData.cnt_reply)
+                            bundle.putString("cnt_like",curData.cnt_like)
+                            bundle.putString("nickname",curData.nickname)
+                            bundle.putString("email",curData.email)
+                            bundle.putString("collaboration_nickname",curData.collaboration_nickname)
+                            bundle.putString("song_path",curData.song_path)
+                            bundle.putString("profile",curData.profile)
+                            bundle.putString("collaboration_profile",curData.collaboration_profile)
+                            bundle.putString("collabo_email",curData.collabo_email)
+                            bundle.putString("date",curData.date)
+                            bundle.putString("kinds",curData.kinds)
+                            bundle.putString("token",curData.token)
+                            bundle.putString("col_token",curData.col_token)
+                            bundle.putString("isLike",curData.isLike)
+                            bundle.putString("thumbnail",curData.thumbnail)
+                            postFragment.arguments=bundle
+
+                            activity.supportFragmentManager.beginTransaction()
+                                .replace(R.id.activity_main_frame,postFragment)
+                                .addToBackStack(null)
+                                .commit()
+                        }
+                    }else{
+                        // 통신은 성공했지만 응답에 문제가 있는 경우
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                }
+            })
+        }
 
 
     }

@@ -45,8 +45,11 @@ data class HomeData(
     @SerializedName("col_token")
     val col_token : String,
     @SerializedName("isLike")
-    val isLike : String
-
+    val isLike : String,
+    @SerializedName("isBadge")
+    val isBadge: Boolean,
+    @SerializedName("isBadgeCollabo")
+    val isBadgeCollabo: Boolean
 
 
 )

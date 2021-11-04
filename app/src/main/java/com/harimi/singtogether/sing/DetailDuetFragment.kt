@@ -156,10 +156,20 @@ class DetailDuetFragment : Fragment() {
                 }
                 builder.show()
             }else{
-                val intent= Intent(context, CompleteDuetActivity::class.java)
-                intent.putExtra("duet_idx",duet_idx)
-                intent.putExtra("cnt_duet",count)
-                startActivity(intent)
+//                val intent= Intent(context, CompleteDuetActivity::class.java)
+//                intent.putExtra("duet_idx",duet_idx)
+//                intent.putExtra("cnt_duet",count)
+//                startActivity(intent)
+                val completeDuetFragment =CompleteDuetFragment()
+                var bundle =Bundle()
+                bundle.putInt("duet_idx", duet_idx!!)
+                bundle.putString("cnt_duet",cnt_duet!!)
+                completeDuetFragment.arguments=bundle
+                requireActivity().supportFragmentManager
+                    .beginTransaction()
+                    .replace(R.id.activity_main_frame,completeDuetFragment)
+                    .addToBackStack(null)
+                    .commit()
             }
         }
 

@@ -27,8 +27,10 @@ import com.harimi.singtogether.simple.SimpleNewFragment
 import com.harimi.singtogether.simple.SimplePagerAdapter
 import com.harimi.singtogether.simple.SimplePopFragment
 import com.harimi.singtogether.sing.SearchSongActivity
+import com.harimi.singtogether.sing.SearchSongFragment
 import com.harimi.singtogether.sing.SingPagerAdapter
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -93,8 +95,15 @@ class HomeFragment : Fragment() {
 
         // 검색버튼 클릭
         binding.fragmentHomeIvSearch.setOnClickListener {
-            val intent= Intent(context, SearchSongActivity::class.java)
-            startActivity(intent)
+//            val intent= Intent(context, SearchSongActivity::class.java)
+//            startActivity(intent)
+
+            val searchSongFragment = SearchSongFragment()
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.activity_main_frame,searchSongFragment).
+                addToBackStack(null)
+                .commit()
         }
 
         // 전체보기 클릭

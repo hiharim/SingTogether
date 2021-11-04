@@ -29,6 +29,12 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("loadPopPostLimit.php")
+    fun requestPopPostLimit(
+        @Field("email") email: String,
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("loadMyPost.php")
     fun requestLoadMyPost(
         @Field("email") email: String,
@@ -65,7 +71,8 @@ interface RetrofitService {
     @FormUrlEncoded
     @POST("loadCompleteDuet.php")
     fun loadCompleteDuet(
-        @Field("duet_idx") duet_idx: Int
+        @Field("duet_idx") duet_idx: Int,
+        @Field("email") email: String,
     ) : Call<String>
 
     //검색
@@ -73,8 +80,9 @@ interface RetrofitService {
     @POST("loadSearchResult.php")
     fun loadSearchResult(
         @Field("searchInput") searchInput : String,
-        @Field("which") which : String // 어떤프래그먼트이냐 resultMR,resultSong,resultDuet 구분해주는 변수
+        @Field("which") which : String, // 어떤프래그먼트이냐 resultMR,resultSong,resultDuet 구분해주는 변수
         // which 변수 왜필요하냐-서버에서 구분시켜서보내주기위해서
+        @Field("email") email: String
     ) : Call<String>
 
     //내노래 삭제
