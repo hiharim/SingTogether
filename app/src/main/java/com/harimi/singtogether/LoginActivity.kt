@@ -252,6 +252,9 @@ class LoginActivity : AppCompatActivity() {
                             val profile = jsonObject.getString("profile")
                             val social = jsonObject.getString("social")
                             val token = jsonObject.getString("token")
+                            val isBadge = jsonObject.getBoolean("isBadge")
+
+                            user_info.loginUserGetBadge = isBadge
                             user_info.loginUserEmail = email.toString()
                             user_info.loginUserNickname = nickname.toString()
                             user_info.loginUserProfile = profile.toString()
@@ -321,7 +324,10 @@ class LoginActivity : AppCompatActivity() {
                                     val nickname = jsonObject.getString("nickname")
                                     val profile = jsonObject.getString("profile")
                                     val social = jsonObject.getString("social")
+                                    val isBadge = jsonObject.getBoolean("isBadge")
 
+
+                                    user_info.loginUserGetBadge = isBadge
                                     user_info.loginUserEmail = email.toString()
                                     user_info.loginUserNickname = nickname.toString()
                                     user_info.loginUserProfile = profile.toString()
@@ -361,6 +367,7 @@ class LoginActivity : AppCompatActivity() {
             var loginUserNickname= ""
             var loginUserSocial= ""
             var loginUserFCMToken= ""
+            var loginUserGetBadge :Boolean = false
         }
     }
 

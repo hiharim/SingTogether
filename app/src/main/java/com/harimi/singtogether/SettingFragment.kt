@@ -50,7 +50,7 @@ class SettingFragment : Fragment() {
         val settingFragment =  inflater.inflate(R.layout.fragment_setting, container, false)
         val fragment_setting_tv_logout =settingFragment.findViewById<TextView>(R.id.fragment_setting_tv_logout)
         val fragment_setting_tv_out =settingFragment.findViewById<TextView>(R.id.fragment_setting_tv_out)
-        val fragment_setting_tv_edit_profile =settingFragment.findViewById<TextView>(R.id.fragment_setting_tv_edit_profile)
+//        val fragment_setting_tv_edit_profile =settingFragment.findViewById<TextView>(R.id.fragment_setting_tv_edit_profile)
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.firebase_client))
@@ -140,10 +140,10 @@ class SettingFragment : Fragment() {
             builder.show()
         }
 
-        fragment_setting_tv_edit_profile.setOnClickListener {
-            val intent = Intent(context, ProfileEditActivity::class.java)
-            startActivity(intent)
-        }
+//        fragment_setting_tv_edit_profile.setOnClickListener {
+//            val intent = Intent(context, ProfileEditActivity::class.java)
+//            startActivity(intent)
+//        }
         return  settingFragment
     }
 

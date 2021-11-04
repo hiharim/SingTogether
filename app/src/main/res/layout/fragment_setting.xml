@@ -42,27 +42,27 @@
     </Toolbar>
     <View style="@style/Divider"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/edit_info"/>
-    <TextView
-        android:id="@+id/fragment_setting_tv_edit_profile"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:textSize="16dp"
-        android:gravity="center_vertical"
-        android:padding="7dp"
-        android:textStyle="bold"
-        android:text="프로필 편집" />
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal">-->
+<!--        <ImageView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="20dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginRight="5dp"-->
+<!--            android:src="@drawable/edit_info"/>-->
+<!--    <TextView-->
+<!--        android:id="@+id/fragment_setting_tv_edit_profile"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="45dp"-->
+<!--        android:textSize="16dp"-->
+<!--        android:gravity="center_vertical"-->
+<!--        android:padding="7dp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:text="프로필 편집" />-->
 
-    </LinearLayout>
+<!--    </LinearLayout>-->
     <View style="@style/Divider"/>
     <LinearLayout
         android:layout_width="match_parent"

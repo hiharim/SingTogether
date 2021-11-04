@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -30,6 +31,9 @@ class LookAtUserProfileActivity : AppCompatActivity() {
     private lateinit var btn_follow : Button
     private lateinit var btn_followCancel : Button
     private lateinit var ib_back : ImageButton
+    private lateinit var iv_badge : ImageView
+
+
 
     private lateinit var tabLayout_lookAtUserProfile : TabLayout
     private lateinit var viewPager_lookAtUserProfile : ViewPager2
@@ -41,7 +45,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
     private lateinit var nickname : String
     private lateinit var profile : String
     private var isFollow : Boolean ?= false
-
+    private var isBadge : Boolean ?= false
     private lateinit var getFollowNumber : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,6 +98,9 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         viewPager_lookAtUserProfile =findViewById(R.id.viewPager_lookAtUserProfile)
         btn_followCancel =findViewById(R.id.btn_followCancel)
         ib_back =findViewById(R.id.ib_back)
+        iv_badge =findViewById(R.id.iv_badge)
+
+
 
         var intent = intent
         otherUserEmail = intent.getStringExtra("otherUserEmail")
@@ -102,9 +109,17 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         followingUserNumber = intent.getStringExtra("followingUserNumber")
         followUserNumber = intent.getStringExtra("followUserNumber")
         isFollow = intent.getBooleanExtra("isFollow",false)
-
+        isBadge = intent.getBooleanExtra("isBadge",false)
         getFollowNumber = followUserNumber.toString()
         Log.d(TAG, otherUserEmail)
+
+
+        if (isBadge ==true){
+            iv_badge.visibility =View.VISIBLE
+        }else{
+            iv_badge.visibility =View.GONE
+        }
+
         // 사용자 프로필
         if (iv_profileImage.equals("null")){
 

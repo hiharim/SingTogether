@@ -260,6 +260,7 @@ class DetailDuetFragment : Fragment() {
                                             jsonObject.getString("followingUserNumber")
                                         var followUserNumber = jsonObject.getString("followUserNumber")
                                         var isFollow = jsonObject.getBoolean("isFollow")
+                                        var isBadge = jsonObject.getBoolean("isBadge")
 
                                         val intent = Intent(
                                             context,
@@ -272,6 +273,7 @@ class DetailDuetFragment : Fragment() {
                                         intent.putExtra("followingUserNumber", followingUserNumber)
                                         intent.putExtra("followUserNumber", followUserNumber)
                                         intent.putExtra("isFollow", isFollow)
+                                        intent.putExtra("isBadge", isBadge)
                                         startActivity(intent)
                                     }
                                 }
