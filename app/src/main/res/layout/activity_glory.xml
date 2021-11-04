@@ -78,13 +78,15 @@
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/back_arrow" />
+                app:srcCompat="@drawable/back_arrow"
+                app:tint="@color/black" />
 
             <ImageView
                 android:id="@+id/iv_forwardArrow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
+                app:tint="@color/black"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="132dp"
                 android:layout_marginBottom="8dp"

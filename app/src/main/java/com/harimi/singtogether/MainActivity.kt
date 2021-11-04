@@ -72,8 +72,8 @@ class MainActivity : AppCompatActivity() {
         if(GloryPost !=null) {
             if(GloryPost.equals("GloryPost")) {
                 val bundleData=intent.getBundleExtra("bundle")
-                postFragment.arguments = bundleData
-                changeFragment(postFragment)
+                fragmentPost.arguments = bundleData
+                changeFragment(fragmentPost)
             }
         }
 
