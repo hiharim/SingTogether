@@ -177,6 +177,8 @@ class SearchLiveStreaming : AppCompatActivity() {
                                             Log.d(TAG, isBadge.toString())
                                         }
                                     }
+                                }else{
+                                    isBadge = false
                                 }
 
                                 if (!userLikeList.equals("")){
