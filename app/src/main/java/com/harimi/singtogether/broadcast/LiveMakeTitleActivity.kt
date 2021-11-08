@@ -3,6 +3,7 @@ package com.harimi.singtogether.broadcast
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.harimi.singtogether.R
 import com.harimi.singtogether.databinding.ActivityLiveMakeTitleBinding
@@ -20,6 +21,7 @@ class LiveMakeTitleActivity : AppCompatActivity() {
         binding= ActivityLiveMakeTitleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        binding.ivDownArrow.visibility =View.GONE
 
         //뒤로가기 눌렀을때
         binding.activityLiveStartIvClose.setOnClickListener {
@@ -31,6 +33,18 @@ class LiveMakeTitleActivity : AppCompatActivity() {
 //            transaction.commit()
 
             finish()
+        }
+
+        binding.ivUpArrow.setOnClickListener {
+            binding.ivUpArrow.visibility = View.GONE
+            binding.ivDownArrow.visibility =View.VISIBLE
+            binding.scrollView.visibility =View.GONE
+        }
+
+        binding.ivDownArrow.setOnClickListener {
+            binding.ivUpArrow.visibility = View.VISIBLE
+            binding.ivDownArrow.visibility =View.GONE
+            binding.scrollView.visibility =View.VISIBLE
         }
 
         // 실시간 스트리밍 시작 버튼 클릭

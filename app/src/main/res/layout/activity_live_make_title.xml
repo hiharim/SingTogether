@@ -10,23 +10,83 @@
         android:id="@+id/activity_live_start_et"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:paddingLeft="10dp"
-        android:layout_above="@+id/activity_live_start_btn"
+        android:layout_below="@+id/activity_live_start_iv_close"
+        android:layout_above="@+id/tv_text"
         android:layout_marginStart="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="250dp"
-        android:background="@drawable/edittext_round"
-        android:hint="제목을 입력해주세요" />
 
+        android:background="@drawable/edittext_round"
+
+        android:hint="제목을 입력해주세요"
+        android:paddingLeft="10dp"
+        tools:ignore="NotSibling" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/tv_text"
+        android:id="@+id/linear"
+        android:gravity="right"
+        android:layout_below="@+id/activity_live_start_et"
+        android:orientation="horizontal"
+        tools:ignore="NotSibling">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="서비스 정책"
+            android:textColor="#000000"
+            />
+
+        <ImageView
+            android:id="@+id/iv_downArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/downarroww"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:tint="@color/black" />
+
+        <ImageView
+            android:id="@+id/iv_upArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/uparrow"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            app:tint="@color/black" />
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:id="@+id/scrollView"
+
+        android:layout_below="@+id/linear"
+        android:layout_above="@+id/activity_live_start_btn"
+        android:layout_height="200dp">
+        <TextView
+            android:id="@+id/tv_text"
+            android:layout_width="match_parent"
+            android:text="@string/app_arg"
+            android:textColor="#000000"
+            android:layout_margin="20dp"
+            android:layout_height="match_parent"/>
+
+
+    </ScrollView>
     <Button
         android:id="@+id/activity_live_start_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="131dp"
-        android:backgroundTint="@color/blue"
+        android:layout_marginBottom="100dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/purple"
         android:text="다음"
         android:textStyle="bold"
         tools:layout_editor_absoluteY="541dp" />
@@ -37,6 +97,7 @@
         android:layout_height="31dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="16dp"
+
         android:layout_alignParentLeft="true"
         app:srcCompat="@drawable/ic_baseline_close_24" />
 

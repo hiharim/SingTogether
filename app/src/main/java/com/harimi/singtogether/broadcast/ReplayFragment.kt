@@ -154,6 +154,8 @@ class ReplayFragment : Fragment() {
                                             Log.d(TAG, isBadge.toString())
                                         }
                                     }
+                                }else{
+                                    isBadge= false
                                 }
 
                                 if (!userLikeList.equals("")){
