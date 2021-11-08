@@ -15,6 +15,31 @@
         android:layout_width="32dp"
         android:layout_height="32dp"/>
 
+    <ImageView
+        android:id="@+id/iv_rank_first"
+        android:src="@drawable/best"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+    <ImageView
+        android:id="@+id/iv_rank_second"
+        android:src="@drawable/second"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
+
+    <ImageView
+        android:id="@+id/iv_rank_third"
+        android:src="@drawable/third"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
     <TextView
         android:id="@+id/rv_pop_tv_rank"
         android:layout_width="wrap_content"

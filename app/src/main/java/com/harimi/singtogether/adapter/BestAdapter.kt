@@ -94,6 +94,8 @@ class BestAdapter(val bestList: ArrayList<BestData> ) : RecyclerView.Adapter<Bes
             holder.and.visibility=View.GONE
         }
 
+
+
         val context: Context = holder.itemView.getContext()
         holder.itemView.setOnClickListener {
             retrofit = RetrofitClient.getInstance()

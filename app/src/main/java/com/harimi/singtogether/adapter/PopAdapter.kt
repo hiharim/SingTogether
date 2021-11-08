@@ -1,6 +1,7 @@
 package com.harimi.singtogether.adapter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -39,6 +40,10 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         val kinds=v.findViewById<TextView>(R.id.rv_fragment_home_tv_kinds)
         val token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_token)
         val rank=v.findViewById<TextView>(R.id.rv_pop_tv_rank)
+        val iv_rank=v.findViewById<ImageView>(R.id.iv_rank)
+        val iv_rank_first=v.findViewById<ImageView>(R.id.iv_rank_first)
+        val iv_rank_second=v.findViewById<ImageView>(R.id.iv_rank_second)
+        val iv_rank_third=v.findViewById<ImageView>(R.id.iv_rank_third)
         val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
         val col_token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_col_token)
@@ -93,6 +98,37 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             holder.and.visibility= View.GONE
             //holder.collaboCardView.visibility= View.GONE
         }
+
+        // 랭크1,2,3은 금,은,동으로
+
+        if(holder.rank.text.equals("1")) {
+            holder.iv_rank.visibility=View.GONE
+            holder.rank.visibility=View.INVISIBLE
+            holder.iv_rank_first.visibility=View.VISIBLE
+        }else if(holder.rank.text.equals("2")) {
+            holder.iv_rank.visibility=View.GONE
+            holder.rank.visibility=View.INVISIBLE
+            holder.iv_rank_second.visibility=View.VISIBLE
+        }else if(holder.rank.text.equals("3")) {
+            holder.iv_rank.visibility=View.GONE
+            holder.rank.visibility=View.INVISIBLE
+            holder.iv_rank_third.visibility=View.VISIBLE
+        }
+
+
+//        if(str_rank==0){
+//            holder.iv_rank.visibility=View.GONE
+//            holder.rank.visibility=View.GONE
+//            holder.iv_rank_first.visibility=View.VISIBLE
+//        }else if(str_rank==1){
+//            holder.iv_rank.visibility=View.GONE
+//            holder.rank.visibility=View.GONE
+//            holder.iv_rank_second.visibility=View.VISIBLE
+//        }else if(str_rank==2){
+//            holder.iv_rank.visibility=View.GONE
+//            holder.rank.visibility=View.GONE
+//            holder.iv_rank_third.visibility=View.VISIBLE
+//        }
 
         holder.itemView.setOnClickListener { v->
             // PostFragment 로 이동

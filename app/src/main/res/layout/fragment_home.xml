@@ -13,7 +13,7 @@
         <Toolbar
             android:id="@+id/toolbar_home"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="43dp"
             android:contentInsetLeft="0dp"
             android:contentInsetStart="0dp"
             app:contentInsetLeft="0dp"
@@ -30,8 +30,8 @@
 
                 <ImageButton
                     android:id="@+id/fragment_home_iv_logo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/singtogether_logo_purple"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -39,11 +39,11 @@
 
                 <ImageButton
                     android:id="@+id/fragment_home_iv_best"
-                    android:layout_width="0px"
-                    android:layout_height="wrap_content"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginEnd="10dp"
                     android:padding="15dp"
-                    android:background="@drawable/best_singer"
+                    android:background="@drawable/crown222"
                     app:layout_constraintRight_toLeftOf="@+id/fragment_home_iv_search"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
@@ -54,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
                     android:padding="15dp"
+                    android:backgroundTint="@color/black"
                     android:background="@drawable/ic_baseline_search_24"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -66,7 +67,7 @@
         <TextView
             android:id="@+id/tv_today_best_singer"
             android:layout_below="@+id/toolbar_home"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:text="오늘의 가왕"
             android:textColor="@color/black"
             android:textStyle="bold"
@@ -100,7 +101,7 @@
         tools:itemCount="2"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="10dp"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
@@ -109,7 +110,7 @@
         android:id="@+id/tv_listen"
         android:layout_below="@+id/fragment_home_rv_best"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:text="노래 듣기"
         android:textColor="@color/black"
         android:layout_marginBottom="10dp"
@@ -120,7 +121,7 @@
 
     <TextView
         android:id="@+id/fragment_home_tv_total"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:layout_marginEnd="17dp"
         android:layout_below="@+id/fragment_home_rv_best"
         android:layout_alignParentRight="true"
@@ -140,25 +141,27 @@
         app:ci_width="6dp"
         app:ci_margin="3dp"
         android:layout_width="wrap_content"
-        android:layout_height="40dp" />
+        android:layout_height="15dp" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/home_viewPager"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
         android:layout_below="@+id/tv_listen"
         android:layout_marginEnd="15dp"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:background="@drawable/round_tv"
         android:layoutDirection="ltr"
         android:layout_width="match_parent"
-        android:layout_height="300dp"/>
+        android:layout_height="240dp"/>
 
     <TextView
         android:id="@+id/fragment_home_tv_tab_name"
         android:text="인기순"
         android:textColor="@color/black"
         android:layout_below="@+id/tv_listen"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="23dp"
         android:layout_marginStart="25dp"
         android:textSize="14sp"
         android:textStyle="bold"

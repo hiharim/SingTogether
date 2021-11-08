@@ -15,9 +15,9 @@ object RetrofitClient {
     private const val BASE_URL = "http://3.35.236.251/"
 
     var okHttpClient = OkHttpClient.Builder()
-        .connectTimeout(600,TimeUnit.SECONDS)
-        .readTimeout(600,TimeUnit.SECONDS)
-        .writeTimeout(600,TimeUnit.SECONDS)
+        .connectTimeout(1000,TimeUnit.SECONDS)
+        .readTimeout(1000,TimeUnit.SECONDS)
+        .writeTimeout(1000,TimeUnit.SECONDS)
         .build()
 
     // SingleTon
