@@ -96,6 +96,15 @@ class FollowingPostAdapter ( val followingPostDataList: ArrayList<FollowingPostD
         }
 
 
+        if(followingPostDataList.get(position).isLike.equals("null")) {
+            holder.home_like.visibility=View.VISIBLE
+            holder.home_like_red.visibility=View.INVISIBLE
+        }else{
+            holder.home_like.visibility=View.INVISIBLE
+            holder.home_like_red.visibility=View.VISIBLE
+
+        }
+
         holder.itemView.setOnClickListener{
             val activity =it!!.context as AppCompatActivity
             val postFragment = PostFragment()
@@ -118,7 +127,8 @@ class FollowingPostAdapter ( val followingPostDataList: ArrayList<FollowingPostD
             bundle.putString("kinds",followingPostDataList.get(position).kinds)
             bundle.putString("token",followingPostDataList.get(position).token)
             bundle.putString("thumbnail",followingPostDataList.get(position).thumbnail)
-            bundle.putString("thumbnail",followingPostDataList.get(position).col_token)
+            bundle.putString("col_token",followingPostDataList.get(position).col_token)
+            bundle.putString("isLike",followingPostDataList.get(position).isLike)
             postFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()
@@ -156,5 +166,7 @@ class FollowingPostAdapter ( val followingPostDataList: ArrayList<FollowingPostD
         val email=itemView.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=itemView.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
         val collaboCardView=itemView.findViewById<CardView>(R.id.collaboCardView)
+        val home_like_red=itemView.findViewById<ImageView>(R.id.home_like_red)
+        val home_like=itemView.findViewById<ImageView>(R.id.home_like)
     }
 }

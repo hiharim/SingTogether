@@ -18,7 +18,7 @@ import com.harimi.singtogether.R
 import de.hdodenhof.circleimageview.CircleImageView
 
 class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAdapter.PopViewHolder>() {
-
+    private var TAG :String = "PopAdapter"
     inner class PopViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_idx)
         val mr_idx=v.findViewById<TextView>(R.id.rv_fragment_home_tv_mr_idx)
@@ -100,7 +100,7 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         }
 
         // 랭크1,2,3은 금,은,동으로
-
+        Log.e(TAG, "holder.rank.text "+holder.rank.text.toString())
         if(holder.rank.text.equals("1")) {
             holder.iv_rank.visibility=View.GONE
             holder.rank.visibility=View.INVISIBLE

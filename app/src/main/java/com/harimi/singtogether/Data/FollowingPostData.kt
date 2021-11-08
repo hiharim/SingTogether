@@ -42,7 +42,10 @@ data class FollowingPostData (
     @SerializedName("token")
     val token : String,
     @SerializedName("col_token")
-    val col_token : String
+    val col_token : String,
+    @SerializedName("isLike")
+    val isLike : String
+
 
 
 )

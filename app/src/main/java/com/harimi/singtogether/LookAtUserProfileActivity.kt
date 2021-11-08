@@ -1,5 +1,6 @@
 package com.harimi.singtogether
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -136,6 +137,20 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         }else{
             btn_follow.visibility = View.GONE
             btn_followCancel.visibility = View.VISIBLE
+        }
+
+        tv_follwingNumber.setOnClickListener {
+            val intent= Intent(this, MyFollowingActivity::class.java)
+            intent.putExtra("myEmail",otherUserEmail)
+            startActivity(intent)
+
+
+        }
+
+        tv_followNumber.setOnClickListener {
+            val intent= Intent(this, MyFollowerActivity::class.java)
+            intent.putExtra("myEmail",otherUserEmail)
+            startActivity(intent)
         }
 
 

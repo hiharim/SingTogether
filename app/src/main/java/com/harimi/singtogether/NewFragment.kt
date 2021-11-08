@@ -73,6 +73,7 @@ class NewFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         homePostList.clear()
+        homeAdapter.notifyDataSetChanged()
         loadHomePost()
     }
 
