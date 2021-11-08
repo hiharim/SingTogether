@@ -35,6 +35,12 @@ interface RetrofitService {
     ) : Call<String>
 
     @FormUrlEncoded
+    @POST("loadMyFollowingSimpleFragment.php")
+    fun requestMyFollowingSimpleFragment(
+        @Field("myEmail") myEmail: String,
+    ) : Call<String>
+
+    @FormUrlEncoded
     @POST("loadMyPost.php")
     fun requestLoadMyPost(
         @Field("email") email: String,

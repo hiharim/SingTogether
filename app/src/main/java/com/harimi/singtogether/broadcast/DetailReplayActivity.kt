@@ -391,6 +391,10 @@ class DetailReplayActivity : AppCompatActivity() {
 
         //좋아요 클릭 전
         iv_normalLike.setOnClickListener {
+
+            iv_normalLike.isEnabled = false
+            iv_clickLike.isEnabled =false
+
             var uploadDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
             retrofit= RetrofitClient.getInstance()
             retrofitService=retrofit.create(RetrofitService::class.java)
@@ -419,8 +423,9 @@ class DetailReplayActivity : AppCompatActivity() {
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                 iv_clickLike.visibility = View.VISIBLE
                                 iv_normalLike.visibility = View.GONE
-//
-//                                liked =true
+
+                                iv_normalLike.isEnabled = true
+                                iv_clickLike.isEnabled =true
                             }
 
                             var isLiked = jsonObject.getBoolean("isLiked")
@@ -448,6 +453,8 @@ class DetailReplayActivity : AppCompatActivity() {
 
         ///좋아요 취소
         iv_clickLike.setOnClickListener {
+            iv_normalLike.isEnabled = false
+            iv_clickLike.isEnabled =false
             if (!replayPostLikeIdx.equals("null")) {
                 retrofit = RetrofitClient.getInstance()
                 retrofitService = retrofit.create(RetrofitService::class.java)
@@ -488,6 +495,9 @@ class DetailReplayActivity : AppCompatActivity() {
                                     }
 
                                     liked =false
+
+                                    iv_normalLike.isEnabled = true
+                                    iv_clickLike.isEnabled =true
                                 }
                             }
                         }

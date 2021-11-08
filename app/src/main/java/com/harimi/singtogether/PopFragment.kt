@@ -30,7 +30,7 @@ import retrofit2.Retrofit
  */
 class PopFragment : Fragment() {
 
-    private var TAG :String = "POP FRAGMENT"
+    private var TAG :String = "POP_FRAGMENT"
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
     private lateinit var binding: FragmentPopBinding
@@ -101,6 +101,7 @@ class PopFragment : Fragment() {
                         val col_token=iObject.getString("col_token")
                         val isLike=iObject.getString("isLike")
                         val rank=iObject.getInt("ranking")
+                        Log.e(TAG, " "+rank.toString())
                         val popData=PopData(idx,thumbnail,title,singer,lyrics,cnt_play,cnt_reply,cnt_like,nickname,email,profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,rank,col_token,isLike)
                         popPostList.add(0,popData)
                         popAdapter.notifyDataSetChanged()
@@ -125,6 +126,7 @@ class PopFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         popPostList.clear()
+        popAdapter.notifyDataSetChanged()
         loadHomePost()
     }
     companion object {

@@ -100,6 +100,8 @@ class SimpleAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapt
             bundle.putString("kinds",curData.kinds)
             bundle.putString("token",curData.token)
             bundle.putString("thumbnail",curData.thumbnail)
+            bundle.putString("isLike",curData.isLike)
+            bundle.putString("col_token",curData.col_token)
             postFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()
