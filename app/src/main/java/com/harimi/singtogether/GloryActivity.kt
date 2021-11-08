@@ -86,11 +86,13 @@ class GloryActivity : AppCompatActivity() {
         rv_bestSolo.adapter = bestSoloAdapter
 
         var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
+//        var nowYear = "2022-1-1"
         var timeArr = nowYear.split("-")
         var year = timeArr[0].toInt() -1
         ////최대 년도 비교군 .
         getYear = year.toString()
         currentYear = getYear.toString()
+
         Log.d(TAG,  getYear)
         Log.d(TAG,  currentYear)
         //처음 액티비티볼때 forwardArrow  색깔 변경해주기
@@ -155,7 +157,7 @@ class GloryActivity : AppCompatActivity() {
         }
 
 
-
+        tv_year.setText(getYear)
         //작년의 명예의전당 게시물들 올려주기
         loadGloryPost(getYear)
 
