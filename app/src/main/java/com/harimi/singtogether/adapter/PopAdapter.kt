@@ -113,6 +113,12 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             holder.iv_rank.visibility=View.GONE
             holder.rank.visibility=View.INVISIBLE
             holder.iv_rank_third.visibility=View.VISIBLE
+        }else{
+            holder.iv_rank.visibility=View.VISIBLE
+            holder.rank.visibility=View.VISIBLE
+            holder.iv_rank_third.visibility=View.GONE
+            holder.iv_rank_first.visibility=View.GONE
+            holder.iv_rank_second.visibility=View.GONE
         }
 
 

@@ -1,6 +1,7 @@
 package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.hardware.Camera
@@ -59,7 +60,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     private var lyrics : String? = null // 가사
     private var side : String = "back" // 전면카메라,후면카메라 구분 front:전, back :후
     private lateinit var song_path : String // 노래 mr
-    lateinit var mediaPlayer: MediaPlayer
+   private var mediaPlayer: MediaPlayer? = null
     private var  mRecorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
     private var isRecording = false
     private var mPath: String? = null
@@ -125,38 +126,59 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         binding.activityVideo2Rv.setBackgroundColor(Color.parseColor("#81000000"))
 
         mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(song_path)
-        mediaPlayer.prepare()
+        mediaPlayer?.setDataSource(song_path)
+        mediaPlayer?.prepare()
 
         initVideoRecorder()
 
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
 
+        // 일시정지버튼 클릭
+        binding.activityRecordBtnPause.setOnClickListener {
+            // 재생중이면 일시정지
+            if (mediaPlayer?.isPlaying == true) {
+                binding.activityRecordBtnStart.visibility = View.VISIBLE
+                binding.activityRecordBtnPause.visibility = View.GONE
+                    mediaPlayer?.pause()
+
+            } else {
+                // 노래 재생
+                binding.activityRecordBtnStart.visibility = View.GONE
+                binding.activityRecordBtnPause.visibility = View.VISIBLE
+                    mediaPlayer?.start()
+
+            }
+        }
+
+        // 닫기 버튼 클릭
+        binding.fragmentVideo2IBtnClose.setOnClickListener {
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("녹화를 종료하시겠습니까? ")
+            builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
+            builder.setPositiveButton("네") { dialog, which ->
+                // 1. 노래 끄고
+                // 2. 녹화 끄고
+                // 3. 프래그먼트 닫기
+              if(mediaPlayer!!.isPlaying){
+                  mediaPlayer?.pause()
+              }
+            }
+            builder.setNegativeButton("아니오") { dialog, which ->
+                // 노래 이어부르기
+            }
+            builder.show()
+        }
+
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
-            mediaPlayer.start()
+            mediaPlayer?.start()
             binding.activityRecordBtnStart.visibility= View.GONE
             binding.activityRecordBtnPause.visibility= View.VISIBLE
 
-            // 재생중이면 일시정지
-//            if(mediaPlayer.isPlaying) {
-//                binding.activityRecordBtnStart.visibility= View.VISIBLE
-//                binding.activityRecordBtnPause.visibility= View.GONE
-//                binding.activityRecordBtnPause.setOnClickListener {
-//                    mediaPlayer.pause()
-//                }
-//            }else{
-//                // 노래 재생
-//                //mediaPlayer.start()
-//                binding.activityRecordBtnStart.visibility= View.GONE
-//                binding.activityRecordBtnPause.visibility= View.VISIBLE
-//                binding.activityRecordBtnStart.setOnClickListener {
-//                    mediaPlayer.start()
-//                }
-
-
+            //카메라 전환버튼 숨기기
+            binding.btnConvert.visibility=View.GONE
 
             startVideoRecorder()
 
@@ -169,14 +191,14 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                     super.run()
                     if (mediaPlayer == null)
                         return
-                    binding.seekBar.max = mediaPlayer.duration  // mPlayer.duration : 음악 총 시간
+                    binding.seekBar.max = mediaPlayer!!.duration  // mPlayer.duration : 음악 총 시간
 
-                    while (mediaPlayer.isPlaying) {
+                    while (mediaPlayer!!.isPlaying) {
                         runOnUiThread { //화면의 위젯을 변경할 때 사용 (이 메소드 없이 아래 코드를 추가하면 실행x)
-                            binding.seekBar.progress = mediaPlayer.currentPosition
-                            binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer.currentPosition)
-                            binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
-                            binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
+                            binding.seekBar.progress = mediaPlayer!!.currentPosition
+                            binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer!!.currentPosition)
+                            binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer!!.duration)
+                            binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
 
                             RecordActivity.time_info.pTime= binding.activityVideo2TvPlayTime.text.toString()
 
@@ -213,9 +235,9 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                     }
 
                     // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
-                    if(!mediaPlayer.isPlaying) {
-                        mediaPlayer.stop() // 음악 정지
-                        mediaPlayer.release()
+                    if(!mediaPlayer!!.isPlaying) {
+                        mediaPlayer?.stop() // 음악 정지
+                        mediaPlayer?.release()
 
                         isRecording = false
                         mRecorder!!.stop()
@@ -253,7 +275,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                     fromUser: Boolean
                 ) {
                     if (fromUser) {
-                        mediaPlayer.seekTo(progress)
+                        mediaPlayer?.seekTo(progress)
                     }
                 }
 
@@ -277,7 +299,31 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
     }
 
+    // 뒤로가기 버튼
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("녹화를 종료하시겠습니까? ")
+        builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
+        builder.setPositiveButton("네") { dialog, which ->
+            // 1. 노래 끄고
+            // 2. 녹화 끄고
+            // 3. 프래그먼트 닫기
+            mediaPlayer?.release()
+            mediaPlayer=null
+        }
+        builder.setNegativeButton("아니오") { dialog, which ->
+            // 노래 이어부르기
+        }
+        builder.show()
+    }
 
+    // 앱이 백그라운드로 넘어가도 음악이 계속 실행되는거 막기 위해서 오버라이드
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer?.release()
+        mediaPlayer=null
+    }
 
     fun initVideoRecorder() {
         mCamera = Camera.open()
