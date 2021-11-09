@@ -144,9 +144,14 @@ class HomeFragment : Fragment() {
                     // 응답을 잘 받은 경우
                     Log.e(TAG, " loadBestSinger() 통신 성공: "+response.body().toString())
 
-                    val jsonArray= JSONArray(response.body().toString())
-                    for(i in 0..jsonArray.length() -1){
-                        val iObject=jsonArray.getJSONObject(i)
+
+                    val jsonObject=JSONObject(response.body().toString())
+                    val outputData = jsonObject.getString("outputData")
+                    val outputDataArray = JSONArray(outputData)
+
+
+                    for(i in 0..outputDataArray.length() -1){
+                        val iObject=outputDataArray.getJSONObject(i)
                         val idx=iObject.getInt("idx")
                         val thumbnail=iObject.getString("thumbnail")
                         val cnt_play=iObject.getString("cnt_play")
@@ -161,7 +166,7 @@ class HomeFragment : Fragment() {
                         val title=iObject.getString("title")
                         val singer=iObject.getString("singer")
                         val lyrics=iObject.getString("lyrics")
-                        val profile=iObject.getString("circle_profile")
+                        val profile=iObject.getString("profile")
                         val collaboration_profile=iObject.getString("col_profile")
                         val collabo_email=iObject.getString("collabo_email")
                         val kinds=iObject.getString("kinds")
