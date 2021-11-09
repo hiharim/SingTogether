@@ -78,6 +78,11 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     var time :String?=null
     private val timeList:ArrayList<String> = ArrayList()
     private val nextList:ArrayList<String> = ArrayList()
+    private var pausePosition : Int ?=null
+    private var finishPosition : Int ?=null
+    private var isFinished=false
+    private lateinit var beforeTotalTime : String
+    private lateinit var realBeforeTotalTime : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -134,20 +139,27 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
 
+
         // 일시정지버튼 클릭
         binding.activityRecordBtnPause.setOnClickListener {
             // 재생중이면 일시정지
             if (mediaPlayer?.isPlaying == true) {
                 binding.activityRecordBtnStart.visibility = View.VISIBLE
                 binding.activityRecordBtnPause.visibility = View.GONE
-                    mediaPlayer?.pause()
+                mediaPlayer?.pause()
+                pausePosition=mediaPlayer?.currentPosition
+                mRecorder?.pause()
 
             } else {
                 // 노래 재생
                 binding.activityRecordBtnStart.visibility = View.GONE
                 binding.activityRecordBtnPause.visibility = View.VISIBLE
-                    mediaPlayer?.start()
-
+                mediaPlayer?.seekTo(pausePosition!!)
+                mediaPlayer?.start()
+                mRecorder?.resume()
+                if(binding.activityRecordTvIngTime.text.equals(beforeTotalTime)){
+                    isFinished=true
+                }
             }
         }
 
@@ -162,6 +174,8 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 // 3. 프래그먼트 닫기
               if(mediaPlayer!!.isPlaying){
                   mediaPlayer?.pause()
+
+
               }
             }
             builder.setNegativeButton("아니오") { dialog, which ->
@@ -174,6 +188,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
             mediaPlayer?.start()
+            isFinished=false
             binding.activityRecordBtnStart.visibility= View.GONE
             binding.activityRecordBtnPause.visibility= View.VISIBLE
 
@@ -184,7 +199,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
-                var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  //"분:초"를 나타낼 수 있도록 포멧팅
+                var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  // 가사스레드위해서
                 var timeFormat = android.icu.text.SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
 
                 override fun run() {
@@ -192,13 +207,16 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                     if (mediaPlayer == null)
                         return
                     binding.seekBar.max = mediaPlayer!!.duration  // mPlayer.duration : 음악 총 시간
-
+                    finishPosition=mediaPlayer!!.duration
                     while (mediaPlayer!!.isPlaying) {
                         runOnUiThread { //화면의 위젯을 변경할 때 사용 (이 메소드 없이 아래 코드를 추가하면 실행x)
                             binding.seekBar.progress = mediaPlayer!!.currentPosition
                             binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer!!.currentPosition)
                             binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer!!.duration)
                             binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
+
+                            beforeTotalTime=binding.activityRecordTvTotalTime.text.toString()
+                            realBeforeTotalTime="00:27"
 
                             RecordActivity.time_info.pTime= binding.activityVideo2TvPlayTime.text.toString()
 
@@ -215,10 +233,10 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                                 Log.e("레코드액티비티", "전 i : $i")
 
                                 for(j in nextList) {
-                                    var nTime = j.toFloat()
-                                    var nMunusTime=j.toFloat()-0.01.toFloat()
-                                    var nextTime = t_down.format(nTime)
-                                    var nextMinusTime=t_down.format(nMunusTime)
+                                    val nTime = j.toFloat()
+                                    val nMunusTime=j.toFloat()-0.01.toFloat()
+                                    val nextTime = t_down.format(nTime)
+                                    val nextMinusTime=t_down.format(nMunusTime)
                                     Log.e("레코드액티비티", "nextTime  : $nextTime ")
                                     Log.e("레코드액티비티", "j : $j")
 
@@ -233,9 +251,11 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
                         SystemClock.sleep(1000)
                     }
+                    if(binding.activityRecordTvIngTime.text.equals(beforeTotalTime)){
+                        isFinished=true
+                    }
 
-                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
-                    if(!mediaPlayer!!.isPlaying) {
+                    if(isFinished) {
                         mediaPlayer?.stop() // 음악 정지
                         mediaPlayer?.release()
 
@@ -262,8 +282,37 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                             e.printStackTrace()
                         }
                         mixVideo()
-
                     }
+
+                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
+//                    if(!mediaPlayer!!.isPlaying) {
+//                        mediaPlayer?.stop() // 음악 정지
+//                        mediaPlayer?.release()
+//
+//                        isRecording = false
+//                        mRecorder!!.stop()
+//                        mRecorder!!.release()
+//                        mRecorder = null
+//                        //mCamera!!.lock()
+//                        mCamera!!.release()
+//                        mCamera=null
+//
+//                        try{
+//                            Thread(Runnable {
+//                                // ==== [UI 동작 실시] ====
+//                                runOnUiThread {
+//                                    asyncDialog = ProgressDialog(this@Video2Activity)
+//                                    asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+//                                    asyncDialog!!.setMessage("믹싱중...")
+//                                    asyncDialog!!.show()
+//                                }
+//                            }).start()
+//                        }
+//                        catch (e: Exception){
+//                            e.printStackTrace()
+//                        }
+//                        mixVideo()
+//                    }
 
                 }
             }.start()
@@ -339,12 +388,15 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 //    }
 
     fun startVideoRecorder() {
-        if (isRecording) {
+
+
+        if (isFinished) {
             mRecorder!!.stop()
             mRecorder!!.release()
             mRecorder = null
             mCamera!!.lock()
             isRecording = false
+            isFinished=false
 
         } else {
             runOnUiThread {
@@ -373,6 +425,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
                 mRecorder!!.start()
                 isRecording = true
+                isFinished=true
 
             }
         }
@@ -519,11 +572,12 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         }
     }
 
-
+    // surfaceView 가 생성될 때
     override fun surfaceCreated(holder: SurfaceHolder) {
 
     }
 
+    // surfaceView 가 바뀔때
     override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {
 
     }

@@ -132,9 +132,8 @@ class SimpleNewFragment : Fragment() {
                                 }
                             }
 
-
                             val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
-                            homePostList.add(0,homeData)
+                            homePostList.add(homeData)
                             simpleAdapter.notifyDataSetChanged()
                         }
                     }
