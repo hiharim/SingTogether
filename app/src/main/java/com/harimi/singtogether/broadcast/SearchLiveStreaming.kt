@@ -34,6 +34,9 @@ class SearchLiveStreaming : AppCompatActivity() {
 
     private lateinit var et_searchLiveStreaming : EditText
     private lateinit var tv_notify : TextView
+    private lateinit var tv_alert : TextView
+
+
     private lateinit var iv_finishActivity : ImageView
     private lateinit var iv_search : ImageButton
     private var like :Boolean ?= false
@@ -55,6 +58,8 @@ class SearchLiveStreaming : AppCompatActivity() {
         tv_notify = findViewById(R.id.tv_notify)
         iv_finishActivity = findViewById(R.id.iv_finishActivity)
         et_searchLiveStreaming = findViewById(R.id.et_searchLiveStreaming)
+        tv_alert = findViewById(R.id.tv_alert)
+
 
 
         rv_searchLiveRecyclerView =findViewById(R.id.rv_searchLiveRecyclerView)
@@ -75,6 +80,10 @@ class SearchLiveStreaming : AppCompatActivity() {
         replayFragmentAdapter = ReplayFragmentAdapter(replayDataList,this)
         rv_searchReplayRecyclerView.adapter = replayFragmentAdapter
 
+
+        rv_searchReplayRecyclerView.visibility =View.GONE
+        rv_searchLiveRecyclerView.visibility =View.GONE
+
         ////끝내기
         iv_finishActivity.setOnClickListener {
             finish()
@@ -82,6 +91,7 @@ class SearchLiveStreaming : AppCompatActivity() {
 
         //서치하기
         iv_search.setOnClickListener {
+            tv_alert.visibility =View.GONE
             var searchInput = et_searchLiveStreaming.text.toString()
             if (searchInput.equals("")){
                 Toast.makeText(applicationContext,"검색어를 입력해주세요",Toast.LENGTH_SHORT).show()
