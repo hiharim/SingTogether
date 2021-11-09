@@ -85,8 +85,8 @@ class GloryActivity : AppCompatActivity() {
         bestSoloAdapter = BestSoloAdapter(bestSoloList, this)
         rv_bestSolo.adapter = bestSoloAdapter
 
-        var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
-//        var nowYear = "2022-1-1"
+//        var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
+        var nowYear = "2022-1-1"
         var timeArr = nowYear.split("-")
         var year = timeArr[0].toInt() -1
         ////최대 년도 비교군 .
@@ -158,6 +158,8 @@ class GloryActivity : AppCompatActivity() {
 
 
         tv_year.setText(getYear)
+        tv_duetText.setText(getYear.toString()+"년도 싱투게더 베스트 듀엣")
+        tv_soloText.setText(getYear.toString()+"년도 싱투게더 베스트 솔로")
         //작년의 명예의전당 게시물들 올려주기
         loadGloryPost(getYear)
 
@@ -170,6 +172,7 @@ class GloryActivity : AppCompatActivity() {
             alertDialog()
         }
     }
+
     private fun alertDialog(){
         ////dialog에 들어갈 리스트 셋해주기 , 동적사이즈와 value
         var list_one = ArrayList<String>()

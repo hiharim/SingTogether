@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,6 +8,14 @@
     android:id="@+id/layoutGlory"
     android:layout_height="match_parent"
     tools:context=".GloryActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+
 
     <Toolbar
         android:id="@+id/toolbar_profile"
@@ -389,7 +397,8 @@
         android:id="@+id/rv_bestDuet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:itemCount="1"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="false"
         android:layout_weight="1"
         android:layout_marginBottom="5dp"
         />
@@ -671,10 +680,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_bestSolo"
         android:layout_width="match_parent"
+        android:overScrollMode="never"
+        android:nestedScrollingEnabled="false"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
     <View
         style="@style/Divider"/>
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
