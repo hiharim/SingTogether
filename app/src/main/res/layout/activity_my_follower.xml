@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MyFollowerActivity">
 
     <Toolbar
@@ -56,12 +57,25 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>>
     </Toolbar>
+    <TextView
+        android:id="@+id/tv_alert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="팔로잉 유저가 없습니다."
+        android:textStyle="bold"
+        android:textColor="#000000"
+        android:layout_weight="1"
+        android:textSize="20dp"
+        android:gravity="center"
+        >
 
+    </TextView>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_myFollower"
         android:layout_margin="10dp"
+        android:layout_weight="1"
         android:layout_below="@+id/toolbar_follower"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="wrap_content"/>
 
-</RelativeLayout>
+</LinearLayout>
