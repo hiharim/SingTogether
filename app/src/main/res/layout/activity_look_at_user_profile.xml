@@ -110,7 +110,7 @@
                 />
 
             <TextView
-                android:id="@+id/tv_follwingNumber"
+                android:id="@+id/tv_follwing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
@@ -128,7 +128,7 @@
                 />
 
             <TextView
-                android:id="@+id/textView3"
+                android:id="@+id/tv_followNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -143,7 +143,7 @@
                 />
 
             <TextView
-                android:id="@+id/tv_followNumber"
+                android:id="@+id/tv_follow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="35dp"
@@ -161,7 +161,7 @@
                 />
 
             <TextView
-                android:id="@+id/textView7"
+                android:id="@+id/tv_follwingNumber"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"

@@ -49,8 +49,8 @@ class MyPageFragment : Fragment() {
     private lateinit var iv_badge:ImageView
 
 
-    private lateinit var tv_myFollowing:TextView
-    private lateinit var tv_myFollow:TextView
+    private lateinit var tv_followingNumber:TextView
+    private lateinit var tv_followNumber:TextView
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
 
@@ -66,7 +66,7 @@ class MyPageFragment : Fragment() {
         super.onResume()
         Log.e(TAG, "onResume")
 
-        setFollowAndFollowing(tv_myFollow,tv_myFollowing)
+        setFollowAndFollowing(tv_followNumber,tv_followingNumber)
         setMyProfile(fragment_my_page_tv_nickname,fragment_my_page_iv_profile,iv_badge)
     }
 
@@ -93,14 +93,14 @@ class MyPageFragment : Fragment() {
         // 1. 뷰 바인딩 설정
         val binding=FragmentMyPageBinding.inflate(inflater,container,false)
 
-        tv_myFollow = binding.tvMyFollow.findViewById(R.id.tv_myFollow)
-        tv_myFollowing = binding.tvMyFollowing.findViewById(R.id.tv_myFollowing)
+        tv_followNumber = binding.tvFollowNumber.findViewById(R.id.tv_followNumber)
+        tv_followingNumber = binding.tvFollowingNumber.findViewById(R.id.tv_followingNumber)
         fragment_my_page_iv_profile = binding.fragmentMyPageIvProfile.findViewById(R.id.fragment_my_page_iv_profile)
         fragment_my_page_tv_nickname = binding.fragmentMyPageTvNickname.findViewById(R.id.fragment_my_page_tv_nickname)
         iv_badge = binding.ivBadge.findViewById(R.id.iv_badge)
 
         setMyProfile(fragment_my_page_tv_nickname,fragment_my_page_iv_profile,iv_badge)
-        setFollowAndFollowing(binding.tvMyFollow, binding.tvMyFollowing)
+        setFollowAndFollowing(binding.tvFollowNumber, binding.tvFollowingNumber)
 
         binding.tvMyFollowing.setOnClickListener {
             val intent= Intent(context, MyFollowingActivity::class.java)
