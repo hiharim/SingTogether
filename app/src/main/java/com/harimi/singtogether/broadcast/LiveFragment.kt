@@ -19,6 +19,7 @@ import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.LiveFragmentAdapter
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,7 +34,7 @@ class LiveFragment : Fragment() {
     private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
     private var TAG: String = "LIVE_FRAGMENT"
-
+    private var isBadge :Boolean ?= false
     val liveStreamingPostList: ArrayList<LiveFragmentData> = ArrayList()
     lateinit var rv_fragmentLivePost: RecyclerView
     lateinit var liveFragmentAdapter: LiveFragmentAdapter
@@ -129,11 +130,14 @@ class LiveFragment : Fragment() {
                     Log.d(TAG,"getHomePost: "+ body)
 
 
-                    val jsonArray = JSONArray(body)
-                    if (jsonArray.length() == 0 || jsonArray.equals("null")) {
+                    val jsonObject = JSONObject(body)
+                    val liveStreamingList =jsonObject.getString("liveStreamingList")
+                    if (liveStreamingList.equals("")) {
                         tv_noLive.visibility = View.VISIBLE
                         rv_fragmentLivePost.visibility = View.INVISIBLE
-                    } else {
+                    }else{
+                        val jsonArray = JSONArray(liveStreamingList)
+                        val badgeList = jsonObject.getString("badgeList")
                         rv_fragmentLivePost.visibility = View.VISIBLE
                         tv_noLive.visibility = View.INVISIBLE
 
@@ -147,6 +151,27 @@ class LiveFragment : Fragment() {
                             val title = jsonObject.getString("title")
                             val viewer = jsonObject.getString("viewer")
 
+
+
+                            if (!badgeList.equals("")) {
+                                val badgeArray = JSONArray(badgeList)
+                                for (i in 0 until badgeArray.length()) {
+                                    var badgeObject = badgeArray.getJSONObject(i)
+                                    var badgeEmail = badgeObject.getString("email")
+                                    if (badgeEmail.equals(email)){
+                                        isBadge= true
+                                        Log.d(TAG, isBadge.toString())
+                                        break
+                                    }else{
+                                        isBadge= false
+                                        Log.d(TAG, isBadge.toString())
+                                    }
+                                }
+                            }else{
+                                isBadge= false
+                            }
+
+
                             val liveData = LiveFragmentData(
                                 idx,
                                 thumbnail,
@@ -154,12 +179,15 @@ class LiveFragment : Fragment() {
                                 nickName,
                                 profile,
                                 title,
-                                viewer
+                                viewer,
+                                isBadge!!
                             )
                             liveStreamingPostList.add(0, liveData)
                             liveFragmentAdapter.notifyDataSetChanged()
                         }
                     }
+
+
                 }
             }
 

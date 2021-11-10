@@ -3,7 +3,9 @@ package com.harimi.singtogether
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -26,6 +28,9 @@ class MyFollowingActivity : AppCompatActivity() {
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
     private lateinit var iv_back : ImageButton
+    private lateinit var tv_alert : TextView
+
+
     private lateinit var rv_myFollowing : RecyclerView
     private val myFollowingDataList: ArrayList<MyFollowingData> = ArrayList()
     private lateinit var myFollowingAdapter: MyFollowingAdapter
@@ -36,11 +41,20 @@ class MyFollowingActivity : AppCompatActivity() {
 
         iv_back = findViewById(R.id.iv_back)
         rv_myFollowing = findViewById(R.id.rv_myFollowing)
+        tv_alert = findViewById(R.id.tv_alert)
+
+
         rv_myFollowing.layoutManager = LinearLayoutManager(this)
         rv_myFollowing.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
         myFollowingAdapter = MyFollowingAdapter(myFollowingDataList, this)
         rv_myFollowing.adapter = myFollowingAdapter
+
+
+
+        iv_back.setOnClickListener {
+            finish()
+        }
         myFollowingUserLoad()
     }
 
@@ -55,26 +69,37 @@ class MyFollowingActivity : AppCompatActivity() {
                         Log.d(TAG, body)
                         myFollowingDataList.clear()
                         val jsonObject = JSONObject(body)
-                        val getfollowingList = jsonObject.getString("getfollowingList")
 
-                        val getfollowingArray = JSONArray(getfollowingList)
-                        for (i in 0 until getfollowingArray.length()) {
-                            val getfollowingObject = getfollowingArray.getJSONObject(i)
+                        val result = jsonObject.getBoolean("result")
 
-                            val email = getfollowingObject.getString("email")
-                            val profile = getfollowingObject.getString("profile")
-                            val token = getfollowingObject.getString("token")
-                            val nickname = getfollowingObject.getString("nickname")
+                        if (result){
+                            tv_alert.visibility =View.GONE
+                            rv_myFollowing.visibility =View.VISIBLE
 
-                            val myFollowingData = MyFollowingData(
-                                email,
-                                profile,
-                                nickname,
-                                token
-                            )
-                            myFollowingDataList.add(myFollowingData)
-                            myFollowingAdapter.notifyDataSetChanged()
+                            val getfollowingList = jsonObject.getString("getfollowingList")
+                            val getfollowingArray = JSONArray(getfollowingList)
+                            for (i in 0 until getfollowingArray.length()) {
+                                val getfollowingObject = getfollowingArray.getJSONObject(i)
+
+                                val email = getfollowingObject.getString("email")
+                                val profile = getfollowingObject.getString("profile")
+                                val token = getfollowingObject.getString("token")
+                                val nickname = getfollowingObject.getString("nickname")
+
+                                val myFollowingData = MyFollowingData(
+                                    email,
+                                    profile,
+                                    nickname,
+                                    token
+                                )
+                                myFollowingDataList.add(myFollowingData)
+                                myFollowingAdapter.notifyDataSetChanged()
+                            }
+                        }else{
+                            tv_alert.visibility =View.VISIBLE
+                            rv_myFollowing.visibility =View.GONE
                         }
+
                     }
                 }
 

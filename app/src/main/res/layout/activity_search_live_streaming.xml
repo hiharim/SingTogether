@@ -8,6 +8,12 @@
     tools:context=".broadcast.SearchLiveStreaming">
 
 
+<!--<LinearLayout-->
+<!--    android:layout_width="match_parent"-->
+<!--    android:layout_height="wrap_content"-->
+<!--    android:orientation="vertical">-->
+
+
 
   <LinearLayout
       android:layout_width="match_parent"
@@ -39,6 +45,7 @@
             android:layout_width="300dp"
             android:layout_height="match_parent"
             android:hint="게시물 검색"
+            android:lines="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
             app:layout_constraintStart_toEndOf="@+id/iv_finishActivity"
@@ -116,7 +123,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="해당 검색의 게시물이 없습니다"
-        android:textSize="25dp"
+        android:textSize="20dp"
+        android:textStyle="bold"
         android:textColor="#000000"
         android:gravity="center"
         />
@@ -132,25 +140,28 @@
         android:textStyle="bold"
         android:gravity="center"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical">-->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_searchLiveRecyclerView"
+            android:id="@+id/rv_searchLiveAndReplayRecyclerView"
             android:layout_width="match_parent"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             />
-    </LinearLayout>
+<!--    </LinearLayout>-->
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_searchReplayRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-    </LinearLayout>
+<!--    <LinearLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="vertical">-->
+<!--        <androidx.recyclerview.widget.RecyclerView-->
+<!--            android:id="@+id/rv_searchReplayRecyclerView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:overScrollMode="never"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            />-->
+<!--    </LinearLayout>-->
+<!--</LinearLayout>-->
 </LinearLayout>

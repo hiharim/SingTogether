@@ -3,7 +3,9 @@ package com.harimi.singtogether
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,12 +30,14 @@ class MyFollowerActivity : AppCompatActivity() {
     private lateinit var rv_myFollower : RecyclerView
     private val myFollowDataList: ArrayList<MyFollowData> = ArrayList()
     private lateinit var myFollowerAdapter: MyFollowerAdapter
+    private lateinit var tv_alert : TextView
+
 
     private var isFollow : Boolean ?= false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_my_follower)
-
+        tv_alert = findViewById(R.id.tv_alert)
         iv_back = findViewById(R.id.iv_back)
         rv_myFollower = findViewById(R.id.rv_myFollower)
         rv_myFollower.layoutManager = LinearLayoutManager(this)
@@ -42,6 +46,10 @@ class MyFollowerActivity : AppCompatActivity() {
         myFollowerAdapter = MyFollowerAdapter(myFollowDataList, this)
         rv_myFollower.adapter = myFollowerAdapter
 
+
+        iv_back.setOnClickListener {
+            finish()
+        }
 
         myFollowUserLoad()
     }
@@ -60,11 +68,15 @@ class MyFollowerActivity : AppCompatActivity() {
                         val getFollowerList = jsonObject.getString("getfollowerList")
                         val myFollowList = jsonObject.getString("myFollowlist")
 
-                        val getFollowerArray = JSONArray(getFollowerList)
 
-                        if (getFollowerArray.equals("")){
 
+                        if (getFollowerList.equals("")){
+                            tv_alert.visibility =View.VISIBLE
+                            rv_myFollower.visibility = View.GONE
                         }else{
+                            tv_alert.visibility =View.GONE
+                            rv_myFollower.visibility = View.VISIBLE
+                            val getFollowerArray = JSONArray(getFollowerList)
                             for (i in 0 until getFollowerArray.length()) {
                                 val getFollowerObject = getFollowerArray.getJSONObject(i)
 

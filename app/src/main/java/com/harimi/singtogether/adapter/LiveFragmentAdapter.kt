@@ -65,6 +65,12 @@ class LiveFragmentAdapter(val LiveStreamingPostList: ArrayList<LiveFragmentData>
                 .into(holder.iv_thumbnail)
         }
 
+        if (LiveStreamingPostList.get(position).isBadge ==true){
+            holder.iv_badge.visibility =View.VISIBLE
+        }else{
+            holder.iv_badge.visibility =View.GONE
+        }
+
         holder.tv_liveTitle.setText(LiveStreamingPostList.get(position).title)
         holder.tv_viewer.setText(LiveStreamingPostList.get(position).viewer)
         holder.tv_nickName.setText(LiveStreamingPostList.get(position).nickName)
@@ -116,9 +122,8 @@ class LiveFragmentAdapter(val LiveStreamingPostList: ArrayList<LiveFragmentData>
         val tv_liveTitle = itemView.findViewById<TextView>(R.id.tv_liveTitle) // 타이틀
         val tv_viewer = itemView.findViewById<TextView>(R.id.tv_viewer) // 시청자
         val tv_nickName = itemView.findViewById<TextView>(R.id.tv_nickName) // 닉네임
+        val iv_badge = itemView.findViewById<ImageView>(R.id.iv_badge) //썸네일
     }
 
-//    override fun getFilter(): Filter {
-//        Log.d("getFilter: ", body)
-//    }
+
 }
