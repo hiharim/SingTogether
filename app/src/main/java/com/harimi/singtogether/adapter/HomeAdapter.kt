@@ -92,30 +92,20 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         holder.isBadge.text = curData.isBadge.toString()
         holder.isBadgeCollabo.text = curData.isBadgeCollabo.toString()
 
-        if(holder.email.text.equals(holder.collabo_email.text)) {
-            holder.collabo_profile.visibility=View.GONE
-            holder.collabo_nickname.visibility=View.GONE
-            holder.and.visibility=View.GONE
-            holder.badge_collabo.visibility=View.GONE
-        }
 
-        if (holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("false")) {
+        // 밷지
+        if (holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("true")) {
+            holder.badge.visibility = View.VISIBLE
+            holder.badge_collabo.visibility=View.VISIBLE
+        }else if(holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("false")){
             holder.badge.visibility = View.VISIBLE
             holder.badge_collabo.visibility=View.GONE
 
-        }else if(holder.email.text.equals(holder.collabo_email.text) && holder.isBadge.text.equals("true")){
-            holder.badge.visibility = View.VISIBLE
-            holder.badge_collabo.visibility=View.GONE
-
-        }else if(holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("true")) {
-            holder.badge.visibility = View.VISIBLE
-            holder.badge_collabo.visibility = View.VISIBLE
-        }else if(holder.isBadgeCollabo.text.equals("true") && holder.isBadge.text.equals("false")) {
-            holder.badge_collabo.visibility = View.VISIBLE
-            holder.badge.visibility =View.GONE
-
-        }else{
-            holder.badge.visibility=View.GONE
+        }else if(holder.isBadge.text.equals("false") && holder.isBadgeCollabo.text.equals("true")){
+            holder.badge.visibility = View.GONE
+            holder.badge_collabo.visibility=View.VISIBLE
+        }else if(holder.isBadge.text.equals("false") && holder.isBadgeCollabo.text.equals("false")){
+            holder.badge.visibility = View.GONE
             holder.badge_collabo.visibility=View.GONE
         }
 
@@ -123,6 +113,20 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
+        // 솔로일때 콜라보숨기기
+        if(holder.email.text.equals(holder.collabo_email.text)) {
+            holder.collabo_profile.visibility=View.GONE
+            holder.collabo_nickname.visibility=View.GONE
+            holder.and.visibility=View.GONE
+            holder.badge_collabo.visibility=View.GONE
+        }else{
+            holder.collabo_profile.visibility=View.VISIBLE
+            holder.collabo_nickname.visibility=View.VISIBLE
+            holder.and.visibility=View.VISIBLE
+            holder.badge_collabo.visibility=View.VISIBLE
+        }
+
+        // 좋아요
         val userEmail=LoginActivity.user_info.loginUserEmail
         if(holder.isLike.text.equals(userEmail)) {
             holder.iv_like.visibility=View.INVISIBLE

@@ -117,50 +117,40 @@ class NewFragment : Fragment() {
                             val col_token=iObject.getString("col_token")
                             val isLike=iObject.getString("isLike")
 
-
                             if (!badgeList.equals("")) {
                                 val badgeArray = JSONArray(badgeList)
-                                for (i in 0 until badgeArray.length()) {
-                                    var badgeObject = badgeArray.getJSONObject(i)
-                                    var badge_email = badgeObject.getString("email")
-//                                    if (badge_email.equals(email) && badge_email.equals(collabo_email)) {
-//                                        //둘다밷지
-//                                        isBadge = true
-//                                        isBadgeCollabo=true
-//                                        Log.d(TAG, isBadge.toString())
-//                                        break
-//                                    }else if(email.equals(collabo_email) && badge_email.equals(email)){
-//                                        isBadge = true
-//                                        isBadgeCollabo = false
-//                                        break
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
 
-                                        if (email.equals(collabo_email) && badge_email.equals(email)) {
-                                            isBadge = true
-                                            isBadgeCollabo = false
-                                            break
-                                        }else if(badge_email.equals(email) && badge_email.equals(collabo_email)){
-                                            isBadge = true
-                                            isBadgeCollabo=true
-                                            Log.d(TAG, isBadge.toString())
-                                            break
-                                        } else if(badge_email.equals(collabo_email)) {
-                                            //콜라보만 밷지
-                                            isBadgeCollabo = true
-                                            isBadge=false
-                                            break
-
-                                    }else if(badge_email.equals(email)) {
-                                        //업로드한사람만 밷지
-                                        isBadge = true
-                                        isBadgeCollabo = false
+                                    if(badge_email.equals(email) && badge_email.equals(collabo_email)){
+                                        isBadge=true
+                                        isBadgeCollabo=true
+                                        Log.d(TAG, "(1) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
+                                        Log.d(TAG, "(1) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
                                         break
-
-                                    }else{
-                                        isBadge= false
+                                    }else if(badge_email.equals(email) && !badge_email.equals(collabo_email)) {
+                                        isBadge=true
                                         isBadgeCollabo=false
-                                        Log.d(TAG, isBadge.toString())
+                                        Log.d(TAG, "(2) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
+                                        Log.d(TAG, "(2) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
+                                        break
+                                    }else if(!badge_email.equals(email) && badge_email.equals(collabo_email)){
+                                        isBadge=false
+                                        isBadgeCollabo=true
+                                        Log.d(TAG, "(3) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
+                                        Log.d(TAG, "(3) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
+                                        break
+                                    }else if(!badge_email.equals(email) && badge_email.equals(collabo_email)){
+                                        isBadge=false
+                                        isBadgeCollabo=false
+                                        Log.d(TAG, "(4) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
+                                        Log.d(TAG, "(4) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
                                     }
                                 }
+                            }else{
+                                isBadge=false
+                                isBadgeCollabo=false
                             }
 
                             val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)

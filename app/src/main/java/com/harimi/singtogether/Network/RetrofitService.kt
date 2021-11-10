@@ -91,10 +91,17 @@ interface RetrofitService {
         @Field("email") email: String
     ) : Call<String>
 
-    //내노래 삭제
+    //내 듀엣 삭제
     @FormUrlEncoded
     @POST("deleteMySong.php")
     fun deleteMySong (
+        @Field("idx") idx: Int
+    ) : Call<String>
+
+    //내 송포스트 삭제
+    @FormUrlEncoded
+    @POST("deleteMyPost.php")
+    fun deleteMyPost (
         @Field("idx") idx: Int
     ) : Call<String>
 

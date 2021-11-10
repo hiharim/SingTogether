@@ -39,5 +39,7 @@ data class DuetData(
     @SerializedName("lyrics")
     val lyrics: String,
     @SerializedName("token")
-    val token: String
+    val token: String,
+    @SerializedName("isBadge")
+    val isBadge: Boolean
 )

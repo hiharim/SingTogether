@@ -12,11 +12,12 @@
 
 
     <ImageView
-        android:id="@+id/rv_my_song_iv"
+        android:id="@+id/rv_my_song_iv_thumbnail"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_weight="1"
         android:scaleType="fitXY"
+        android:background="#000000"
         tools:srcCompat="@tools:sample/avatars" />
 
     <LinearLayout
@@ -62,10 +63,90 @@
             android:id="@+id/rv_my_song_tv_idx_duet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:layout_gravity="right"
-            android:text="2021-08-12" />
+            android:visibility="gone"/>
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/rv_my_song_tv_count_duet"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <ImageView
+        android:id="@+id/badge"
+        android:visibility="gone"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/badge" />
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_mr_idx"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/rv_my_song_iv_profile"
+        android:visibility="gone"
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="41dp"
+        android:layout_height="28dp" />
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_count_play"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_count_reply"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/rv_my_song_tv_mr"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/rv_my_song_tv_duet_path"
+        android:visibility="gone"
+        android:layout_marginRight="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_extract_path"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+    <TextView
+        android:id="@+id/rv_my_song_tv_email"
+        android:text="0"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_kinds"
+        android:text="0"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_lyrics"
+        android:text="0"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/rv_my_song_tv_token"
+        android:text="0"
+        android:visibility="gone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

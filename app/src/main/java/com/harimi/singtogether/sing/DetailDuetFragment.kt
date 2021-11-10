@@ -12,11 +12,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -152,14 +155,9 @@ class DetailDuetFragment : Fragment() {
                 val builder = AlertDialog.Builder(requireContext())
                 builder.setMessage("현재 포스팅 중인 듀엣 완성곡이 없습니다. 듀엣 참여하시고 포스팅 해보세요!")
                 builder.setPositiveButton("닫기") { dialogInterface: DialogInterface, i: Int ->
-
                 }
                 builder.show()
             }else{
-//                val intent= Intent(context, CompleteDuetActivity::class.java)
-//                intent.putExtra("duet_idx",duet_idx)
-//                intent.putExtra("cnt_duet",count)
-//                startActivity(intent)
                 val completeDuetFragment =CompleteDuetFragment()
                 var bundle =Bundle()
                 bundle.putInt("duet_idx", duet_idx!!)
@@ -225,17 +223,37 @@ class DetailDuetFragment : Fragment() {
                 binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
                 // 게시물 삭제
                 binding.fragmentDetailDuetBtnDelete.setOnClickListener {
-                    val builder = AlertDialog.Builder(requireContext())
-                    builder.setTitle("삭제하기")
-                    builder.setMessage("삭제 하시겠습니까? ")
-                    builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
-                        deleteSong()
-                    }
-                    builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+                    val popupMenu = PopupMenu(context, it)
+                    popupMenu.inflate(R.menu.delete_menu)
+                    popupMenu.show()
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.delete -> {
+                                val builder = AlertDialog.Builder(requireContext())
+                                builder.setTitle("삭제하기")
+                                builder.setMessage("삭제 하시겠습니까? ")
+                                builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                                    deleteSong()
+                                }
+                                builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
 
+                                }
+                                builder.show()
+                            }
+                        }
+                        false
                     }
-                    builder.show()
                 }
+            }
+
+            // 뒤로가기버튼 클릭
+            binding.fragmentDetailDuetBtnBack.setOnClickListener {
+                val singFragment = SingFragment()
+                activity?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.remove(this)
+                    ?.replace(R.id.activity_main_frame,singFragment)
+                    ?.commit()
             }
 
             //프로필 액티비티로 넘어가기

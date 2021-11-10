@@ -26,9 +26,10 @@ import retrofit2.Retrofit
 
 
 /**
- * 마이페이지 '내 노래' 프래그먼트
+ * 마이페이지 '듀엣' 프래그먼트
  */
 class MySongFragment : Fragment() {
+
     var TAG :String = "MySongFragment "
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
@@ -75,8 +76,7 @@ class MySongFragment : Fragment() {
     }
 
     private fun loadMySong(noSong : TextView, recyclerview : RecyclerView) {
-//        val nickname=LoginActivity.user_info.loginUserNickname
-//        val email=LoginActivity.user_info.loginUserEmail
+
         retrofitService.requestMySong(myEmail!!).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
@@ -94,21 +94,45 @@ class MySongFragment : Fragment() {
                             noSong.visibility = View.GONE
                             recyclerview.visibility = View.VISIBLE
 
-                            for (i in 0..jsonArray.length() - 1) {
-                                val iObject = jsonArray.getJSONObject(i)
-                                val idx = iObject.getInt("idx")
-                                val thumbnail = iObject.getString("thumbnail")
-                                val title = iObject.getString("title")
-                                val nickname = iObject.getString("nickname")
-                                val date = iObject.getString("date")
-
-                                val mySongData = MySongData(idx, thumbnail, title, nickname, date)
-                                mySongList.add(0, mySongData)
+//                            for (i in 0..jsonArray.length() - 1) {
+//                                val iObject = jsonArray.getJSONObject(i)
+//                                val idx = iObject.getInt("idx")
+//                                val thumbnail = iObject.getString("thumbnail")
+//                                val title = iObject.getString("title")
+//                                val nickname = iObject.getString("nickname")
+//                                val date = iObject.getString("date")
+//
+//                                val mySongData = MySongData(idx, thumbnail, title, nickname, date)
+//                                mySongList.add(0, mySongData)
+//                                mySongAdapter.notifyDataSetChanged()
+//                            }
+                            for(i in 0..jsonArray.length() -1){
+                                val iObject=jsonArray.getJSONObject(i)
+                                val duet_idx=iObject.getInt("duet_idx")
+                                val mr_idx=iObject.getInt("mr_idx")
+                                val thumbnail=iObject.getString("thumbnail")
+                                val title=iObject.getString("title")
+                                val singer=iObject.getString("singer")
+                                val cnt_play=iObject.getString("cnt_play")
+                                val cnt_reply=iObject.getString("cnt_reply")
+                                val email=iObject.getString("email")
+                                val nickname=iObject.getString("nickname")
+                                val profile=iObject.getString("profile")
+                                val cnt_duet=iObject.getString("cnt_duet")
+                                val lyrics=iObject.getString("lyrics")
+                                val song_path=iObject.getString("duet_path")
+                                val mr_path=iObject.getString("song_path")
+                                val extract_path=iObject.getString("extract_path")
+                                val duet_date=iObject.getString("date")
+                                val kinds=iObject.getString("kinds")
+                                val token=iObject.getString("token")
+                                var path=song_path
+                                val mySongData=MySongData(duet_idx,mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics,token)
+                                mySongList.add(0,mySongData)
                                 mySongAdapter.notifyDataSetChanged()
                             }
+
                         }
-
-
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우

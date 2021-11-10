@@ -23,6 +23,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 
 class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<DuetAdapter.DuetViewHolder>() {
+
     private var TAG :String = "듀엣 어댑터"
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
@@ -48,6 +49,7 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
         val kinds=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_kinds)
         val lyrics=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_lyrics)
         val token=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_token)
+        val isBadge=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_isBadge)
 
     }
 
@@ -80,8 +82,8 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
         holder.lyrics.text=curData.lyrics
         holder.token.text=curData.token
 
+        //밷지
 
-        holder.badge.bringToFront()
 
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)

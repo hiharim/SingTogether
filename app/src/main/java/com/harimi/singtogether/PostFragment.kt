@@ -1,5 +1,6 @@
 package com.harimi.singtogether
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -9,8 +10,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -165,9 +168,45 @@ class PostFragment : Fragment() {
         postReviewAdapter = PostFragmentReviewAdapter(postReviewDataList, requireContext())
         binding.fragmentPostRecyclerView.adapter = postReviewAdapter
 
+        val login_user= LoginActivity.user_info.loginUserEmail
+        if(email.equals(login_user)) {
+            binding.fragmentPostBtnDelete.visibility=View.VISIBLE
+            // 게시물 삭제
+            binding.fragmentPostBtnDelete.setOnClickListener {
+                val popupMenu = PopupMenu(context, it)
+                popupMenu.inflate(R.menu.delete_menu)
+                popupMenu.show()
+                popupMenu.setOnMenuItemClickListener { menuItem ->
+                    when (menuItem.itemId) {
+                        R.id.delete -> {
+                            val builder = AlertDialog.Builder(requireContext())
+                            builder.setTitle("삭제하기")
+                            builder.setMessage("삭제 하시겠습니까? ")
+                            builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                                deletePost()
+                            }
+                            builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+
+                            }
+                            builder.show()
+                        }
+                    }
+                    false
+                }
+            }
+        }
+
+        // 뒤로가기버튼 클릭
+        binding.fragmentPostBtnBack.setOnClickListener {
+            val totalFragment = TotalFragment()
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.remove(this)
+                ?.replace(R.id.activity_main_frame,totalFragment)
+                ?.commit()
+        }
 
         postReviewLoad(binding.fragmentPostRecyclerView)
-
 
         ////프로필 액티비티로 넘어가기
         binding.cardView.setOnClickListener{
@@ -285,6 +324,43 @@ class PostFragment : Fragment() {
 
 
         return binding.root
+    }
+
+    fun deletePost() {
+        idx?.let {
+            retrofitService.deleteMyPost(it).enqueue(object : Callback<String> {
+                // 통신에 성공한 경우
+                override fun onResponse(call: Call<String>, response: Response<String>) {
+                    if (response.isSuccessful) {
+                        // 응답을 잘 받은 경우
+                        Log.e("DetailDuetFragment", "deleteSong() 통신 성공: ${response.body().toString()}")
+                        val jsonObject = JSONObject(response.body().toString())
+                        val result= jsonObject.getString("result")
+                        if(result.equals("true")){
+                            val builder = AlertDialog.Builder(requireContext())
+                            builder.setMessage("삭제되었습니다 ")
+                            builder.setPositiveButton("확인") { dialogInterface: DialogInterface, i: Int ->
+                                // 이전화면으로 이동
+                                val totalFragment = TotalFragment()
+                                requireActivity().supportFragmentManager.beginTransaction().replace(
+                                    R.id.activity_main_frame,totalFragment).addToBackStack(null).commit()
+                            }
+                            builder.show()
+                        }
+
+                    } else {
+                        // 통신은 성공했지만 응답에 문제가 있는 경우
+                        Log.e("DetailDuetFragment", "deleteSong() 응답 문제" + response.code())
+                    }
+                }
+
+                override fun onFailure(call: Call<String>, t: Throwable) {
+                    Log.e("DetailDuetFragment", "deleteSong()  통신 실패" + t.message)
+                }
+
+
+            })
+        }
     }
 
     fun goToLookAtProfileActivity(getEmail : String,getNickname : String,getProfile : String){

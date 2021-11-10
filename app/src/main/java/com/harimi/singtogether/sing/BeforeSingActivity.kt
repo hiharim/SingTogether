@@ -102,9 +102,13 @@ class BeforeSingActivity : AppCompatActivity() {
                 finish()
             }// 연습
 
-
-
         }
+
+        // 닫기 클릭
+        binding.activityBeforeSingBtnClose.setOnClickListener {
+            finish()
+        }
+
 
 
     }

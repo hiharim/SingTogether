@@ -60,7 +60,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     private var lyrics : String? = null // 가사
     private var side : String = "back" // 전면카메라,후면카메라 구분 front:전, back :후
     private lateinit var song_path : String // 노래 mr
-   private var mediaPlayer: MediaPlayer? = null
+    private var mediaPlayer: MediaPlayer? = null
     private var  mRecorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
     private var isRecording = false
     private var mPath: String? = null
@@ -81,8 +81,9 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     private var pausePosition : Int ?=null
     private var finishPosition : Int ?=null
     private var isFinished=false
+    private var isPaused=false
     private lateinit var beforeTotalTime : String
-    private lateinit var realBeforeTotalTime : String
+    private var realBeforeTotalTime : String="00:27"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,9 +131,9 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         binding.activityVideo2Rv.setHasFixedSize(true)
         binding.activityVideo2Rv.setBackgroundColor(Color.parseColor("#81000000"))
 
-        mediaPlayer = MediaPlayer()
-        mediaPlayer?.setDataSource(song_path)
-        mediaPlayer?.prepare()
+//        mediaPlayer = MediaPlayer()
+//        mediaPlayer?.setDataSource(song_path)
+//        mediaPlayer?.prepare()
 
         initVideoRecorder()
 
@@ -143,28 +144,27 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         // 일시정지버튼 클릭
         binding.activityRecordBtnPause.setOnClickListener {
             // 재생중이면 일시정지
-            if (mediaPlayer?.isPlaying == true) {
+            if (!isPaused) {
                 binding.activityRecordBtnStart.visibility = View.VISIBLE
                 binding.activityRecordBtnPause.visibility = View.GONE
                 mediaPlayer?.pause()
                 pausePosition=mediaPlayer?.currentPosition
-                mRecorder?.pause()
-
-            } else {
-                // 노래 재생
-                binding.activityRecordBtnStart.visibility = View.GONE
-                binding.activityRecordBtnPause.visibility = View.VISIBLE
-                mediaPlayer?.seekTo(pausePosition!!)
-                mediaPlayer?.start()
-                mRecorder?.resume()
-                if(binding.activityRecordTvIngTime.text.equals(beforeTotalTime)){
-                    isFinished=true
-                }
+                mRecorder!!.pause()
+                isPaused=true
             }
         }
 
+
         // 닫기 버튼 클릭
         binding.fragmentVideo2IBtnClose.setOnClickListener {
+            if (!isPaused) {
+                binding.activityRecordBtnStart.visibility = View.VISIBLE
+                binding.activityRecordBtnPause.visibility = View.GONE
+                mediaPlayer?.pause()
+                pausePosition=mediaPlayer?.currentPosition
+                mRecorder!!.pause()
+                isPaused=true
+            }
             val builder = AlertDialog.Builder(this)
             builder.setTitle("녹화를 종료하시겠습니까? ")
             builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
@@ -172,11 +172,9 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 // 1. 노래 끄고
                 // 2. 녹화 끄고
                 // 3. 프래그먼트 닫기
-              if(mediaPlayer!!.isPlaying){
-                  mediaPlayer?.pause()
-
-
-              }
+                mRecorder?.release()
+                mRecorder=null
+                finish()
             }
             builder.setNegativeButton("아니오") { dialog, which ->
                 // 노래 이어부르기
@@ -187,18 +185,37 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
-            mediaPlayer?.start()
-            isFinished=false
+
             binding.activityRecordBtnStart.visibility= View.GONE
             binding.activityRecordBtnPause.visibility= View.VISIBLE
 
             //카메라 전환버튼 숨기기
             binding.btnConvert.visibility=View.GONE
 
-            startVideoRecorder()
+            //startVideoRecorder()
+            if(!isPaused){
+                mediaPlayer = MediaPlayer()
+                mediaPlayer?.setDataSource(song_path)
+                mediaPlayer?.prepare()
+                mediaPlayer?.start()
+                startVideoRecorder()
+                isFinished=false
+            }else{
+                // resume
+                binding.activityRecordBtnStart.visibility = View.GONE
+                binding.activityRecordBtnPause.visibility = View.VISIBLE
+                mediaPlayer?.seekTo(pausePosition!!)
+                mediaPlayer?.start()
+                mRecorder!!.resume()
+                isPaused=false
+//                if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
+//                    isFinished=true
+//                }
+            }
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
+
                 var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  // 가사스레드위해서
                 var timeFormat = android.icu.text.SimpleDateFormat("mm:ss")  //"분:초"를 나타낼 수 있도록 포멧팅
 
@@ -216,7 +233,11 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                             binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
 
                             beforeTotalTime=binding.activityRecordTvTotalTime.text.toString()
-                            realBeforeTotalTime="00:27"
+                            Log.e("beforeTotalTime",": $beforeTotalTime")
+
+                            val minusSecond=mediaPlayer!!.duration-1000
+                            realBeforeTotalTime=timeFormat.format(minusSecond).toString()
+                            Log.e("realBeforeTotalTime",": ${realBeforeTotalTime}")
 
                             RecordActivity.time_info.pTime= binding.activityVideo2TvPlayTime.text.toString()
 
@@ -251,7 +272,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
                         SystemClock.sleep(1000)
                     }
-                    if(binding.activityRecordTvIngTime.text.equals(beforeTotalTime)){
+                    if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
                         isFinished=true
                     }
 
@@ -263,7 +284,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                         mRecorder!!.stop()
                         mRecorder!!.release()
                         mRecorder = null
-                        //mCamera!!.lock()
+
                         mCamera!!.release()
                         mCamera=null
 
@@ -337,8 +358,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
         }
 
-
-
         //카메라 전환
        binding.btnConvert.setOnClickListener {
            //switchCamera()
@@ -387,16 +406,74 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 //        mCamera!!.lock()
 //    }
 
-    fun startVideoRecorder() {
+    private fun pauseRecorder(){
+        mediaPlayer?.pause()
+        pausePosition=mediaPlayer?.currentPosition
 
+        mRecorder!!.pause()
+        isPaused=true
+        binding.activityRecordBtnStart.setImageResource(R.drawable.ic_baseline_mic_24)
+    }
 
-        if (isFinished) {
+    private fun resumeRecorder(){
+        mediaPlayer?.seekTo(pausePosition!!)
+        mediaPlayer?.start()
+        mRecorder!!.resume()
+        if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
+            isFinished=true
+        }
+        isPaused=false
+        binding.activityRecordBtnStart.setImageResource(R.drawable.ic_baseline_pause_24)
+    }
+
+    private fun startRecorder() {
+         if (isRecording) {
             mRecorder!!.stop()
             mRecorder!!.release()
             mRecorder = null
             mCamera!!.lock()
             isRecording = false
             isFinished=false
+
+        } else {
+             runOnUiThread {
+                 mRecorder = MediaRecorder()
+                 mCamera!!.unlock()
+                 mRecorder!!.setCamera(mCamera)
+                 mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+                 mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
+                 if (side.equals("front")) {
+                     mRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                     mRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                     mRecorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+                     mRecorder!!.setOrientationHint(270) // 전면 좌우반전
+                 } else {
+                     // 후면일땐 QUALITY_HIGH , 전면일땐 설정..
+                     side = "back"
+                     mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
+                     mRecorder!!.setOrientationHint(90) // 후면
+                 }
+                 mRecorder!!.setOutputFile(recordingVideoFilePath)
+                 mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
+                 try {
+                     mRecorder!!.prepare()
+                 } catch (e: Exception) {
+                     e.printStackTrace()
+                 }
+                 mRecorder!!.start()
+                 isRecording = true
+             }
+         }
+    }
+
+    fun startVideoRecorder() {
+        if (isFinished) {
+            mRecorder!!.stop()
+            mRecorder!!.release()
+            mRecorder = null
+            mCamera!!.lock()
+            isRecording = false
+            //isFinished=false
 
         } else {
             runOnUiThread {
@@ -425,7 +502,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
                 mRecorder!!.start()
                 isRecording = true
-                isFinished=true
+                isFinished=false
 
             }
         }
@@ -460,7 +537,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                        asyncDialog!!.dismiss()
                        val jsonObject = JSONObject(response.body().toString())
                        extract_path = "http://3.35.236.251/" + jsonObject.getString("extract_path")
-                       finish_path = "http://3.35.236.251/" + jsonObject.getString("finish_path");
+                       finish_path = "http://3.35.236.251/" + jsonObject.getString("finish_path")
 
                        // 믹싱 성공 다이얼로그
                        val builder = AlertDialog.Builder(this@Video2Activity)
