@@ -147,7 +147,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var min  =0
     private var hour = 0
 
-    private var recordTime :String ?= ""
+//    private var recordTime :String ?= ""
 
     private val localChattingList: ArrayList<LocalChattingData> = ArrayList()
     private lateinit var rv_chattingRecyclerView : RecyclerView
@@ -427,10 +427,13 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     hour = min / 60
                 }
                 if (min <=9){
-                    recordTime = "$min : $time "
+//                    recordTime = "$min : $time "
+                    activity_streaming_tv_time.text = "$min : $time "
                 }else{
 
-                    recordTime = "$hour : $min "
+//                    recordTime = "$hour : $min "
+                    activity_streaming_tv_time.text = "$hour : $min "
+                    activity_streaming_tv_time.text.toString()
                 }
             }
         }

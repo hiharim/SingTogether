@@ -29,6 +29,7 @@ class MyFollowingActivity : AppCompatActivity() {
     private lateinit var retrofit : Retrofit
     private lateinit var iv_back : ImageButton
     private lateinit var tv_alert : TextView
+    private lateinit var myEmail : String
 
 
     private lateinit var rv_myFollowing : RecyclerView
@@ -51,6 +52,8 @@ class MyFollowingActivity : AppCompatActivity() {
         rv_myFollowing.adapter = myFollowingAdapter
 
 
+        var intent = intent
+        myEmail = intent.getStringExtra("myEmail")
 
         iv_back.setOnClickListener {
             finish()
@@ -61,7 +64,7 @@ class MyFollowingActivity : AppCompatActivity() {
     fun myFollowingUserLoad() {
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestGetMyFollowingUser(LoginActivity.user_info.loginUserEmail)
+        retrofitService.requestGetMyFollowingUser(myEmail)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {

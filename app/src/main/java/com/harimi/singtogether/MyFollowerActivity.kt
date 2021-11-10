@@ -31,6 +31,7 @@ class MyFollowerActivity : AppCompatActivity() {
     private val myFollowDataList: ArrayList<MyFollowData> = ArrayList()
     private lateinit var myFollowerAdapter: MyFollowerAdapter
     private lateinit var tv_alert : TextView
+    private lateinit var myEmail : String
 
 
     private var isFollow : Boolean ?= false
@@ -46,6 +47,8 @@ class MyFollowerActivity : AppCompatActivity() {
         myFollowerAdapter = MyFollowerAdapter(myFollowDataList, this)
         rv_myFollower.adapter = myFollowerAdapter
 
+        var intent = intent
+        myEmail = intent.getStringExtra("myEmail")
 
         iv_back.setOnClickListener {
             finish()
@@ -57,7 +60,7 @@ class MyFollowerActivity : AppCompatActivity() {
     fun myFollowUserLoad() {
         retrofit= RetrofitClient.getInstance()
         retrofitService=retrofit.create(RetrofitService::class.java)
-        retrofitService.requestGetMyFollowUser(LoginActivity.user_info.loginUserEmail)
+        retrofitService.requestGetMyFollowUser(myEmail)
             .enqueue(object : Callback<String> {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {

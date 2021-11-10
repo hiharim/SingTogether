@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#BF000000"
     tools:context=".broadcast.LiveThumbnailCaptureActivity">
 
 
@@ -39,7 +40,7 @@
                 android:layout_marginBottom="44dp"
                 android:text="라이브 시작"
                 android:textStyle="bold"
-                android:backgroundTint="@color/blue"
+                android:backgroundTint="@color/purple"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -54,7 +55,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/iv_thumbnail"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_baseline_close_24" />
+                app:srcCompat="@drawable/whiteclose" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
