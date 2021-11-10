@@ -86,6 +86,8 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
         //밷지
         if(holder.isBadge.text.equals("true")){
             holder.badge.visibility=View.VISIBLE
+        }else{
+            holder.badge.visibility =View.GONE
         }
 
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.profile).into(holder.profile)

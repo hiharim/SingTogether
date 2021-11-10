@@ -53,7 +53,7 @@ class RecordActivity: AppCompatActivity()  {
     private var way : String? = null
     private var lyrics : String? = null // 가사
     private lateinit var song_path : String
-    lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer? = null
     private var recorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
     private val recordingFilePath :String by lazy {
         "${externalCacheDir?.absolutePath}/recording.m4a"
@@ -69,7 +69,13 @@ class RecordActivity: AppCompatActivity()  {
 
     private val timeList:ArrayList<String> = ArrayList()
     private val nextList:ArrayList<String> = ArrayList()
-
+    private var pausePosition : Int ?=null
+    private var finishPosition : Int ?=null
+    private var isFinished=false
+    private var isPaused=false
+    private lateinit var beforeTotalTime : String
+    private var realBeforeTotalTime : String?=null
+    private var isRecording = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,17 +104,6 @@ class RecordActivity: AppCompatActivity()  {
             for (i in array.indices) {
                 println(array[i])
                 val seconds=array[i]
-//                val line= array[i].substring(6)
-//                val lyricsData=LyricsData(seconds, line)
-//                lyricsList.add(lyricsData)
-//
-//                val times=array[i].substring(1,5)
-//                Log.e("레코드액티비티","times"+times)
-//                timeList.add(times)
-//
-//                val next=array[i].substring(1,5)
-//                nextList.add(next)
-
                 val line= array[i].substring(9)
                 val lyricsData=LyricsData(seconds, line)
                 lyricsList.add(lyricsData)
@@ -123,22 +118,78 @@ class RecordActivity: AppCompatActivity()  {
             }
         }
         nextList.removeAt(0)
-        Log.e("레코드액티비티","next"+nextList)
 
+        //리사이클러뷰 설정
         binding.activityRecordRv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityRecordRv.setHasFixedSize(true)
-        //binding.activityRecordRv.setBackgroundColor(Color.parseColor("#81000000"))
 
-        mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(song_path)
-        mediaPlayer.prepare()
+//        mediaPlayer = MediaPlayer()
+//        mediaPlayer.setDataSource(song_path)
+//        mediaPlayer.prepare()
 
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
+
+        // 일시정지버튼 클릭
+        binding.activityRecordBtnPause.setOnClickListener {
+            // 재생중이면 일시정지
+            if (!isPaused) {
+                binding.activityRecordBtnStart.visibility = View.VISIBLE
+                binding.activityRecordBtnPause.visibility = View.GONE
+                mediaPlayer?.pause()
+                pausePosition=mediaPlayer?.currentPosition
+                recorder!!.pause()
+                isPaused=true
+            }
+        }
+
+        // 닫기 버튼 클릭
+        binding.fragmentRecordBtnClose.setOnClickListener {
+            if (!isPaused) {
+                binding.activityRecordBtnStart.visibility = View.VISIBLE
+                binding.activityRecordBtnPause.visibility = View.GONE
+                mediaPlayer?.pause()
+                pausePosition=mediaPlayer?.currentPosition
+                recorder!!.pause()
+                isPaused=true
+            }
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("녹음을 종료하시겠습니까? ")
+            builder.setMessage("지금 녹음을 종료하시면 저장되지 않습니다.")
+            builder.setPositiveButton("네") { dialog, which ->
+                recorder?.release()
+                recorder=null
+                finish()
+            }
+            builder.setNegativeButton("아니오") { dialog, which ->
+                // 노래 이어부르기
+            }
+            builder.show()
+        }
+
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
-            mediaPlayer.start()
+            binding.activityRecordBtnStart.visibility= View.GONE
+            binding.activityRecordBtnPause.visibility=View.VISIBLE
+            //mediaPlayer.start()
+            if(!isPaused){
+                mediaPlayer = MediaPlayer()
+                mediaPlayer?.setDataSource(song_path)
+                mediaPlayer?.prepare()
+                mediaPlayer?.start()
+                Record()
+                isFinished=false
+            }else{
+                // resume
+                binding.activityRecordBtnStart.visibility = View.GONE
+                binding.activityRecordBtnPause.visibility = View.VISIBLE
+                mediaPlayer?.seekTo(pausePosition!!)
+                mediaPlayer?.start()
+                recorder!!.resume()
+                isPaused=false
+
+            }
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
@@ -148,20 +199,22 @@ class RecordActivity: AppCompatActivity()  {
                     super.run()
                     if (mediaPlayer == null)
                         return
-                    binding.seekBar.max = mediaPlayer.duration  // mPlayer.duration : 음악 총 시간
+                    binding.seekBar.max = mediaPlayer!!.duration  // mPlayer.duration : 음악 총 시간
 
-                    while (mediaPlayer.isPlaying) {
+                    while (mediaPlayer!!.isPlaying) {
                         runOnUiThread { //화면의 위젯을 변경할 때 사용 (이 메소드 없이 아래 코드를 추가하면 실행x)
-                            binding.seekBar.progress = mediaPlayer.currentPosition
-                            binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer.currentPosition)
-                            binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
-
-                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
+                            binding.seekBar.progress = mediaPlayer!!.currentPosition
+                            binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer!!.currentPosition)
+                            binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer!!.duration)
+                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
                             time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
-                            //time=binding.activityRecordTvIngTime.text.toString()
+
+                            val minusSecond=mediaPlayer!!.duration-1000
+                            realBeforeTotalTime=timeFormat.format(minusSecond).toString()
+                            Log.e("realBeforeTotalTime",": ${realBeforeTotalTime}")
+
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityRecordRv.adapter=lyricsAdapter
-
                             for(i in timeList) {
                                 var minus_one=i.toFloat()-0.01.toFloat()
                                 val t_down = DecimalFormat("0.00")
@@ -188,17 +241,17 @@ class RecordActivity: AppCompatActivity()  {
                                     }
                                 }
 
-
-
                         }
                         SystemClock.sleep(1000)
                     }
 
-                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
-                    if(!mediaPlayer.isPlaying) {
-                        mediaPlayer.stop() // 음악 정지
-                        mediaPlayer.release()
-                       // recordStop() // 녹음 중지
+                    if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
+                        isFinished=true
+                    }
+
+                    if(isFinished) {
+                        mediaPlayer?.stop() // 음악 정지
+                        mediaPlayer?.release()
 
                         recorder!!.stop()
                         recorder!!.release()
@@ -218,8 +271,33 @@ class RecordActivity: AppCompatActivity()  {
                             e.printStackTrace()
                         }
                         mixAudio()
-
                     }
+
+                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
+//                    if(!mediaPlayer.isPlaying) {
+//                        mediaPlayer.stop() // 음악 정지
+//                        mediaPlayer.release()
+//                       // recordStop() // 녹음 중지
+//
+//                        recorder!!.stop()
+//                        recorder!!.release()
+//                        recorder = null
+//                        try{
+//                            Thread(Runnable {
+//                                // ==== [UI 동작 실시] ====
+//                                runOnUiThread {
+//                                    asyncDialog = ProgressDialog(this@RecordActivity)
+//                                    asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+//                                    asyncDialog!!.setMessage("믹싱중...")
+//                                    asyncDialog!!.show()
+//                                }
+//                            }).start()
+//                        }
+//                        catch (e: Exception){
+//                            e.printStackTrace()
+//                        }
+//                        mixAudio()
+//                    }
 
                 }
             }.start()
@@ -231,7 +309,7 @@ class RecordActivity: AppCompatActivity()  {
                     fromUser: Boolean
                 ) {
                     if (fromUser) {
-                        mediaPlayer.seekTo(progress)
+                        mediaPlayer?.seekTo(progress)
                     }
                 }
 
@@ -242,44 +320,73 @@ class RecordActivity: AppCompatActivity()  {
                 }
             })
             // 녹음 시작
-            Record()
+            //Record()
 
-            binding.activityRecordBtnStart.visibility= View.GONE
-            binding.activityRecordBtnPause.visibility=View.VISIBLE
 
-        }
-        // 중지버튼
-        binding.activityRecordBtnPause.setOnClickListener {
-            mediaPlayer.pause()
 
         }
 
+    }
 
+    fun Record() {
+        if(isFinished){
+            recorder!!.stop()
+            recorder!!.release()
+            recorder = null
+            isRecording = false
+        }else{
+            runOnUiThread {
+                recorder= MediaRecorder()
+                recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+                recorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+                recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+                recorder!!.setOutputFile(recordingFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
+                try {
+                    recorder!!.prepare()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                recorder!!.start()
+                isRecording = true
+                isFinished=false
+            }
+        }
     }
 
     // 사용자 음성 녹음
-    fun Record() {
-        recorder = MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-            setOutputFile(recordingFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
-            prepare()
+//    fun Record() {
+//        recorder = MediaRecorder().apply {
+//            setAudioSource(MediaRecorder.AudioSource.MIC)
+//            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+//            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+//            setOutputFile(recordingFilePath) // 외부 캐시 디렉토리에 임시적으로 저장 ,위에 선언해둔 외부 캐시 FilePath 를 이용
+//            prepare()
+//        }
+//        recorder?.start()
+//    }
+
+    // 뒤로가기 버튼
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("녹음을 종료하시겠습니까? ")
+        builder.setMessage("지금 녹음을 종료하시면 저장되지 않습니다.")
+        builder.setPositiveButton("네") { dialog, which ->
+            mediaPlayer?.release()
+            mediaPlayer=null
         }
-        recorder?.start()
+        builder.setNegativeButton("아니오") { dialog, which ->
+            // 노래 이어부르기
+        }
+        builder.show()
     }
 
-    fun recordStop() {
-        recorder?.run {
-            stop()
-            release()
-        }
-        recorder=null
-        //Toast.makeText(applicationContext, "녹음중지", Toast.LENGTH_SHORT).show()
-        //Merge()
+    // 앱이 백그라운드로 넘어가도 음악이 계속 실행되는거 막기 위해서 오버라이드
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer?.release()
+        mediaPlayer=null
     }
-
-
     private fun mixAudio() {
         val timeStamp : String = java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         fileName = "$timeStamp.m4a"

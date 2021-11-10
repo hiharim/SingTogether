@@ -71,6 +71,16 @@ class TotalFragment : Fragment() {
             }
         }.attach()
 
+        // 뒤로가기 클릭
+        binding.fragmentTotalIvBack.setOnClickListener {
+            val homeFragment = HomeFragment()
+            activity?.supportFragmentManager
+                ?.beginTransaction()
+                ?.remove(this)
+                ?.replace(R.id.activity_main_frame,homeFragment)
+                ?.commit()
+        }
+
         return binding.root
     }
 

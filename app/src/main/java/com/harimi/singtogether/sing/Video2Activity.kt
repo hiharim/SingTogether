@@ -83,7 +83,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     private var isFinished=false
     private var isPaused=false
     private lateinit var beforeTotalTime : String
-    private var realBeforeTotalTime : String="00:27"
+    private var realBeforeTotalTime : String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,9 +169,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
             builder.setTitle("녹화를 종료하시겠습니까? ")
             builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
             builder.setPositiveButton("네") { dialog, which ->
-                // 1. 노래 끄고
-                // 2. 녹화 끄고
-                // 3. 프래그먼트 닫기
                 mRecorder?.release()
                 mRecorder=null
                 finish()
@@ -374,9 +371,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         builder.setTitle("녹화를 종료하시겠습니까? ")
         builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
         builder.setPositiveButton("네") { dialog, which ->
-            // 1. 노래 끄고
-            // 2. 녹화 끄고
-            // 3. 프래그먼트 닫기
             mediaPlayer?.release()
             mediaPlayer=null
         }
@@ -406,65 +400,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 //        mCamera!!.lock()
 //    }
 
-    private fun pauseRecorder(){
-        mediaPlayer?.pause()
-        pausePosition=mediaPlayer?.currentPosition
-
-        mRecorder!!.pause()
-        isPaused=true
-        binding.activityRecordBtnStart.setImageResource(R.drawable.ic_baseline_mic_24)
-    }
-
-    private fun resumeRecorder(){
-        mediaPlayer?.seekTo(pausePosition!!)
-        mediaPlayer?.start()
-        mRecorder!!.resume()
-        if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
-            isFinished=true
-        }
-        isPaused=false
-        binding.activityRecordBtnStart.setImageResource(R.drawable.ic_baseline_pause_24)
-    }
-
-    private fun startRecorder() {
-         if (isRecording) {
-            mRecorder!!.stop()
-            mRecorder!!.release()
-            mRecorder = null
-            mCamera!!.lock()
-            isRecording = false
-            isFinished=false
-
-        } else {
-             runOnUiThread {
-                 mRecorder = MediaRecorder()
-                 mCamera!!.unlock()
-                 mRecorder!!.setCamera(mCamera)
-                 mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-                 mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
-                 if (side.equals("front")) {
-                     mRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                     mRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                     mRecorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-                     mRecorder!!.setOrientationHint(270) // 전면 좌우반전
-                 } else {
-                     // 후면일땐 QUALITY_HIGH , 전면일땐 설정..
-                     side = "back"
-                     mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
-                     mRecorder!!.setOrientationHint(90) // 후면
-                 }
-                 mRecorder!!.setOutputFile(recordingVideoFilePath)
-                 mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
-                 try {
-                     mRecorder!!.prepare()
-                 } catch (e: Exception) {
-                     e.printStackTrace()
-                 }
-                 mRecorder!!.start()
-                 isRecording = true
-             }
-         }
-    }
 
     fun startVideoRecorder() {
         if (isFinished) {

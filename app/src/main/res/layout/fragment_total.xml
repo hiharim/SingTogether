@@ -31,6 +31,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:padding="15dp"
+                android:backgroundTint="@color/black"
                 android:layout_marginStart="15dp"
                 android:background="@drawable/ic_baseline_arrow_back_ios_24"
                 app:layout_constraintLeft_toLeftOf="parent"

@@ -48,7 +48,7 @@
 
 
             <ImageButton
-                android:id="@+id/fragment_my_page_i_btn_close"
+                android:id="@+id/fragment_record_btn_close"
                 android:layout_width="0px"
                 android:layout_height="30dp"
                 android:layout_marginRight="12dp"
