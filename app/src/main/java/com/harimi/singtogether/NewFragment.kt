@@ -123,35 +123,34 @@ class NewFragment : Fragment() {
                                     val badgeObject = badgeArray.getJSONObject(j)
                                     val badge_email = badgeObject.getString("email")
 
-                                    if(badge_email.equals(email) && badge_email.equals(collabo_email)){
+                                    if(badge_email.equals(email)) {
                                         isBadge=true
+                                        break
+                                    }else{
+                                        isBadge = false
+                                    }
+
+                                }
+
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
+
+                                    if(badge_email.equals(collabo_email)) {
                                         isBadgeCollabo=true
-                                        Log.d(TAG, "(1) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
-                                        Log.d(TAG, "(1) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
                                         break
-                                    }else if(badge_email.equals(email) && !badge_email.equals(collabo_email)) {
-                                        isBadge=true
+                                    }else{
                                         isBadgeCollabo=false
-                                        Log.d(TAG, "(2) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
-                                        Log.d(TAG, "(2) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
-                                        break
-                                    }else if(!badge_email.equals(email) && badge_email.equals(collabo_email)){
-                                        isBadge=false
-                                        isBadgeCollabo=true
-                                        Log.d(TAG, "(3) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
-                                        Log.d(TAG, "(3) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
-                                        break
-                                    }else if(!badge_email.equals(email) && badge_email.equals(collabo_email)){
-                                        isBadge=false
-                                        isBadgeCollabo=false
-                                        Log.d(TAG, "(4) email :$email ,badge_email: $badge_email ,isBadge : $isBadge")
-                                        Log.d(TAG, "(4) collabo_email :$email ,badge_email: $badge_email ,isBadgeCollabo : $isBadgeCollabo")
                                     }
                                 }
+
                             }else{
                                 isBadge=false
                                 isBadgeCollabo=false
                             }
+                            Log.e(TAG,"i : $i")
+                            Log.e(TAG,"isBadge : $isBadge")
+                            Log.e(TAG,"isBageCollabo : $isBadgeCollabo")
 
                             val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
                             homePostList.add(0,homeData)

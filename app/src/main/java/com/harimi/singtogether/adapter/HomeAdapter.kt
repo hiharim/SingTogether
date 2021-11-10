@@ -123,7 +123,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
             holder.collabo_profile.visibility=View.VISIBLE
             holder.collabo_nickname.visibility=View.VISIBLE
             holder.and.visibility=View.VISIBLE
-            holder.badge_collabo.visibility=View.VISIBLE
+            //holder.badge_collabo.visibility=View.GONE
         }
 
         // 좋아요
