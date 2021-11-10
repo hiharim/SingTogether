@@ -83,13 +83,20 @@ class SimpleFollowingFragment : Fragment() {
                     Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
                     val body = response.body().toString()
                     val replayObject = JSONObject (body)
-                    val badgeList = replayObject.getString("badgeList")
-                    val outputData = replayObject.getString("outputData")
-                    val postArray = JSONArray(outputData)
 
-                    for (i in 0 until postArray.length()) {
-                        if (postArray.length() ==0 || postArray.equals("null")){
-                        }else {
+                    val outputData = replayObject.getString("outputData")
+
+
+                    if (outputData.equals("")){
+                        binding.tvAlert.visibility =View.VISIBLE
+                        binding.fragmentSimpleFollowingRv.visibility =View.GONE
+                    }else{
+                        binding.tvAlert.visibility =View.GONE
+                        binding.fragmentSimpleFollowingRv.visibility =View.VISIBLE
+                        val badgeList = replayObject.getString("badgeList")
+                        val postArray = JSONArray(outputData)
+                        for (i in 0 until postArray.length()) {
+
                             val iObject=postArray.getJSONObject(i)
                             val idx=iObject.getInt("idx")
                             val thumbnail=iObject.getString("thumbnail")
@@ -147,8 +154,11 @@ class SimpleFollowingFragment : Fragment() {
                             val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
                             homePostList.add(0,homeData)
                             simpleAdapter.notifyDataSetChanged()
+
                         }
+
                     }
+
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우

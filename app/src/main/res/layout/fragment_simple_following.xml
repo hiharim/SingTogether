@@ -7,10 +7,24 @@
     android:layout_height="match_parent"
     tools:context=".simple.SimpleFollowingFragment">
 
+    <TextView
+        android:layout_marginTop="40dp"
+        android:id="@+id/tv_alert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="팔로잉한 유저가 현재 없습니다."
+        android:textSize="15dp"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textStyle="bold"/>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_simple_following_rv"
         android:layout_marginTop="40dp"
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="270dp"/>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

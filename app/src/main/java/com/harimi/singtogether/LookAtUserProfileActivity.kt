@@ -33,7 +33,8 @@ class LookAtUserProfileActivity : AppCompatActivity() {
     private lateinit var btn_followCancel : Button
     private lateinit var ib_back : ImageButton
     private lateinit var iv_badge : ImageView
-
+    private lateinit var tv_follwing : TextView
+    private lateinit var tv_follow : TextView
 
 
     private lateinit var tabLayout_lookAtUserProfile : TabLayout
@@ -43,6 +44,8 @@ class LookAtUserProfileActivity : AppCompatActivity() {
     private lateinit var otherUserEmail : String
     private lateinit var followingUserNumber : String
     private lateinit var followUserNumber : String
+
+
     private lateinit var nickname : String
     private lateinit var profile : String
     private var isFollow : Boolean ?= false
@@ -100,6 +103,8 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         btn_followCancel =findViewById(R.id.btn_followCancel)
         ib_back =findViewById(R.id.ib_back)
         iv_badge =findViewById(R.id.iv_badge)
+        tv_follwing =findViewById(R.id.tv_follwing)
+        tv_follow =findViewById(R.id.tv_follow)
 
 
 
@@ -139,7 +144,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
             btn_followCancel.visibility = View.VISIBLE
         }
 
-        tv_follwingNumber.setOnClickListener {
+        tv_follwing.setOnClickListener {
             val intent= Intent(this, MyFollowingActivity::class.java)
             intent.putExtra("myEmail",otherUserEmail)
             startActivity(intent)
@@ -147,7 +152,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
 
         }
 
-        tv_followNumber.setOnClickListener {
+        tv_follow.setOnClickListener {
             val intent= Intent(this, MyFollowerActivity::class.java)
             intent.putExtra("myEmail",otherUserEmail)
             startActivity(intent)
