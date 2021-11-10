@@ -28,7 +28,7 @@ class SearchData {
 
 
     constructor(getType : String , idx: String, thumbnail: String, replayTitle: String, uploadUserEmail: String, uploadUserProfile: String, uploadUserNickName: String, replayLikeNumber: String
-                , replayHits: String, uploadDate: String, replayVideo: String, replayReviewNumber: String, time: String, uploadUserFCMToken: String, d: Boolean, isBadge: Boolean, replayPostLikeIdx: String) {
+                , replayHits: String, uploadDate: String, replayVideo: String, replayReviewNumber: String, time: String, uploadUserFCMToken: String, liked: Boolean, isBadge: Boolean, replayPostLikeIdx: String) {
         this.getType = getType
         this.idx = idx
         this.thumbnail = thumbnail
@@ -49,7 +49,7 @@ class SearchData {
 
     }
 
-    constructor( getType : String , idx: String, email: String, thumbnail: String, nickName: String, profile: String, title: String, viewer: String) {
+    constructor( getType : String , idx: String, email: String, thumbnail: String, nickName: String, profile: String, title: String, viewer: String ,isBadge: Boolean) {
         this.getType = getType
         this.idx = idx
         this.email = email
@@ -58,7 +58,7 @@ class SearchData {
         this.profile = profile
         this.title = title
         this.viewer = viewer
-
+        this.isBadge = isBadge
     }
 
 

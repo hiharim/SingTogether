@@ -21,6 +21,7 @@ import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.R
+import com.harimi.singtogether.broadcast.DetailReplayActivity
 import com.harimi.singtogether.broadcast.LiveStreamingViewActivity
 import de.hdodenhof.circleimageview.CircleImageView
 import org.json.JSONObject
@@ -58,7 +59,7 @@ class SearchDataAdapter (val searchDataList: ArrayList<SearchData>, val context:
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-//
+        /////viewType이 0 이면 LiveFragmentViewHolder 를 사용한다 .
         if (searchDataList.get(position).getType.equals("0")){
             holder as LiveFragmentViewHolder
             Log.d(TAG,"onBindViewHolder: 0");
@@ -86,13 +87,52 @@ class SearchDataAdapter (val searchDataList: ArrayList<SearchData>, val context:
                     .into(holder.iv_thumbnail)
             }
 
+            if (searchDataList.get(position).isBadge ==true){
+                holder.iv_badge.visibility =View.VISIBLE
+            }else{
+                holder.iv_badge.visibility =View.GONE
+            }
+
             holder.tv_liveTitle.setText(searchDataList.get(position).title)
             holder.tv_viewer.setText(searchDataList.get(position).viewer)
             holder.tv_nickName.setText(searchDataList.get(position).nickName)
 
+            holder.itemView.setOnClickListener(object : View.OnClickListener {
+                override fun onClick(v: View?) {
+
+//                    val Idx = searchDataList.get(position).idx
+                    retrofit = RetrofitClient.getInstance()
+                    retrofitService = retrofit.create(RetrofitService::class.java)
+                    retrofitService.requestLiveStreamingCheck(searchDataList.get(position).idx!!).enqueue(object : Callback<String> {
+                        override fun onResponse(call: Call<String>, response: Response<String>) {
+
+                            if (response.isSuccessful) {
+                                val body = response.body().toString()
+                                Log.d("getHomePost: ", body)
+                                val jsonObject = JSONObject(response.body().toString())
+                                val result = jsonObject.getBoolean("result")
+                                if (result) {
+                                    val intent = Intent(context, LiveStreamingViewActivity::class.java)
+                                    intent.putExtra("roomIdx", searchDataList.get(position).idx)
+                                    context.startActivity(intent, null)
+
+                                } else {
+                                    Toast.makeText(context, "스트리머가 이미 방송을 종료하였습니다.", Toast.LENGTH_SHORT).show()
+                                    searchDataList.removeAt(position)
+                                    notifyItemRemoved(position)
+                                    notifyDataSetChanged()
+                                    return
+                                }
+                            }
+                        }
+                        override fun onFailure(call: Call<String>, t: Throwable) {
+                        }
+                    })
+                }
+            })
 
 
-        }else{
+        }else{   /////viewType이 0 이면 ReplayFragmentViewHolder 를 사용한다 .
             holder as ReplayFragmentViewHolder
             Log.d(TAG,"onBindViewHolder: 1");
 
@@ -137,6 +177,53 @@ class SearchDataAdapter (val searchDataList: ArrayList<SearchData>, val context:
                 holder.iv_clickLike.visibility = View.GONE
                 holder.iv_normalLike.visibility = View.VISIBLE
             }
+
+            holder.itemView.setOnClickListener {
+
+                retrofit = RetrofitClient.getInstance()
+                retrofitService = retrofit.create(RetrofitService::class.java)
+                retrofitService.requestUpdateReplayHIts(searchDataList.get(position).idx!!).enqueue(object :
+                    Callback<String> {
+                    override fun onResponse(call: Call<String>, response: Response<String>) {
+
+                        if (response.isSuccessful) {
+                            val body = response.body().toString()
+                            Log.d("Adapter: ", body)
+                            val jsonObject = JSONObject(
+                                response.body().toString()
+                            )
+                            val result = jsonObject.getBoolean("result")
+                            if (result) {
+                                //          DetailReplayActivity 로 이동
+                                val intent = Intent(context, DetailReplayActivity::class.java)
+                                intent.putExtra("idx", searchDataList.get(position).idx)
+                                intent.putExtra("thumbnail", searchDataList.get(position).thumbnail)
+                                intent.putExtra("uploadUserProfile", searchDataList.get(position).uploadUserProfile)
+                                intent.putExtra("uploadUserNickName", searchDataList.get(position).uploadUserNickName)
+                                intent.putExtra("uploadDate", searchDataList.get(position).uploadDate)
+                                intent.putExtra("replayTitle", searchDataList.get(position).replayTitle)
+                                intent.putExtra("replayLikeNumber", searchDataList.get(position).replayLikeNumber)
+                                intent.putExtra("replayHits", searchDataList.get(position).replayHits)
+                                intent.putExtra("replayReviewNumber", searchDataList.get(position).replayReviewNumber)
+                                intent.putExtra("uploadUserEmail", searchDataList.get(position).uploadUserEmail)
+                                intent.putExtra("replayPostLikeIdx", searchDataList.get(position).replayPostLikeIdx)
+                                intent.putExtra("liked", searchDataList.get(position).liked)
+                                intent.putExtra("replayVideo", searchDataList.get(position).replayVideo)
+                                intent.putExtra("uploadUserFCMToken", searchDataList.get(position).uploadUserFCMToken)
+                                intent.putExtra("isBadge", searchDataList.get(position).isBadge)
+
+                                context.startActivity(intent, null)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+
+                    }
+                })
+
+            }
+
         }
 
     }
@@ -153,7 +240,7 @@ class SearchDataAdapter (val searchDataList: ArrayList<SearchData>, val context:
         val tv_liveTitle = itemView.findViewById<TextView>(R.id.tv_liveTitle) // 타이틀
         val tv_viewer = itemView.findViewById<TextView>(R.id.tv_viewer) // 시청자
         val tv_nickName = itemView.findViewById<TextView>(R.id.tv_nickName) // 닉네임
-
+        val iv_badge = itemView.findViewById<ImageView>(R.id.iv_badge)
     }
 
     class ReplayFragmentViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView) {

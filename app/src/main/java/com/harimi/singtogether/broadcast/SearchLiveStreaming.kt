@@ -44,21 +44,10 @@ class SearchLiveStreaming : AppCompatActivity() {
     private var like :Boolean ?= false
     private var isBadge :Boolean ?= false
     private var replayPostLikeIdx :String ?= "null"
-//    private lateinit var rv_searchLiveRecyclerView : RecyclerView
-//    lateinit var liveFragmentAdapter: LiveFragmentAdapter
-//    private val liveStreamingPostList: ArrayList<LiveFragmentData> = ArrayList()
 
-    private lateinit var rv_searchLiveRecyclerView : RecyclerView
+    private lateinit var rv_searchLiveAndReplayRecyclerView : RecyclerView
     lateinit var searchDataAdapter: SearchDataAdapter
     private val searchDataList: ArrayList<SearchData> = ArrayList()
-//
-//
-//
-//    private lateinit var rv_searchReplayRecyclerView : RecyclerView
-//    lateinit var replayFragmentAdapter: ReplayFragmentAdapter
-//    private val replayDataList: ArrayList<ReplayData> = ArrayList()
-
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -71,36 +60,18 @@ class SearchLiveStreaming : AppCompatActivity() {
         et_searchLiveStreaming = findViewById(R.id.et_searchLiveStreaming)
         tv_alert = findViewById(R.id.tv_alert)
 
-        rv_searchLiveRecyclerView =findViewById(R.id.rv_searchLiveRecyclerView)
-        rv_searchLiveRecyclerView.layoutManager = LinearLayoutManager(this)
-        rv_searchLiveRecyclerView.addItemDecoration(
+        rv_searchLiveAndReplayRecyclerView =findViewById(R.id.rv_searchLiveAndReplayRecyclerView)
+        rv_searchLiveAndReplayRecyclerView.layoutManager = LinearLayoutManager(this)
+        rv_searchLiveAndReplayRecyclerView.addItemDecoration(
             DividerItemDecoration( this,
                 DividerItemDecoration.VERTICAL)
         )
         searchDataAdapter = SearchDataAdapter(searchDataList,this)
-        rv_searchLiveRecyclerView.adapter = searchDataAdapter
-
-//        rv_searchLiveRecyclerView =findViewById(R.id.rv_searchLiveRecyclerView)
-//        rv_searchLiveRecyclerView.layoutManager = LinearLayoutManager(this)
-//        rv_searchLiveRecyclerView.addItemDecoration(
-//            DividerItemDecoration( this,
-//                DividerItemDecoration.VERTICAL)
-//        )
-//        liveFragmentAdapter = LiveFragmentAdapter(liveStreamingPostList,this)
-//        rv_searchLiveRecyclerView.adapter = liveFragmentAdapter
-//
-//        rv_searchReplayRecyclerView =findViewById(R.id.rv_searchReplayRecyclerView)
-//        rv_searchReplayRecyclerView.layoutManager = LinearLayoutManager(this)
-//        rv_searchReplayRecyclerView.addItemDecoration(
-//            DividerItemDecoration( this,
-//                DividerItemDecoration.VERTICAL)
-//        )
-//        replayFragmentAdapter = ReplayFragmentAdapter(replayDataList,this)
-//        rv_searchReplayRecyclerView.adapter = replayFragmentAdapter
+        rv_searchLiveAndReplayRecyclerView.adapter = searchDataAdapter
 
 
-//        rv_searchReplayRecyclerView.visibility =View.GONE
-//        rv_searchLiveRecyclerView.visibility =View.GONE
+
+        rv_searchLiveAndReplayRecyclerView.visibility =View.GONE
 
         ////끝내기
         iv_finishActivity.setOnClickListener {
@@ -119,10 +90,8 @@ class SearchLiveStreaming : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-//            liveStreamingPostList.clear()
-//            replayDataList.clear()
-//            replayFragmentAdapter.notifyDataSetChanged()
-//            liveFragmentAdapter.notifyDataSetChanged()
+            searchDataList.clear()
+            searchDataAdapter.notifyDataSetChanged()
             liveStreamingPostLoad(searchInput)
         }
     }
@@ -137,13 +106,9 @@ class SearchLiveStreaming : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     tv_notify.visibility = View.GONE
-                    rv_searchLiveRecyclerView.visibility = View.VISIBLE
+                    rv_searchLiveAndReplayRecyclerView.visibility = View.VISIBLE
+                    searchDataList.clear()
 
-
-//                    rv_searchReplayRecyclerView.visibility = View.VISIBLE
-
-//                    liveStreamingPostList.clear()
-//                    replayDataList.clear()
                     val jsonObject = JSONObject(response.body().toString())
                     Log.d(TAG, jsonObject.toString())
                     val result = jsonObject.getBoolean("result")
@@ -153,8 +118,8 @@ class SearchLiveStreaming : AppCompatActivity() {
                     val badgeList = jsonObject.getString("badgeList")
                     if (liveStreamingList.equals("") && replayPostList.equals("")) {
                         tv_notify.visibility = View.VISIBLE
-//                        rv_searchLiveRecyclerView.visibility = View.GONE
-//                        rv_searchReplayRecyclerView.visibility = View.GONE
+                        rv_searchLiveAndReplayRecyclerView.visibility = View.GONE
+
                         return
                     }
 
@@ -171,6 +136,28 @@ class SearchLiveStreaming : AppCompatActivity() {
                                 val profile = jsonObject.getString("profile")
                                 val title = jsonObject.getString("title")
                                 val viewer = jsonObject.getString("viewer")
+
+
+
+
+                                if (!badgeList.equals("")) {
+                                    val badgeArray = JSONArray(badgeList)
+                                    for (j in 0 until badgeArray.length()) {
+                                        var badgeObject = badgeArray.getJSONObject(j)
+                                        var badgeEmail = badgeObject.getString("email")
+                                        if (badgeEmail.equals(email)) {
+                                            isBadge = true
+                                            Log.d(TAG, isBadge.toString())
+                                            break
+                                        } else {
+                                            isBadge = false
+                                            Log.d(TAG, isBadge.toString())
+                                        }
+                                    }
+                                } else {
+                                    isBadge = false
+                                }
+
                                 val searchData = SearchData(
                                     "0",
                                     idx,
@@ -179,7 +166,8 @@ class SearchLiveStreaming : AppCompatActivity() {
                                     nickName,
                                     profile,
                                     title,
-                                    viewer
+                                    viewer,
+                                    isBadge!!
                                 )
                                 searchDataList.add( searchData)
                                 searchDataAdapter.notifyDataSetChanged()
@@ -273,12 +261,10 @@ class SearchLiveStreaming : AppCompatActivity() {
                             }
                         } else {
                             tv_notify.visibility = View.VISIBLE
-//                            rv_searchLiveRecyclerView.visibility = View.GONE
-//                        rv_searchReplayRecyclerView.visibility = View.GONE
-//                        liveStreamingPostList.clear()
-//                        liveFragmentAdapter.notifyDataSetChanged()
-//                        replayDataList.clear()
-//                        replayFragmentAdapter.notifyDataSetChanged()
+                            rv_searchLiveAndReplayRecyclerView.visibility = View.GONE
+
+                            searchDataList.clear()
+                            searchDataAdapter.notifyDataSetChanged()
                             Toast.makeText(
                                 applicationContext,
                                 "검색에 해당하는 게시물이 없습니다",
@@ -287,117 +273,6 @@ class SearchLiveStreaming : AppCompatActivity() {
                             return
                         }
 
-
-//                    rv_searchReplayRecyclerView.visibility = View.VISIBLE
-//
-//                    liveStreamingPostList.clear()
-//                    replayDataList.clear()
-//                    val jsonObject = JSONObject(response.body().toString())
-//                    Log.d(TAG, jsonObject.toString())
-//                    val result = jsonObject.getBoolean("result")
-//                    val liveStreamingList = jsonObject.getString("liveStreamingList")
-//                    val replayPostList = jsonObject.getString("replayPostList")
-//                    val userLikeList = jsonObject.getString("userLikeList")
-//                    val badgeList = jsonObject.getString("badgeList")
-//                    if (liveStreamingList.equals("") && replayPostList.equals("")){
-//                        tv_notify.visibility = View.VISIBLE
-//                        rv_searchLiveRecyclerView.visibility = View.GONE
-//                        rv_searchReplayRecyclerView.visibility = View.GONE
-//                        return
-//                    }
-//
-//                    if(result){
-//
-//                        if (!liveStreamingList.equals("")) {
-//                            val jsonArray = JSONArray(liveStreamingList)
-//                            for (i in 0 until jsonArray.length()) {
-//                                val jsonObject = jsonArray.getJSONObject(i)
-//                                val idx = jsonObject.getString("idx")
-//                                val email = jsonObject.getString("email")
-//                                val thumbnail = jsonObject.getString("thumbnail")
-//                                val nickName = jsonObject.getString("nickName")
-//                                val profile = jsonObject.getString("profile")
-//                                val title = jsonObject.getString("title")
-//                                val viewer = jsonObject.getString("viewer")
-////                                val liveData = LiveFragmentData(idx, thumbnail, email, nickName, profile, title, viewer)
-////                                liveStreamingPostList.add(0, liveData)
-////                                liveFragmentAdapter.notifyDataSetChanged()
-//
-//
-//                            }
-//                        }
-//
-//
-//                        if (!replayPostList.equals("")) {
-//                            val replayArray = JSONArray(replayPostList)
-//                            for (i in 0 until replayArray.length()) {
-//                                val replayObject = replayArray.getJSONObject(i)
-//                                val idx = replayObject.getString("idx")
-//                                val thumbnail = replayObject.getString("thumbnail")
-//                                val replayTitle = replayObject.getString("replayTitle")
-//                                val uploadUserEmail = replayObject.getString("uploadUserEmail")
-//                                val uploadUserProfile = replayObject.getString("uploadUserProfile")
-//                                val uploadUserNickName = replayObject.getString("uploadUserNickName")
-//                                val replayLikeNumber = replayObject.getString("replayLikeNumber")
-//                                val replayHits = replayObject.getString("replayHits")
-//                                val uploadDate = replayObject.getString("uploadDate")
-//                                val replayVideo = replayObject.getString("replayVideo")
-//                                val replayReviewNumber = replayObject.getString("replayReviewNumber")
-//                                val time = replayObject.getString("time")
-//                                val uploadUserFCMToken = replayObject.getString("uploadUserFCMToken")
-//
-//                                if (!badgeList.equals("")) {
-//                                    val badgeArray = JSONArray(badgeList)
-//                                    for (j in 0 until badgeArray.length()) {
-//                                        var badgeObject = badgeArray.getJSONObject(j)
-//                                        var email = badgeObject.getString("email")
-//                                        if (email.equals(uploadUserEmail)){
-//                                            isBadge= true
-//                                            Log.d(TAG, isBadge.toString())
-//                                            break
-//                                        }else{
-//                                            isBadge= false
-//                                            Log.d(TAG, isBadge.toString())
-//                                        }
-//                                    }
-//                                }else{
-//                                    isBadge = false
-//                                }
-//
-//                                if (!userLikeList.equals("")){
-//                                    val likeArray = JSONArray(userLikeList)
-//                                    for (l in 0 until likeArray.length()) {
-//                                        var likeObject = likeArray.getJSONObject(l)
-//                                        var replayPostIdx = likeObject.getString("replayPostIdx")
-//                                        replayPostLikeIdx = likeObject.getString("replayPostLikeIdx")
-//                                        if (replayPostIdx.equals(idx)){
-//                                            like= true
-//                                            Log.d(TAG, like.toString())
-//                                            break
-//                                        }else{
-//                                            like= false
-//                                            Log.d(TAG, like.toString())
-//                                        }
-//                                    }
-//                                }
-//                                val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-//                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken,isBadge!!)
-//                                replayDataList.add(0, replayData)
-//                                liveFragmentAdapter.notifyDataSetChanged()
-//                            }
-//                        }
-//                    }else{
-//                        tv_notify.visibility = View.VISIBLE
-//                        rv_searchLiveRecyclerView.visibility = View.GONE
-//                        rv_searchReplayRecyclerView.visibility = View.GONE
-//                        liveStreamingPostList.clear()
-//                        liveFragmentAdapter.notifyDataSetChanged()
-//                        replayDataList.clear()
-//                        replayFragmentAdapter.notifyDataSetChanged()
-//                            Toast.makeText(applicationContext,"검색에 해당하는 게시물이 없습니다",Toast.LENGTH_SHORT).show()
-//                            return
-//                    }
-//
 
                 }
             }
