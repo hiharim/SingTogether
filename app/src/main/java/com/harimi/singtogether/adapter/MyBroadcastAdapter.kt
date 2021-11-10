@@ -35,6 +35,9 @@ class MyBroadcastAdapter (val myBroadcastList : ArrayList<MyBroadcastData>,val c
         val tv_hits=v.findViewById<TextView>(R.id.tv_hits)
         val tv_like=v.findViewById<TextView>(R.id.tv_like)
         val tv_review=v.findViewById<TextView>(R.id.tv_review)
+        val tv_nickName=v.findViewById<TextView>(R.id.tv_nickName)
+
+
 
     }
 
@@ -52,6 +55,8 @@ class MyBroadcastAdapter (val myBroadcastList : ArrayList<MyBroadcastData>,val c
         holder.tv_uploadDate.text=myBroadcastList.get(position).uploadDate
         holder.tv_like.text=myBroadcastList.get(position).replayLikeNumber
         holder.tv_review.text=myBroadcastList.get(position).replayReviewNumber
+        holder.tv_nickName.text=myBroadcastList.get(position).uploadUserNickName
+
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+myBroadcastList.get(position).thumbnail).into(holder.iv_thumbnail)
 

@@ -142,9 +142,12 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var messageArea : Boolean = false
     private var viewer : String ? ="0"
     private var timerTask: Timer? = null //타이머
+    private var recordTimeTask: Timer? = null //타이머
     private var time = 0 //
     private var min  =0
     private var hour = 0
+
+    private var recordTime :String ?= ""
 
     private val localChattingList: ArrayList<LocalChattingData> = ArrayList()
     private lateinit var rv_chattingRecyclerView : RecyclerView
@@ -417,8 +420,6 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         timerTask = kotlin.concurrent.timer(period = 1000) {
             time++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
 
-//            var min = time /60
-//             min = 0
             runOnUiThread {
                 if (time ==60){
                     time =0
@@ -426,11 +427,10 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     hour = min / 60
                 }
                 if (min <=9){
-//                    activity_streaming_tv_time.text = "$min 분 $time 초"
-                    activity_streaming_tv_time.text = "$min : $time "
+                    recordTime = "$min : $time "
                 }else{
-//                    activity_streaming_tv_time.text = "$hour 시간 $min 분"
-                    activity_streaming_tv_time.text = "$hour : $min "
+
+                    recordTime = "$hour : $min "
                 }
             }
         }
@@ -559,6 +559,24 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         if ((v as ToggleButton?)!!.isChecked) {
             Log.v(TAG, "Start Recording")
 
+//            recordTimeTask = kotlin.concurrent.timer(period = 1000) {
+//            time++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
+//
+//                runOnUiThread {
+//                    if (time ==60){
+//                        time =0
+//                        min ++
+//                        hour = min / 60
+//                    }
+//                    if (min <=9){
+//                        recordTime = "$min 분 $time 초"
+//
+//                    }else{
+//                        recordTime = "$hour : $min "
+//                    }
+//                }
+//            }
+
             initMediaProjection()
             initRecorder()
 
@@ -653,6 +671,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         var body : MultipartBody.Part=
             MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
         retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,activity_streaming_tv_time.text.toString(),uploaderToken, body).enqueue(object : Callback<String> {
+//        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,recordTime!!,uploaderToken, body).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
