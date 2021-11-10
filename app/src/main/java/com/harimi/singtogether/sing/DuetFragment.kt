@@ -103,8 +103,8 @@ class DuetFragment : Fragment() {
                     val body = response.body().toString()
                     val replayObject = JSONObject(body)
                     val badgeList = replayObject.getString("badgeList")
-                    val duetList = replayObject.getString("duetList")
-                    val postArray = JSONArray(duetList)
+                    val postList = replayObject.getString("duetList")
+                    val postArray = JSONArray(postList)
 
                     for (i in 0 until postArray.length()) {
                         if (postArray.length() == 0 || postArray.equals("null")) {
