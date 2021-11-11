@@ -7,9 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".sing.DuetFragment">
     <View style="@style/Divider"/>
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fragment_duet_recyclerView"
         android:layout_margin="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

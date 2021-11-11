@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.harimi.singtogether.Data.DuetData
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.MRData
@@ -36,6 +37,7 @@ class DuetFragment : Fragment() {
     private lateinit var duetAdapter: DuetAdapter
     private lateinit var binding: FragmentDuetBinding
     private var isBadge :Boolean ?= false
+    private lateinit var swipeRefresh: SwipeRefreshLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,14 +48,21 @@ class DuetFragment : Fragment() {
         initRetrofit()
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding=FragmentDuetBinding.inflate(inflater,container,false)
         binding.duetBack.setBackgroundColor(Color.parseColor("#f4f5f9"))
+        swipeRefresh =binding.swipeRefresh.findViewById(R.id.swipeRefresh)
 
-
+        binding.swipeRefresh.setOnRefreshListener {
+            duetList.clear()
+            duetAdapter.notifyDataSetChanged()
+            loadDuet()
+            swipeRefresh?.isRefreshing = false  //서버 통신 완료 후 호출해줍니다.
+        }
         initView(binding.root)
         //loadDuet()
         return binding.root

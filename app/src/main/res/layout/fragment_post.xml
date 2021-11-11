@@ -396,10 +396,12 @@
 
             <ImageView
                 android:id="@+id/iv_uploadReview"
-                android:layout_width="38dp"
-                android:layout_height="35dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginRight="10dp"
-                android:src="@drawable/write_review" />
+                android:background="@drawable/button_send_purple"
+                android:padding="7dp"
+                android:src="@drawable/ic_baseline_send_24_white" />
 
         </LinearLayout>
 
