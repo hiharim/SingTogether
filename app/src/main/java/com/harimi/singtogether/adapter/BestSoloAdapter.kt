@@ -113,6 +113,8 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
             bundle.putString("kinds", curData.kinds)
             bundle.putString("token", curData.token)
             bundle.putString("thumbnail", curData.thumbnail)
+            bundle.putString("isBadge",curData.isBadge.toString())
+            bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
             intent.putExtra("bundle",bundle)
             context.startActivity(intent)
 

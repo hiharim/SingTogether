@@ -292,7 +292,9 @@ class GloryActivity : AppCompatActivity() {
                                 mr_idx,
                                 token,
                                 col_token,
-                                isLike
+                                isLike,
+                                true,
+                                true
                             )
                             bestDuetList.add(0, bestDuetData)
                             bestDuetAdapter.notifyDataSetChanged()
@@ -344,7 +346,10 @@ class GloryActivity : AppCompatActivity() {
                                 mr_idx,
                                 token,
                                 col_token,
-                                isLike
+                                isLike,
+                                true,
+                                true
+
                             )
                             bestSoloList.add(0, bestSoloData)
                             bestSoloAdapter.notifyDataSetChanged()

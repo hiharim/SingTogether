@@ -110,6 +110,8 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
             bundle.putString("kinds", curData.kinds)
             bundle.putString("token", curData.token)
             bundle.putString("thumbnail", curData.thumbnail)
+            bundle.putString("isBadge",curData.isBadge.toString())
+            bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
             intent.putExtra("bundle",bundle)
             context.startActivity(intent)
 
