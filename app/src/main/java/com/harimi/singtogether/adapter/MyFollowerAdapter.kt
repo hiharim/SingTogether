@@ -43,14 +43,25 @@ class MyFollowerAdapter  (val myFollowDataList: ArrayList<MyFollowData>, val con
         holder: MyFollowerAdapter.MyFollowerViewHolder, position: Int
     ) {
 
-
-        if (myFollowDataList.get(position).isFollow ==true){
-            holder.btn_follow.visibility =View.GONE
-            holder.btn_followCancel.visibility =View.VISIBLE
-        }else{
+        if (myFollowDataList.get(position).nowPage.equals("myPage")){
             holder.btn_follow.visibility =View.VISIBLE
+            holder.btn_followCancel.visibility =View.VISIBLE
+
+            if (myFollowDataList.get(position).isFollow ==true){
+                holder.btn_follow.visibility =View.GONE
+                holder.btn_followCancel.visibility =View.VISIBLE
+            }else{
+                holder.btn_follow.visibility =View.VISIBLE
+                holder.btn_followCancel.visibility =View.GONE
+            }
+        }else{
+            holder.btn_follow.visibility =View.GONE
             holder.btn_followCancel.visibility =View.GONE
         }
+
+
+
+
         // 프로필 사진
         if (myFollowDataList.get(position).uploadUserProfile.equals("null") || myFollowDataList.get(position).uploadUserProfile.equals("")) {
             holder.iv_profileImage.setImageResource(R.mipmap.ic_launcher_round)

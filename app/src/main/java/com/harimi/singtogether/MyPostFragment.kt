@@ -17,6 +17,7 @@ import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.MyBroadcastAdapter
 import com.harimi.singtogether.adapter.MyPostAdapter
+import com.harimi.singtogether.simple.SimpleAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -38,8 +39,10 @@ class MyPostFragment : Fragment() {
     private var replayPostLikeIdx :String ?= "null"
     private lateinit var tv_noMyPost: TextView
 
-    private val myPostDataList : ArrayList<MyPostData> = ArrayList()
-    private lateinit var myPostAdapter: MyPostAdapter
+//    private val myPostDataList : ArrayList<MyPostData> = ArrayList()
+//    private lateinit var myPostAdapter: MyPostAdapter
+    private lateinit var simpleAdapter: SimpleAdapter
+    private val homePostList: ArrayList<HomeData> = ArrayList()
     private lateinit var fragment_post_recyclerView: RecyclerView
     private var myEmail : String?=null
     private var isBadge :Boolean ?= false
@@ -59,8 +62,8 @@ class MyPostFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        myPostDataList.clear()
-        myPostAdapter.notifyDataSetChanged()
+        homePostList.clear()
+        simpleAdapter.notifyDataSetChanged()
         loadMyPost()
     }
 
@@ -77,8 +80,8 @@ class MyPostFragment : Fragment() {
         fragment_post_recyclerView.layoutManager= LinearLayoutManager(context)
         fragment_post_recyclerView.setHasFixedSize(true)
         fragment_post_recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        myPostAdapter= MyPostAdapter(myPostDataList,requireContext())
-        fragment_post_recyclerView.adapter=myPostAdapter
+        simpleAdapter= SimpleAdapter(homePostList)
+        fragment_post_recyclerView.adapter=simpleAdapter
 
 
         loadMyPost()
@@ -103,15 +106,22 @@ class MyPostFragment : Fragment() {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
                         val body = response.body().toString()
-                        myPostDataList.clear()
-
                         Log.d(TAG, body)
-                        if (body.equals("null")) {
+
+                        homePostList.clear()
+                        val replayObject = JSONObject (body)
+                        val badgeList = replayObject.getString("badgeList")
+                        val outputData = replayObject.getString("outputData")
+
+
+
+                        if (outputData.equals("")) {
                             tv_noMyPost.visibility = View.VISIBLE
                             fragment_post_recyclerView.visibility = View.GONE
 
                         }else {
-                            val jsonArray = JSONArray(body)
+
+                            val jsonArray = JSONArray(outputData)
                             Log.d(TAG, jsonArray.length().toString())
                             tv_noMyPost.visibility = View.GONE
                             fragment_post_recyclerView.visibility = View.VISIBLE
@@ -139,31 +149,68 @@ class MyPostFragment : Fragment() {
                                 val col_token = iObject.getString("col_token")
                                 val isLike = iObject.getString("isLike")
 
-                                val myPostData = MyPostData(
-                                    idx,
-                                    thumbnail,
-                                    title,
-                                    singer,
-                                    lyrics,
-                                    cnt_play,
-                                    cnt_reply,
-                                    cnt_like,
-                                    nickname,
-                                    email,
-                                    profile,
-                                    song_path,
-                                    collaboration,
-                                    collabo_email,
-                                    collaboration_profile,
-                                    date,
-                                    kinds,
-                                    mr_idx,
-                                    token,
-                                    col_token,
-                                    isLike
-                                )
-                                myPostDataList.add(0, myPostData)
-                                myPostAdapter.notifyDataSetChanged()
+
+                                if (!badgeList.equals("")) {
+                                    val badgeArray = JSONArray(badgeList)
+                                    for (j in 0 until badgeArray.length()) {
+                                        val badgeObject = badgeArray.getJSONObject(j)
+                                        val badge_email = badgeObject.getString("email")
+
+                                        if(badge_email.equals(email)) {
+                                            isBadge=true
+                                            break
+                                        }else{
+                                            isBadge = false
+                                        }
+
+                                    }
+
+                                    for (j in 0 until badgeArray.length()) {
+                                        val badgeObject = badgeArray.getJSONObject(j)
+                                        val badge_email = badgeObject.getString("email")
+
+                                        if(badge_email.equals(collabo_email)) {
+                                            isBadgeCollabo=true
+                                            break
+                                        }else{
+                                            isBadgeCollabo=false
+                                        }
+                                    }
+
+                                }else{
+                                    isBadge=false
+                                    isBadgeCollabo=false
+                                }
+
+//                                val homeData = HomeData(
+//                                    idx,
+//                                    thumbnail,
+//                                    title,
+//                                    singer,
+//                                    lyrics,
+//                                    cnt_play,
+//                                    cnt_reply,
+//                                    cnt_like,
+//                                    nickname,
+//                                    email,
+//                                    profile,
+//                                    song_path,
+//                                    collaboration,
+//                                    collabo_email,
+//                                    collaboration_profile,
+//                                    date,
+//                                    kinds,
+//                                    mr_idx,
+//                                    token,
+//                                    col_token,
+//                                    isLike
+//                                )
+//                                myPostDataList.add(0, myPostData)
+//                                myPostAdapter.notifyDataSetChanged()
+
+                                val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                                homePostList.add(homeData)
+                                simpleAdapter.notifyDataSetChanged()
                             }
                         }
 

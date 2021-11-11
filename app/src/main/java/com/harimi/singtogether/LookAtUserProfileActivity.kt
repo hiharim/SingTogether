@@ -147,6 +147,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         tv_follwing.setOnClickListener {
             val intent= Intent(this, MyFollowingActivity::class.java)
             intent.putExtra("myEmail",otherUserEmail)
+            intent.putExtra("nowPage","otherUserPage")
             startActivity(intent)
 
 
@@ -155,6 +156,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         tv_follow.setOnClickListener {
             val intent= Intent(this, MyFollowerActivity::class.java)
             intent.putExtra("myEmail",otherUserEmail)
+            intent.putExtra("nowPage","otherUserPage")
             startActivity(intent)
         }
 

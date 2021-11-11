@@ -30,6 +30,7 @@ class MyFollowingActivity : AppCompatActivity() {
     private lateinit var iv_back : ImageButton
     private lateinit var tv_alert : TextView
     private lateinit var myEmail : String
+    private lateinit var nowPage : String
 
 
     private lateinit var rv_myFollowing : RecyclerView
@@ -54,6 +55,7 @@ class MyFollowingActivity : AppCompatActivity() {
 
         var intent = intent
         myEmail = intent.getStringExtra("myEmail")
+        nowPage = intent.getStringExtra("nowPage")
 
         iv_back.setOnClickListener {
             finish()
@@ -90,6 +92,7 @@ class MyFollowingActivity : AppCompatActivity() {
                                 val nickname = getfollowingObject.getString("nickname")
 
                                 val myFollowingData = MyFollowingData(
+                                    nowPage,
                                     email,
                                     profile,
                                     nickname,

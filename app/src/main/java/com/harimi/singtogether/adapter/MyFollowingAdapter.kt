@@ -44,6 +44,15 @@ class MyFollowingAdapter  (val myFollowingDataList: ArrayList<MyFollowingData>, 
         holder: MyFollowingAdapter.MyFollowingViewHolder, position: Int) {
 
 
+        if (myFollowingDataList.get(position).nowPage.equals("myPage")){
+            holder.btn_follow.visibility =View.VISIBLE
+            holder.btn_followCancel.visibility =View.VISIBLE
+        }else{
+            holder.btn_follow.visibility =View.GONE
+            holder.btn_followCancel.visibility =View.GONE
+        }
+
+
         holder.btn_follow.visibility =View.GONE
 
 

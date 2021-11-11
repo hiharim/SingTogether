@@ -55,6 +55,7 @@ class LiveStreamingViewerListAdapter (val liveStreamingViewerList: ArrayList<Liv
 
                 get()!!.viewerOutOfHere(liveStreamingViewerList.get(position).socketId)
                 liveStreamingViewerList.removeAt(position)
+
                 notifyItemRemoved(position)
                 notifyDataSetChanged()
             }
