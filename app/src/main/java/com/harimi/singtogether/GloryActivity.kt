@@ -85,8 +85,8 @@ class GloryActivity : AppCompatActivity() {
         bestSoloAdapter = BestSoloAdapter(bestSoloList, this)
         rv_bestSolo.adapter = bestSoloAdapter
 
-//        var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
-        var nowYear = "2022-1-1"
+        var nowYear : String = SimpleDateFormat("yyyy-MM-dd").format(Date())
+//        var nowYear = "2022-1-1"
         var timeArr = nowYear.split("-")
         var year = timeArr[0].toInt() -1
         ////최대 년도 비교군 .
@@ -96,7 +96,7 @@ class GloryActivity : AppCompatActivity() {
         Log.d(TAG,  getYear)
         Log.d(TAG,  currentYear)
         //처음 액티비티볼때 forwardArrow  색깔 변경해주기
-        iv_forwardArrow.setColorFilter(R.color.color_88000000);
+        iv_forwardArrow.setColorFilter(Color.parseColor("#000000"))
 
         //뒤로가기 화살표 눌렀을때
         iv_backArrow.setOnClickListener {

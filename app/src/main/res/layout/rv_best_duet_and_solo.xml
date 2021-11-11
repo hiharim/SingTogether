@@ -45,6 +45,15 @@
 
             </de.hdodenhof.circleimageview.CircleImageView>
 
+            <ImageView
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/badge"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/rv_fragment_home_iv_profile"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/rv_fragment_home_iv_profile" />
+
             <TextView
                 android:id="@+id/rv_fragment_home_tv_nickname"
                 android:layout_width="wrap_content"
@@ -102,6 +111,15 @@
                 app:layout_constraintTop_toTopOf="parent">
 
             </de.hdodenhof.circleimageview.CircleImageView>
+            <ImageView
+                android:id="@+id/col_badge"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:src="@drawable/badge"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/rv_fragment_home_iv_collabo_profile"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/rv_fragment_home_iv_collabo_profile" />
 
             <TextView
                 android:id="@+id/rv_fragment_home_tv_collabo_nickname"
