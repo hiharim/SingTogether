@@ -367,7 +367,7 @@ class RecordActivity: AppCompatActivity()  {
 
     // 뒤로가기 버튼
     override fun onBackPressed() {
-        super.onBackPressed()
+        //super.onBackPressed()
         val builder = AlertDialog.Builder(this)
         builder.setTitle("녹음을 종료하시겠습니까? ")
         builder.setMessage("지금 녹음을 종료하시면 저장되지 않습니다.")

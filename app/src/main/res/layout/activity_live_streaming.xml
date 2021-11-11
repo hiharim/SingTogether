@@ -82,7 +82,7 @@
                     android:layout_height="37dp"
                     android:layout_alignParentBottom="true"
                     android:layout_marginRight="12dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.7"
                     android:background="@drawable/start_record"
                     android:textOff="Record"
                     android:textOn="Stop"
@@ -93,7 +93,7 @@
                     android:layout_width="0dp"
                     android:layout_height="37dp"
                     android:layout_marginRight="12dp"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.7"
                     android:background="@drawable/ic_baseline_close_24" />
             </LinearLayout>
         </Toolbar>
@@ -191,9 +191,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/rv_chattingRecyclerView"
             android:layout_alignParentEnd="true"
-            android:backgroundTint="#ffffff"
+            android:backgroundTint="@color/purple"
             android:text="보내기"
-            android:textColor="#000000"
+            android:textColor="#ffffff"
 
             />
 

@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
         // 카카오 로그인 버튼 클릭
         binding.activityLoginBtnLoginKakao.setOnClickListener {
             // 카카오톡이 설치되어 있으면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
-                            kakaoUserInfo()
+                            //kakaoUserInfo()
                             if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
                                 UserApiClient.instance.loginWithKakaoTalk(
                                     context,
@@ -109,32 +109,15 @@ class LoginActivity : AppCompatActivity() {
                                 "\n카카오토큰: ${tokenInfo.appId}"
                     )
                     user_token=tokenInfo.appId.toString()
-
+                    kakaoUserInfo()
                 }
 
             }
 //            Log.w(TAG, "콜백 user_email : $user_email" )
 //            saveDate(user_email.toString())
 
-            loginSuccess()
+            //loginSuccess()
 
-
-            // 프로필액티비티로 이동
-
-//            user_info.loginUserEmail = user_email.toString()
-//            user_info.loginUserNickname = user_nickname.toString()
-//            user_info.loginUserProfile =user_profile.toString()
-//            user_info.loginUserSocial =user_social.toString()
-//            user_info.loginUserFCMToken =myToken.toString()
-//
-//            val intent = Intent(this, ProfileActivity::class.java)
-//            intent.putExtra("EMAIL", user_email)
-//            intent.putExtra("NICKNAME", user_nickname)
-//            intent.putExtra("PROFILE", user_profile)
-//            intent.putExtra("SOCIAL", user_social)
-//            intent.putExtra("TOKEN", myToken)
-//            startActivity(intent)
-//            finish()
         }
     }
 
@@ -157,6 +140,7 @@ class LoginActivity : AppCompatActivity() {
                 user_social="kakao"
                 Log.w(TAG, "kakaoUserInfo() user_email : $user_email" )
                 saveDate(user_email.toString())
+                loginSuccess()
             }
         }
     }

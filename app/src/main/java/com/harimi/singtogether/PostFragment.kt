@@ -402,7 +402,7 @@ class PostFragment : Fragment() {
                                     jsonObject.getString("followingUserNumber")
                                 var followUserNumber = jsonObject.getString("followUserNumber")
                                 var isFollow = jsonObject.getBoolean("isFollow")
-
+                                var isBadge2 = jsonObject.getBoolean("isBadge")
                                 val intent = Intent(
                                     context,
                                     LookAtUserProfileActivity::class.java
@@ -414,6 +414,7 @@ class PostFragment : Fragment() {
                                 intent.putExtra("followingUserNumber", followingUserNumber)
                                 intent.putExtra("followUserNumber", followUserNumber)
                                 intent.putExtra("isFollow", isFollow)
+                                intent.putExtra("isBadge", isBadge2)
                                 startActivity(intent)
                             }
                         }
