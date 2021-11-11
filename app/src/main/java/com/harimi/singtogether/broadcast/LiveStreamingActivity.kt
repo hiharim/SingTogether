@@ -810,6 +810,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     override fun addViewerList(message: String?) {
         Log.d(TAG, "addViewerList" + message)
         val jsonArray = JSONArray(message.toString())
+
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
             val socketId = jsonObject.getString("socketId")
@@ -854,7 +855,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     runOnUiThread {
                         liveStreamingViewerList.removeAt(i)
                         liveStreamingViewerAdapter.notifyDataSetChanged()
-                        tempLiveStreamingViewerList.removeAt(i)
+                        tempLiveStreamingViewerList.clear()
+                        tempLiveStreamingViewerList.addAll(liveStreamingViewerList)
 
                         viewerListSetting()
                         return@runOnUiThread

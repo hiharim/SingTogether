@@ -188,11 +188,11 @@ class DetailReplayActivity : AppCompatActivity() {
         fragment_detail_replay_iv_back.setOnClickListener {
             finish()
 
-        val fragmentBroadcast = BraodcastFragment()
-        var bundle =Bundle()
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.activity_main_frame,fragmentBroadcast)
-        transaction.commit()
+//        val fragmentBroadcast = BraodcastFragment()
+//        var bundle =Bundle()
+//        val transaction = supportFragmentManager.beginTransaction()
+//        transaction.replace(R.id.activity_main_frame,fragmentBroadcast)
+//        transaction.commit()
         }
 
 

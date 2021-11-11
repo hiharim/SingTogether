@@ -105,6 +105,7 @@ class MyPageFragment : Fragment() {
         binding.tvMyFollowing.setOnClickListener {
             val intent= Intent(context, MyFollowingActivity::class.java)
             intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
+            intent.putExtra("nowPage","myPage")
             startActivity(intent)
 
 
@@ -113,8 +114,11 @@ class MyPageFragment : Fragment() {
         binding.tvMyFollow.setOnClickListener {
             val intent= Intent(context, MyFollowerActivity::class.java)
             intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
+            intent.putExtra("nowPage","myPage")
             startActivity(intent)
         }
+
+
         val pagerAdapter = MyPagePagerAdapter(requireActivity(),LoginActivity.user_info.loginUserEmail)
         // 3개의 Fragment Add
         pagerAdapter.addFragment(MyPostFragment())

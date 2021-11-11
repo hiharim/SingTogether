@@ -32,6 +32,7 @@ class MyFollowerActivity : AppCompatActivity() {
     private lateinit var myFollowerAdapter: MyFollowerAdapter
     private lateinit var tv_alert : TextView
     private lateinit var myEmail : String
+    private lateinit var nowPage : String
 
 
     private var isFollow : Boolean ?= false
@@ -49,7 +50,8 @@ class MyFollowerActivity : AppCompatActivity() {
 
         var intent = intent
         myEmail = intent.getStringExtra("myEmail")
-
+        nowPage = intent.getStringExtra("nowPage")
+        Log.d(TAG, nowPage)
         iv_back.setOnClickListener {
             finish()
         }
@@ -107,7 +109,7 @@ class MyFollowerActivity : AppCompatActivity() {
                                 }
 
 
-                                val myFollowData = MyFollowData(email, profile, nickname, token,isFollow!!)
+                                val myFollowData = MyFollowData(nowPage,email, profile, nickname, token,isFollow!!)
                                 myFollowDataList.add(myFollowData)
                                 myFollowerAdapter.notifyDataSetChanged()
                             }
