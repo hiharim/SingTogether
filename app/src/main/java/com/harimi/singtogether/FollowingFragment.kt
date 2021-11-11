@@ -16,6 +16,7 @@ import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Network.RetrofitClient
 import com.harimi.singtogether.Network.RetrofitService
 import com.harimi.singtogether.adapter.FollowingPostAdapter
+import com.harimi.singtogether.adapter.HomeAdapter
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Call
@@ -29,12 +30,18 @@ import retrofit2.Retrofit
 class FollowingFragment : Fragment() {
     private var TAG :String = "FollowingFragment_"
 
+
+    private var isBadge :Boolean ?= false
+    private var isBadgeCollabo :Boolean ?= false
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
-    private val followingPostDataList: ArrayList<FollowingPostData> = ArrayList()
-    private lateinit var followingPostAdapter: FollowingPostAdapter
+//    private val followingPostDataList: ArrayList<FollowingPostData> = ArrayList()
+//    private lateinit var followingPostAdapter: FollowingPostAdapter
     private lateinit var fragment_following_recyclerView:RecyclerView
     private lateinit var tv_noFollowingPost:TextView
+    private val homePostList: ArrayList<HomeData> = ArrayList()
+    private lateinit var homeAdapter: HomeAdapter
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -45,8 +52,10 @@ class FollowingFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        followingPostDataList.clear()
-        followingPostAdapter.notifyDataSetChanged()
+        homePostList.clear()
+//        followingPostAdapter.notifyDataSetChanged()
+        homeAdapter.notifyDataSetChanged()
+
         loadMyFollowingPost()
 
     }
@@ -63,8 +72,8 @@ class FollowingFragment : Fragment() {
 
         fragment_following_recyclerView.layoutManager = LinearLayoutManager(activity)
         fragment_following_recyclerView.addItemDecoration(DividerItemDecoration(activity, DividerItemDecoration.VERTICAL))
-        followingPostAdapter = FollowingPostAdapter(followingPostDataList,requireContext())
-        fragment_following_recyclerView.adapter = followingPostAdapter
+        homeAdapter = HomeAdapter(homePostList)
+        fragment_following_recyclerView.adapter = homeAdapter
 //        loadMyFollowingPost()
 
     }
@@ -84,6 +93,7 @@ class FollowingFragment : Fragment() {
 
                         val jsonObject = JSONObject(response.body().toString())
                         val outputData=jsonObject.getString("outputData")
+                        val badgeList = jsonObject.getString("badgeList")
                         val result=jsonObject.getBoolean("result")
 
                             if (result){
@@ -122,10 +132,46 @@ class FollowingFragment : Fragment() {
                                         val token=outputDataObject.getString("token")
                                         val col_token=outputDataObject.getString("col_token")
 
+                                        if (!badgeList.equals("")) {
+                                            val badgeArray = JSONArray(badgeList)
+                                            for (j in 0 until badgeArray.length()) {
+                                                val badgeObject = badgeArray.getJSONObject(j)
+                                                val badge_email = badgeObject.getString("email")
 
-                                        val followingPostData = FollowingPostData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike)
-                                        followingPostDataList.add(0,followingPostData)
-                                        followingPostAdapter.notifyDataSetChanged()
+
+                                                if(badge_email.equals(email)) {
+                                                    isBadge=true
+                                                    break
+                                                }else{
+                                                    isBadge = false
+                                                }
+
+                                            }
+
+                                            for (j in 0 until badgeArray.length()) {
+                                                val badgeObject = badgeArray.getJSONObject(j)
+                                                val badge_email = badgeObject.getString("email")
+
+                                                if(badge_email.equals(collabo_email)) {
+                                                    isBadgeCollabo=true
+                                                    break
+                                                }else{
+                                                    isBadgeCollabo=false
+                                                }
+                                            }
+
+                                        }else{
+                                            isBadge=false
+                                            isBadgeCollabo=false
+                                        }
+
+//                                        val followingPostData = FollowingPostData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+//                                        followingPostDataList.add(0,followingPostData)
+//                                        followingPostAdapter.notifyDataSetChanged()
+
+                                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                                        homePostList.add(0,homeData)
+                                        homeAdapter.notifyDataSetChanged()
                                     }
 
                                 }

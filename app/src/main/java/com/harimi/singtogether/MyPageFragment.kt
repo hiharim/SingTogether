@@ -200,7 +200,7 @@ class MyPageFragment : Fragment() {
                             if (profile.equals("null")){
 
                             }else{
-                                Glide.with(requireActivity()).load("http://3.35.236.251/"+profile).into(profileImage)
+                                Glide.with(requireActivity()).load("http://3.35.236.251/"+profile)  .fitCenter().into(profileImage)
                             }
 
                             if (LoginActivity.user_info.loginUserGetBadge ==true){

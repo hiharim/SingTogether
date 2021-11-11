@@ -26,6 +26,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import android.view.View
 import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -147,7 +148,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var min  =0
     private var hour = 0
 
-    private var recordTime :String ?= ""
+//    private var recordTime :String ?= ""
 
     private val localChattingList: ArrayList<LocalChattingData> = ArrayList()
     private lateinit var rv_chattingRecyclerView : RecyclerView
@@ -177,6 +178,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
 
     }
+
 
     fun initView(){
 
@@ -395,12 +397,15 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     ActivityCompat.shouldShowRequestPermissionRationale(this@LiveStreamingActivity, Manifest.permission.FOREGROUND_SERVICE)) {
                     iv_videoRecord!!.setChecked(true)
 
+//                    isRecording = true
+//                    iv_videoRecord!!.setChecked(true)
+
                     Snackbar.make(layoutRoot!!, "Permission", Snackbar.LENGTH_INDEFINITE)
                         .setAction("Enable") {
                             ActivityCompat.requestPermissions(this@LiveStreamingActivity, arrayOf(
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.FOREGROUND_SERVICE
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO, Manifest.permission.FOREGROUND_SERVICE
+//                                Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             ), REQUEST_PERMISSIONS)
                         }.show()
                 } else {
@@ -410,6 +415,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 }
             } else {
                 toggleScreenShare(v)
+                initMediaProjection()
             }
         })
 
@@ -427,10 +433,13 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     hour = min / 60
                 }
                 if (min <=9){
-                    recordTime = "$min : $time "
+//                    recordTime = "$min : $time "
+                    activity_streaming_tv_time.text = "$min : $time "
                 }else{
 
-                    recordTime = "$hour : $min "
+//                    recordTime = "$hour : $min "
+                    activity_streaming_tv_time.text = "$hour : $min "
+                    activity_streaming_tv_time.text.toString()
                 }
             }
         }
@@ -494,7 +503,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
     ///////화면녹화하기
     private fun initMediaProjection() {
-        Log.v(TAG, "initView")
+        Log.v(TAG, "initMediaProjection")
         val intent = Intent(this@LiveStreamingActivity, MyService::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
@@ -512,13 +521,15 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             startActivityForResult(mediaProjectionManager!!.createScreenCaptureIntent(), REQUEST_CODE_MediaProjection)
         }
     }
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_PERMISSIONS -> {
                 Log.v(TAG, "REQUEST_PERMISSIONS")
-                if (grantResults.size > 0 && grantResults[0] + grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.size > 0 && grantResults[0] + grantResults[1] + grantResults[2]== PackageManager.PERMISSION_GRANTED) {
                     toggleScreenShare(iv_videoRecord)
+                    initMediaProjection()
                 } else {
                     iv_videoRecord!!.isChecked = false
                     Snackbar.make(layoutRoot!!, "Permission", Snackbar.LENGTH_INDEFINITE)
@@ -537,11 +548,15 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
         if (requestCode == REQUEST_CODE_MediaProjection && resultCode == RESULT_OK) {
             Log.v(TAG, "onActivityResult")
+            Log.v(TAG, "onActivityResult  " +data!!)
+            iv_videoRecord!!.visibility = View.GONE
             mMediaProjectionCallback = MediaProjectionCallback()
             mMediaProjection = mediaProjectionManager!!.getMediaProjection(resultCode, data!!)
             mMediaProjection!!.registerCallback(mMediaProjectionCallback, null)
             mVirtualDisplay = createVirtualDisplay()
             mediaRecorder!!.start()
+        }else{
+            Log.v(TAG, "REQUEST_CODE_MediaProjection")
         }
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -559,25 +574,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         if ((v as ToggleButton?)!!.isChecked) {
             Log.v(TAG, "Start Recording")
 
-//            recordTimeTask = kotlin.concurrent.timer(period = 1000) {
-//            time++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
-//
-//                runOnUiThread {
-//                    if (time ==60){
-//                        time =0
-//                        min ++
-//                        hour = min / 60
-//                    }
-//                    if (min <=9){
-//                        recordTime = "$min 분 $time 초"
-//
-//                    }else{
-//                        recordTime = "$hour : $min "
-//                    }
-//                }
-//            }
 
-            initMediaProjection()
+//            initMediaProjection()
             initRecorder()
 
         } else {
@@ -617,7 +615,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
             mMediaProjection!!.stop()
             mMediaProjection = null
         }
-        Log.i(TAG, "MediaProjection Stopped")
+
     }
 
     ////MediaRecord 설정해주기
@@ -825,6 +823,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                 userId
             )
             runOnUiThread {
+
                 tempLiveStreamingViewerList.add(liveStreamingViewerData)
                 liveStreamingViewerList.add(liveStreamingViewerData)
                 liveStreamingViewerAdapter.notifyDataSetChanged()
@@ -855,9 +854,13 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
                     runOnUiThread {
                         liveStreamingViewerList.removeAt(i)
                         liveStreamingViewerAdapter.notifyDataSetChanged()
+                        tempLiveStreamingViewerList.removeAt(i)
+
                         viewerListSetting()
                         return@runOnUiThread
                     }
+                }else{
+
                 }
             }
         }
