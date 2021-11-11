@@ -414,11 +414,11 @@ class DetailReplayActivity : AppCompatActivity() {
                             var idx = jsonObject.getString("idx")
                             replayPostLikeIdx = idx
                             if (result) {
-//                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
-//                                var getLikeNumberInt =  getLikeNumber.toInt()
-//                                getLikeNumberInt++
-                                var getLikeNumberInt = getLikeNumber!!.toInt()
+                                var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
+                                var getLikeNumberInt =  getLikeNumber.toInt()
                                 getLikeNumberInt++
+//                                var getLikeNumberInt = getLikeNumber!!.toInt()
+//                                getLikeNumberInt++
 
                                 fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                 iv_clickLike.visibility = View.VISIBLE
@@ -474,9 +474,9 @@ class DetailReplayActivity : AppCompatActivity() {
 
 
 
-                                    if (liked!!){
-                                        Log.d(TAG, "iv_clickLike1: " +liked.toString() )
-                                        Log.d(TAG, "iv_clickLike1: " +getLikeNumber.toString() )
+//                                    if (liked!!){
+//                                        Log.d(TAG, "iv_clickLike1: " +liked.toString() )
+//                                        Log.d(TAG, "iv_clickLike1: " +getLikeNumber.toString() )
                                         var getLikeNumber =  fragment_detail_replay_tv_like.text.toString()
                                         var getLikeNumberInt =  getLikeNumber.toInt()
 //                                        var getLikeNumberInt = replayLikeNumber!!.toInt()
@@ -484,15 +484,7 @@ class DetailReplayActivity : AppCompatActivity() {
                                         fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
                                         iv_clickLike.visibility = View.GONE
                                         iv_normalLike.visibility = View.VISIBLE
-                                    }else{
-                                        Log.d(TAG, "iv_clickLike2: " +liked.toString() )
-                                        Log.d(TAG, "iv_clickLike2: " +getLikeNumber.toString() )
-                                        var getLikeNumberInt = getLikeNumber!!.toInt()
-//                                        getLikeNumberInt --
-                                        fragment_detail_replay_tv_like.setText(getLikeNumberInt.toString())
-                                        iv_clickLike.visibility = View.GONE
-                                        iv_normalLike.visibility = View.VISIBLE
-                                    }
+
 
                                     liked =false
 

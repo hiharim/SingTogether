@@ -53,7 +53,10 @@
 
         <service
             android:name=".broadcast.MyService"
-            android:foregroundServiceType="mediaProjection" />
+            android:foregroundServiceType="mediaProjection"
+            android:enabled="true"
+            android:exported="false"
+            />
         <service
             android:name=".Network.FirebaseService"
             android:permission="com.google.android.c2dm.permission.SEND">

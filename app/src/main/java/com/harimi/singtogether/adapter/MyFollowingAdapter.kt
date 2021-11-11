@@ -54,6 +54,7 @@ class MyFollowingAdapter  (val myFollowingDataList: ArrayList<MyFollowingData>, 
             val Image: MyFollowingData = myFollowingDataList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.uploadUserProfile)
+                .fitCenter()
                 .into(holder.iv_profileImage)
         }
         holder.tv_nickName.setText(myFollowingDataList.get(position).uploadUserNickName)

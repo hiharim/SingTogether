@@ -130,7 +130,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         if (iv_profileImage.equals("null")){
 
         }else{
-            Glide.with(this).load("http://3.35.236.251/"+profile).into(iv_profileImage)
+            Glide.with(this).load("http://3.35.236.251/"+profile).fitCenter().into(iv_profileImage)
         }
         tv_nickname.setText(nickname)
         tv_followNumber.setText(followUserNumber)

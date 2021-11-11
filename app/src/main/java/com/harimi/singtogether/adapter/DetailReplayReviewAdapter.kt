@@ -97,6 +97,7 @@ class DetailReplayReviewAdapter(
                                                     val result = jsonObject.getBoolean("result")
                                                     if (result) {
                                                         holder.tv_review.setText(editText.text.toString())
+
                                                     }
                                                 }
                                             }
