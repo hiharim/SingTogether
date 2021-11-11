@@ -61,7 +61,7 @@ class MyPostFragment : Fragment() {
         super.onResume()
         myPostDataList.clear()
         myPostAdapter.notifyDataSetChanged()
-        //loadMyPost()
+        loadMyPost()
     }
 
     override fun onCreateView(
@@ -81,7 +81,7 @@ class MyPostFragment : Fragment() {
         fragment_post_recyclerView.adapter=myPostAdapter
 
 
-        //loadMyPost()
+        loadMyPost()
         return myPostView
     }
 

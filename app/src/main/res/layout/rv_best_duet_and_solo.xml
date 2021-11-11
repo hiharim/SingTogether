@@ -126,8 +126,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
        android:layout_margin="5dp"
-        android:background="#dedcee"
-        android:scaleType="fitXY"
+        android:background="@color/black"
         tools:srcCompat="@tools:sample/avatars" />
 
             <RelativeLayout
