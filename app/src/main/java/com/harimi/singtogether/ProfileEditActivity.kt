@@ -128,7 +128,7 @@ class ProfileEditActivity : AppCompatActivity() {
     private fun editNickName(){
         val builder = AlertDialog.Builder(this@ProfileEditActivity)
         builder
-            .setMessage("닉네임 변경.")
+            .setMessage("닉네임 변경")
             .setCancelable(false)
 
         val editUserName = EditText(this)

@@ -64,6 +64,8 @@ class ReplayFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         Log.d("리플레이: ", "onResume")
+
+
         replayDataList.clear()
         replayAdapter.notifyDataSetChanged()
         replayPostLoad()
