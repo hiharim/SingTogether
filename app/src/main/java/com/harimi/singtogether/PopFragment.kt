@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.PopData
 import com.harimi.singtogether.Network.RetrofitClient
@@ -39,12 +40,11 @@ class PopFragment : Fragment() {
     private lateinit var popAdapter: PopAdapter
     private var isBadge :Boolean ?= false
     private var isBadgeCollabo :Boolean ?= false
-
+    private lateinit var swipeRefresh: SwipeRefreshLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            // 서버 연결
-            initRetrofit()
+
         }
     }
 
@@ -56,6 +56,13 @@ class PopFragment : Fragment() {
         binding.popLayout.setBackgroundColor(Color.parseColor("#f4f5f9"))
         // 서버 연결
         initRetrofit()
+        swipeRefresh =binding.swipeRefresh.findViewById(R.id.swipeRefresh)
+        binding.swipeRefresh.setOnRefreshListener {
+            popPostList.clear()
+            popAdapter.notifyDataSetChanged()
+            loadHomePost()
+            swipeRefresh?.isRefreshing = false  //서버 통신 완료 후 호출해줍니다.
+        }
         //리사이클러뷰 설정
         binding.fragmentPopRecyclerView.layoutManager= LinearLayoutManager(context)
         binding.fragmentPopRecyclerView.setHasFixedSize(true)

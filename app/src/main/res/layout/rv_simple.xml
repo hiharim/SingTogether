@@ -10,10 +10,9 @@
 
     <ImageView
         android:id="@+id/rv_fragment_home_iv_thumbnail"
-        android:layout_width="100dp"
+        android:layout_width="90dp"
         android:layout_height="60dp"
         android:background="#000000"
-        android:scaleType="fitXY"
         android:layout_marginStart="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

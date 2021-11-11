@@ -76,10 +76,14 @@
             android:name=".broadcast.LiveStreamingViewActivity"
             tools:ignore="DuplicateActivity" />
         <activity android:name=".broadcast.LiveThumbnailCaptureActivity" />
-        <activity android:name=".sing.AfterRecordActivity" />
+        <activity android:name=".sing.AfterRecordActivity"
+            android:theme="@style/Theme.SingTogether"/>
+
         <activity android:name=".sing.VideoActivity" />
         <activity android:name=".sing.Video2Activity" />
-        <activity android:name=".sing.AfterSingActivity" />
+        <activity android:name=".sing.AfterSingActivity"
+            android:theme="@style/Theme.SingTogether">
+        </activity>
         <activity android:name=".broadcast.LiveStreamingActivity" />
         <activity android:name=".sing.BeforeSingActivity" />
         <activity android:name=".sing.RecordActivity" />

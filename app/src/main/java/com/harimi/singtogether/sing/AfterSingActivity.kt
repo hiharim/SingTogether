@@ -12,7 +12,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -58,7 +60,7 @@ class AfterSingActivity : AppCompatActivity() {
     private var collaborationEmail: String? = null // 듀엣한 사람 닉네임
     private var isMerge : String? = null // 병합,그냥녹화 구분
     private var simpleExoPlayer: ExoPlayer?=null
-    lateinit var mediaPlayer: MediaPlayer
+    private var mediaPlayer: MediaPlayer?=null
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
     lateinit var fileName : String // 서버로 보낼 사용자 목소리 + MR 파일 이름
     private var videoUri : Uri? = null // video 저장될 Uri
@@ -108,21 +110,38 @@ class AfterSingActivity : AppCompatActivity() {
         simpleExoPlayer!!.play()
         // 업로드 버튼 클릭
         binding.activityAfterSingBtnUpload.setOnClickListener {
-            asyncDialog = ProgressDialog(this@AfterSingActivity)
-            asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
-            asyncDialog!!.setMessage("업로드중...")
-            asyncDialog!!.show()
+            val builder = AlertDialog.Builder(this@AfterSingActivity)
+            builder.setTitle("SingTogether")
+            builder.setMessage("업로드 하시겠습니까? ")
+            builder.setCancelable(false)
+            builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                asyncDialog = ProgressDialog(this@AfterSingActivity)
+                asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+                asyncDialog!!.setMessage("업로드중...")
+                asyncDialog!!.show()
 
-            if(isMerge.equals("Y")) {
-                uploadMergeAudio()
-            }else if(isMerge.equals("N")){
-                uploadAudio()
+
+                if(isMerge.equals("Y")) {
+                    uploadMergeAudio()
+                }else if(isMerge.equals("N")){
+                    uploadAudio()
+                }
             }
+            builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+                finish()
+            }
+            builder.show()
+
+
 
         }
 
     }
-
+    override fun onStop() {
+        super.onStop()
+        simpleExoPlayer?.release()
+        simpleExoPlayer=null
+    }
     private fun uploadMergeAudio() {
         val email= LoginActivity.user_info.loginUserEmail
         val nickname= LoginActivity.user_info.loginUserNickname
@@ -178,7 +197,6 @@ class AfterSingActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             // 응답을 잘 받은 경우
                             asyncDialog!!.dismiss()
-                            Log.e("AfterSingActivity", " 통신 성공:"+ response.body().toString())
                             // 업로드 성공 다이얼로그
                             val builder = AlertDialog.Builder(this@AfterSingActivity)
                             builder.setTitle("SingTogether")
@@ -187,7 +205,6 @@ class AfterSingActivity : AppCompatActivity() {
                                 simpleExoPlayer?.release()
                                 finish() }
                             builder.show()
-
                         } else {
                             // 통신은 성공했지만 응답에 문제가 있는 경우
                             Log.e("AfterRecordActivity", " 응답 문제" + response.code())

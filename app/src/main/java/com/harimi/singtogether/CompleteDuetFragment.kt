@@ -54,7 +54,7 @@ class CompleteDuetFragment : Fragment() {
         binding=  FragmentCompleteDuetBinding.inflate(inflater,container,false)
 //        duet_idx=intent.getIntExtra("duet_idx",0)
 //        count_duet=intent.getStringExtra("cnt_duet")
-        binding.activityCompleteDuetTvCnt.text=count_duet+"의 완성된 포스팅이 있습니다."
+        binding.activityCompleteDuetTvCnt.text=count_duet+"개의 완성된 포스팅이 있습니다."
 
         // 뒤로가기
 //        binding.activityCompleteDuetIbBack.setOnClickListener {

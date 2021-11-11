@@ -205,9 +205,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                 mediaPlayer?.start()
                 mRecorder!!.resume()
                 isPaused=false
-//                if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
-//                    isFinished=true
-//                }
             }
 
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
@@ -478,6 +475,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                        val builder = AlertDialog.Builder(this@Video2Activity)
                        builder.setTitle("SingTogether")
                        builder.setMessage("믹싱을 성공했습니다!")
+                       builder.setCancelable(false)
                        builder.setPositiveButton("확인") { dialogInterface, i ->
                            val intent = Intent(applicationContext, AfterRecordActivity::class.java)
                            intent.putExtra("MR_IDX", idx)

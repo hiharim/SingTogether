@@ -113,11 +113,6 @@ class LoginActivity : AppCompatActivity() {
                 }
 
             }
-//            Log.w(TAG, "콜백 user_email : $user_email" )
-//            saveDate(user_email.toString())
-
-            //loginSuccess()
-
         }
     }
 

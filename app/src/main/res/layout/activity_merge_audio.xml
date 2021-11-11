@@ -62,6 +62,7 @@
     <FrameLayout
         android:id="@+id/activity_record_frame"
         android:layout_width="match_parent"
+        android:background="#54465a"
         android:layout_height="400dp"
         android:layout_below="@+id/toolbar_record"
         android:layout_marginTop="0dp">

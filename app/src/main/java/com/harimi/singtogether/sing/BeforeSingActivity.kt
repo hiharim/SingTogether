@@ -59,20 +59,20 @@ class BeforeSingActivity : AppCompatActivity() {
             way="녹화"
             binding.activityBeforeSingBtnVideo.background=ContextCompat.getDrawable(this,R.drawable.button_record_select)
             binding.activityBeforeSingBtnVoice.background=ContextCompat.getDrawable(this,R.drawable.button_record)
-            binding.activityBeforeSingBtnOff.background=ContextCompat.getDrawable(this,R.drawable.button_record)
+            //binding.activityBeforeSingBtnOff.background=ContextCompat.getDrawable(this,R.drawable.button_record)
         }
         binding.activityBeforeSingBtnVoice.setOnClickListener {
             way="녹음"
             binding.activityBeforeSingBtnVideo.background=ContextCompat.getDrawable(this,R.drawable.button_record)
             binding.activityBeforeSingBtnVoice.background=ContextCompat.getDrawable(this,R.drawable.button_record_select)
-            binding.activityBeforeSingBtnOff.background=ContextCompat.getDrawable(this,R.drawable.button_record)
+           // binding.activityBeforeSingBtnOff.background=ContextCompat.getDrawable(this,R.drawable.button_record)
         }
-        binding.activityBeforeSingBtnOff.setOnClickListener {
-            way="연습"
-            binding.activityBeforeSingBtnVideo.background=ContextCompat.getDrawable(this,R.drawable.button_record)
-            binding.activityBeforeSingBtnVoice.background=ContextCompat.getDrawable(this,R.drawable.button_record)
-            binding.activityBeforeSingBtnOff.background=ContextCompat.getDrawable(this,R.drawable.button_record_select)
-        }
+//        binding.activityBeforeSingBtnOff.setOnClickListener {
+//            way="연습"
+//            binding.activityBeforeSingBtnVideo.background=ContextCompat.getDrawable(this,R.drawable.button_record)
+//            binding.activityBeforeSingBtnVoice.background=ContextCompat.getDrawable(this,R.drawable.button_record)
+//            binding.activityBeforeSingBtnOff.background=ContextCompat.getDrawable(this,R.drawable.button_record_select)
+//        }
 
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {

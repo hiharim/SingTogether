@@ -45,14 +45,13 @@
 <!--        app:srcCompat="@drawable/ic_baseline_account_circle_24" -->
 <!--        />-->
     <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/activity_profile_iv"
         android:layout_below="@+id/toolbar_profile"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        app:srcCompat="@drawable/ic_baseline_account_circle_24"
+        android:src="@drawable/ic_baseline_person_24_purple"
         />
 
     <Button

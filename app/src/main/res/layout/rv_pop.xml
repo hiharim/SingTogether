@@ -71,8 +71,8 @@
     <ImageView
         android:id="@+id/rv_fragment_home_iv_thumbnail"
         android:layout_width="100dp"
-        android:layout_height="94dp"
-        android:scaleType="fitXY"
+        android:layout_height="92dp"
+        android:scaleType="centerInside"
         android:background="#000000"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"

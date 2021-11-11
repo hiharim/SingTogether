@@ -1,12 +1,14 @@
 package com.harimi.singtogether.sing
 
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -104,17 +106,26 @@ class AfterRecordActivity : AppCompatActivity() {
         simpleExoPlayer!!.play()
         // 업로드 버튼 클릭
         binding.activityAfterRecordBtnUpload.setOnClickListener {
-            asyncDialog  = ProgressDialog(this@AfterRecordActivity)
-            /* UI Thread: 프로그래스 바 등 준비 */
-            asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
-            asyncDialog!!.setMessage("업로드 중...")
-            asyncDialog!!.show()
+            val builder = AlertDialog.Builder(this@AfterRecordActivity)
+            builder.setTitle("SingTogether")
+            builder.setMessage("업로드 하시겠습니까? ")
+            builder.setCancelable(false)
+            builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                asyncDialog = ProgressDialog(this@AfterRecordActivity)
+                asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+                asyncDialog!!.setMessage("업로드중...")
+                asyncDialog!!.setCancelable(false)
+                asyncDialog!!.show()
 
-            if(isMerge.equals("Y")) {
-                uploadMergeVideo()
-            }else if(isMerge.equals("N")){
-                uploadVideo()
+                if(isMerge.equals("Y")) {
+                    uploadMergeVideo()
+                }else if(isMerge.equals("N")){
+                    uploadVideo()
+                }
             }
+            builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+                finish() }
+            builder.show()
 
         }
     }
@@ -133,16 +144,7 @@ class AfterRecordActivity : AppCompatActivity() {
                                 asyncDialog!!.dismiss()
 
 
-                                Log.e("AfterRecordActivity", " 통신 성공:"+ response.body().toString())
-                                // 업로드 성공 다이얼로그
-                                val builder = AlertDialog.Builder(this@AfterRecordActivity)
-                                builder.setTitle("SingTogether")
-                                builder.setMessage("업로드를 성공했습니다!")
-                                builder.setPositiveButton("확인") { dialogInterface, i ->
-                                    simpleExoPlayer?.release()
-                                    finish()
-                                }
-                                builder.show()
+                                Toast.makeText(applicationContext, "업로드를 성공했습니다!", Toast.LENGTH_SHORT).show()
                             } else {
                                 // 통신은 성공했지만 응답에 문제가 있는 경우
                                 Log.e("AfterRecordActivity", " 응답 문제" + response.code())
@@ -175,7 +177,6 @@ class AfterRecordActivity : AppCompatActivity() {
                         // 응답을 잘 받은 경우
                         asyncDialog!!.dismiss()
                         Log.e("AfterRecordActivity", " 통신 성공:"+ response.body().toString())
-                        // 업로드 성공 다이얼로그
                         val builder = AlertDialog.Builder(this@AfterRecordActivity)
                         builder.setTitle("SingTogether")
                         builder.setMessage("업로드를 성공했습니다!")

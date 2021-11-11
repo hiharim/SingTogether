@@ -156,11 +156,11 @@ class SettingFragment : Fragment() {
         // 연결 끊기
         UserApiClient.instance.unlink { error ->
             if (error != null) {
-                Toast.makeText(context, "회원 탈퇴 실패 $error", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "회원 탈퇴 실패 $error", Toast.LENGTH_SHORT).show()
                 Log.e(TAG, "연결 끊기 실패", error)
             }
             else {
-                Toast.makeText(context, "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
                 Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
             }
         }

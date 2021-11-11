@@ -419,6 +419,7 @@ class RecordActivity: AppCompatActivity()  {
                         val builder = AlertDialog.Builder(this@RecordActivity)
                         builder.setTitle("SingTogether")
                         builder.setMessage("믹싱을 성공했습니다!")
+                        builder.setCancelable(false)
                         builder.setPositiveButton("확인") { dialogInterface, i ->
                             val intent = Intent(applicationContext, AfterSingActivity::class.java)
                             intent.putExtra("MR_IDX", idx)

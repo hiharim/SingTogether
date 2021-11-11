@@ -19,6 +19,7 @@ import com.harimi.singtogether.databinding.FragmentDuetBinding
 import com.harimi.singtogether.databinding.FragmentMySongBinding
 import com.harimi.singtogether.sing.DuetAdapter
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -36,7 +37,7 @@ class MySongFragment : Fragment() {
     private val mySongList : ArrayList<MySongData> = ArrayList()
     private lateinit var mySongAdapter: MySongAdapter
     private var myEmail : String?=null
-
+    private var isBadge :Boolean ?= false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -84,9 +85,12 @@ class MySongFragment : Fragment() {
                     // 응답을 잘 받은 경우
                     Log.e("MySongFragment", " 통신 성공: ${response.body().toString()}")
                     val body = response.body().toString()
-
-                    val jsonArray= JSONArray(body)
-                        if (jsonArray.length() == 0 || jsonArray.equals("")) {
+                    val replayObject = JSONObject(body)
+                    val badgeList = replayObject.getString("badgeList")
+                    val postList = replayObject.getString("duetList")
+                    val postArray = JSONArray(postList)
+                    //val jsonArray= JSONArray(body)
+                        if (postArray.length() == 0 || postArray.equals("")) {
 
                             noSong.visibility = View.VISIBLE
                             recyclerview.visibility = View.GONE
@@ -94,20 +98,8 @@ class MySongFragment : Fragment() {
                             noSong.visibility = View.GONE
                             recyclerview.visibility = View.VISIBLE
 
-//                            for (i in 0..jsonArray.length() - 1) {
-//                                val iObject = jsonArray.getJSONObject(i)
-//                                val idx = iObject.getInt("idx")
-//                                val thumbnail = iObject.getString("thumbnail")
-//                                val title = iObject.getString("title")
-//                                val nickname = iObject.getString("nickname")
-//                                val date = iObject.getString("date")
-//
-//                                val mySongData = MySongData(idx, thumbnail, title, nickname, date)
-//                                mySongList.add(0, mySongData)
-//                                mySongAdapter.notifyDataSetChanged()
-//                            }
-                            for(i in 0..jsonArray.length() -1){
-                                val iObject=jsonArray.getJSONObject(i)
+                            for(i in 0..postArray.length() -1){
+                                val iObject=postArray.getJSONObject(i)
                                 val duet_idx=iObject.getInt("duet_idx")
                                 val mr_idx=iObject.getInt("mr_idx")
                                 val thumbnail=iObject.getString("thumbnail")
@@ -127,7 +119,24 @@ class MySongFragment : Fragment() {
                                 val kinds=iObject.getString("kinds")
                                 val token=iObject.getString("token")
                                 var path=song_path
-                                val mySongData=MySongData(duet_idx,mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics,token)
+
+                                if (!badgeList.equals("")) {
+                                    val badgeArray = JSONArray(badgeList)
+                                    for (i in 0 until badgeArray.length()) {
+                                        var badgeObject = badgeArray.getJSONObject(i)
+                                        var badge_email = badgeObject.getString("email")
+                                        if (badge_email.equals(email)) {
+                                            isBadge = true
+                                            break
+                                        } else {
+                                            isBadge = false
+                                        }
+                                    }
+                                } else {
+                                    isBadge = false
+                                }
+
+                                val mySongData=MySongData(duet_idx,mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics,token,isBadge!!)
                                 mySongList.add(0,mySongData)
                                 mySongAdapter.notifyDataSetChanged()
                             }

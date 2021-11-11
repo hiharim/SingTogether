@@ -113,8 +113,6 @@ class MyPostFragment : Fragment() {
                         val badgeList = replayObject.getString("badgeList")
                         val outputData = replayObject.getString("outputData")
 
-
-
                         if (outputData.equals("")) {
                             tv_noMyPost.visibility = View.VISIBLE
                             fragment_post_recyclerView.visibility = View.GONE
