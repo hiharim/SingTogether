@@ -207,7 +207,7 @@ class MyPageFragment : Fragment() {
                                 Glide.with(requireActivity()).load("http://3.35.236.251/"+profile)  .fitCenter().into(profileImage)
                             }
 
-                            if (LoginActivity.user_info.loginUserGetBadge ==true){
+                            if (isBadge){
                                 badge.visibility =View.VISIBLE
                             }else{
                                 badge.visibility =View.GONE

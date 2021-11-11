@@ -372,7 +372,7 @@ class DetailReplayActivity : AppCompatActivity() {
                                 }else{
                                     PushNotification(
                                         NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+" 님이 댓글을 남겼습니다.",
-                                            replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+                                            replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,fragment_detail_replay_tv_like.text.toString(),replayHits!!,
                                             replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!,"리플레이"),
                                         uploadUserFCMToken.toString()
                                     ).also {
@@ -436,7 +436,7 @@ class DetailReplayActivity : AppCompatActivity() {
                             }else{
                                 PushNotification(
                                     NotificationData("SingTogether", LoginActivity.user_info.loginUserNickname+"님이 좋아요를 누르셨습니다.",
-                                        replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,replayLikeNumber!!,replayHits!!,
+                                        replayIdx!!,uploadUserEmail!!,uploadUserProfile!!,uploadUserNickName!!,thumbnail!!,getUploadDate!!,replayTitle!!,fragment_detail_replay_tv_like.text.toString(),replayHits!!,
                                         replayReviewNumber!!,replayPostLikeIdx!!,isLiked,replayVideo!!,uploadUserFCMToken!!,"리플레이"),
                                     uploadUserFCMToken.toString()
                                 ).also {
