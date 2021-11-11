@@ -116,32 +116,34 @@ class SimplePopFragment : Fragment() {
 
                             if (!badgeList.equals("")) {
                                 val badgeArray = JSONArray(badgeList)
-                                for (i in 0 until badgeArray.length()) {
-                                    var badgeObject = badgeArray.getJSONObject(i)
-                                    var badge_email = badgeObject.getString("email")
-                                    if (badge_email.equals(email) && badge_email.equals(collabo_email)) {
-                                        //둘다밷지
-                                        isBadge = true
-                                        isBadgeCollabo=true
-                                        Log.d(TAG, isBadge.toString())
-                                         break
-                                    } else if(badge_email.equals(collabo_email)) {
-                                        //콜라보만 밷지
-                                        isBadgeCollabo = true
-                                        isBadge=false
-                                        break
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
 
-                                    }else if(badge_email.equals(email)){
-                                        //업로드한사람만 밷지
-                                        isBadge = true
-                                        isBadgeCollabo=false
+                                    if(badge_email.equals(email)) {
+                                        isBadge=true
                                         break
                                     }else{
-                                        isBadge= false
+                                        isBadge = false
+                                    }
+
+                                }
+
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
+
+                                    if(badge_email.equals(collabo_email)) {
+                                        isBadgeCollabo=true
+                                        break
+                                    }else{
                                         isBadgeCollabo=false
-                                        Log.d(TAG, isBadge.toString())
                                     }
                                 }
+
+                            }else{
+                                isBadge=false
+                                isBadgeCollabo=false
                             }
 
 

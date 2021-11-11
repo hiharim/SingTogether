@@ -111,25 +111,36 @@ class SimpleNewFragment : Fragment() {
                             val col_token=iObject.getString("col_token")
                             val isLike=iObject.getString("isLike")
 
-
-
                             if (!badgeList.equals("")) {
                                 val badgeArray = JSONArray(badgeList)
-                                for (i in 0 until badgeArray.length()) {
-                                    var badgeObject = badgeArray.getJSONObject(i)
-                                    var badge_email = badgeObject.getString("email")
-                                    if (badge_email.equals(email)) {
-                                        isBadge = true
-                                        Log.d(TAG, isBadge.toString())
-                                        // break
-                                    } else if(badge_email.equals(collabo_email)){
-                                        isBadgeCollabo = true
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
+
+                                    if(badge_email.equals(email)) {
+                                        isBadge=true
                                         break
                                     }else{
-                                        isBadge= false
-                                        Log.d(TAG, isBadge.toString())
+                                        isBadge = false
+                                    }
+
+                                }
+
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
+
+                                    if(badge_email.equals(collabo_email)) {
+                                        isBadgeCollabo=true
+                                        break
+                                    }else{
+                                        isBadgeCollabo=false
                                     }
                                 }
+
+                            }else{
+                                isBadge=false
+                                isBadgeCollabo=false
                             }
 
                             val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)

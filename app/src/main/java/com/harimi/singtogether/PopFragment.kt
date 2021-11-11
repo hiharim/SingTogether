@@ -19,6 +19,7 @@ import com.harimi.singtogether.adapter.HomeAdapter
 import com.harimi.singtogether.adapter.PopAdapter
 import com.harimi.singtogether.databinding.FragmentPopBinding
 import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -34,10 +35,10 @@ class PopFragment : Fragment() {
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
     private lateinit var binding: FragmentPopBinding
-    private val homePostList: ArrayList<HomeData> = ArrayList()
     private val popPostList: ArrayList<PopData> = ArrayList()
-    private lateinit var homeAdapter: HomeAdapter
     private lateinit var popAdapter: PopAdapter
+    private var isBadge :Boolean ?= false
+    private var isBadgeCollabo :Boolean ?= false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,39 +75,109 @@ class PopFragment : Fragment() {
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
                     // 응답을 잘 받은 경우
-                    Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
+                    val body = response.body().toString()
+                    val replayObject = JSONObject(body)
+                    val badgeList = replayObject.getString("badgeList")
+                    val homeList = replayObject.getString("homeList")
+                    val postArray = JSONArray(homeList)
 
-                    val jsonArray= JSONArray(response.body().toString())
-                    for(i in 0..jsonArray.length() -1){
-                        val iObject=jsonArray.getJSONObject(i)
-                        val idx=iObject.getInt("idx")
-                        val thumbnail=iObject.getString("thumbnail")
-                        val cnt_play=iObject.getString("cnt_play")
-                        val cnt_reply=iObject.getString("cnt_reply")
-                        val cnt_like=iObject.getString("cnt_like")
-                        val nickname=iObject.getString("nickname")
-                        val email=iObject.getString("email")
-                        val song_path=iObject.getString("song_path")
-                        val date=iObject.getString("date")
-                        val collaboration=iObject.getString("collaboration")
-                        val mr_idx=iObject.getInt("mr_idx")
-                        val title=iObject.getString("title")
-                        val singer=iObject.getString("singer")
-                        val lyrics=iObject.getString("lyrics")
-                        val profile=iObject.getString("profile")
-                        val collaboration_profile=iObject.getString("col_profile")
-                        val collabo_email=iObject.getString("collabo_email")
-                        val kinds=iObject.getString("kinds")
-                        val token=iObject.getString("token")
-                        val col_token=iObject.getString("col_token")
-                        val isLike=iObject.getString("isLike")
-                        val rank=iObject.getInt("ranking")
-                        Log.e(TAG, " "+rank.toString())
-                        val popData=PopData(idx,thumbnail,title,singer,lyrics,cnt_play,cnt_reply,cnt_like,nickname,email,profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,rank,col_token,isLike)
-                        popPostList.add(0,popData)
-                        popAdapter.notifyDataSetChanged()
-                        
+                    for (i in 0 until postArray.length()) {
+                        if (postArray.length() == 0 || postArray.equals("null")) {
+                        } else {
+
+                            val iObject = postArray.getJSONObject(i)
+                            val idx = iObject.getInt("idx")
+                            val thumbnail = iObject.getString("thumbnail")
+                            val cnt_play = iObject.getString("cnt_play")
+                            val cnt_reply = iObject.getString("cnt_reply")
+                            val cnt_like = iObject.getString("cnt_like")
+                            val nickname = iObject.getString("nickname")
+                            val email = iObject.getString("email")
+                            val song_path = iObject.getString("song_path")
+                            val date = iObject.getString("date")
+                            val collaboration = iObject.getString("collaboration")
+                            val mr_idx = iObject.getInt("mr_idx")
+                            val title = iObject.getString("title")
+                            val singer = iObject.getString("singer")
+                            val lyrics = iObject.getString("lyrics")
+                            val profile = iObject.getString("profile")
+                            val collaboration_profile = iObject.getString("col_profile")
+                            val collabo_email = iObject.getString("collabo_email")
+                            val kinds = iObject.getString("kinds")
+                            val token = iObject.getString("token")
+                            val col_token = iObject.getString("col_token")
+                            val isLike = iObject.getString("isLike")
+                            val rank = iObject.getInt("ranking")
+                            if (!badgeList.equals("")) {
+                                val badgeArray = JSONArray(badgeList)
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
+
+                                    if (badge_email.equals(email)) {
+                                        isBadge = true
+                                        break
+                                    } else {
+                                        isBadge = false
+                                    }
+
+                                }
+
+                                for (j in 0 until badgeArray.length()) {
+                                    val badgeObject = badgeArray.getJSONObject(j)
+                                    val badge_email = badgeObject.getString("email")
+
+                                    if (badge_email.equals(collabo_email)) {
+                                        isBadgeCollabo = true
+                                        break
+                                    } else {
+                                        isBadgeCollabo = false
+                                    }
+                                }
+
+                            } else {
+                                isBadge = false
+                                isBadgeCollabo = false
+                            }
+
+                            val popData=PopData(idx,thumbnail,title,singer,lyrics,cnt_play,cnt_reply,cnt_like,nickname,email,profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,rank,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                            popPostList.add(0,popData)
+                            popAdapter.notifyDataSetChanged()
+
+                        }
                     }
+
+//                    val jsonArray= JSONArray(response.body().toString())
+//                    for(i in 0..jsonArray.length() -1){
+//                        val iObject=jsonArray.getJSONObject(i)
+//                        val idx=iObject.getInt("idx")
+//                        val thumbnail=iObject.getString("thumbnail")
+//                        val cnt_play=iObject.getString("cnt_play")
+//                        val cnt_reply=iObject.getString("cnt_reply")
+//                        val cnt_like=iObject.getString("cnt_like")
+//                        val nickname=iObject.getString("nickname")
+//                        val email=iObject.getString("email")
+//                        val song_path=iObject.getString("song_path")
+//                        val date=iObject.getString("date")
+//                        val collaboration=iObject.getString("collaboration")
+//                        val mr_idx=iObject.getInt("mr_idx")
+//                        val title=iObject.getString("title")
+//                        val singer=iObject.getString("singer")
+//                        val lyrics=iObject.getString("lyrics")
+//                        val profile=iObject.getString("profile")
+//                        val collaboration_profile=iObject.getString("col_profile")
+//                        val collabo_email=iObject.getString("collabo_email")
+//                        val kinds=iObject.getString("kinds")
+//                        val token=iObject.getString("token")
+//                        val col_token=iObject.getString("col_token")
+//                        val isLike=iObject.getString("isLike")
+//                        val rank=iObject.getInt("ranking")
+//                        Log.e(TAG, " "+rank.toString())
+//                        val popData=PopData(idx,thumbnail,title,singer,lyrics,cnt_play,cnt_reply,cnt_like,nickname,email,profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,rank,col_token,isLike)
+//                        popPostList.add(0,popData)
+//                        popAdapter.notifyDataSetChanged()
+//
+//                    }
 
                 } else {
                     // 통신은 성공했지만 응답에 문제가 있는 경우

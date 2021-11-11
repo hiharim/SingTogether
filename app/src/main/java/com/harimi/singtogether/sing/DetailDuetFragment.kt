@@ -36,6 +36,7 @@ import com.harimi.singtogether.Data.DetailDuetReviewData
 import com.harimi.singtogether.Network.*
 import com.harimi.singtogether.adapter.DetailDuetReviewAdapter
 import com.harimi.singtogether.databinding.FragmentDetailDuetBinding
+import com.harimi.singtogether.databinding.FragmentDuetBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -59,7 +60,7 @@ class DetailDuetFragment : Fragment() {
     var TAG :String = "DetailDuetFragment "
     private lateinit var retrofitService: RetrofitService
     private lateinit var retrofit : Retrofit
-
+    private lateinit var binding: FragmentDetailDuetBinding
     private var duet_idx : Int? = null // duet 테이블 idx
     private var mr_idx : Int? = null // mr 테이블 idx
 
@@ -80,11 +81,10 @@ class DetailDuetFragment : Fragment() {
     private var kinds : String? = null
     private var lyrics : String? = null
     private var token : String? = null
+    private var isBadge : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
-
     private val detailDuetReviewList: ArrayList<DetailDuetReviewData> = ArrayList()
-    //    private lateinit var rv_detailReplayReview : RecyclerView
     private lateinit var detailDuetReviewAdapter: DetailDuetReviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -108,6 +108,7 @@ class DetailDuetFragment : Fragment() {
             kinds=it.getString("kinds")
             lyrics=it.getString("lyrics")
             token=it.getString("token")
+            isBadge=it.getString("isBadge")
         }
 
     }
@@ -117,9 +118,7 @@ class DetailDuetFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
-        Log.e("디테일프래그","duet_idx"+duet_idx)
-
+        binding= FragmentDetailDuetBinding.inflate(inflater,container,false)
 
         //듀엣참여 버튼 클릭
         binding.fragmentDetailDuetBtnJoin.setOnClickListener {
@@ -181,8 +180,15 @@ class DetailDuetFragment : Fragment() {
 //            binding.tvHits.text= plus_cnt_play.toString()
 
             binding.tvUploadDate.text=date
+            //프로필
             Glide.with(this).load("http://3.35.236.251/" + profile).into(binding.ivUploadUserProfile)
-            Log.e("디테일프래그", "duet_path" + duet_path)
+
+            // 뱃지
+            if(isBadge.equals("true")){
+                binding.duetBadge.visibility=View.VISIBLE
+            }else{
+                binding.duetBadge.visibility=View.GONE
+            }
 
             if(kinds.equals("녹음")){
                 Glide.with(this).load(thumbnail).into(binding.imageViewThumb)
@@ -257,7 +263,7 @@ class DetailDuetFragment : Fragment() {
             }
 
             //프로필 액티비티로 넘어가기
-            binding.cardView.setOnClickListener{
+            binding.ivUploadUserProfile.setOnClickListener{
                 if (LoginActivity.user_info.loginUserEmail.equals(email)){
 //                val activity =it!!.context as AppCompatActivity
 //                val MyPageFragment = MyPageFragment()

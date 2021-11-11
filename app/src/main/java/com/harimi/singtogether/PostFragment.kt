@@ -79,7 +79,8 @@ class PostFragment : Fragment() {
     private var isLiked : String? = null
     private var thumbnail : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
-
+    private var isBadge: String? = null
+    private var isBadgeCollabo : String? = null
     private val postReviewDataList: ArrayList<PostReviewData> = ArrayList()
 //    private lateinit var rv_detailReplayReview : RecyclerView
     private lateinit var postReviewAdapter: PostFragmentReviewAdapter
@@ -107,6 +108,8 @@ class PostFragment : Fragment() {
             col_token=it.getString("col_token")
             isLiked=it.getString("isLike")
             thumbnail=it.getString("thumbnail")
+            isBadge=it.getString("isBadge")
+            isBadgeCollabo=it.getString("isBadgeCollabo")
 
         }
     }
@@ -129,12 +132,24 @@ class PostFragment : Fragment() {
         binding.tvUploadDate.text=date
         Glide.with(this).load("http://3.35.236.251/"+profile).into(binding.ivUploadUserProfile)
         Glide.with(this).load("http://3.35.236.251/"+collaboration_profile).into(binding.ivUploadCollaboProfile)
-        Log.e("디테일프래그","duet_path"+song_path)
 
+        //뱃지
+        if(isBadge.equals("true")){
+            binding.postBadge.visibility=View.VISIBLE
+        }else {
+            binding.postBadge.visibility=View.GONE
+        }
+        if(isBadgeCollabo.equals("true")){
+            binding.postBadgeCollabo.visibility=View.VISIBLE
+        }else {
+            binding.postBadgeCollabo.visibility=View.GONE
+        }
+
+        // 솔로일때
         if(binding.tvUploadUserNickName.text.equals(binding.tvUploadCollaboNickName.text)){
             binding.tvUploadCollaboNickName.visibility=View.GONE
             binding.ivUploadCollaboProfile.visibility=View.GONE
-            binding.collaboCardView.visibility=View.GONE
+            binding.postBadgeCollabo.visibility=View.GONE
         }
 
         if(kinds.equals("녹음")){
@@ -209,12 +224,12 @@ class PostFragment : Fragment() {
         postReviewLoad(binding.fragmentPostRecyclerView)
 
         ////프로필 액티비티로 넘어가기
-        binding.cardView.setOnClickListener{
+        binding.ivUploadUserProfile.setOnClickListener{
             goToLookAtProfileActivity(email!!,nickname!!,profile!!)
             Log.d(TAG, email)
         }
 
-        binding.collaboCardView.setOnClickListener {
+        binding.ivUploadCollaboProfile.setOnClickListener {
             goToLookAtProfileActivity(collabo_email!!,collaboration_nickname!!,collaboration_profile!!)
             Log.d(TAG, collabo_email)
         }

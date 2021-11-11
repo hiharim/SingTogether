@@ -34,7 +34,7 @@ class ResultDuetFragment : Fragment() {
     private lateinit var duetAdapter: DuetAdapter
     private var searchInput : String?=null // 검색어
     private var isBadge :Boolean ?= false
-
+    private lateinit var binding: FragmentResultDuetBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -49,7 +49,7 @@ class ResultDuetFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding=FragmentResultDuetBinding.inflate(inflater, container, false)
+        binding=FragmentResultDuetBinding.inflate(inflater, container, false)
 
         binding.fragmentResultDuetRecyclerView.layoutManager= LinearLayoutManager(context)
         binding.fragmentResultDuetRecyclerView.setHasFixedSize(true)
@@ -78,9 +78,10 @@ class ResultDuetFragment : Fragment() {
                         val postArray = JSONArray(postList)
 
                         for (i in 0 until postArray.length()) {
-                            if (postArray.length() == 0 || postArray.equals("null")) {
+                            if (postArray.length() == 0 || postArray.equals("")) {
 
-
+                                binding.tvBlank.visibility=View.VISIBLE
+                                binding.fragmentResultDuetRecyclerView.visibility=View.GONE
                             } else {
                                 val iObject = postArray.getJSONObject(i)
                                 val duet_idx = iObject.getInt("duet_idx")

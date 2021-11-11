@@ -50,6 +50,8 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         val isLike=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isLike)
         val badge=v.findViewById<ImageView>(R.id.badge_home)
         val badge_collabo=v.findViewById<ImageView>(R.id.badge_colloabo_home)
+        val isBadge=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadge)
+        val isBadgeCollabo=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadgeCollabo)
     }
 
 
@@ -78,11 +80,43 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         holder.rank.text= curData.rank.toString()
         holder.isLike.text=curData.isLike
         holder.col_token.text=curData.col_token
+        holder.isBadge.text = curData.isBadge.toString()
+        holder.isBadgeCollabo.text = curData.isBadgeCollabo.toString()
+
+        // 밷지
+        if (holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("true")) {
+            holder.badge.visibility = View.VISIBLE
+            holder.badge_collabo.visibility=View.VISIBLE
+        }else if(holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("false")){
+            holder.badge.visibility = View.VISIBLE
+            holder.badge_collabo.visibility=View.GONE
+
+        }else if(holder.isBadge.text.equals("false") && holder.isBadgeCollabo.text.equals("true")){
+            holder.badge.visibility = View.GONE
+            holder.badge_collabo.visibility=View.VISIBLE
+        }else if(holder.isBadge.text.equals("false") && holder.isBadgeCollabo.text.equals("false")){
+            holder.badge.visibility = View.GONE
+            holder.badge_collabo.visibility=View.GONE
+        }
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
+        // 솔로일때 콜라보숨기기
+        if(holder.email.text.equals(holder.collabo_email.text)) {
+            holder.collabo_profile.visibility=View.GONE
+            holder.collabo_nickname.visibility=View.GONE
+            holder.and.visibility=View.GONE
+            holder.badge_collabo.visibility=View.GONE
+        }else{
+            holder.collabo_profile.visibility=View.VISIBLE
+            holder.collabo_nickname.visibility=View.VISIBLE
+            holder.and.visibility=View.VISIBLE
+            //holder.badge_collabo.visibility=View.GONE
+        }
+
+        // 좋아요
         val userEmail= LoginActivity.user_info.loginUserEmail
         if(holder.isLike.text.equals(userEmail)) {
             holder.iv_like.visibility=View.INVISIBLE
@@ -92,12 +126,6 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             holder.iv_like_red.visibility=View.INVISIBLE
         }
 
-        if(holder.email.text.equals(holder.collabo_email.text)){
-            holder.collabo_profile.visibility= View.GONE
-            holder.collabo_nickname.visibility= View.GONE
-            holder.and.visibility= View.GONE
-            //holder.collaboCardView.visibility= View.GONE
-        }
 
         // 랭크1,2,3은 금,은,동으로
         Log.e(TAG, "holder.rank.text "+holder.rank.text.toString())
@@ -120,21 +148,6 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             holder.iv_rank_first.visibility=View.GONE
             holder.iv_rank_second.visibility=View.GONE
         }
-
-
-//        if(str_rank==0){
-//            holder.iv_rank.visibility=View.GONE
-//            holder.rank.visibility=View.GONE
-//            holder.iv_rank_first.visibility=View.VISIBLE
-//        }else if(str_rank==1){
-//            holder.iv_rank.visibility=View.GONE
-//            holder.rank.visibility=View.GONE
-//            holder.iv_rank_second.visibility=View.VISIBLE
-//        }else if(str_rank==2){
-//            holder.iv_rank.visibility=View.GONE
-//            holder.rank.visibility=View.GONE
-//            holder.iv_rank_third.visibility=View.VISIBLE
-//        }
 
         holder.itemView.setOnClickListener { v->
             // PostFragment 로 이동
@@ -161,6 +174,8 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             bundle.putString("col_token",curData.col_token)
             bundle.putString("isLike",curData.isLike)
             bundle.putString("thumbnail",curData.thumbnail)
+            bundle.putString("isBadge",curData.isBadge.toString())
+            bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
             postFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()

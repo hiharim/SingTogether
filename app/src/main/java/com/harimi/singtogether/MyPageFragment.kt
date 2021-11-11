@@ -138,7 +138,7 @@ class MyPageFragment : Fragment() {
                     tab.text="포스팅"
                }
                 1 ->{
-                    tab.text="듀엣초대"
+                    tab.text="듀엣"
                 }
                 2 ->{
                     tab.text="방송"

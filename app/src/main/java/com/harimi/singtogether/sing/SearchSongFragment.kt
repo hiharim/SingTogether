@@ -80,7 +80,7 @@ class SearchSongFragment : Fragment() {
         })
 
         // TabLayout 과 viewPager 연결
-        TabLayoutMediator(binding.activitySearchSongTabLayout,binding.activitySearchSongViewPager){
+        TabLayoutMediator(binding.activitySearchSongTabLayout,binding.activitySearchSongViewPager) {
                 tab,position->
             when(position){
                 0 ->{

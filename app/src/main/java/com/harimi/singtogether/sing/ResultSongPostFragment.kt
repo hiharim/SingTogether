@@ -33,6 +33,7 @@ class ResultSongPostFragment : Fragment() {
     private var TAG :String = "검색결과 포스팅 탭 화면"
     private lateinit var retrofit : Retrofit
     private lateinit var retrofitService: RetrofitService
+    private lateinit var binding:FragmentResultSongPostBinding
     private val homePostList: ArrayList<HomeData> = ArrayList()
     private lateinit var homeAdapter: HomeAdapter
     private var searchInput : String?=null // 검색어
@@ -53,7 +54,7 @@ class ResultSongPostFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        val binding=FragmentResultSongPostBinding.inflate(inflater, container, false)
+        binding=FragmentResultSongPostBinding.inflate(inflater, container, false)
 
         binding.fragmentResultSongPostRecyclerView.layoutManager= LinearLayoutManager(context)
         binding.fragmentResultSongPostRecyclerView.setHasFixedSize(true)
@@ -81,8 +82,6 @@ class ResultSongPostFragment : Fragment() {
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     if (response.isSuccessful) {
                         // 응답을 잘 받은 경우
-
-
                         Log.e(TAG, "loadHomePost 통신 성공: "+response.body().toString())
                         val body = response.body().toString()
                         val replayObject = JSONObject (body)
@@ -91,8 +90,11 @@ class ResultSongPostFragment : Fragment() {
                         val postArray = JSONArray(homeList)
 
                         for (i in 0 until postArray.length()) {
-                            if (postArray.length() ==0 || postArray.equals("null")){
+                            if (postArray.length() ==0 || postArray.equals("")){
+                                binding.tvBlank.visibility=View.VISIBLE
+                                binding.fragmentResultSongPostRecyclerView.visibility=View.GONE
                             }else {
+
                                 val iObject=postArray.getJSONObject(i)
                                 val idx=iObject.getInt("idx")
                                 val thumbnail=iObject.getString("thumbnail")
@@ -139,6 +141,8 @@ class ResultSongPostFragment : Fragment() {
                                 val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
                                 homePostList.add(0,homeData)
                                 homeAdapter.notifyDataSetChanged()
+
+
                             }
                         }
 

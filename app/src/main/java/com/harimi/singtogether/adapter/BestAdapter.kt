@@ -82,6 +82,8 @@ class BestAdapter(val bestList: ArrayList<BestData> ) : RecyclerView.Adapter<Bes
         holder.col_token.text=curData.col_token
         holder.isLike.text=curData.isLike
 
+
+
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile)
             .circleCrop()
             .into(holder.profile)

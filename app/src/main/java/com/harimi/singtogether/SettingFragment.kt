@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -121,6 +122,9 @@ class SettingFragment : Fragment() {
                                     if (LoginActivity.user_info.loginUserSocial.equals("google")){
                                         mAuth = FirebaseAuth.getInstance();
                                         mAuth.currentUser!!.delete()
+                                    }else{
+                                        // 카카오 회원탈퇴
+                                        kakaoUnLinkUser()
                                     }
                                     val intent = Intent(context, LoginActivity::class.java)
                                     startActivity(intent)
@@ -147,7 +151,20 @@ class SettingFragment : Fragment() {
         return  settingFragment
     }
 
-
+    // 카카오 회원탈퇴
+    fun kakaoUnLinkUser(){
+        // 연결 끊기
+        UserApiClient.instance.unlink { error ->
+            if (error != null) {
+                Toast.makeText(context, "회원 탈퇴 실패 $error", Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "연결 끊기 실패", error)
+            }
+            else {
+                Toast.makeText(context, "회원 탈퇴 성공", Toast.LENGTH_SHORT).show()
+                Log.i(TAG, "연결 끊기 성공. SDK에서 토큰 삭제 됨")
+            }
+        }
+    }
 
     companion object {
 

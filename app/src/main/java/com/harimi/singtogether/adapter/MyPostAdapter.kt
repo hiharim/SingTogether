@@ -16,6 +16,7 @@ import com.harimi.singtogether.Data.MyPostData
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
 import com.harimi.singtogether.adapter.MyPostAdapter.MyPostViewHolder
+import de.hdodenhof.circleimageview.CircleImageView
 
 
 class MyPostAdapter (val myPostDataList: ArrayList<MyPostData>,val context: Context) : RecyclerView.Adapter<MyPostViewHolder>() {
@@ -27,8 +28,8 @@ class MyPostAdapter (val myPostDataList: ArrayList<MyPostData>,val context: Cont
         val thumbnail=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_thumbnail)
         val title=v.findViewById<TextView>(R.id.rv_fragment_home_tv_title)
         val singer=v.findViewById<TextView>(R.id.rv_fragment_home_tv_singer)
-        val profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_profile)
-        val collabo_profile=v.findViewById<ImageView>(R.id.rv_fragment_home_iv_collabo_profile)
+        val profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_profile)
+        val collabo_profile=v.findViewById<CircleImageView>(R.id.rv_fragment_home_iv_collabo_profile)
         val collabo_nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_nickname)
         val nickname=v.findViewById<TextView>(R.id.rv_fragment_home_tv_nickname)
         val cnt_play=v.findViewById<TextView>(R.id.rv_fragment_home_tv_count_play)
@@ -41,7 +42,10 @@ class MyPostAdapter (val myPostDataList: ArrayList<MyPostData>,val context: Cont
         val token=v.findViewById<TextView>(R.id.rv_fragment_home_tv_token)
         val email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_email)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
-        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+        val isBadge=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadge)
+        val isBadgeCollabo=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadgeCollabo)
+        val badge=v.findViewById<ImageView>(R.id.simple_badge)
+        val badge_collabo=v.findViewById<ImageView>(R.id.simple_badge_collabo)
     }
 
     override fun onCreateViewHolder(
@@ -70,6 +74,7 @@ class MyPostAdapter (val myPostDataList: ArrayList<MyPostData>,val context: Cont
         holder.token.text=curData.token
         holder.mr_idx.text= curData.mr_idx.toString()
 
+
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
@@ -78,7 +83,7 @@ class MyPostAdapter (val myPostDataList: ArrayList<MyPostData>,val context: Cont
             holder.collabo_profile.visibility=View.GONE
             holder.collabo_nickname.visibility=View.GONE
             holder.and.visibility= View.GONE
-            holder.collaboCardView.visibility=View.GONE
+            //holder.collaboCardView.visibility=View.GONE
         }
 
         holder.itemView.setOnClickListener { v->

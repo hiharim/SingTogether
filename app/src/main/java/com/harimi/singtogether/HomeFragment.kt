@@ -149,8 +149,7 @@ class HomeFragment : Fragment() {
                     val outputData = jsonObject.getString("outputData")
                     val outputDataArray = JSONArray(outputData)
 
-
-                    for(i in 0..outputDataArray.length() -1){
+                    for(i in 0..outputDataArray.length() -1) {
                         val iObject=outputDataArray.getJSONObject(i)
                         val idx=iObject.getInt("idx")
                         val thumbnail=iObject.getString("thumbnail")

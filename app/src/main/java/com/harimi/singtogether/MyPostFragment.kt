@@ -42,6 +42,8 @@ class MyPostFragment : Fragment() {
     private lateinit var myPostAdapter: MyPostAdapter
     private lateinit var fragment_post_recyclerView: RecyclerView
     private var myEmail : String?=null
+    private var isBadge :Boolean ?= false
+    private var isBadgeCollabo :Boolean ?= false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,6 +138,7 @@ class MyPostFragment : Fragment() {
                                 val token = iObject.getString("token")
                                 val col_token = iObject.getString("col_token")
                                 val isLike = iObject.getString("isLike")
+
                                 val myPostData = MyPostData(
                                     idx,
                                     thumbnail,

@@ -176,6 +176,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
                             bundle.putString("col_token",curData.col_token)
                             bundle.putString("isLike",curData.isLike)
                             bundle.putString("thumbnail",curData.thumbnail)
+                            bundle.putString("isBadge",curData.isBadge.toString())
+                            bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
                             postFragment.arguments=bundle
 
                             activity.supportFragmentManager.beginTransaction()

@@ -133,6 +133,7 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
                             bundle.putString("kinds", curData.kinds)
                             bundle.putString("lyrics", curData.lyrics)
                             bundle.putString("token", curData.token)
+                            bundle.putString("isBadge", curData.isBadge.toString())
                             detailDuetFragment.arguments = bundle
 
 
