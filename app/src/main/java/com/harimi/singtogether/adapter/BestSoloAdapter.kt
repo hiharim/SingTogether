@@ -44,6 +44,9 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
         val song_path=v.findViewById<TextView>(R.id.rv_fragment_home_tv_song_path)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
 //        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+        val col_badge=v.findViewById<ImageView>(R.id.col_badge)
+
+
 
     }
 
@@ -74,7 +77,7 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.profile)
             .into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.collaboration_profile)
-            .circleCrop()
+            .fitCenter()
             .into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
 
@@ -82,6 +85,9 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
             holder.collabo_profile.visibility = View.GONE
             holder.collabo_nickname.visibility = View.GONE
             holder.and.visibility = View.GONE
+            holder.col_badge.visibility = View.GONE
+
+
 //            holder.collaboCardView.visibility = View.GONE
         }
         holder.itemView.setOnClickListener {
@@ -107,6 +113,8 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
             bundle.putString("kinds", curData.kinds)
             bundle.putString("token", curData.token)
             bundle.putString("thumbnail", curData.thumbnail)
+            bundle.putString("isBadge",curData.isBadge.toString())
+            bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
             intent.putExtra("bundle",bundle)
             context.startActivity(intent)
 

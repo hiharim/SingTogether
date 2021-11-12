@@ -107,8 +107,6 @@ class MyPageFragment : Fragment() {
             intent.putExtra("myEmail",LoginActivity.user_info.loginUserEmail)
             intent.putExtra("nowPage","myPage")
             startActivity(intent)
-
-
         }
 
         binding.tvMyFollow.setOnClickListener {

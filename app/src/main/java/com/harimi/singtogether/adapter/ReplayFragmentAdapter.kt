@@ -58,7 +58,6 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
             val Image: ReplayData = ReplayPostList.get(position)
             Glide.with(holder.itemView.context)
                 .load("http://3.35.236.251/" + Image.thumbnail)
-                .override(200, 200)
                 .into(holder.iv_thumbnail)
         }
 

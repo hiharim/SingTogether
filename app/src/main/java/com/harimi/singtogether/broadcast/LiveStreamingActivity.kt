@@ -48,6 +48,7 @@ import com.harimi.singtogether.adapter.LiveStreamingViewerListAdapter
 import com.harimi.singtogether.adapter.LocalChattingAdapter
 import com.harimi.singtogether.adapter.PeerConnectionAdapter
 import com.harimi.singtogether.broadcast.SignalingClient.Companion.get
+import kotlinx.coroutines.delay
 import okhttp3.MediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -64,6 +65,7 @@ import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.thread
 
 
 /**
@@ -148,7 +150,12 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private var min  =0
     private var hour = 0
 
-//    private var recordTime :String ?= ""
+    private var getRecordTime = 0 //
+    private var recordMin  =0
+    private var recordHour = 0
+
+
+    private var recordTime :String ?= ""
 
     private val localChattingList: ArrayList<LocalChattingData> = ArrayList()
     private lateinit var rv_chattingRecyclerView : RecyclerView
@@ -439,7 +446,7 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
 
 //                    recordTime = "$hour : $min "
                     activity_streaming_tv_time.text = "$hour : $min "
-                    activity_streaming_tv_time.text.toString()
+//                    activity_streaming_tv_time.text.toString()
                 }
             }
         }
@@ -573,10 +580,32 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     private fun toggleScreenShare(v: View?) {
         if ((v as ToggleButton?)!!.isChecked) {
             Log.v(TAG, "Start Recording")
-
-
-//            initMediaProjection()
             initRecorder()
+
+            recordTimeTask = kotlin.concurrent.timer(period = 1000) {
+                getRecordTime++ // period=10으로 0.01초마다 time를 1씩 증가하게 됩니다
+                Log.v(TAG, "getRecordTime"+getRecordTime)
+//                runOnUiThread {
+//                    if (getRecordTime ==60){
+//                        getRecordTime =0
+//                        recordMin ++
+//                        recordHour = recordMin / 60
+//                    }
+//                    if (recordMin <=9){
+//                    recordTime = "$recordMin : $getRecordTime "
+//                        Log.v(TAG, "getRecordTime"+recordTime)
+////                        activity_streaming_tv_time.text = "$recordMin : $recordTime "
+//                    }else{
+//
+//                    recordTime = "$recordHour : $recordMin "
+//                        Log.v(TAG, "getRecordTime"+recordTime)
+////                        activity_streaming_tv_time.text = "$hour : $min "
+////                        activity_streaming_tv_time.text.toString()
+//                    }
+//                }
+            }
+//            initMediaProjection()
+
 
         } else {
             mediaRecorder!!.stop()
@@ -647,6 +676,20 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     ///다시보기 업로드하기
     private fun uploadVideo() {
         Log.d(TAG, "업로드")
+
+        var finalTime = getRecordTime -2
+
+        recordMin = finalTime / 60;
+        recordHour = recordMin / 60;
+        finalTime = finalTime % 60;
+        recordMin = recordMin % 60;
+
+        if (recordHour < 1){
+            recordTime = "$recordMin : $finalTime "
+        }else{
+            recordTime = "$recordHour : $recordMin "
+        }
+
         mediaRecorder!!.stop()
         mediaRecorder!!.reset()
         Log.v(TAG, "Stopping Recording")
@@ -668,8 +711,8 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         )
         var body : MultipartBody.Part=
             MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
-        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,activity_streaming_tv_time.text.toString(),uploaderToken, body).enqueue(object : Callback<String> {
-//        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,recordTime!!,uploaderToken, body).enqueue(object : Callback<String> {
+//        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,activity_streaming_tv_time.text.toString(),uploaderToken, body).enqueue(object : Callback<String> {
+        retrofitService.requestUploadReplayVideo(email, nickname, profile, roomTitle!!, thumbnail!!,recordTime!!,uploaderToken, body).enqueue(object : Callback<String> {
             // 통신에 성공한 경우
             override fun onResponse(call: Call<String>, response: Response<String>) {
                 if (response.isSuccessful) {
@@ -937,8 +980,17 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
     override fun onStop() {
         Log.d(TAG, "onStop")
         super.onStop()
+
+        timerTask!!.cancel()
+        recordTimeTask!!.cancel()
+        timerTask!!.purge()
+        recordTimeTask!!.purge()
+
         timerTask = null //타이머
+        recordTimeTask = null //타이머
         time = 0 //
+        getRecordTime =0
+
 
     }
 
