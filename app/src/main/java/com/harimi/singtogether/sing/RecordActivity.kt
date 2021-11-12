@@ -211,7 +211,7 @@ class RecordActivity: AppCompatActivity()  {
 
                             val minusSecond=mediaPlayer!!.duration-1000
                             realBeforeTotalTime=timeFormat.format(minusSecond).toString()
-                            Log.e("realBeforeTotalTime",": ${realBeforeTotalTime}")
+                            Log.e("레코드 realBeforeTotalTime",": ${realBeforeTotalTime}")
 
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityRecordRv.adapter=lyricsAdapter

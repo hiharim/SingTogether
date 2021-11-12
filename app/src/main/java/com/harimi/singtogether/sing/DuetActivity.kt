@@ -87,7 +87,7 @@ class DuetActivity : AppCompatActivity() {
 
         // 부르기 버튼 클릭
         binding.activityBeforeSingBtnStart.setOnClickListener {
-            if(kinds=="녹음") {
+            if(kinds.equals("녹음")) {
                 //val intent= Intent(this,RecordActivity::class.java)
                 val intent= Intent(this,MergeAudioActivity::class.java)
                 intent.putExtra("RECORD_DUET_IDX",duet_idx)
@@ -105,7 +105,7 @@ class DuetActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
 
-            }else if (kinds=="녹화"){
+            }else if (kinds.equals("녹화")) {
                 val intent= Intent(this,MergeActivity::class.java)
                 intent.putExtra("RECORD_DUET_IDX",duet_idx)
                 intent.putExtra("RECORD_MR_IDX",mr_idx)

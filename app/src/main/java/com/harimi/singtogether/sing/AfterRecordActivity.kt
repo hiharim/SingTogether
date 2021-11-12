@@ -142,9 +142,13 @@ class AfterRecordActivity : AppCompatActivity() {
                             if (response.isSuccessful) {
                                 // 응답을 잘 받은 경우
                                 asyncDialog!!.dismiss()
-
-
-                                Toast.makeText(applicationContext, "업로드를 성공했습니다!", Toast.LENGTH_SHORT).show()
+                                val builder = AlertDialog.Builder(this@AfterRecordActivity)
+                                builder.setTitle("SingTogether")
+                                builder.setMessage("업로드를 성공했습니다!")
+                                builder.setPositiveButton("확인") { dialogInterface, i ->
+                                    simpleExoPlayer?.release()
+                                    finish() }
+                                builder.show()
                             } else {
                                 // 통신은 성공했지만 응답에 문제가 있는 경우
                                 Log.e("AfterRecordActivity", " 응답 문제" + response.code())

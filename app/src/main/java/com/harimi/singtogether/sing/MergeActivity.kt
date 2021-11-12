@@ -34,7 +34,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,7 +52,6 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private var with : String? = null
     private var way : String? = null
     private var lyrics : String? = null // 가사
-    private var side : String = "back"
     private lateinit var mr_path : String // 노래 mr
     private lateinit var duet_path : String // 사용자 비디오
     private lateinit var extract_path : String // 병합하고자하는 영상의 추출된 오디오
@@ -66,7 +64,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     var mCamera: Camera? = null
 
     private val mergeVideoFilePath :String by lazy {
-        "${externalCacheDir?.absolutePath}/mergeVideo8.mp4"
+        "${externalCacheDir?.absolutePath}/mergeVideo9.mp4"
     }
 
     private var file_path:String?=null
@@ -140,8 +138,9 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 //        mediaPlayer.setDataSource(duet_path)
 //        mediaPlayer.prepare()
 
-        initVideoRecorder()
 
+
+        initVideoRecorder()
 
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
@@ -187,13 +186,12 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
-            binding.activityRecordBtnStart.visibility= View.GONE
-            binding.activityRecordBtnPause.visibility= View.VISIBLE
-
+//            mediaPlayer.start()
+//
+//            startVideoRecorder()
             //카메라 전환버튼 숨기기
             binding.btnConvert.visibility=View.GONE
 
-            //startVideoRecorder()
             if(!isPaused){
                 mediaPlayer = MediaPlayer()
                 mediaPlayer?.setDataSource(duet_path)
@@ -211,7 +209,6 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 isPaused=false
             }
 
-
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
                 var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  //"분:초"를 나타낼 수 있도록 포멧팅
@@ -227,13 +224,16 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             binding.seekBar.progress = mediaPlayer!!.currentPosition
                             binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer!!.currentPosition)
                             binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer!!.duration)
-                            binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
-
+                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
 
                             beforeTotalTime=binding.activityRecordTvTotalTime.text.toString()
-                            val minusSecond=mediaPlayer!!.duration-2000
+                            Log.e("비디오 beforeTotalTime",": $beforeTotalTime")
+
+                            val minusSecond=mediaPlayer!!.duration-1000
                             realBeforeTotalTime=timeFormat.format(minusSecond).toString()
-                            RecordActivity.time_info.pTime= binding.activityVideo2TvPlayTime.text.toString()
+                            Log.e("비디오 realBeforeTotalTime",": ${realBeforeTotalTime}")
+
+                            RecordActivity.time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
 
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityMergeRv.adapter=lyricsAdapter
@@ -265,11 +265,11 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         }
                         SystemClock.sleep(1000)
                     }
-                    if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
+
+                    if(!mediaPlayer!!.isPlaying){
                         isFinished=true
                     }
 
-                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
                     if(isFinished) {
                         mediaPlayer?.stop() // 음악 정지
                         mediaPlayer?.release()
@@ -281,7 +281,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
                         mCamera!!.release()
                         mCamera=null
-                        try {
+
+                        try{
                             Thread(Runnable {
                                 // ==== [UI 동작 실시] ====
                                 runOnUiThread {
@@ -292,13 +293,11 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                                 }
                             }).start()
                         }
-                        catch(e : Exception){
+                        catch (e: Exception){
                             e.printStackTrace()
                         }
-
                         mergeVideo()
                     }
-
 
                     // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
 //                    if(!mediaPlayer.isPlaying) {
@@ -312,7 +311,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 //                        //mCamera!!.lock()
 //                        mCamera!!.release()
 //                        mCamera=null
-//                        try{
+//                        try {
 //                            Thread(Runnable {
 //                                // ==== [UI 동작 실시] ====
 //                                runOnUiThread {
@@ -328,10 +327,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 //                        }
 //
 //                        mergeVideo()
-//                    }
 //
-
-
+//                    }
                 }
             }.start()
 
@@ -353,31 +350,13 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
             })
 
-        }
-        //카메라 전환
-        binding.btnConvert.setOnClickListener {
-            //switchCamera()
-            changeCamera()
+            binding.activityRecordBtnStart.visibility= View.GONE
+            binding.activityRecordBtnPause.visibility= View.VISIBLE
 
         }
     }
 
-    // 뒤로가기 버튼
-    override fun onBackPressed() {
-        super.onBackPressed()
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("녹화를 종료하시겠습니까? ")
-        builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
-        builder.setPositiveButton("네") { dialog, which ->
-            mediaPlayer?.release()
-            mediaPlayer=null
-        }
-        builder.setNegativeButton("아니오") { dialog, which ->
-            // 노래 이어부르기
-        }
-        builder.show()
-    }
-
+    // 서버에서 mix
     private fun mergeVideo() {
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         fileName = "$timeStamp.mp4"
@@ -458,13 +437,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         mSurfaceHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
     }
 
-    override fun onStop() {
-        super.onStop()
-        mediaPlayer?.release()
-        mediaPlayer=null
-    }
 
-  fun startVideoRecorder() {
+    fun startVideoRecorder() {
         if (isFinished) {
             mRecorder!!.stop()
             mRecorder!!.release()
@@ -480,17 +454,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 mRecorder!!.setCamera(mCamera)
                 mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
                 mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
-                if(side.equals("front")){
-                    mRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-                    mRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-                    mRecorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-                    mRecorder!!.setOrientationHint(270) // 전면 좌우반전
-                }else{
-                    // 후면일땐 QUALITY_HIGH , 전면일땐 설정..
-                    side="back"
-                    mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
-                    mRecorder!!.setOrientationHint(90) // 후면
-                }
+                mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
+                mRecorder!!.setOrientationHint(90)
                 mRecorder!!.setOutputFile(mergeVideoFilePath)
                 mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
                 try {
@@ -505,6 +470,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
             }
         }
     }
+
     // 녹화
 //    fun startVideoRecorder() {
 //        if (isRecording) {
@@ -537,35 +503,6 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 //        }
 //    }
 
-    fun changeCamera(){
-        if (Camera.getNumberOfCameras() >= 2) {
-            mCamera!!.stopPreview()
-        }
-        mCamera!!.release()
-        var which=0
-        when (which) {
-            0 -> {
-                mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT)
-                which = 1
-                side = "front"
-            }
-            1 -> {
-                mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
-                which = 0
-                //side="back"
-            }
-        }
-
-        //setCameraDisplayOrientation(this@Video2Activity, currentCameraId, mCamera)
-        mCamera!!.setDisplayOrientation(90)
-        try {
-            mCamera!!.setPreviewDisplay(mSurfaceHolder)
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        mCamera!!.startPreview()
-    }
-
     override fun surfaceCreated(holder: SurfaceHolder) {
 
     }
@@ -579,5 +516,3 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
     }
 }
-
-

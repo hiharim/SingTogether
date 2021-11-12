@@ -227,11 +227,11 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                             binding.activityVideo2TvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
 
                             beforeTotalTime=binding.activityRecordTvTotalTime.text.toString()
-                            Log.e("beforeTotalTime",": $beforeTotalTime")
+                            Log.e("비디오 beforeTotalTime",": $beforeTotalTime")
 
                             val minusSecond=mediaPlayer!!.duration-1000
                             realBeforeTotalTime=timeFormat.format(minusSecond).toString()
-                            Log.e("realBeforeTotalTime",": ${realBeforeTotalTime}")
+                            Log.e("비디오 realBeforeTotalTime",": ${realBeforeTotalTime}")
 
                             RecordActivity.time_info.pTime= binding.activityVideo2TvPlayTime.text.toString()
 
