@@ -239,7 +239,7 @@ class MergeAudioActivity : AppCompatActivity() {
                         SystemClock.sleep(1000)
                     }
 
-                    if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
+                    if(!mediaPlayer!!.isPlaying){
                         isFinished=true
                     }
 

@@ -105,7 +105,7 @@ class DuetActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
 
-            }else if (kinds.equals("녹화")) {
+            }else  {
                 val intent= Intent(this,MergeActivity::class.java)
                 intent.putExtra("RECORD_DUET_IDX",duet_idx)
                 intent.putExtra("RECORD_MR_IDX",mr_idx)

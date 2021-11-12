@@ -87,20 +87,20 @@ class BeforeSingActivity : AppCompatActivity() {
                 intent.putExtra("WAY",way)
                 startActivity(intent)
                 finish()
-            }else if (way=="녹화"){
+            }else if (way=="녹화") {
                 //val intent= Intent(this,Video3Activity::class.java)
-                val intent= Intent(this,Video2Activity::class.java)
+                val intent = Intent(this, Video2Activity::class.java)
                 //val intent= Intent(this,VideoActivity::class.java)
-                intent.putExtra("RECORD_IDX",idx)
-                intent.putExtra("RECORD_TITLE",title)
-                intent.putExtra("RECORD_SINGER",singer)
-                intent.putExtra("RECORD_SONG_PATH",song_path)
-                intent.putExtra("RECORD_LYRICS",lyrics)
-                intent.putExtra("WITH",with)
-                intent.putExtra("WAY",way)
+                intent.putExtra("RECORD_IDX", idx)
+                intent.putExtra("RECORD_TITLE", title)
+                intent.putExtra("RECORD_SINGER", singer)
+                intent.putExtra("RECORD_SONG_PATH", song_path)
+                intent.putExtra("RECORD_LYRICS", lyrics)
+                intent.putExtra("WITH", with)
+                intent.putExtra("WAY", way)
                 startActivity(intent)
                 finish()
-            }// 연습
+            }
 
         }
 
