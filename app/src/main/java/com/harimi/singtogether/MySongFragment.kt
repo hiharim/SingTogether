@@ -84,6 +84,7 @@ class MySongFragment : Fragment() {
                 if (response.isSuccessful) {
                     // 응답을 잘 받은 경우
                     Log.e("MySongFragment", " 통신 성공: ${response.body().toString()}")
+                    mySongList.clear()
                     val body = response.body().toString()
                     val replayObject = JSONObject(body)
                     val badgeList = replayObject.getString("badgeList")
