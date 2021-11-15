@@ -141,6 +141,9 @@ class ReplayFragment : Fragment() {
                                 var replayVideo = postObject.getString("replayVideo")
                                 var time = postObject.getString("time")
                                 var uploadUserFCMToken = postObject.getString("uploadUserFCMToken")
+                                var userLeaveCheck = postObject.getString("userLeaveCheck")
+
+
 
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)
@@ -179,7 +182,7 @@ class ReplayFragment : Fragment() {
                                     like= false
                                 }
                                 val replayData = ReplayData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken,isBadge!!)
+                                    replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,time,uploadUserFCMToken,isBadge!!,userLeaveCheck)
 
                                     replayDataList.add(0, replayData)
                                 replayAdapter.notifyDataSetChanged()

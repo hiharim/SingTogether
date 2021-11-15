@@ -162,7 +162,7 @@ class ProfileActivity : AppCompatActivity() {
         // 프로필받아와서 set해줌
 
         if (profile.equals("null")){
-            binding.activityProfileIv.setImageResource(R.mipmap.ic_launcher_round)
+            binding.activityProfileIv.setImageResource(R.drawable.profile22)
         }else{
             Glide.with(context).load(profile).into(binding.activityProfileIv)
         }
