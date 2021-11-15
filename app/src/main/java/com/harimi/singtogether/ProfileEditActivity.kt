@@ -44,10 +44,10 @@ class ProfileEditActivity : AppCompatActivity() {
     private lateinit var tv_nickName : TextView
     private lateinit var btn_cancel : Button
     private lateinit var btn_profileEdit : Button
-//    private lateinit var iv_nickNameEdit : ImageView
+    private lateinit var iv_reCreateNickname : ImageView
 
 
-    private lateinit var btn_reCreateNickname : Button
+//    private lateinit var btn_reCreateNickname : Button
     private lateinit var tv_needCheck : TextView
     private lateinit var tv_checkFinish : TextView
 
@@ -74,9 +74,9 @@ class ProfileEditActivity : AppCompatActivity() {
         iv_profileImage = findViewById(R.id.iv_profileImage)
         btn_cancel = findViewById(R.id.btn_cancel)
         btn_profileEdit = findViewById(R.id.btn_profileEdit)
-//        iv_nickNameEdit = findViewById(R.id.iv_nickNameEdit)
+        iv_reCreateNickname = findViewById(R.id.iv_reCreateNickname)
 
-        btn_reCreateNickname = findViewById(R.id.btn_reCreateNickname)
+//        btn_reCreateNickname = findViewById(R.id.btn_reCreateNickname)
         tv_needCheck = findViewById(R.id.tv_needCheck)
         tv_checkFinish = findViewById(R.id.tv_checkFinish)
 
@@ -97,7 +97,7 @@ class ProfileEditActivity : AppCompatActivity() {
 
         isProfileNicknameEdit =true
 
-        btn_reCreateNickname.setOnClickListener {
+        iv_reCreateNickname.setOnClickListener {
 
 
 //            if (tv_nickName.text.toString().equals( "")){

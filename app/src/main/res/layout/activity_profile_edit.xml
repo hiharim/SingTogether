@@ -81,16 +81,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <!--                <ImageView-->
-<!--                    android:id="@+id/iv_nickNameEdit"-->
-<!--                    android:layout_width="wrap_content"-->
-<!--                    android:layout_height="20dp"-->
-<!--                    android:layout_marginStart="8dp"-->
-<!--                    android:layout_marginBottom="8dp"-->
-<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                    app:layout_constraintStart_toEndOf="@+id/tv_nickName"-->
-<!--                    app:layout_constraintTop_toTopOf="parent"-->
-<!--                    app:srcCompat="@android:drawable/ic_menu_edit" />-->
+                <ImageView
+                    android:id="@+id/iv_reCreateNickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/tv_nickName"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@android:drawable/ic_menu_edit" />
 
 
                 <TextView
@@ -114,17 +113,17 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintVertical_bias="0.0" />
 
-                <Button
-                    android:id="@+id/btn_reCreateNickname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginEnd="16dp"
-                    android:backgroundTint="@color/purple"
-                    android:text="수정"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+<!--                <Button-->
+<!--                    android:id="@+id/btn_reCreateNickname"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_marginTop="2dp"-->
+<!--                    android:layout_marginEnd="16dp"-->
+<!--                    android:backgroundTint="@color/purple"-->
+<!--                    android:text="수정"-->
+<!--                    app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                    app:layout_constraintEnd_toEndOf="parent"-->
+<!--                    app:layout_constraintTop_toTopOf="parent" />-->
             </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -150,7 +149,7 @@
             android:id="@+id/tv_checkFinish"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="닉네임 중복확인이 완료되었습니다.."
+            android:text="닉네임 중복확인이 완료되었습니다."
             android:textSize="12dp"
             android:textColor="@color/blue"
             android:textStyle="bold"

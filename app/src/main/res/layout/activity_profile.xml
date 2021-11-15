@@ -128,7 +128,7 @@
             android:id="@+id/tv_checkFinish"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="중복확인이 완료되었습니다.."
+            android:text="중복확인이 완료되었습니다."
             android:textSize="15dp"
             android:textColor="@color/blue"
             android:textStyle="bold"
