@@ -109,6 +109,7 @@ interface RetrofitService {
     @POST("uploadMergeVideos.php")
     fun requestUploadMergeVideo (
         @Field("mr_idx") mr_idx: Int,
+        @Field("duet_idx") duet_idx: Int,
         @Field("output_path") output_path :String,
         @Field("email") email :String,
         @Field("nickname") nickname :String,

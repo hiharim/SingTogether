@@ -123,6 +123,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
             }
         }
         nextList.removeAt(0)
+
         //리사이클러뷰 설정
         binding.activityMergeRv.layoutManager= LinearLayoutManager(applicationContext)
         binding.activityMergeRv.setHasFixedSize(true)
@@ -247,6 +248,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
             binding.activityRecordBtnStart.visibility= View.GONE
             binding.activityRecordBtnPause.visibility= View.VISIBLE
+            binding.btnConvert.visibility=View.GONE
 
         }
     }

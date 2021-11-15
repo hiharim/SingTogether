@@ -54,6 +54,7 @@ class AfterRecordActivity : AppCompatActivity() {
     private var with : String? = null // 솔로,듀엣 구분
     private var way : String? = null // 녹화,녹음,연습 구분
     private var idx : Int? = null // mr 인덱스 값
+    private var duet_idx : Int? = null // duet 인덱스 값
     private var simpleExoPlayer: ExoPlayer?=null
     lateinit var mediaPlayer: MediaPlayer
     private var audioFile : File?=null // 녹음된 사용자 목소리 오디오 파일
@@ -74,6 +75,7 @@ class AfterRecordActivity : AppCompatActivity() {
         collaborationNickname=intent.getStringExtra("COLLABORATION_NICKNAME")
         collaborationEmail=intent.getStringExtra("COLLABO_EMAIL")
         idx=intent.getIntExtra("MR_IDX",0)
+        duet_idx=intent.getIntExtra("DUET_IDX",0)
 
         Log.e("애프터싱액티비티","idx,file_path,user_path,with,way"+
                 idx+" "+file_path+" "+user_path+" "+with+" "+way)
@@ -136,7 +138,7 @@ class AfterRecordActivity : AppCompatActivity() {
         idx?.let {
             collaborationNickname?.let { it1 ->
                 collaborationEmail?.let { it2 ->
-                    retrofitService.requestUploadMergeVideo(it,file_path,email,nickname, it1, it2,kinds).enqueue(object : Callback<String> {
+                    retrofitService.requestUploadMergeVideo(it,duet_idx!!,file_path,email,nickname, it1, it2,kinds).enqueue(object : Callback<String> {
                         // 통신에 성공한 경우
                         override fun onResponse(call: Call<String>, response: Response<String>) {
                             if (response.isSuccessful) {
