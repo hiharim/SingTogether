@@ -87,18 +87,16 @@ class MySongFragment : Fragment() {
                     val body = response.body().toString()
                     val replayObject = JSONObject(body)
                     val badgeList = replayObject.getString("badgeList")
-                    val postList = replayObject.getString("duetList")
-                    val postArray = JSONArray(postList)
-                    //val jsonArray= JSONArray(body)
-                        if (postArray.length() == 0 || postArray.equals("")) {
-
+                    val outputData = replayObject.getString("outputData")
+                        if (outputData.equals("") ) {
                             noSong.visibility = View.VISIBLE
                             recyclerview.visibility = View.GONE
                         } else {
+                            val postArray = JSONArray(outputData)
                             noSong.visibility = View.GONE
                             recyclerview.visibility = View.VISIBLE
 
-                            for(i in 0..postArray.length() -1){
+                            for(i in 0..postArray.length() -1) {
                                 val iObject=postArray.getJSONObject(i)
                                 val duet_idx=iObject.getInt("duet_idx")
                                 val mr_idx=iObject.getInt("mr_idx")
