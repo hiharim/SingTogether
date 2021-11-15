@@ -243,6 +243,15 @@ interface RetrofitService {
         @Field("email") email :String
     ) : Call<String>
 
+
+    @FormUrlEncoded
+    @POST("NicknameCheck.php")
+    fun requestNicknameCheck (
+        @Field("nickname") nickname :String
+    ) : Call<String>
+
+
+
     @FormUrlEncoded
     @POST("getDetailReplayReview.php")
     fun requestGetReplayReview (

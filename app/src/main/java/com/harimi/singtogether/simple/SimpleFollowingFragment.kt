@@ -95,8 +95,8 @@ class SimpleFollowingFragment : Fragment() {
                         binding.fragmentSimpleFollowingRv.visibility =View.VISIBLE
                         val badgeList = replayObject.getString("badgeList")
                         val postArray = JSONArray(outputData)
-//                        for (i in 0 until postArray.length()) {
-                        for (i in 0 until 4) {
+                        for (i in 0 until postArray.length()) {
+
                             val iObject=postArray.getJSONObject(i)
                             val idx=iObject.getInt("idx")
                             val thumbnail=iObject.getString("thumbnail")
