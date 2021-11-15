@@ -64,33 +64,87 @@
         android:backgroundTint="@color/purple"
         android:text="이미지 변경" />
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/TextInputLayout"
+    <LinearLayout
+        android:id="@+id/layoutNickname"
         android:layout_below="@+id/activity_profile_btn_photo"
-        app:errorEnabled="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/activity_profile_et"
-            android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TextInputLayout"
+            app:errorEnabled="true"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/activity_profile_et"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:backgroundTint="@color/white"
+                android:maxLines="1"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/btn_nicknameCheck"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:backgroundTint="@color/white"
-            android:maxLines="1"
-           />
+            android:text="중복확인"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="@color/purple"
+            />
 
-    </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/btn_reCreateNickname"
+            android:layout_width="wrap_content"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:text="재등록"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="@color/purple"
+            />
+    </LinearLayout>
 
 
+    <LinearLayout
+        android:layout_below="@+id/layoutNickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/tv_needCheck"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="아이디 중복확인을 해주세요."
+            android:textSize="15dp"
+            android:textColor="@color/red"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"/>
+
+        <TextView
+            android:id="@+id/tv_checkFinish"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="중복확인이 완료되었습니다.."
+            android:textSize="15dp"
+            android:textColor="@color/blue"
+            android:textStyle="bold"
+            android:layout_marginLeft="20dp"/>
+
+
+    </LinearLayout>
 
 
     <Button
         android:id="@+id/activity_profile_btn"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="1dp"
         android:backgroundTint="@color/purple"
+
         android:text="완료" />
 </RelativeLayout>

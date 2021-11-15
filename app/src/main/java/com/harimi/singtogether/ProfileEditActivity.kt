@@ -11,6 +11,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.text.InputType
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -43,7 +44,13 @@ class ProfileEditActivity : AppCompatActivity() {
     private lateinit var tv_nickName : TextView
     private lateinit var btn_cancel : Button
     private lateinit var btn_profileEdit : Button
-    private lateinit var iv_nickNameEdit : ImageView
+//    private lateinit var iv_nickNameEdit : ImageView
+
+
+    private lateinit var btn_reCreateNickname : Button
+    private lateinit var tv_needCheck : TextView
+    private lateinit var tv_checkFinish : TextView
+
 
     private var mediaPath: String? = null
     private var imageFile : File?=null
@@ -58,6 +65,7 @@ class ProfileEditActivity : AppCompatActivity() {
     private var profile : String ? = null
     private var nickname : String ? = null
 
+    private var isProfileNicknameEdit : Boolean ? = false
     private var isProfileImageEdit : Boolean ? = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,7 +74,12 @@ class ProfileEditActivity : AppCompatActivity() {
         iv_profileImage = findViewById(R.id.iv_profileImage)
         btn_cancel = findViewById(R.id.btn_cancel)
         btn_profileEdit = findViewById(R.id.btn_profileEdit)
-        iv_nickNameEdit = findViewById(R.id.iv_nickNameEdit)
+//        iv_nickNameEdit = findViewById(R.id.iv_nickNameEdit)
+
+        btn_reCreateNickname = findViewById(R.id.btn_reCreateNickname)
+        tv_needCheck = findViewById(R.id.tv_needCheck)
+        tv_checkFinish = findViewById(R.id.tv_checkFinish)
+
 
 
         nickname=LoginActivity.user_info.loginUserNickname
@@ -75,7 +88,103 @@ class ProfileEditActivity : AppCompatActivity() {
 
         initRetrofit()
 
-        tv_nickName.text=nickname
+        tv_nickName.setText(nickname)
+
+
+        tv_checkFinish.visibility =View.GONE
+        tv_needCheck.visibility =View.GONE
+
+
+        isProfileNicknameEdit =true
+
+        btn_reCreateNickname.setOnClickListener {
+
+
+//            if (tv_nickName.text.toString().equals( "")){
+//                Toast.makeText(this ,"닉네임을 입력해주세요",Toast.LENGTH_SHORT).show()
+//                return@setOnClickListener
+//            }
+
+            val builder = AlertDialog.Builder(this@ProfileEditActivity)
+            builder
+                .setMessage("닉네임 변경")
+                .setCancelable(false)
+
+            val editUserName = EditText(this)
+            editUserName.setSingleLine()
+            editUserName.setText(tv_nickName.text.toString())
+
+            ////editText 마진 값 주기
+            val container = FrameLayout(this@ProfileEditActivity)
+            val params = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            params.leftMargin = 50
+            params.rightMargin = 50
+            editUserName.setLayoutParams(params)
+            container.addView(editUserName)
+            builder.setView(container)
+            builder.setPositiveButton("변경",
+                DialogInterface.OnClickListener { dialog, which ->
+                    tv_nickName.setText(editUserName.text.toString())
+
+                    if (LoginActivity.user_info.loginUserNickname.equals(editUserName.text.toString())){
+                        tv_needCheck.visibility = View.GONE
+                        tv_checkFinish.visibility = View.GONE
+                        isProfileNicknameEdit =true
+                        return@OnClickListener
+
+                    }
+
+                    retrofitService.requestNicknameCheck(tv_nickName.text.toString())
+                        .enqueue(object : Callback<String> {
+                            override fun onResponse(
+                                call: Call<String>,
+                                response: Response<String>
+                            ) {
+                                if (response.isSuccessful) {
+
+                                    var jsonObject = JSONObject(response.body().toString())
+                                    var result = jsonObject.getBoolean("result")
+
+                                    if (result){
+                                        tv_needCheck.visibility = View.GONE
+                                        tv_checkFinish.visibility = View.VISIBLE
+                                        isProfileNicknameEdit =true
+
+
+                                    }else{
+                                        tv_needCheck.visibility = View.VISIBLE
+                                        tv_checkFinish.visibility = View.GONE
+                                        isProfileNicknameEdit =false
+//                                        tv_nickName.setText("")
+                                        Toast.makeText(this@ProfileEditActivity ,"닉네임이 중복됩니다. 다시 설정해주세요.",Toast.LENGTH_SHORT).show()
+                                    }
+
+
+                                } else {
+
+                                }
+                            }
+
+                            override fun onFailure(call: Call<String>, t: Throwable) {
+                                Log.d(
+                                    "실패:", "Failed API call with call: " + call +
+                                            " + exception: " + t
+                                )
+                            }
+
+                        })
+
+                })
+            // 취소 버튼 설정
+            builder.setNegativeButton("취소",
+                DialogInterface.OnClickListener { dialog, which -> dialog.dismiss() })
+            builder.show()
+
+
+        }
 
         if (profile.equals("null")){
             iv_profileImage.setImageResource(R.mipmap.ic_launcher_round)
@@ -90,12 +199,12 @@ class ProfileEditActivity : AppCompatActivity() {
         }
         ///////////////
         /////닉네임 변경
-        tv_nickName.setOnClickListener {
-            editNickName()
-        }
-        iv_nickNameEdit.setOnClickListener {
-            editNickName()
-        }
+//        tv_nickName.setOnClickListener {
+//            editNickName()
+//        }
+//        iv_nickNameEdit.setOnClickListener {
+//            editNickName()
+//        }
         //////////////
 
 
@@ -176,16 +285,31 @@ class ProfileEditActivity : AppCompatActivity() {
 
     }
     private fun editProfile(){
-        if(isProfileImageEdit ==false && LoginActivity.user_info.loginUserNickname.equals(tv_nickName.text.toString())){
+
+
+        if (isProfileNicknameEdit == false){
+//            Toast.makeText(this,"닉네임 중복확인을 해주세요." ,Toast.LENGTH_SHORT).show()
+
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder
-                .setTitle("수정 된 것이 없습니다")
+                .setTitle("닉네임 중복확인을 해주세요")
                 .setCancelable(false)
             builder.setPositiveButton("네", DialogInterface.OnClickListener { dialog, which ->
-                return@OnClickListener
+
             })
             builder.show()
-        }else{
+            return
+        }
+//        if(isProfileImageEdit ==false && LoginActivity.user_info.loginUserNickname.equals(tv_nickName.text.toString())){
+//            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+//            builder
+//                .setTitle("수정 된 것이 없습니다")
+//                .setCancelable(false)
+//            builder.setPositiveButton("네", DialogInterface.OnClickListener { dialog, which ->
+//                return@OnClickListener
+//            })
+//            builder.show()
+//        }else{
             if (isProfileImageEdit!!){
                 var updateNickname = tv_nickName.text.toString()
                 var requestBody : RequestBody = RequestBody.create(
@@ -262,7 +386,7 @@ class ProfileEditActivity : AppCompatActivity() {
                         }
                     })
             }
-        }
+//        }
 
     }
     fun settingPermission() {

@@ -13,6 +13,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -79,6 +80,80 @@ class ProfileActivity : AppCompatActivity() {
         profile="null"
 
 
+
+
+
+        binding.tvCheckFinish.visibility =View.GONE
+        binding.btnReCreateNickname.visibility =View.GONE
+        binding.activityProfileBtn.isEnabled  =false
+
+
+
+
+
+
+        binding.btnReCreateNickname.setOnClickListener {
+            binding.btnReCreateNickname.visibility =View.GONE
+            binding.tvCheckFinish.visibility =View.GONE
+            binding.activityProfileBtn.isEnabled  =false
+
+            binding.tvNeedCheck.visibility =View.VISIBLE
+            binding.btnNicknameCheck.visibility =View.VISIBLE
+
+
+            binding.activityProfileEt.isEnabled =true
+
+        }
+
+        binding.btnNicknameCheck.setOnClickListener {
+
+            if (binding.activityProfileEt.text.toString().equals( "")){
+                Toast.makeText(this@ProfileActivity ,"닉네임을 입력해주세요",Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            retrofitService.requestNicknameCheck(binding.activityProfileEt.text.toString())
+                .enqueue(object : Callback<String> {
+                    override fun onResponse(
+                        call: Call<String>,
+                        response: Response<String>
+                    ) {
+                        if (response.isSuccessful) {
+
+                            var jsonObject = JSONObject(response.body().toString())
+                            var result = jsonObject.getBoolean("result")
+
+                            if (result){
+                                binding.tvNeedCheck.visibility =View.GONE
+                                binding.btnNicknameCheck.visibility =View.GONE
+                                binding.btnReCreateNickname.visibility =View.VISIBLE
+                                binding.tvCheckFinish.visibility =View.VISIBLE
+                                binding.activityProfileBtn.isEnabled  =true
+
+                                binding.activityProfileEt.isEnabled =false
+
+                            }else{
+                                binding.activityProfileEt.setText("")
+                                Toast.makeText(this@ProfileActivity ,"닉네임이 중복됩니다. 다시 설정해주세요.",Toast.LENGTH_SHORT).show()
+                            }
+
+
+                        } else {
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<String>, t: Throwable) {
+                        Log.d(
+                            "실패:", "Failed API call with call: " + call +
+                                    " + exception: " + t
+                        )
+                    }
+
+                })
+
+        }
+
         Log.e("값: ", email + " " + nickname + " " + social + " " + token + " " + profile)
         Log.e("imageFile값: ", imageFile.toString())
         // 닉네임받아와서 set해줌
@@ -105,6 +180,7 @@ class ProfileActivity : AppCompatActivity() {
 
         // 완료 버튼 클릭 - 회원가입완료
         binding.activityProfileBtn.setOnClickListener {
+
             // edittext있는 값 가져오기
             nickname=binding.activityProfileEt.text.toString()
             Log.e("서버에 보내는값: ", email + " " + nickname + " " + social + " " + token)

@@ -120,6 +120,7 @@ class SettingFragment : Fragment() {
                                     edit.apply() // 적용하기
 
                                     if (LoginActivity.user_info.loginUserSocial.equals("google")){
+
                                         mAuth = FirebaseAuth.getInstance();
                                         mAuth.currentUser!!.delete()
                                     }else{
