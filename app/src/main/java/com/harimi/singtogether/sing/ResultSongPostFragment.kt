@@ -128,21 +128,34 @@ class ResultSongPostFragment : Fragment() {
 
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)
-                                    for (i in 0 until badgeArray.length()) {
-                                        var badgeObject = badgeArray.getJSONObject(i)
-                                        var badge_email = badgeObject.getString("email")
-                                        if (badge_email.equals(email)) {
-                                            isBadge = true
-                                            Log.d(TAG, isBadge.toString())
-                                            // break
-                                        } else if(badge_email.equals(collabo_email)){
-                                            isBadgeCollabo = true
+                                    for (j in 0 until badgeArray.length()) {
+                                        val badgeObject = badgeArray.getJSONObject(j)
+                                        val badge_email = badgeObject.getString("email")
+
+                                        if(badge_email.equals(email)) {
+                                            isBadge=true
                                             break
                                         }else{
-                                            isBadge= false
-                                            Log.d(TAG, isBadge.toString())
+                                            isBadge = false
+                                        }
+
+                                    }
+
+                                    for (j in 0 until badgeArray.length()) {
+                                        val badgeObject = badgeArray.getJSONObject(j)
+                                        val badge_email = badgeObject.getString("email")
+
+                                        if(badge_email.equals(collabo_email)) {
+                                            isBadgeCollabo=true
+                                            break
+                                        }else{
+                                            isBadgeCollabo=false
                                         }
                                     }
+
+                                }else{
+                                    isBadge=false
+                                    isBadgeCollabo=false
                                 }
 
 

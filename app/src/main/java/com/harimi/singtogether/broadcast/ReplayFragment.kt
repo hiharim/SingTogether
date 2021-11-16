@@ -142,7 +142,10 @@ class ReplayFragment : Fragment() {
                                 var time = postObject.getString("time")
                                 var uploadUserFCMToken = postObject.getString("uploadUserFCMToken")
                                 var userLeaveCheck = postObject.getString("userLeaveCheck")
-
+                                // 탈퇴한 회원 프로필
+                                if(userLeaveCheck.equals("1")){
+                                    uploadUserProfile="uploadFile/profile22.png"
+                                }
 
 
                                 if (!badgeList.equals("")) {
