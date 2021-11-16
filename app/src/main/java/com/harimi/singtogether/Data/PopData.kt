@@ -51,5 +51,9 @@ data class PopData(
     @SerializedName("isBadge")
     val isBadge: Boolean,
     @SerializedName("isBadgeCollabo")
-    val isBadgeCollabo: Boolean
+    val isBadgeCollabo: Boolean,
+    @SerializedName("userLeaveCheck")
+    val userLeaveCheck : String,
+    @SerializedName("collaborationLeaveCheck")
+    val collaborationLeaveCheck : String,
 )

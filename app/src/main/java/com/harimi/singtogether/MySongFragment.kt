@@ -117,6 +117,7 @@ class MySongFragment : Fragment() {
                                 val duet_date=iObject.getString("date")
                                 val kinds=iObject.getString("kinds")
                                 val token=iObject.getString("token")
+                                val userLeaveCheck = iObject.getString("leaveCheck")
                                 var path=song_path
 
                                 if (!badgeList.equals("")) {
@@ -135,7 +136,7 @@ class MySongFragment : Fragment() {
                                     isBadge = false
                                 }
 
-                                val mySongData=MySongData(duet_idx,mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics,token,isBadge!!)
+                                val mySongData=MySongData(duet_idx,mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet,email, nickname, profile,path,duet_date,mr_path,extract_path,kinds,lyrics,token,isBadge!!,userLeaveCheck)
                                 mySongList.add(0,mySongData)
                                 mySongAdapter.notifyDataSetChanged()
                             }

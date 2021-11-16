@@ -109,17 +109,20 @@ class DuetFragment : Fragment() {
                 if (response.isSuccessful) {
                     // 응답을 잘 받은 경우
                     Log.e("DuetFragment", "loadDuet 통신 성공: ${response.body().toString()}")
+                    duetList.clear()
                     val body = response.body().toString()
                     val replayObject = JSONObject(body)
                     val badgeList = replayObject.getString("badgeList")
-                    val postList = replayObject.getString("duetList")
-                    val postArray = JSONArray(postList)
+                    val outputData = replayObject.getString("outputData")
+                    if (outputData.equals("") ) {
+//                        noSong.visibility = View.VISIBLE
+//                        recyclerview.visibility = View.GONE
+                    } else {
+                        val postArray = JSONArray(outputData)
+//                        noSong.visibility = View.GONE
+//                        recyclerview.visibility = View.VISIBLE
+                        for (i in 0 until postArray.length()) {
 
-                    for (i in 0 until postArray.length()) {
-                        if (postArray.length() == 0 || postArray.equals("null")) {
-
-
-                        } else {
                             val iObject = postArray.getJSONObject(i)
                             val duet_idx = iObject.getInt("duet_idx")
                             val mr_idx = iObject.getInt("mr_idx")
@@ -130,7 +133,7 @@ class DuetFragment : Fragment() {
                             val cnt_reply = iObject.getString("cnt_reply")
                             val email = iObject.getString("email")
                             val nickname = iObject.getString("nickname")
-                            val profile = iObject.getString("profile")
+                            var profile = iObject.getString("profile")
                             val cnt_duet = iObject.getString("cnt_duet")
                             val lyrics = iObject.getString("lyrics")
                             val song_path = iObject.getString("duet_path")
@@ -139,8 +142,12 @@ class DuetFragment : Fragment() {
                             val duet_date = iObject.getString("date")
                             val kinds = iObject.getString("kinds")
                             val token = iObject.getString("token")
+                            val userLeaveCheck = iObject.getString("userLeaveCheck")
                             var path = song_path
-
+                            // 탈퇴한 회원 프로필
+                            if(userLeaveCheck.equals("1")){
+                                profile="uploadFile/profile22.png"
+                            }
                             if (!badgeList.equals("")) {
                                 val badgeArray = JSONArray(badgeList)
                                 for (i in 0 until badgeArray.length()) {
@@ -157,13 +164,16 @@ class DuetFragment : Fragment() {
                                 isBadge = false
                             }
 
-                            val duetData = DuetData(duet_idx, mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, email, nickname, profile, path, duet_date, mr_path, extract_path, kinds, lyrics, token, isBadge!!)
+                            val duetData = DuetData(duet_idx, mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, email, nickname, profile, path, duet_date, mr_path, extract_path, kinds, lyrics, token, isBadge!!,userLeaveCheck)
                             duetList.add(0,duetData)
                             duetAdapter.notifyDataSetChanged()
 
-                            }
-
                         }
+
+                    }
+
+
+
                 }
             }
 

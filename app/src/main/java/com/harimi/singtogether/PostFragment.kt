@@ -81,8 +81,10 @@ class PostFragment : Fragment() {
     private var simpleExoPlayer: ExoPlayer?=null
     private var isBadge: String? = null
     private var isBadgeCollabo : String? = null
+    private var userLeaveCheck: String? = null
+    private var collaborationLeaveCheck: String? = null
     private val postReviewDataList: ArrayList<PostReviewData> = ArrayList()
-//    private lateinit var rv_detailReplayReview : RecyclerView
+
     private lateinit var postReviewAdapter: PostFragmentReviewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,6 +112,8 @@ class PostFragment : Fragment() {
             thumbnail=it.getString("thumbnail")
             isBadge=it.getString("isBadge")
             isBadgeCollabo=it.getString("isBadgeCollabo")
+            userLeaveCheck=it.getString("userLeaveCheck")
+            collaborationLeaveCheck=it.getString("collaborationLeaveCheck")
 
         }
     }
@@ -184,29 +188,33 @@ class PostFragment : Fragment() {
         binding.fragmentPostRecyclerView.adapter = postReviewAdapter
 
         val login_user= LoginActivity.user_info.loginUserEmail
-        if(email.equals(login_user)) {
-            binding.fragmentPostBtnDelete.visibility=View.VISIBLE
-            // 게시물 삭제
-            binding.fragmentPostBtnDelete.setOnClickListener {
-                val popupMenu = PopupMenu(context, it)
-                popupMenu.inflate(R.menu.delete_menu)
-                popupMenu.show()
-                popupMenu.setOnMenuItemClickListener { menuItem ->
-                    when (menuItem.itemId) {
-                        R.id.delete -> {
-                            val builder = AlertDialog.Builder(requireContext())
-                            builder.setTitle("삭제하기")
-                            builder.setMessage("삭제 하시겠습니까? ")
-                            builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
-                                deletePost()
-                            }
-                            builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+        if(userLeaveCheck.equals("1")){
+            binding.fragmentPostBtnDelete.visibility=View.GONE
+        }else{
+            if(email.equals(login_user)) {
+                binding.fragmentPostBtnDelete.visibility=View.VISIBLE
+                // 게시물 삭제
+                binding.fragmentPostBtnDelete.setOnClickListener {
+                    val popupMenu = PopupMenu(context, it)
+                    popupMenu.inflate(R.menu.delete_menu)
+                    popupMenu.show()
+                    popupMenu.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.itemId) {
+                            R.id.delete -> {
+                                val builder = AlertDialog.Builder(requireContext())
+                                builder.setTitle("삭제하기")
+                                builder.setMessage("삭제 하시겠습니까? ")
+                                builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                                    deletePost()
+                                }
+                                builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
 
+                                }
+                                builder.show()
                             }
-                            builder.show()
                         }
+                        false
                     }
-                    false
                 }
             }
         }
@@ -225,11 +233,19 @@ class PostFragment : Fragment() {
 
         ////프로필 액티비티로 넘어가기
         binding.ivUploadUserProfile.setOnClickListener{
+            if (userLeaveCheck.equals("1")){
+                Toast.makeText(requireContext(), "탈퇴한 회원입니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             goToLookAtProfileActivity(email!!,nickname!!,profile!!)
             Log.d(TAG, email)
         }
 
         binding.ivUploadCollaboProfile.setOnClickListener {
+            if (collaborationLeaveCheck.equals("1")){
+                Toast.makeText(requireContext(), "탈퇴한 회원입니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             goToLookAtProfileActivity(collabo_email!!,collaboration_nickname!!,collaboration_profile!!)
             Log.d(TAG, collabo_email)
         }
@@ -280,7 +296,7 @@ class PostFragment : Fragment() {
                                     )
                                 }
                                 //FCM 보내기
-                                if (LoginActivity.user_info.loginUserEmail.equals(email)) {
+                                if (LoginActivity.user_info.loginUserEmail.equals(email) || userLeaveCheck.equals("1")) {
                                 } else {
                                     PushSongPostNotification(
                                         SongPostNotificationData(
@@ -463,7 +479,7 @@ class PostFragment : Fragment() {
                                 binding.fragmentPostIvLike.background=ContextCompat.getDrawable(requireContext(),R.drawable.non_like)
                             }
                             //FCM 보내기
-                            if (LoginActivity.user_info.loginUserEmail.equals(email)) {
+                            if (LoginActivity.user_info.loginUserEmail.equals(email) || userLeaveCheck.equals("1")) {
                             } else if(isLike.equals("true")){
                                 PushSongPostNotification(
                                     SongPostNotificationData(

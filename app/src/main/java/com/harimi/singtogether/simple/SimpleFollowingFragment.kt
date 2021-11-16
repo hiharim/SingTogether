@@ -112,14 +112,21 @@ class SimpleFollowingFragment : Fragment() {
                             val title=iObject.getString("title")
                             val singer=iObject.getString("singer")
                             val lyrics=iObject.getString("lyrics")
-                            val profile=iObject.getString("profile")
-                            val collaboration_profile=iObject.getString("col_profile")
+                            var profile=iObject.getString("profile")
+                            var collaboration_profile=iObject.getString("col_profile")
                             val collabo_email=iObject.getString("collabo_email")
                             val kinds=iObject.getString("kinds")
                             val token=iObject.getString("token")
                             val col_token=iObject.getString("col_token")
                             val isLike=iObject.getString("isLike")
-
+                            val userLeaveCheck = iObject.getString("userLeaveCheck")
+                            val collaborationLeaveCheck = iObject.getString("collaborationLeaveCheck")
+                            // 탈퇴한 회원 프로필
+                            if(userLeaveCheck.equals("1")){
+                                profile="uploadFile/profile22.png"
+                            }else if(collaborationLeaveCheck.equals("1")){
+                                collaboration_profile="uploadFile/profile22.png"
+                            }
 
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)
@@ -155,7 +162,7 @@ class SimpleFollowingFragment : Fragment() {
                                 }
 
 
-                            val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                            val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!,userLeaveCheck,collaborationLeaveCheck)
                             homePostList.add(0,homeData)
                             simpleAdapter.notifyDataSetChanged()
 

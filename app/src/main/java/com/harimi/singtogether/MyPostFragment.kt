@@ -25,11 +25,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 
 class MyPostFragment : Fragment() {
     private var TAG = "MyPostFragment_"
@@ -146,6 +141,8 @@ class MyPostFragment : Fragment() {
                                 val token = iObject.getString("token")
                                 val col_token = iObject.getString("col_token")
                                 val isLike = iObject.getString("isLike")
+                                val userLeaveCheck = iObject.getString("userLeaveCheck")
+                                val collaborationLeaveCheck = iObject.getString("collaborationLeaveCheck")
 
 
                                 if (!badgeList.equals("")) {
@@ -180,33 +177,7 @@ class MyPostFragment : Fragment() {
                                     isBadgeCollabo=false
                                 }
 
-//                                val homeData = HomeData(
-//                                    idx,
-//                                    thumbnail,
-//                                    title,
-//                                    singer,
-//                                    lyrics,
-//                                    cnt_play,
-//                                    cnt_reply,
-//                                    cnt_like,
-//                                    nickname,
-//                                    email,
-//                                    profile,
-//                                    song_path,
-//                                    collaboration,
-//                                    collabo_email,
-//                                    collaboration_profile,
-//                                    date,
-//                                    kinds,
-//                                    mr_idx,
-//                                    token,
-//                                    col_token,
-//                                    isLike
-//                                )
-//                                myPostDataList.add(0, myPostData)
-//                                myPostAdapter.notifyDataSetChanged()
-
-                                val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                                val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!,userLeaveCheck,collaborationLeaveCheck)
                                 homePostList.add(homeData)
                                 simpleAdapter.notifyDataSetChanged()
                             }

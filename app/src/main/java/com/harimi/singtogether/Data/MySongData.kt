@@ -41,5 +41,7 @@ data class MySongData(
     @SerializedName("token")
     val token: String,
     @SerializedName("isBadge")
-    val isBadge: Boolean
+    val isBadge: Boolean,
+    @SerializedName("userLeaveCheck")
+    val userLeaveCheck :String
 )

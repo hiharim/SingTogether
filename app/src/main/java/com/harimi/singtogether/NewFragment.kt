@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.HomeData
 import com.harimi.singtogether.Data.ReplayData
 import com.harimi.singtogether.Network.RetrofitClient
@@ -116,13 +117,22 @@ class NewFragment : Fragment() {
                             val title=iObject.getString("title")
                             val singer=iObject.getString("singer")
                             val lyrics=iObject.getString("lyrics")
-                            val profile=iObject.getString("profile")
-                            val collaboration_profile=iObject.getString("col_profile")
+                            var profile=iObject.getString("profile")
+                            var collaboration_profile=iObject.getString("col_profile")
                             val collabo_email=iObject.getString("collabo_email")
                             val kinds=iObject.getString("kinds")
                             val token=iObject.getString("token")
                             val col_token=iObject.getString("col_token")
                             val isLike=iObject.getString("isLike")
+                            val userLeaveCheck = iObject.getString("userLeaveCheck")
+                            val collaborationLeaveCheck = iObject.getString("collaborationLeaveCheck")
+                            // 탈퇴한 회원 프로필
+                            if(userLeaveCheck.equals("1")){
+                                profile="uploadFile/profile22.png"
+                            }else if(collaborationLeaveCheck.equals("1")){
+                                collaboration_profile="uploadFile/profile22.png"
+                            }
+
 
                             if (!badgeList.equals("")) {
                                 val badgeArray = JSONArray(badgeList)
@@ -159,7 +169,7 @@ class NewFragment : Fragment() {
                             Log.e(TAG,"isBadge : $isBadge")
                             Log.e(TAG,"isBageCollabo : $isBadgeCollabo")
 
-                            val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                            val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!,userLeaveCheck,collaborationLeaveCheck)
                             homePostList.add(0,homeData)
                             homeAdapter.notifyDataSetChanged()
                         }

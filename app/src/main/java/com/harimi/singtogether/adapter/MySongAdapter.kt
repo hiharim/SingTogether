@@ -42,6 +42,8 @@ class MySongAdapter (val mySongList : ArrayList<MySongData>) : RecyclerView.Adap
         val kinds=v.findViewById<TextView>(R.id.rv_my_song_tv_kinds)
         val lyrics=v.findViewById<TextView>(R.id.rv_my_song_tv_lyrics)
         val token=v.findViewById<TextView>(R.id.rv_my_song_tv_token)
+        val isBadge=v.findViewById<TextView>(R.id.rv_my_song_tv_isBadge)
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_my_song_tv_userLeaveCheck)
 
     }
 
@@ -69,8 +71,8 @@ class MySongAdapter (val mySongList : ArrayList<MySongData>) : RecyclerView.Adap
         holder.kinds.text=curData.kinds
         holder.lyrics.text=curData.lyrics
         holder.token.text=curData.token
-
-        holder.badge.bringToFront()
+        holder.isBadge.text=curData.isBadge.toString()
+        holder.userLeaveCheck.text=curData.userLeaveCheck
 
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
@@ -99,6 +101,8 @@ class MySongAdapter (val mySongList : ArrayList<MySongData>) : RecyclerView.Adap
             bundle.putString("kinds",curData.kinds)
             bundle.putString("lyrics",curData.lyrics)
             bundle.putString("token",curData.token)
+            bundle.putString("isBadge", curData.isBadge.toString())
+            bundle.putString("userLeaveCheck", curData.userLeaveCheck)
             detailDuetFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()

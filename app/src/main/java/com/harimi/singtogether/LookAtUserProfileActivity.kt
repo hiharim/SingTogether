@@ -80,7 +80,7 @@ class LookAtUserProfileActivity : AppCompatActivity() {
 
                 }
                 1 ->{
-                    tab.text="듀엣초대"
+                    tab.text="듀엣"
 
                 }
                 2 ->{

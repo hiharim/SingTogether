@@ -131,7 +131,8 @@ class FollowingFragment : Fragment() {
                                         val isLike=outputDataObject.getString("isLike")
                                         val token=outputDataObject.getString("token")
                                         val col_token=outputDataObject.getString("col_token")
-
+                                        val userLeaveCheck = outputDataObject.getString("userLeaveCheck")
+                                        val collaborationLeaveCheck = outputDataObject.getString("collaborationLeaveCheck")
                                         if (!badgeList.equals("")) {
                                             val badgeArray = JSONArray(badgeList)
                                             for (j in 0 until badgeArray.length()) {
@@ -169,7 +170,7 @@ class FollowingFragment : Fragment() {
 //                                        followingPostDataList.add(0,followingPostData)
 //                                        followingPostAdapter.notifyDataSetChanged()
 
-                                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!)
+                                        val homeData = HomeData(idx,thumbnail, title, singer,lyrics, cnt_play, cnt_reply, cnt_like,nickname,email, profile, song_path, collaboration,collabo_email, collaboration_profile, date,kinds,mr_idx,token,col_token,isLike,isBadge!!,isBadgeCollabo!!,userLeaveCheck,collaborationLeaveCheck)
                                         homePostList.add(0,homeData)
                                         homeAdapter.notifyDataSetChanged()
                                     }

@@ -93,7 +93,7 @@ class ResultDuetFragment : Fragment() {
                                 val cnt_reply = iObject.getString("cnt_reply")
                                 val email = iObject.getString("email")
                                 val nickname = iObject.getString("nickname")
-                                val profile = iObject.getString("profile")
+                                var profile = iObject.getString("profile")
                                 val cnt_duet = iObject.getString("cnt_duet")
                                 val lyrics = iObject.getString("lyrics")
                                 val song_path = iObject.getString("duet_path")
@@ -102,8 +102,12 @@ class ResultDuetFragment : Fragment() {
                                 val duet_date = iObject.getString("date")
                                 val kinds = iObject.getString("kinds")
                                 val token = iObject.getString("token")
+                                val userLeaveCheck = iObject.getString("userLeaveCheck")
                                 var path = song_path
-
+                                // 탈퇴한 회원 프로필
+                                if(userLeaveCheck.equals("1")){
+                                    profile="uploadFile/profile22.png"
+                                }
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)
                                     for (i in 0 until badgeArray.length()) {
@@ -120,7 +124,7 @@ class ResultDuetFragment : Fragment() {
                                     isBadge = false
                                 }
 
-                                val duetData = DuetData(duet_idx, mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, email, nickname, profile, path, duet_date, mr_path, extract_path, kinds, lyrics, token, isBadge!!)
+                                val duetData = DuetData(duet_idx, mr_idx, thumbnail, title, singer, cnt_play, cnt_reply, cnt_duet, email, nickname, profile, path, duet_date, mr_path, extract_path, kinds, lyrics, token, isBadge!!,userLeaveCheck)
                                 duetList.add(0,duetData)
                                 duetAdapter.notifyDataSetChanged()
 

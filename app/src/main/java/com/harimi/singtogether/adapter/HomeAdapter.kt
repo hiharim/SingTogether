@@ -62,6 +62,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         val isBadgeCollabo=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadgeCollabo)
         val badge=v.findViewById<ImageView>(R.id.badge_home)
         val badge_collabo=v.findViewById<ImageView>(R.id.badge_colloabo_home)
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_userLeaveCheck)
+        val collaborationLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collaborationLeaveCheck)
     }
 
 
@@ -91,7 +93,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         holder.mr_idx.text = curData.mr_idx.toString()
         holder.isBadge.text = curData.isBadge.toString()
         holder.isBadgeCollabo.text = curData.isBadgeCollabo.toString()
-
+        holder.userLeaveCheck.text = curData.userLeaveCheck
+        holder.collaborationLeaveCheck.text = curData.collaborationLeaveCheck
 
         // 밷지
         if (holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("true")) {
@@ -112,6 +115,7 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
         Glide.with(holder.itemView).load(curData.thumbnail).into(holder.thumbnail)
+
 
         // 솔로일때 콜라보숨기기
         if(holder.email.text.equals(holder.collabo_email.text)) {
@@ -178,6 +182,8 @@ class HomeAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapter
                             bundle.putString("thumbnail",curData.thumbnail)
                             bundle.putString("isBadge",curData.isBadge.toString())
                             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
+                            bundle.putString("userLeaveCheck",curData.userLeaveCheck)
+                            bundle.putString("collaborationLeaveCheck",curData.collaborationLeaveCheck)
                             postFragment.arguments=bundle
 
                             activity.supportFragmentManager.beginTransaction()

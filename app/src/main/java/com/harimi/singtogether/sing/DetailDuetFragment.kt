@@ -81,6 +81,7 @@ class DetailDuetFragment : Fragment() {
     private var kinds : String? = null
     private var lyrics : String? = null
     private var token : String? = null
+    private var userLeaveCheck : String? = null
     private var isBadge : String? = null
     private var simpleExoPlayer: ExoPlayer?=null
 
@@ -109,6 +110,7 @@ class DetailDuetFragment : Fragment() {
             lyrics=it.getString("lyrics")
             token=it.getString("token")
             isBadge=it.getString("isBadge")
+            userLeaveCheck=it.getString("userLeaveCheck")
         }
 
     }
@@ -225,31 +227,36 @@ class DetailDuetFragment : Fragment() {
 
             initRetrofit()
             val login_user= LoginActivity.user_info.loginUserEmail
-            if(email.equals(login_user)) {
-                binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
-                // 게시물 삭제
-                binding.fragmentDetailDuetBtnDelete.setOnClickListener {
-                    val popupMenu = PopupMenu(context, it)
-                    popupMenu.inflate(R.menu.delete_menu)
-                    popupMenu.show()
-                    popupMenu.setOnMenuItemClickListener { menuItem ->
-                        when (menuItem.itemId) {
-                            R.id.delete -> {
-                                val builder = AlertDialog.Builder(requireContext())
-                                builder.setTitle("삭제하기")
-                                builder.setMessage("삭제 하시겠습니까? ")
-                                builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
-                                    deleteSong()
-                                }
-                                builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
+            if(userLeaveCheck.equals("1")){
+                binding.fragmentDetailDuetBtnDelete.visibility=View.GONE
+            }else{
+                if(email.equals(login_user)) {
+                    binding.fragmentDetailDuetBtnDelete.visibility=View.VISIBLE
+                    // 게시물 삭제
+                    binding.fragmentDetailDuetBtnDelete.setOnClickListener {
+                        val popupMenu = PopupMenu(context, it)
+                        popupMenu.inflate(R.menu.delete_menu)
+                        popupMenu.show()
+                        popupMenu.setOnMenuItemClickListener { menuItem ->
+                            when (menuItem.itemId) {
+                                R.id.delete -> {
+                                    val builder = AlertDialog.Builder(requireContext())
+                                    builder.setTitle("삭제하기")
+                                    builder.setMessage("삭제 하시겠습니까? ")
+                                    builder.setPositiveButton("네") { dialogInterface: DialogInterface, i: Int ->
+                                        deleteSong()
+                                    }
+                                    builder.setNegativeButton("아니요") { dialogInterface: DialogInterface, i: Int ->
 
+                                    }
+                                    builder.show()
                                 }
-                                builder.show()
                             }
+                            false
                         }
-                        false
                     }
                 }
+
             }
 
             // 뒤로가기버튼 클릭
@@ -264,14 +271,12 @@ class DetailDuetFragment : Fragment() {
 
             //프로필 액티비티로 넘어가기
             binding.ivUploadUserProfile.setOnClickListener{
+                if (userLeaveCheck.equals("1")){
+                    Toast.makeText(requireContext(), "탈퇴한 회원입니다.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 if (LoginActivity.user_info.loginUserEmail.equals(email)){
-//                val activity =it!!.context as AppCompatActivity
-//                val MyPageFragment = MyPageFragment()
-//                var bundle =Bundle()
-//                activity.supportFragmentManager
-//                    .beginTransaction()
-//                    .replace(R.id.activity_main_frame,MyPageFragment)
-//                    .commit()
                     Toast.makeText(requireContext(), "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }else{
@@ -372,7 +377,7 @@ class DetailDuetFragment : Fragment() {
                                     }
 
                                     //FCM 보내기
-                                    if (LoginActivity.user_info.loginUserEmail.equals(email)) {
+                                    if (LoginActivity.user_info.loginUserEmail.equals(email) || userLeaveCheck.equals("1")) {
 
                                     } else {
                                         PushDuetNotification(

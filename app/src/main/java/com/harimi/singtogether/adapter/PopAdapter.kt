@@ -52,6 +52,8 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         val badge_collabo=v.findViewById<ImageView>(R.id.badge_colloabo_home)
         val isBadge=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadge)
         val isBadgeCollabo=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadgeCollabo)
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_userLeaveCheck)
+        val collaborationLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collaborationLeaveCheck)
     }
 
 
@@ -82,6 +84,9 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
         holder.col_token.text=curData.col_token
         holder.isBadge.text = curData.isBadge.toString()
         holder.isBadgeCollabo.text = curData.isBadgeCollabo.toString()
+        holder.userLeaveCheck.text = curData.userLeaveCheck
+        holder.collaborationLeaveCheck.text = curData.collaborationLeaveCheck
+
 
         // 밷지
         if (holder.isBadge.text.equals("true") && holder.isBadgeCollabo.text.equals("true")) {
@@ -176,6 +181,8 @@ class PopAdapter(val popList: ArrayList<PopData> ) : RecyclerView.Adapter<PopAda
             bundle.putString("thumbnail",curData.thumbnail)
             bundle.putString("isBadge",curData.isBadge.toString())
             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
+            bundle.putString("userLeaveCheck",curData.userLeaveCheck)
+            bundle.putString("collaborationLeaveCheck",curData.collaborationLeaveCheck)
             postFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()

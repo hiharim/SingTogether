@@ -42,6 +42,8 @@ class SimpleAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapt
         val isBadgeCollabo=v.findViewById<TextView>(R.id.rv_fragment_home_tv_isBadgeCollabo)
         val badge=v.findViewById<ImageView>(R.id.simple_badge)
         val badge_collabo=v.findViewById<ImageView>(R.id.simple_badge_collabo)
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_userLeaveCheck)
+        val collaborationLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collaborationLeaveCheck)
     }
 
     override fun onCreateViewHolder(
@@ -71,6 +73,8 @@ class SimpleAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapt
         holder.mr_idx.text= curData.mr_idx.toString()
         holder.isBadge.text = curData.isBadge.toString()
         holder.isBadgeCollabo.text = curData.isBadgeCollabo.toString()
+        holder.userLeaveCheck.text = curData.userLeaveCheck
+        holder.collaborationLeaveCheck.text = curData.collaborationLeaveCheck
 
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/"+curData.collaboration_profile).into(holder.collabo_profile)
@@ -132,6 +136,8 @@ class SimpleAdapter(val homePostList: ArrayList<HomeData> ) : RecyclerView.Adapt
             bundle.putString("col_token",curData.col_token)
             bundle.putString("isBadge",curData.isBadge.toString())
             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
+            bundle.putString("userLeaveCheck",curData.userLeaveCheck)
+            bundle.putString("collaborationLeaveCheck",curData.collaborationLeaveCheck)
             postFragment.arguments=bundle
 
             activity.supportFragmentManager.beginTransaction()

@@ -50,6 +50,7 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
         val lyrics=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_lyrics)
         val token=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_token)
         val isBadge=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_isBadge)
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_duet_tv_userLeaveCheck)
 
     }
 
@@ -82,6 +83,7 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
         holder.lyrics.text=curData.lyrics
         holder.token.text=curData.token
         holder.isBadge.text=curData.isBadge.toString()
+        holder.userLeaveCheck.text=curData.userLeaveCheck
 
         //밷지
         if(holder.isBadge.text.equals("true")){
@@ -134,6 +136,7 @@ class DuetAdapter(val duetList: ArrayList<DuetData>) : RecyclerView.Adapter<Duet
                             bundle.putString("lyrics", curData.lyrics)
                             bundle.putString("token", curData.token)
                             bundle.putString("isBadge", curData.isBadge.toString())
+                            bundle.putString("userLeaveCheck", curData.userLeaveCheck)
                             detailDuetFragment.arguments = bundle
 
 
