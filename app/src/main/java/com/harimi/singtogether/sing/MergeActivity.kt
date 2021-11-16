@@ -85,7 +85,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private var isPaused=false
     private lateinit var beforeTotalTime : String
     private var realBeforeTotalTime : String?=null
-
+    var which=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMergeBinding.inflate(layoutInflater)
@@ -357,7 +357,13 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
         }
     }
-
+    override fun onStop() {
+        super.onStop()
+        mediaPlayer?.release()
+        mediaPlayer=null
+        mRecorder?.release()
+        mRecorder=null
+    }
     // 서버에서 mix
     private fun mergeVideo() {
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
@@ -433,7 +439,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     fun initVideoRecorder() {
-        mCamera = Camera.open()
+        mCamera = Camera.open(which)
         mCamera!!.setDisplayOrientation(90)
         mSurfaceHolder = binding.surfaceView.getHolder()
         mSurfaceHolder!!.addCallback(this)
@@ -445,7 +451,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
             mCamera!!.stopPreview()
         }
         mCamera!!.release()
-        var which=0
+        //var which=0
         when (which) {
             0 -> {
                 mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT)
@@ -455,7 +461,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
             1 -> {
                 mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
                 which = 0
-                //side="back"
+                side="back"
             }
         }
 

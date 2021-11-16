@@ -84,6 +84,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     private var isPaused=false
     private lateinit var beforeTotalTime : String
     private var realBeforeTotalTime : String?=null
+    var which=0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -139,7 +140,6 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
-
 
         // 일시정지버튼 클릭
         binding.activityRecordBtnPause.setOnClickListener {
@@ -386,7 +386,8 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
     }
 
     fun initVideoRecorder() {
-        mCamera = Camera.open()
+        mCamera = Camera.open(which)
+        //mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT)
         mCamera!!.setDisplayOrientation(90)
         mSurfaceHolder = binding.surfaceView.getHolder()
         mSurfaceHolder!!.addCallback(this)
@@ -528,7 +529,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
             mCamera!!.stopPreview()
         }
         mCamera!!.release()
-        var which=0
+        //var which=0
         when (which) {
             0 -> {
                 mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT)
@@ -538,7 +539,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
             1 -> {
                 mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
                 which = 0
-                //side="back"
+                side="back"
             }
         }
 
@@ -552,36 +553,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         mCamera!!.startPreview()
     }
 
-    fun switchCamera() {
-        //myCamera is the Camera object
-        if (Camera.getNumberOfCameras() >= 2) {
-            mCamera?.stopPreview()
-            mCamera?.release()
 
-            var which=0
-            when (which) {
-                0 -> {
-                    mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT)
-                    which = 1
-                }
-                1 -> {
-                    mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
-                    which = 0
-                }
-            }
-            try {
-                mCamera?.setPreviewDisplay(mSurfaceHolder)
-                mCamera!!.setDisplayOrientation(90)
-                //"this" is a SurfaceView which implements SurfaceHolder.Callback,
-                //as found in the code examples
-                //mCamera?.setPreviewCallback(this@Video2Activity)
-                mCamera?.startPreview()
-            } catch (exception: IOException) {
-                mCamera?.release()
-                mCamera = null
-            }
-        }
-    }
 
     // surfaceView 가 생성될 때
     override fun surfaceCreated(holder: SurfaceHolder) {
