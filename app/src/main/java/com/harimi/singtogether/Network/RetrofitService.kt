@@ -137,6 +137,7 @@ interface RetrofitService {
         @Part("mr_path") mr_path :String,
         @Part("merge_video_path") mergeVideoPath :String,
         @Part("merge_extract_path") mergeExtractPath :String,
+        @Part("side") side :String, // 전면카메라인지 후면카메라인지
         @Part file : MultipartBody.Part
     ) : Call<String>
 

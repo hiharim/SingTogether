@@ -190,7 +190,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
             binding.btnConvert.visibility=View.GONE
 
             //startVideoRecorder()
-            if(!isPaused){
+            if(!isPaused) {
                 mediaPlayer = MediaPlayer()
                 mediaPlayer?.setDataSource(song_path)
                 mediaPlayer?.prepare()
@@ -266,7 +266,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
 
                         SystemClock.sleep(1000)
                     }
-                    if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)){
+                    if(binding.activityRecordTvIngTime.text.equals(realBeforeTotalTime)) {
                         isFinished=true
                     }
 
@@ -288,6 +288,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
                                 runOnUiThread {
                                     asyncDialog = ProgressDialog(this@Video2Activity)
                                     asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+                                    asyncDialog!!.setCancelable(false)
                                     asyncDialog!!.setMessage("믹싱중...")
                                     asyncDialog!!.show()
                                 }
@@ -522,7 +523,7 @@ class Video2Activity : AppCompatActivity(), SurfaceHolder.Callback {
         }
     }
 
-    fun changeCamera(){
+    fun changeCamera() {
         if (Camera.getNumberOfCameras() >= 2) {
             mCamera!!.stopPreview()
         }

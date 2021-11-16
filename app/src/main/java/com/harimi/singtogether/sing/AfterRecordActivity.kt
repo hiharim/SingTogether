@@ -77,7 +77,7 @@ class AfterRecordActivity : AppCompatActivity() {
         idx=intent.getIntExtra("MR_IDX",0)
         duet_idx=intent.getIntExtra("DUET_IDX",0)
 
-        Log.e("애프터싱액티비티","idx,file_path,user_path,with,way"+
+        Log.e("애프터레코드액티비티","idx,file_path,user_path,with,way"+
                 idx+" "+file_path+" "+user_path+" "+with+" "+way)
         nickname= LoginActivity.user_info.loginUserNickname
 

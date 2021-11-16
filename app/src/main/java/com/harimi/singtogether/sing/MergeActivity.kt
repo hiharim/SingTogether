@@ -34,6 +34,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,7 +56,8 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private lateinit var mr_path : String // 노래 mr
     private lateinit var duet_path : String // 사용자 비디오
     private lateinit var extract_path : String // 병합하고자하는 영상의 추출된 오디오
-    lateinit var mediaPlayer: MediaPlayer
+    private var side : String = "back" // 전면카메라,후면카메라 구분 front:전, back :후
+    private var mediaPlayer: MediaPlayer? = null
     private var  mRecorder : MediaRecorder?=null // 사용하지 않을 때는 메모리 해제 및 null 처리
     private var isRecording = false
     private var mPath: String=
@@ -77,12 +79,18 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
     private lateinit var lyricsAdapter: LyricsAdapter
     private val timeList:ArrayList<String> = ArrayList()
     private val nextList:ArrayList<String> = ArrayList()
+    private var pausePosition : Int ?=null
+    private var finishPosition : Int ?=null
+    private var isFinished=false
+    private var isPaused=false
+    private lateinit var beforeTotalTime : String
+    private var realBeforeTotalTime : String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityMergeBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        initRetrofit()
         duet_idx=intent.getIntExtra("RECORD_DUET_IDX", 0)
         mr_idx=intent.getIntExtra("RECORD_MR_IDX", 0)
         title=intent.getStringExtra("RECORD_TITLE")
@@ -129,22 +137,78 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         binding.activityMergeRv.setHasFixedSize(true)
         binding.activityMergeRv.setBackgroundColor(Color.parseColor("#81000000"))
 
-        mediaPlayer = MediaPlayer()
-        mediaPlayer.setDataSource(duet_path)
-        mediaPlayer.prepare()
+//        mediaPlayer = MediaPlayer()
+//        mediaPlayer.setDataSource(duet_path)
+//        mediaPlayer.prepare()
 
         initVideoRecorder()
-        initRetrofit()
+
 
         val dialog = EarPhoneDialog(this)
         dialog.myDig()
+        // 일시정지버튼 클릭
+        binding.activityRecordBtnPause.setOnClickListener {
+            // 재생중이면 일시정지
+            if (!isPaused) {
+                binding.activityRecordBtnStart.visibility = View.VISIBLE
+                binding.activityRecordBtnPause.visibility = View.GONE
+                mediaPlayer?.pause()
+                pausePosition=mediaPlayer?.currentPosition
+                mRecorder!!.pause()
+                isPaused=true
+            }
+        }
+
+
+        // 닫기 버튼 클릭
+        binding.fragmentVideo2IBtnClose.setOnClickListener {
+            if (!isPaused) {
+                binding.activityRecordBtnStart.visibility = View.VISIBLE
+                binding.activityRecordBtnPause.visibility = View.GONE
+                mediaPlayer?.pause()
+                pausePosition=mediaPlayer?.currentPosition
+                mRecorder!!.pause()
+                isPaused=true
+            }
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("녹화를 종료하시겠습니까? ")
+            builder.setMessage("지금 녹화를 종료하시면 저장되지 않습니다.")
+            builder.setPositiveButton("네") { dialog, which ->
+                mRecorder?.release()
+                mRecorder=null
+                finish()
+            }
+            builder.setNegativeButton("아니오") { dialog, which ->
+                // 노래 이어부르기
+            }
+            builder.show()
+        }
+
         // 마이크 버튼 클릭
         binding.activityRecordBtnStart.setOnClickListener {
             // 노래 재생
-            mediaPlayer.start()
+            //mediaPlayer.start()
+            binding.activityRecordBtnStart.visibility= View.GONE
+            binding.activityRecordBtnPause.visibility= View.VISIBLE
+            binding.btnConvert.visibility=View.GONE
 
-            startVideoRecorder()
-
+            //startVideoRecorder()
+            if(!isPaused) {
+                mediaPlayer = MediaPlayer()
+                mediaPlayer?.setDataSource(duet_path)
+                mediaPlayer?.prepare()
+                mediaPlayer?.start()
+                startVideoRecorder()
+                isFinished=false
+            }else{
+                // resume
+                binding.activityRecordBtnStart.visibility = View.GONE
+                binding.activityRecordBtnPause.visibility = View.VISIBLE
+                mediaPlayer?.seekTo(pausePosition!!)
+                mediaPlayer?.start()
+                mRecorder!!.resume()
+                isPaused=false
+            }
             /* 실시간으로 변경되는 진행시간과 시크바를 구현하기 위한 스레드 사용*/
             object : Thread() {
                 var timeFormat2 = android.icu.text.SimpleDateFormat("m.ss")  //"분:초"를 나타낼 수 있도록 포멧팅
@@ -153,15 +217,19 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                     super.run()
                     if (mediaPlayer == null)
                         return
-                    binding.seekBar.max = mediaPlayer.duration  // mPlayer.duration : 음악 총 시간
-
-                    while (mediaPlayer.isPlaying) {
+                    binding.seekBar.max = mediaPlayer!!.duration  // mPlayer.duration : 음악 총 시간
+                    finishPosition=mediaPlayer!!.duration
+                    while (mediaPlayer!!.isPlaying) {
                         runOnUiThread { //화면의 위젯을 변경할 때 사용 (이 메소드 없이 아래 코드를 추가하면 실행x)
-                            binding.seekBar.progress = mediaPlayer.currentPosition
-                            binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer.currentPosition)
-                            binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer.duration)
+                            binding.seekBar.progress = mediaPlayer!!.currentPosition
+                            binding.activityRecordTvIngTime.text = timeFormat.format(mediaPlayer!!.currentPosition)
+                            binding.activityRecordTvTotalTime.text=timeFormat.format(mediaPlayer!!.duration)
+                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer!!.currentPosition)
 
-                            binding.activityRecordTvPlayTime.text=timeFormat2.format(mediaPlayer.currentPosition)
+                            beforeTotalTime=binding.activityRecordTvTotalTime.text.toString()
+                            val minusSecond=mediaPlayer!!.duration-1000
+                            realBeforeTotalTime=timeFormat.format(minusSecond).toString()
+
                             RecordActivity.time_info.pTime= binding.activityRecordTvPlayTime.text.toString()
                             lyricsAdapter= LyricsAdapter(lyricsList)
                             binding.activityMergeRv.adapter=lyricsAdapter
@@ -194,37 +262,70 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                         SystemClock.sleep(1000)
                     }
 
-                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
-                    if(!mediaPlayer.isPlaying) {
-                        mediaPlayer.stop() // 음악 정지
-                        mediaPlayer.release()
+                    if(!mediaPlayer!!.isPlaying) {
+                        isFinished=true
+                    }
+
+                    if(isFinished) {
+                        mediaPlayer?.stop() // 음악 정지
+                        mediaPlayer?.release()
 
                         isRecording = false
                         mRecorder!!.stop()
                         mRecorder!!.release()
                         mRecorder = null
-                        //mCamera!!.lock()
+
                         mCamera!!.release()
                         mCamera=null
+
                         try{
                             Thread(Runnable {
                                 // ==== [UI 동작 실시] ====
                                 runOnUiThread {
                                     asyncDialog = ProgressDialog(this@MergeActivity)
                                     asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+                                    asyncDialog!!.setCancelable(false)
                                     asyncDialog!!.setMessage("믹싱중...")
                                     asyncDialog!!.show()
                                 }
                             }).start()
                         }
-                        catch(e : Exception){
+                        catch (e: Exception){
                             e.printStackTrace()
                         }
-
-
                         mergeVideo()
-
                     }
+                    // 음악이 종료되면 녹음 중지하고 AfterSingActivity 로 이동
+//                    if(!mediaPlayer.isPlaying) {
+//                        mediaPlayer.stop() // 음악 정지
+//                        mediaPlayer.release()
+//
+//                        isRecording = false
+//                        mRecorder!!.stop()
+//                        mRecorder!!.release()
+//                        mRecorder = null
+//                        //mCamera!!.lock()
+//                        mCamera!!.release()
+//                        mCamera=null
+//                        try{
+//                            Thread(Runnable {
+//                                // ==== [UI 동작 실시] ====
+//                                runOnUiThread {
+//                                    asyncDialog = ProgressDialog(this@MergeActivity)
+//                                    asyncDialog!!.setProgressStyle(ProgressDialog.BUTTON_POSITIVE)
+//                                    asyncDialog!!.setMessage("믹싱중...")
+//                                    asyncDialog!!.show()
+//                                }
+//                            }).start()
+//                        }
+//                        catch(e : Exception){
+//                            e.printStackTrace()
+//                        }
+//
+//
+//                        mergeVideo()
+//
+//                    }
                 }
             }.start()
 
@@ -235,7 +336,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                     fromUser: Boolean
                 ) {
                     if (fromUser) {
-                        mediaPlayer.seekTo(progress)
+                        mediaPlayer?.seekTo(progress)
                     }
                 }
 
@@ -246,9 +347,13 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
             })
 
-            binding.activityRecordBtnStart.visibility= View.GONE
-            binding.activityRecordBtnPause.visibility= View.VISIBLE
-            binding.btnConvert.visibility=View.GONE
+
+
+        }
+        //카메라 전환
+        binding.btnConvert.setOnClickListener {
+            //switchCamera()
+            changeCamera()
 
         }
     }
@@ -258,13 +363,14 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         val timeStamp : String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
         fileName = "$timeStamp.mp4"
         videoFile = File(mergeVideoFilePath)
+        Log.e("mergeVideo()", "side :" + side)
         var requestBody : RequestBody = RequestBody.create(
             MediaType.parse("multipart/form-data"), videoFile
         )
         var body : MultipartBody.Part=
             MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
         mergeVideoFilePath.let {
-            retrofitService.requestMergeVideo(mr_path,duet_path,extract_path,body).enqueue(object : Callback<String> {
+            retrofitService.requestMergeVideo(mr_path,duet_path,extract_path,side,body).enqueue(object : Callback<String> {
                 // 통신에 성공한 경우
                 override fun onResponse(call: Call<String>, response: Response<String>) {
                     //var call_extract_path : String? = null
@@ -292,7 +398,7 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                             intent.putExtra("COLLABO_EMAIL", collaborationEmail)
                             Log.e(
                                 "머지액티비티", "idx,file_path,mergeVideoFilePath,with,way" +
-                                        duet_idx + " " + file_path + " " + mergeVideoFilePath + " " + with + " " + way
+                                        duet_idx + " " + duet_path + " " + mergeVideoFilePath + " " + with + " " + way
                             )
                             startActivity(intent)
                             finish()
@@ -334,16 +440,43 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
         mSurfaceHolder!!.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
     }
 
+    fun changeCamera() {
+        if (Camera.getNumberOfCameras() >= 2) {
+            mCamera!!.stopPreview()
+        }
+        mCamera!!.release()
+        var which=0
+        when (which) {
+            0 -> {
+                mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_FRONT)
+                which = 1
+                side = "front"
+            }
+            1 -> {
+                mCamera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK)
+                which = 0
+                //side="back"
+            }
+        }
 
+        //setCameraDisplayOrientation(this@Video2Activity, currentCameraId, mCamera)
+        mCamera!!.setDisplayOrientation(90)
+        try {
+            mCamera!!.setPreviewDisplay(mSurfaceHolder)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        mCamera!!.startPreview()
+    }
 
-    // 녹화
     fun startVideoRecorder() {
-        if (isRecording) {
+        if (isFinished) {
             mRecorder!!.stop()
             mRecorder!!.release()
             mRecorder = null
             mCamera!!.lock()
             isRecording = false
+            //isFinished=false
 
         } else {
             runOnUiThread {
@@ -352,8 +485,17 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 mRecorder!!.setCamera(mCamera)
                 mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
                 mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
-                mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
-                mRecorder!!.setOrientationHint(90)
+                if(side.equals("front")){
+                    mRecorder!!.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+                    mRecorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+                    mRecorder!!.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
+                    mRecorder!!.setOrientationHint(270) // 전면 좌우반전
+                }else{
+                    // 후면일땐 QUALITY_HIGH , 전면일땐 설정..
+                    side="back"
+                    mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
+                    mRecorder!!.setOrientationHint(90) // 후면
+                }
                 mRecorder!!.setOutputFile(mergeVideoFilePath)
                 mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
                 try {
@@ -363,10 +505,43 @@ class MergeActivity : AppCompatActivity(), SurfaceHolder.Callback {
                 }
                 mRecorder!!.start()
                 isRecording = true
+                isFinished=false
 
             }
         }
     }
+
+    // 녹화
+//    fun startVideoRecorder() {
+//        if (isRecording) {
+//            mRecorder!!.stop()
+//            mRecorder!!.release()
+//            mRecorder = null
+//            mCamera!!.lock()
+//            isRecording = false
+//
+//        } else {
+//            runOnUiThread {
+//                mRecorder = MediaRecorder()
+//                mCamera!!.unlock()
+//                mRecorder!!.setCamera(mCamera)
+//                mRecorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
+//                mRecorder!!.setVideoSource(MediaRecorder.VideoSource.CAMERA)
+//                mRecorder!!.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH))
+//                mRecorder!!.setOrientationHint(90)
+//                mRecorder!!.setOutputFile(mergeVideoFilePath)
+//                mRecorder!!.setPreviewDisplay(mSurfaceHolder!!.surface)
+//                try {
+//                    mRecorder!!.prepare()
+//                } catch (e: Exception) {
+//                    e.printStackTrace()
+//                }
+//                mRecorder!!.start()
+//                isRecording = true
+//
+//            }
+//        }
+//    }
 
     override fun surfaceCreated(holder: SurfaceHolder) {
 
