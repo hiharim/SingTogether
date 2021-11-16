@@ -51,7 +51,7 @@
         android:layout_height="140dp"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/ic_baseline_person_24_purple"
+        android:src="@drawable/profile22"
         />
 
     <Button
@@ -81,7 +81,10 @@
                 android:id="@+id/activity_profile_et"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/white"
                 android:maxLines="1"
                 />
@@ -118,7 +121,7 @@
             android:id="@+id/tv_needCheck"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="아이디 중복확인을 해주세요."
+            android:text="닉네임 중복확인을 해주세요."
             android:textSize="15dp"
             android:textColor="@color/red"
             android:textStyle="bold"

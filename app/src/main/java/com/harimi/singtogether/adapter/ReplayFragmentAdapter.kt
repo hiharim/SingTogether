@@ -118,6 +118,7 @@ class ReplayFragmentAdapter(val ReplayPostList: ArrayList<ReplayData>, val conte
                             intent.putExtra("replayVideo", ReplayPostList.get(position).replayVideo)
                             intent.putExtra("uploadUserFCMToken", ReplayPostList.get(position).uploadUserFCMToken)
                             intent.putExtra("isBadge", ReplayPostList.get(position).isBadge)
+                            intent.putExtra("userLeaveCheck", ReplayPostList.get(position).userLeaveCheck)
 
                             context.startActivity(intent, null)
                         }

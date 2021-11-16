@@ -64,6 +64,7 @@ class DetailReplayActivity : AppCompatActivity() {
     private var uploadUserFCMToken :String ? =null
     private var getLikeNumber :String ? =null
     private var isBadge : Boolean? = null
+    private var userLeaveCheck :String ? =null
 
     //실제 비디오를 플레이하는 객체의 참조 변수
     var player: ExoPlayer? = null
@@ -121,7 +122,7 @@ class DetailReplayActivity : AppCompatActivity() {
         replayVideo = getintent.getStringExtra("replayVideo")
         uploadUserFCMToken = getintent.getStringExtra("uploadUserFCMToken")
         isBadge = getintent.getBooleanExtra("isBadge",false)
-
+        userLeaveCheck = getintent.getStringExtra("userLeaveCheck")
 
         getLikeNumber =replayLikeNumber
 
@@ -156,7 +157,13 @@ class DetailReplayActivity : AppCompatActivity() {
 
         ////내 아이디와 게시물 작성자가 맞으면 수정할수있게 보여주기
         if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
-            iv_editMenu.visibility =View.VISIBLE
+
+            if (userLeaveCheck.equals("0")){
+                iv_editMenu.visibility =View.VISIBLE
+            }else{
+                iv_editMenu.visibility =View.GONE
+            }
+
         }else{
             iv_editMenu.visibility =View.GONE
         }
@@ -198,6 +205,12 @@ class DetailReplayActivity : AppCompatActivity() {
 
         ///프로필 화면 가기
         iv_uploadUserProfile.setOnClickListener{
+
+            if (userLeaveCheck.equals("1")){
+                Toast.makeText(this, "탈퇴한 회원입니다.", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
 //                val activity =it!!.context as AppCompatActivity
 //                val MyPageFragment = MyPageFragment()
@@ -209,6 +222,8 @@ class DetailReplayActivity : AppCompatActivity() {
                 Toast.makeText(this, "회원님의 프로필 입니다. 마이페이지에서 확인해주세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }else{
+
+
                 retrofit= RetrofitClient.getInstance()
                 retrofitService=retrofit.create(RetrofitService::class.java)
                 retrofitService.requestLookAtUserProfile(
@@ -367,7 +382,7 @@ class DetailReplayActivity : AppCompatActivity() {
                                 var isLiked = jsonObject.getBoolean("isLiked")
                                 Log.d(TAG, body)
                                 ////FCM 보내기
-                                if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)) {
+                                if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail) || userLeaveCheck.equals("1")) {
 
                                 }else{
                                     PushNotification(
@@ -431,7 +446,7 @@ class DetailReplayActivity : AppCompatActivity() {
                             var isLiked = jsonObject.getBoolean("isLiked")
                             Log.d(TAG, body)
                             ////FCM 보내기
-                            if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)){
+                            if (LoginActivity.user_info.loginUserEmail.equals(uploadUserEmail)|| userLeaveCheck.equals("1")){
 
                             }else{
                                 PushNotification(

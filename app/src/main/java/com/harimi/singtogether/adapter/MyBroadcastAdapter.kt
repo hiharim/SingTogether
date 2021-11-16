@@ -91,6 +91,9 @@ class MyBroadcastAdapter (val myBroadcastList : ArrayList<MyBroadcastData>,val c
                             intent.putExtra("replayPostLikeIdx", myBroadcastList.get(position).replayPostLikeIdx)
                             intent.putExtra("liked", myBroadcastList.get(position).liked)
                             intent.putExtra("replayVideo", myBroadcastList.get(position).replayVideo)
+                            intent.putExtra("userLeaveCheck", myBroadcastList.get(position).userLeaveCheck)
+                            intent.putExtra("uploadUserFCMToken", myBroadcastList.get(position).uploadUserFCMToken)
+                            intent.putExtra("isBadge", myBroadcastList.get(position).isBadge)
                             context.startActivity(intent, null)
                         }
                     }

@@ -43,7 +43,7 @@ class MyBroadcastFragment : Fragment() {
     private lateinit var tv_noMyBroadcast: TextView
     private lateinit var fragment_my_broadcast_recyclerView: RecyclerView
     private var myEmail : String?=null
-
+    private var isBadge :Boolean ?= false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +113,8 @@ class MyBroadcastFragment : Fragment() {
 
                                 }else {
                                     val userLikeList = replayObject.getString("userLikeList")
+                                    val badgeList = replayObject.getString("badgeList")
+
                                     fragment_my_broadcast_recyclerView.visibility =View.VISIBLE
                                     tv_noMyBroadcast.visibility =View.GONE
 
@@ -128,6 +130,27 @@ class MyBroadcastFragment : Fragment() {
                                     var replayReviewNumber = postObject.getString("replayReviewNumber")
                                     var uploadDate = postObject.getString("uploadDate")
                                     var replayVideo = postObject.getString("replayVideo")
+                                    var userLeaveCheck = postObject.getString("userLeaveCheck")
+                                    var uploadUserFCMToken = postObject.getString("uploadUserFCMToken")
+
+                                    if (!badgeList.equals("")) {
+                                        val badgeArray = JSONArray(badgeList)
+                                        for (i in 0 until badgeArray.length()) {
+                                            var badgeObject = badgeArray.getJSONObject(i)
+                                            var email = badgeObject.getString("email")
+                                            if (email.equals(uploadUserEmail)){
+                                                isBadge= true
+                                                Log.d(TAG, isBadge.toString())
+                                                break
+                                            }else{
+                                                isBadge= false
+                                                Log.d(TAG, isBadge.toString())
+                                            }
+                                        }
+                                    }else{
+                                        isBadge= false
+                                    }
+
 
 
 
@@ -148,7 +171,7 @@ class MyBroadcastFragment : Fragment() {
                                         }
                                     }
                                     val myBroadcastData = MyBroadcastData(idx, uploadUserProfile, uploadUserNickName, thumbnail, replayTitle,
-                                        replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo)
+                                        replayReviewNumber, replayHits, replayLikeNumber, uploadDate, uploadUserEmail,like!!,replayPostLikeIdx!!,replayVideo,userLeaveCheck,isBadge!!,uploadUserFCMToken)
                                     myBroadcastList.add(0, myBroadcastData)
                                     myBroadcastAdapter.notifyDataSetChanged()
                                 }
