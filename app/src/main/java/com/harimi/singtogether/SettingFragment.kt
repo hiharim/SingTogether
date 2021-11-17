@@ -123,6 +123,10 @@ class SettingFragment : Fragment() {
 
                                         mAuth = FirebaseAuth.getInstance();
                                         mAuth.currentUser!!.delete()
+
+                                        FirebaseAuth.getInstance().signOut(); //구글로그아웃
+                                        googleSignInClient.signOut()
+
                                     }else{
                                         // 카카오 회원탈퇴
                                         kakaoUnLinkUser()
