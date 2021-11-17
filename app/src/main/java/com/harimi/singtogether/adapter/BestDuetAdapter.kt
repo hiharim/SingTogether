@@ -45,8 +45,9 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
         val home_like=v.findViewById<ImageView>(R.id.home_like)
         val home_liked=v.findViewById<ImageView>(R.id.home_liked)
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_userLeaveCheck)
+        val collaborationLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collaborationLeaveCheck)
 
-//        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
     }
 
 
@@ -76,7 +77,8 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
         holder.kinds.text=curData.kinds
         holder.token.text=curData.token
         holder.mr_idx.text= curData.mr_idx.toString()
-
+        holder.userLeaveCheck.text = curData.userLeaveCheck
+        holder.collaborationLeaveCheck.text = curData.collaborationLeaveCheck
 
         if (curData.isLike.equals(LoginActivity.user_info.loginUserEmail)){
             holder.home_liked.visibility =View.VISIBLE
@@ -126,6 +128,9 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
             bundle.putString("isLike",curData.isLike)
             bundle.putString("isBadge",curData.isBadge.toString())
             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
+            bundle.putString("col_token",curData.col_token)
+            bundle.putString("userLeaveCheck",curData.userLeaveCheck)
+            bundle.putString("collaborationLeaveCheck",curData.collaborationLeaveCheck)
             intent.putExtra("bundle",bundle)
             context.startActivity(intent)
 

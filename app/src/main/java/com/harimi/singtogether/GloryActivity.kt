@@ -281,6 +281,8 @@ class GloryActivity : AppCompatActivity() {
                             val token = duetDataObject.getString("token")
                             val col_token = duetDataObject.getString("col_token")
                             val isLike = duetDataObject.getString("isLike")
+                            val userLeaveCheck = duetDataObject.getString("userLeaveCheck")
+                            val collaborationLeaveCheck = duetDataObject.getString("collaborationLeaveCheck")
 
                             val bestDuetData = BestDuetData(
                                 idx,
@@ -305,7 +307,9 @@ class GloryActivity : AppCompatActivity() {
                                 col_token,
                                 isLike,
                                 true,
-                                true
+                                true,
+                                userLeaveCheck,
+                                collaborationLeaveCheck
                             )
                             bestDuetList.add(0, bestDuetData)
                             bestDuetAdapter.notifyDataSetChanged()
@@ -335,6 +339,8 @@ class GloryActivity : AppCompatActivity() {
                             val token = SoloDataObject.getString("token")
                             val col_token = SoloDataObject.getString("col_token")
                             val isLike = SoloDataObject.getString("isLike")
+                            val userLeaveCheck = SoloDataObject.getString("userLeaveCheck")
+                            val collaborationLeaveCheck =SoloDataObject.getString("collaborationLeaveCheck")
 
                             val bestSoloData = BestSoloData(
                                 idx,
@@ -359,7 +365,7 @@ class GloryActivity : AppCompatActivity() {
                                 col_token,
                                 isLike,
                                 true,
-                                true
+                                true,userLeaveCheck, collaborationLeaveCheck
 
                             )
                             bestSoloList.add(0, bestSoloData)

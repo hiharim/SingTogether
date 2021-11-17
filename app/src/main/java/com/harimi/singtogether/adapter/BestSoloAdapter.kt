@@ -44,11 +44,12 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
         val cnt_like=v.findViewById<TextView>(R.id.rv_fragment_home_tv_like)
         val song_path=v.findViewById<TextView>(R.id.rv_fragment_home_tv_song_path)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
-//        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
+
         val col_badge=v.findViewById<ImageView>(R.id.col_badge)
         val home_like=v.findViewById<ImageView>(R.id.home_like)
         val home_liked=v.findViewById<ImageView>(R.id.home_liked)
-
+        val userLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_userLeaveCheck)
+        val collaborationLeaveCheck=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collaborationLeaveCheck)
 
 
     }
@@ -76,6 +77,8 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
         holder.date.text = curData.date
         holder.kinds.text = curData.kinds
         holder.token.text = curData.token
+        holder.userLeaveCheck.text = curData.userLeaveCheck
+        holder.collaborationLeaveCheck.text = curData.collaborationLeaveCheck
 
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.profile)
             .into(holder.profile)
@@ -127,6 +130,9 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
             bundle.putString("isLike",curData.isLike)
             bundle.putString("isBadge",curData.isBadge.toString())
             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
+            bundle.putString("userLeaveCheck",curData.userLeaveCheck)
+            bundle.putString("col_token",curData.col_token)
+            bundle.putString("collaborationLeaveCheck",curData.collaborationLeaveCheck)
             intent.putExtra("bundle",bundle)
             context.startActivity(intent)
 
