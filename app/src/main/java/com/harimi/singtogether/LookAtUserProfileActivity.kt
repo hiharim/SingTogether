@@ -162,6 +162,9 @@ class LookAtUserProfileActivity : AppCompatActivity() {
 
 
         btn_follow.setOnClickListener {
+
+            btn_follow.isEnabled = false
+            btn_followCancel.isEnabled =false
             retrofit= RetrofitClient.getInstance()
             retrofitService=retrofit.create(RetrofitService::class.java)
             retrofitService.requestAddFollow(
@@ -176,11 +179,17 @@ class LookAtUserProfileActivity : AppCompatActivity() {
                             var jsonObject = JSONObject(response.body().toString())
                             var result = jsonObject.getBoolean("result")
                             if (result) {
+
+                                val getFollowerNum = tv_followNumber.text.toString()
+                                val num = getFollowerNum.toInt() +1
                                 isFollow = true
                                 btn_follow.visibility = View.GONE
                                 btn_followCancel.visibility = View.VISIBLE
-                                val getFollowNum = getFollowNumber.toInt() + 1
-                                tv_followNumber.setText(getFollowNum.toString())
+//                                val getFollowNum = getFollowNumber.toInt() + 1
+                                tv_followNumber.setText(num.toString())
+
+                                btn_follow.isEnabled = true
+                                btn_followCancel.isEnabled =true
                             }
                         }
                     }
@@ -191,6 +200,8 @@ class LookAtUserProfileActivity : AppCompatActivity() {
         }
 
         btn_followCancel.setOnClickListener {
+            btn_follow.isEnabled = false
+            btn_followCancel.isEnabled =false
             retrofit= RetrofitClient.getInstance()
             retrofitService=retrofit.create(RetrofitService::class.java)
             retrofitService.requestDeleteFollow(
@@ -205,10 +216,17 @@ class LookAtUserProfileActivity : AppCompatActivity() {
                             var jsonObject = JSONObject(response.body().toString())
                             var result = jsonObject.getBoolean("result")
                             if (result) {
+
+
                                 isFollow = false
+                                val getFollowerNum = tv_followNumber.text.toString()
+                                val num = getFollowerNum.toInt() -1
                                 btn_follow.visibility = View.VISIBLE
                                 btn_followCancel.visibility = View.GONE
-                                tv_followNumber.setText(getFollowNumber.toString())
+                                tv_followNumber.setText(num.toString())
+
+                                btn_follow.isEnabled = true
+                                btn_followCancel.isEnabled =true
                             }
                         }
                     }
