@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.BestDuetData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
@@ -42,6 +43,9 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
         val cnt_like=v.findViewById<TextView>(R.id.rv_fragment_home_tv_like)
         val song_path=v.findViewById<TextView>(R.id.rv_fragment_home_tv_song_path)
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
+        val home_like=v.findViewById<ImageView>(R.id.home_like)
+        val home_liked=v.findViewById<ImageView>(R.id.home_liked)
+
 //        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
     }
 
@@ -72,6 +76,15 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
         holder.kinds.text=curData.kinds
         holder.token.text=curData.token
         holder.mr_idx.text= curData.mr_idx.toString()
+
+
+        if (curData.isLike.equals(LoginActivity.user_info.loginUserEmail)){
+            holder.home_liked.visibility =View.VISIBLE
+            holder.home_like.visibility =View.INVISIBLE
+        }else{
+            holder.home_liked.visibility =View.INVISIBLE
+            holder.home_like.visibility =View.VISIBLE
+        }
 
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.profile).into(holder.profile)
         Glide.with(holder.itemView).load("http://3.35.236.251/" + curData.collaboration_profile).into(
@@ -110,6 +123,7 @@ class BestDuetAdapter(val bestDuetList: ArrayList<BestDuetData>, val context: Co
             bundle.putString("kinds", curData.kinds)
             bundle.putString("token", curData.token)
             bundle.putString("thumbnail", curData.thumbnail)
+            bundle.putString("isLike",curData.isLike)
             bundle.putString("isBadge",curData.isBadge.toString())
             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
             intent.putExtra("bundle",bundle)
