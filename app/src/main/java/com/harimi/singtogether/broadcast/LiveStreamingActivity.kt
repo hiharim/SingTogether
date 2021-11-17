@@ -981,10 +981,14 @@ class LiveStreamingActivity : AppCompatActivity() , SignalingClient.Callback{
         Log.d(TAG, "onStop")
         super.onStop()
 
+        if (isRecording){
+            recordTimeTask!!.cancel()
+            recordTimeTask!!.purge()
+        }
+
         timerTask!!.cancel()
-        recordTimeTask!!.cancel()
         timerTask!!.purge()
-        recordTimeTask!!.purge()
+
 
         timerTask = null //타이머
         recordTimeTask = null //타이머
