@@ -238,27 +238,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
+<!--                android:layout_below="@+id/rv_fragment_home_tv_title"-->
+<!--                android:layout_below="@+id/rv_fragment_home_tv_title"-->
+
                 <ImageView
                     android:id="@+id/home_like"
-                    android:layout_toRightOf="@+id/rv_fragment_home_tv_count_reply"
-                    android:layout_below="@+id/rv_fragment_home_tv_title"
-                    android:src="@drawable/non_like"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone"
-                    android:layout_marginLeft="8dp"
                     android:layout_width="20dp"
-                    android:layout_height="20dp"/>
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@+id/rv_fragment_home_tv_like"
+                    android:src="@drawable/non_like" />
+
+                <ImageView
+                    android:id="@+id/home_liked"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_centerInParent="true"
+                    android:layout_toLeftOf="@+id/rv_fragment_home_tv_like"
+                    android:src="@drawable/like" />
+
 
                 <TextView
                     android:id="@+id/rv_fragment_home_tv_like"
-                    android:layout_below="@+id/rv_fragment_home_tv_title"
-                    android:layout_toRightOf="@+id/home_like"
-                    android:text="0"
-                    android:layout_marginTop="5dp"
-                    android:visibility="gone"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+
                     android:layout_marginLeft="5dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_marginRight="15dp"
+                    android:text="0" />
 
 
                 <TextView

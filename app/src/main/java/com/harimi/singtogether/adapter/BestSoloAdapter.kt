@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.harimi.singtogether.Data.BestDuetData
 import com.harimi.singtogether.Data.BestSoloData
+import com.harimi.singtogether.LoginActivity
 import com.harimi.singtogether.MainActivity
 import com.harimi.singtogether.PostFragment
 import com.harimi.singtogether.R
@@ -45,6 +46,8 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
         val collabo_email=v.findViewById<TextView>(R.id.rv_fragment_home_tv_collabo_email)
 //        val collaboCardView=v.findViewById<CardView>(R.id.collaboCardView)
         val col_badge=v.findViewById<ImageView>(R.id.col_badge)
+        val home_like=v.findViewById<ImageView>(R.id.home_like)
+        val home_liked=v.findViewById<ImageView>(R.id.home_liked)
 
 
 
@@ -90,6 +93,14 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
 
 //            holder.collaboCardView.visibility = View.GONE
         }
+
+        if (curData.isLike.equals(LoginActivity.user_info.loginUserEmail)){
+            holder.home_liked.visibility =View.VISIBLE
+            holder.home_like.visibility =View.INVISIBLE
+        }else{
+            holder.home_liked.visibility =View.INVISIBLE
+            holder.home_like.visibility =View.VISIBLE
+        }
         holder.itemView.setOnClickListener {
             val intent = Intent(context, MainActivity::class.java)
 
@@ -113,6 +124,7 @@ class BestSoloAdapter  (val bestSoloList: ArrayList<BestSoloData> , val context:
             bundle.putString("kinds", curData.kinds)
             bundle.putString("token", curData.token)
             bundle.putString("thumbnail", curData.thumbnail)
+            bundle.putString("isLike",curData.isLike)
             bundle.putString("isBadge",curData.isBadge.toString())
             bundle.putString("isBadgeCollabo",curData.isBadgeCollabo.toString())
             intent.putExtra("bundle",bundle)

@@ -55,6 +55,17 @@ class GloryActivity : AppCompatActivity() {
 
     private val bestSoloList: ArrayList<BestSoloData> = ArrayList()
     private lateinit var bestSoloAdapter: BestSoloAdapter
+
+    override fun onResume() {
+        super.onResume()
+
+        bestDuetList.clear()
+        bestSoloList.clear()
+        bestSoloAdapter.notifyDataSetChanged()
+        bestDuetAdapter.notifyDataSetChanged()
+        loadGloryPost(getYear)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_glory)
@@ -96,7 +107,7 @@ class GloryActivity : AppCompatActivity() {
         Log.d(TAG,  getYear)
         Log.d(TAG,  currentYear)
         //처음 액티비티볼때 forwardArrow  색깔 변경해주기
-        iv_forwardArrow.setColorFilter(Color.parseColor("#000000"))
+        iv_forwardArrow.setColorFilter(Color.parseColor("#88000000"))
 
         //뒤로가기 화살표 눌렀을때
         iv_backArrow.setOnClickListener {
