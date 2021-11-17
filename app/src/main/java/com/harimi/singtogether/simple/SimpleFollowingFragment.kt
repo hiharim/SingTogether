@@ -122,11 +122,11 @@ class SimpleFollowingFragment : Fragment() {
                             val userLeaveCheck = iObject.getString("userLeaveCheck")
                             val collaborationLeaveCheck = iObject.getString("collaborationLeaveCheck")
                             // 탈퇴한 회원 프로필
-                            if(userLeaveCheck.equals("1")){
-                                profile="uploadFile/profile22.png"
-                            }else if(collaborationLeaveCheck.equals("1")){
-                                collaboration_profile="uploadFile/profile22.png"
-                            }
+//                            if(userLeaveCheck.equals("1")){
+//                                profile="uploadFile/profile22.png"
+//                            }else if(collaborationLeaveCheck.equals("1")){
+//                                collaboration_profile="uploadFile/profile22.png"
+//                            }
 
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)

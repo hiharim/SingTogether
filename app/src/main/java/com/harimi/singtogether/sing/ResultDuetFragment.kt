@@ -105,9 +105,9 @@ class ResultDuetFragment : Fragment() {
                                 val userLeaveCheck = iObject.getString("userLeaveCheck")
                                 var path = song_path
                                 // 탈퇴한 회원 프로필
-                                if(userLeaveCheck.equals("1")){
-                                    profile="uploadFile/profile22.png"
-                                }
+//                                if(userLeaveCheck.equals("1")){
+//                                    profile="uploadFile/profile22.png"
+//                                }
                                 if (!badgeList.equals("")) {
                                     val badgeArray = JSONArray(badgeList)
                                     for (i in 0 until badgeArray.length()) {
