@@ -34,8 +34,8 @@ FFmpeg (www.ffmpeg.org) 은 비디오, 오디오, 이미지를 쉽게 인코딩
 - 먹싱된 동영상을 재생하기 위해서는 인코딩, 먹싱 과정과 반대로 먼저 디먹싱을 통해서 압축된 정지 영상과 압축된 오디오로 분리한 후 각각의 데이터를 디코딩해야 한다.
 
 <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236798560-2c735a10-4f14-47be-ac5e-28d8c68aa500.jpeg"/> <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236798758-ac5a5eb3-fc77-4454-a730-8bea9526b056.jpeg"/> <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236798744-b43dfddd-8695-48b0-92ab-84bcd5d1fd13.jpeg"/>
-<img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236800436-521706f1-5756-4515-8610-bc072fae0365.jpeg"/> <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236800453-b52db320-20b4-4688-9b30-87ea5ef2c91d.jpeg"/> <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236800463-9307c851-7b1f-48fe-be09-8bcba6f6c9d2.jpeg
-"/>
+
+<img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236800436-521706f1-5756-4515-8610-bc072fae0365.jpeg"/> <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236800453-b52db320-20b4-4688-9b30-87ea5ef2c91d.jpeg"/> <img width="200" height="400" src="https://user-images.githubusercontent.com/72755537/236800463-9307c851-7b1f-48fe-be09-8bcba6f6c9d2.jpeg"/>
 
 
 
