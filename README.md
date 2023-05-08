@@ -33,6 +33,8 @@ FFmpeg (www.ffmpeg.org) 은 비디오, 오디오, 이미지를 쉽게 인코딩
 - 예를 들어 PC에서 다운로드를 받아서 보시는 동영상은 사실 여러 장의 정지 영상과 오디오가 하나의 파일로 (예: *.avi,* .mkv, *.mov) 먹싱되어 있는 것이다. 물론 먹싱되기 전에 정지 영상과 오디오는 각각 인코딩 과정을 통해서 압축이 되어 있는 상태이다.
 - 먹싱된 동영상을 재생하기 위해서는 인코딩, 먹싱 과정과 반대로 먼저 디먹싱을 통해서 압축된 정지 영상과 압축된 오디오로 분리한 후 각각의 데이터를 디코딩해야 한다.
 
+
+
 - 스크린샷
 
 <img width="300" height="600" src="https://user-images.githubusercontent.com/72755537/236798560-2c735a10-4f14-47be-ac5e-28d8c68aa500.jpeg"/> <img width="300" height="600" src="https://user-images.githubusercontent.com/72755537/236798758-ac5a5eb3-fc77-4454-a730-8bea9526b056.jpeg"/> <img width="300" height="600" src="https://user-images.githubusercontent.com/72755537/236798744-b43dfddd-8695-48b0-92ab-84bcd5d1fd13.jpeg"/>
